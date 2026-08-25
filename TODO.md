@@ -12,8 +12,12 @@ work into delivery stages.
       documents with explicit candidate status.
 - [x] Establish normative security overview and threat model plus an
       evidence-based risk register.
-- [x] Map all 20 turns of the historical shared conversation to maintained
-      documents without copying the raw transcript.
+- [x] Map both historical shared ChatGPT conversations to maintained documents
+      without copying the raw transcripts: all 20 turns of the first source,
+      and every recorded route item of the second source, whose phase plan,
+      version ladder, and daemon staging remain unaccepted draft deposits
+      ([coverage matrix](docs/sources/chatgpt-share-coverage.md),
+      [draft proposals](docs/product/proposed-delivery-sequence.md)).
 - [x] Add corpus navigation, decision status, and open-question registers.
 - [x] Define user, contributor, reference, and website-consumption entry points
       without inventing pre-release product behavior.
