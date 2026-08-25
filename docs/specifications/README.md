@@ -22,6 +22,7 @@ following drafts are under review and do not authorize implementation:
 | [Lua Runtime RFC](lua-runtime-rfc.md)                         | OQ-009                 | Proposed |
 | [Configuration Model RFC](configuration-model-rfc.md)         | OQ-010                 | Proposed |
 | [Plugin Platform RFC](plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013 | Proposed |
+| [Isolation Resource RFC](isolation-resource-rfc.md)           | OQ-014                 | Proposed |
 
 Naming note: these review drafts use RFC-style filenames; on acceptance they
 will be renamed to `SPEC-NNNN-short-title.md` per the policy below.
