@@ -23,6 +23,7 @@ following drafts are under review and do not authorize implementation:
 | [Configuration Model RFC](configuration-model-rfc.md)         | OQ-010                 | Proposed |
 | [Plugin Platform RFC](plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013 | Proposed |
 | [Isolation Resource RFC](isolation-resource-rfc.md)           | OQ-014                 | Proposed |
+| [Package Lifecycle RFC](package-lifecycle-rfc.md)             | OQ-021, OQ-022         | Proposed |
 
 Naming note: these review drafts use RFC-style filenames; on acceptance they
 will be renamed to `SPEC-NNNN-short-title.md` per the policy below.

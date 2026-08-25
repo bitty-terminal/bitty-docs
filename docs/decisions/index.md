@@ -99,6 +99,8 @@ the historical conversation:
 - Rich blocks, semantic zones, structured transports, and TUI transformation.
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
 - Package manifest/lock formats, resolver, registry, and update UX.
+  (Drafted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
+  — proposed.)
 - Headless daemon, detach/reattach, and remote UI architecture.
 
 Each candidate is represented by an item in the
