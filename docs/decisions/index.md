@@ -93,8 +93,9 @@ the historical conversation:
 - Parser, terminal-state, text-shaping, windowing, and renderer choices.
   (Drafted: [Terminal state RFC](../specifications/terminal-state-rfc.md) — proposed.)
 - Two-phase declarative `ConfigPlan` generation and Rust reconciliation.
-- Plugin API v1, event phases, UI/scene primitives, services, lazy loading, and
-  hot reload mechanics.
+- Plugin API v1, capability/manifest model, and event phases. (Drafted:
+  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — proposed;
+  UI/scene primitives and hot-reload mechanics remain open there.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation.
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
 - Package manifest/lock formats, resolver, registry, and update UX.
