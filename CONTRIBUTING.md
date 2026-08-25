@@ -70,9 +70,13 @@ Issue -> Branch -> Commit -> Pull Request -> Review + CI -> Merge
   navigation, decision registers, open questions, risks, redirects, and release
   notes must be updated together with the underlying change.
 
-Until the repository has its first commit, branch/worktree/commit/PR stages
-are unavailable; shared-checkout work is allowed only as an initialization
-exception with disjoint scopes.
+### Branch and worktree naming
+
+Task branches follow `ctx-XXXX/<type>-<short-slug>`: `XXXX` is the owning
+CarryCtx task number, `<type>` is one of `feat|fix|chore|docs`, and
+`<short-slug>` is kebab-case (for example `ctx-0031/feat-isolation-rfc`).
+Worktrees live at `.worktrees/ctx-XXXX-<type>-<short-slug>`, mapping `/` to
+`-`. Use one branch per task; commander housekeeping may use `cmd/<slug>`.
 
 ## Committing
 
