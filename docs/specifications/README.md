@@ -19,6 +19,8 @@ following drafts are under review and do not authorize implementation:
 | [Performance Budget RFC](performance-budget-rfc.md)           | OQ-001 | Proposed |
 | [Compatibility Milestone RFC](compatibility-milestone-rfc.md) | OQ-004 | Proposed |
 | [Terminal State RFC](terminal-state-rfc.md)                   | OQ-007 | Proposed |
+| [Lua Runtime RFC](lua-runtime-rfc.md)                         | OQ-009 | Proposed |
+| [Configuration Model RFC](configuration-model-rfc.md)         | OQ-010 | Proposed |
 
 Naming note: these review drafts use RFC-style filenames; on acceptance they
 will be renamed to `SPEC-NNNN-short-title.md` per the policy below.
