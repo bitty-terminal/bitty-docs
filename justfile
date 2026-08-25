@@ -3,6 +3,8 @@
 prettier_version := "3.9.6"
 markdownlint_version := "0.23.1"
 actionlint_version := "1.7.12"
+commitlint_version := "21.2.2"
+lefthook_version := "2.1.10"
 
 # Format every file type supported by Prettier inside this repository.
 fmt:
@@ -40,6 +42,34 @@ hygiene:
 actionlint:
     @installed="$(actionlint --version | head -n 1)"; test "$installed" = "{{actionlint_version}}" || { echo "actionlint {{actionlint_version}} required; found $installed" >&2; exit 1; }
     actionlint -color -shellcheck=
+
+# Validate a commit message file against commitlint.config.ts (Conventional Commits).
+commit-check message_file:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    message_file="{{message_file}}"
+    if [[ -z "${message_file}" ]]; then
+        echo "usage: just commit-check <message-file>" >&2
+        exit 2
+    fi
+    version="{{commitlint_version}}"
+    cache="${XDG_CACHE_HOME:-${HOME}/.cache}/bitty-docs/commitlint@${version}"
+    cli="${cache}/node_modules/@commitlint/cli/lib/cli.js"
+    config="${cache}/node_modules/@commitlint/config-conventional/package.json"
+    if [[ ! -f "${cli}" || ! -f "${config}" ]]; then
+        mkdir -p "${cache}"
+        printf '{"name":"bitty-docs-commitlint","private":true}\n' > "${cache}/package.json"
+        (cd "${cache}" && bun add "@commitlint/cli@${version}" "@commitlint/config-conventional@${version}")
+    fi
+    exec env NODE_PATH="${cache}/node_modules" bun "${cli}" --edit "${message_file}"
+
+# Install Git hooks managed by lefthook (opt-in per contributor checkout).
+hooks-install:
+    bunx --bun lefthook@{{lefthook_version}} install
+
+# Remove lefthook-managed Git hooks.
+hooks-uninstall:
+    bunx --bun lefthook@{{lefthook_version}} uninstall
 
 # Run the same logical gates as CI. All recipes are read-only.
 check:
