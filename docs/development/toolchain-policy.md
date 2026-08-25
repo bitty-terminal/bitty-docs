@@ -40,15 +40,15 @@ sidebar_order: 15
 
 ## Pinned toolchain matrix
 
-| Repository              | Language runtime                                             | Package manager | Entry point  | Notes                                                                                                                                    |
-| ----------------------- | ------------------------------------------------------------ | --------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty-docs`            | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12 via bunx; commitlint 21.2.2 cache-dir install                                |
-| `bitty-website`         | Bun 1.4.0                                                    | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.1, commitlint 21.2.2 pinned in package.json/bun.lock |
-| `bitty`                 | Rust stable (rust-toolchain.toml) + Bun 1.4.0 (tooling only) | cargo / bun     | `just check` | rustfmt, Clippy, tests, actionlint; commitlint 21.2.2 provisioned into `target/dev-tools`; markdownlint-cli2 0.23.1 via bunx             |
-| `bitty-devtools`        | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 pinned in package.json/bun.lock                             |
-| `bitty-mcp`             | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock        |
-| `bitty-plugin-sdk`      | Bun 1.4.0                                                    | bun             | `just check` | dependency-free: lefthook 2.1.10, commitlint 21.2.2, prettier 3.9.6, markdownlint-cli2 0.23.1 all as bunx pins in the justfile           |
-| `bitty-plugin-template` | Bun 1.4.0                                                    | bun             | `just check` | lefthook 2.1.10, commitlint 21.2.2, prettier 3.9.6, markdownlint-cli2 0.23.1 mirrored in justfile variables and package.json/bun.lock    |
+| Repository              | Language runtime                                             | Package manager | Entry point  | Notes                                                                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------ | --------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty-docs`            | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12 via bunx; commitlint 21.2.2 cache-dir install                                                                                      |
+| `bitty-website`         | Bun 1.4.0                                                    | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.1, commitlint 21.2.2 pinned in package.json/bun.lock                                                       |
+| `bitty`                 | Rust stable (rust-toolchain.toml) + Bun 1.4.0 (tooling only) | cargo / bun     | `just check` | rustfmt, Clippy, tests, actionlint; commitlint 21.2.2 provisioned into `target/dev-tools`; markdownlint-cli2 0.23.1 via bunx                                                                   |
+| `bitty-devtools`        | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 pinned in package.json/bun.lock                                                                                   |
+| `bitty-mcp`             | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock                                                              |
+| `bitty-plugin-sdk`      | Bun 1.4.0                                                    | bun             | `just check` | @commitlint/cli 21.2.2 and @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock; lefthook 2.1.10, prettier 3.9.6, and markdownlint-cli2 0.23.1 via bunx pins in the justfile |
+| `bitty-plugin-template` | Bun 1.4.0                                                    | bun             | `just check` | lefthook 2.1.10, commitlint 21.2.2, prettier 3.9.6, markdownlint-cli2 0.23.1 mirrored in justfile variables and package.json/bun.lock                                                          |
 
 ## Local gate tools and hook wiring
 
@@ -81,9 +81,9 @@ four verified patterns:
   exact-pinned devDependency installed via frozen-lockfile `bun install`:
   `bitty-website` (which also pins prettier and markdownlint-cli2 there
   because its justfile delegates to package.json scripts), `bitty-devtools`,
-  `bitty-mcp`, and `bitty-plugin-template`. The template mirrors its
-  package.json devDependencies as identical justfile variables and must keep
-  both sides in sync when bumping.
+  `bitty-mcp`, `bitty-plugin-sdk`, and `bitty-plugin-template`. The template
+  mirrors its package.json devDependencies as identical justfile variables and
+  must keep both sides in sync when bumping.
 - **A justfile-provisioned tools directory**: `bitty` provisions
   `commitlint@21.2.2` plus `@commitlint/config-conventional@21.2.2` into
   `target/dev-tools` through a stamped `bun add` step (`just tools`); its
