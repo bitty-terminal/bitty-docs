@@ -22,9 +22,9 @@ sidebar_order: 13
   **target contract for future implementation**, not a claim about current
   behavior. None of these numbers has been measured against a real build.
 - Provenance rule: all comparative figures come from third-party public
-  sources of varying methodology rigor (rule 6 of
-  [.carryctx/rules/documentation.md](../../.carryctx/rules/documentation.md)).
-  They justify the order of magnitude of each budget, not an exact value.
+  sources of varying methodology rigor, following the provenance rules of the
+  [documentation workflow](../development/documentation-workflow.md). They
+  justify the order of magnitude of each budget, not an exact value.
 
 ## Purpose and scope
 
