@@ -62,25 +62,24 @@ before final cleanup.
 
 ## Current initialization state
 
-As of 2026-08-25, the following seven public remotes exist under
-`github.com/bitty-terminal`. Each corresponding local directory has been
-initialized separately as a Git repository with an `origin`. They remain
-**unborn repositories**: each remote exists, but none has an initial commit.
+As of 2026-08-26, all seven public remotes under `github.com/bitty-terminal`
+have been pushed with an initial snapshot commit, and each repository's
+`main` branch is protected on GitHub: squash-only merging with required status
+checks matching that repository's CI job names.
 
-| Local directory                        | Public remote                                             | Current commit state |
-| -------------------------------------- | --------------------------------------------------------- | -------------------- |
-| `bitty/`                               | `https://github.com/bitty-terminal/bitty`                 | No commits           |
-| `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | No commits           |
-| `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | No commits           |
-| `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | No commits           |
-| `bitty-mcp/`                           | `https://github.com/bitty-terminal/bitty-mcp`             | No commits           |
-| `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | No commits           |
-| `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | No commits           |
+| Local directory                        | Public remote                                             | Current state                                           | Required `main` status checks |
+| -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------- | ----------------------------- |
+| `bitty/`                               | `https://github.com/bitty-terminal/bitty`                 | Initial snapshot pushed; `main` protected (squash-only) | `quality`                     |
+| `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only) | `docs-quality`                |
+| `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only) | `quality`                     |
+| `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
+| `bitty-mcp/`                           | `https://github.com/bitty-terminal/bitty-mcp`             | Initial snapshot pushed; `main` protected (squash-only) | `gates`, `actionlint`         |
+| `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
+| `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
 
 Neither the umbrella root nor `bitty-plugins/` is initialized as a Git
 repository. This is an intentional routing and grouping boundary, not an
-omission. Initial commits, default branches, and branch protection remain future
-initialization work.
+omission.
 
 ## Repository responsibilities
 
@@ -227,7 +226,8 @@ database exists. Therefore:
 ## Pending decisions
 
 - Creation order for later official plugin repositories; seven repositories are
-  already public, while licenses and branch protection remain undecided.
+  already public with protected `main` branches, while licenses remain
+  undecided.
 - The final Core crate graph, dependency edges, MSRV, release profiles, license,
   package publication, and release automation beyond the minimal bootstrap.
 - The concrete synchronization and versioning approach from docs to the website.

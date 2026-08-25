@@ -31,6 +31,10 @@
 - Record progress, risks, blockers, decisions, and a checkpoint as work proceeds.
 - Every parallel task declares a non-overlapping scope. Prefer one Git worktree
   per implementation task; shared checkout work requires explicit disjoint scope.
+- Branches use `ctx-XXXX/<type>-<short-slug>` (`XXXX` is the owning CarryCtx
+  task number; `<type>` is one of `feat|fix|chore|docs`; the slug is
+  kebab-case) with worktrees at `.worktrees/ctx-XXXX-<type>-<short-slug>`;
+  use one branch per task, while commander housekeeping may use `cmd/<slug>`.
 - Subagents perform scoped implementation. The commander plans, dispatches,
   reads CarryCtx state back, reviews diffs, and runs acceptance gates.
 - Implementers stop at `in_review`; an independent reviewer accepts completion.

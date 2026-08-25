@@ -40,15 +40,15 @@ sidebar_order: 15
 
 ## Pinned toolchain matrix
 
-| Repository              | Language runtime                                             | Package manager | Entry point  | Notes                                                                                                                                                                                          |
-| ----------------------- | ------------------------------------------------------------ | --------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty-docs`            | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12 via bunx; commitlint 21.2.2 cache-dir install                                                                                      |
-| `bitty-website`         | Bun 1.4.0                                                    | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.1, commitlint 21.2.2 pinned in package.json/bun.lock                                                       |
-| `bitty`                 | Rust stable (rust-toolchain.toml) + Bun 1.4.0 (tooling only) | cargo / bun     | `just check` | rustfmt, Clippy, tests, actionlint; commitlint 21.2.2 provisioned into `target/dev-tools`; markdownlint-cli2 0.23.1 via bunx                                                                   |
-| `bitty-devtools`        | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 pinned in package.json/bun.lock                                                                                   |
-| `bitty-mcp`             | Bun 1.4.0                                                    | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock                                                              |
-| `bitty-plugin-sdk`      | Bun 1.4.0                                                    | bun             | `just check` | @commitlint/cli 21.2.2 and @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock; lefthook 2.1.10, prettier 3.9.6, and markdownlint-cli2 0.23.1 via bunx pins in the justfile |
-| `bitty-plugin-template` | Bun 1.4.0                                                    | bun             | `just check` | lefthook 2.1.10, commitlint 21.2.2, prettier 3.9.6, markdownlint-cli2 0.23.1 mirrored in justfile variables and package.json/bun.lock                                                          |
+| Repository              | Language runtime                                                                | Package manager | Entry point  | Notes                                                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------- | --------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty-docs`            | Bun 1.4.0                                                                       | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 cache-dir install; actionlint 1.7.12 runs as a locally installed pinned binary and as docker `rhysd/actionlint:1.7.12` in CI, never via bunx |
+| `bitty-website`         | Bun 1.4.0                                                                       | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.1, commitlint 21.2.2 pinned in package.json/bun.lock                                                                                  |
+| `bitty`                 | Rust stable (rust-toolchain.toml); Bun for tooling without an in-repository pin | cargo / bun     | `just check` | rustfmt, Clippy, tests, actionlint (docker `rhysd/actionlint:1.7.12` in CI); commitlint 21.2.2 provisioned into `target/dev-tools`; markdownlint-cli2 0.23.1 via bunx                                                     |
+| `bitty-devtools`        | Bun 1.4.0                                                                       | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 pinned in package.json/bun.lock                                                                                                              |
+| `bitty-mcp`             | Bun 1.4.0                                                                       | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock                                                                                         |
+| `bitty-plugin-sdk`      | Bun 1.4.0                                                                       | bun             | `just check` | @commitlint/cli 21.2.2 and @commitlint/config-conventional 21.2.2 pinned in package.json/bun.lock; lefthook 2.1.10, prettier 3.9.6, and markdownlint-cli2 0.23.1 via bunx pins in the justfile                            |
+| `bitty-plugin-template` | Bun 1.4.0                                                                       | bun             | `just check` | lefthook 2.1.10, commitlint 21.2.2, prettier 3.9.6, markdownlint-cli2 0.23.1 mirrored in justfile variables and package.json/bun.lock                                                                                     |
 
 ## Local gate tools and hook wiring
 
@@ -75,15 +75,19 @@ four verified patterns:
   `bitty-docs`, `bitty-devtools`, `bitty-mcp`, and `bitty-plugin-sdk` pass
   pinned versions directly on each `bunx --bun` call from justfile variables.
 - **package.json + bun.lock exact pins** exist where the tooling needs
-  resolvable packages at runtime — every repository whose
-  `commitlint.config.ts` extends `@commitlint/config-conventional` keeps that
-  config package (and, where scripts require it, `@commitlint/cli`) as an
-  exact-pinned devDependency installed via frozen-lockfile `bun install`:
-  `bitty-website` (which also pins prettier and markdownlint-cli2 there
-  because its justfile delegates to package.json scripts), `bitty-devtools`,
-  `bitty-mcp`, `bitty-plugin-sdk`, and `bitty-plugin-template`. The template
-  mirrors its package.json devDependencies as identical justfile variables and
-  must keep both sides in sync when bumping.
+  resolvable packages at runtime. Exactly five repositories follow this
+  pattern: `bitty-website` (which also pins prettier and markdownlint-cli2
+  there because its justfile delegates to package.json scripts),
+  `bitty-devtools`, `bitty-mcp`, `bitty-plugin-sdk`, and
+  `bitty-plugin-template`. Each of them keeps `@commitlint/config-conventional`
+  — and, where scripts require it, `@commitlint/cli` or `commitlint` — as an
+  exact-pinned devDependency installed via frozen-lockfile `bun install`,
+  because its `commitlint.config.ts` extends that config at runtime. The
+  template mirrors its package.json devDependencies as identical justfile
+  variables and must keep both sides in sync when bumping. The two remaining
+  repositories deliberately do not use devDependencies for this:
+  `bitty-docs` uses the cache-directory install below and `bitty` provisions
+  `target/dev-tools`.
 - **A justfile-provisioned tools directory**: `bitty` provisions
   `commitlint@21.2.2` plus `@commitlint/config-conventional@21.2.2` into
   `target/dev-tools` through a stamped `bun add` step (`just tools`); its
@@ -95,23 +99,21 @@ four verified patterns:
   CLI from that cache.
 
 Hook coverage recorded by this wiring: `bitty`, `bitty-website`,
-`bitty-devtools`, and the plugin repositories run pre-commit formatting and
-Markdown gates plus a commit-msg Conventional Commits check (`bitty` also runs
-a pre-push typecheck); `bitty-docs` and `bitty-mcp` gate commit messages only.
-Installing the hooks is opt-in per checkout via the owning justfile
+`bitty-devtools`, `bitty-mcp`, and the plugin repositories run pre-commit
+formatting and Markdown gates plus a commit-msg Conventional Commits check
+(`bitty` also runs a pre-push typecheck); `bitty-docs` gates commit messages
+only. Installing the hooks is opt-in per checkout via the owning justfile
 (`just setup` in `bitty`; `hooks-install` recipes in `bitty-docs`,
-`bitty-plugin-template`, and `bitty-plugin-sdk`) or a locally installed
-`lefthook` binary where no recipe exists.
+`bitty-mcp`, `bitty-plugin-template`, and `bitty-plugin-sdk`) or a locally
+installed `lefthook` binary where no recipe exists.
 
 Known drift at recording time (report it; do not silently fix it here):
 
-- `bitty-mcp` restates identical prettier and markdownlint-cli2 pins inline in
-  its `lefthook.yml` instead of routing those pre-commit gates through justfile
-  recipes, so those two pins live in two places in that repository.
 - Repositories without a provisioning recipe or devDependency for lefthook
-  (`bitty`, `bitty-website`, `bitty-devtools`, `bitty-mcp`) resolve the
-  lefthook binary from `PATH` without a version pin, unlike the pinned 2.1.10
-  installs in `bitty-docs`, `bitty-plugin-template`, and `bitty-plugin-sdk`.
+  (`bitty`, `bitty-website`, `bitty-devtools`) resolve the lefthook binary
+  from `PATH` without a version pin, unlike the pinned 2.1.10 installs in
+  `bitty-docs`, `bitty-mcp`, `bitty-plugin-template`, and
+  `bitty-plugin-sdk`.
 
 ## Canonical commands
 
