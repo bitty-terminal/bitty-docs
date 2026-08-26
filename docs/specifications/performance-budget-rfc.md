@@ -1,6 +1,6 @@
 ---
 title: Performance Budget RFC
-description: Proposes measurable startup, memory, latency, package-size, and idle-resource budgets for lightweight Bitty operation.
+description: Defines measurable startup, memory, latency, package-size, and idle-resource budgets for lightweight Bitty operation.
 category: specifications
 audience: contributor
 document_type: specification

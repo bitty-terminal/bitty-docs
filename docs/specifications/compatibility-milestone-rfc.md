@@ -1,6 +1,6 @@
 ---
 title: Compatibility Milestone RFC
-description: Proposes the VT keyboard image clipboard and shell-integration protocol set defining milestone M1 with acceptance evidence requirements
+description: Defines the accepted VT keyboard image clipboard and shell-integration protocol set that forms milestone M1 with acceptance evidence requirements
 category: specifications
 audience: contributor
 document_type: specification

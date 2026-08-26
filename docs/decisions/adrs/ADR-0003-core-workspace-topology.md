@@ -1,6 +1,6 @@
 ---
 title: ADR 0003 - Core Workspace Topology
-description: Proposes the Cargo workspace crate graph, dependency edges, and MSRV that preserve the microkernel core boundaries
+description: Defines the Cargo workspace crate graph, dependency edges, and MSRV that preserve the microkernel core boundaries
 category: decisions
 audience: contributor
 document_type: specification
