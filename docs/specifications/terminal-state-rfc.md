@@ -1,6 +1,6 @@
 ---
 title: Terminal state and action invariants
-description: Proposed parser-to-action-to-state contract preserving Terminal Truth and deterministic replay for OQ-007
+description: Defines the accepted parser-to-action-to-state contract preserving Terminal Truth and deterministic replay for OQ-007
 category: specifications
 audience: contributor
 document_type: specification
