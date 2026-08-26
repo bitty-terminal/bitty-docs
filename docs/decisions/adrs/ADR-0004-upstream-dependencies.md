@@ -1,6 +1,6 @@
 ---
 title: ADR 0004 - Upstream Dependency Set
-description: Proposes adopt, wrap, or fork decisions for candidate upstream libraries with maintenance policy and supply-chain constraints
+description: Records adopt, wrap, or fork decisions for candidate upstream libraries with maintenance policy and supply-chain constraints
 category: decisions
 audience: contributor
 document_type: specification

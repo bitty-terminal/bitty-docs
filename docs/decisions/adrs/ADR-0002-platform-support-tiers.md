@@ -1,6 +1,6 @@
 ---
 title: ADR 0002 - Platform Support Tiers
-description: Proposes initial Linux macOS Windows and BSD support tiers with CI guarantees and tier promotion demotion criteria
+description: Establishes initial Linux macOS Windows and BSD support tiers with CI guarantees and tier promotion demotion criteria
 category: decisions
 audience: maintainer
 document_type: specification
