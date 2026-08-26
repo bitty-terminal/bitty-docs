@@ -4,7 +4,7 @@ description: Proposes the Cargo workspace crate graph, dependency edges, and MSR
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 33
 ---
@@ -13,7 +13,7 @@ sidebar_order: 33
 
 ## Status
 
-Proposed on 2026-08-25 by documentation task closing open question
+Accepted on 2026-08-26 by the project initiator, closing open question
 [OQ-005](../open-questions.md). This ADR does not claim any
 crate beyond the [ADR 0001](ADR-0001-repository-bootstrap-baseline.md)
 bootstrap pair (`bitty-core`, `bitty-app`) exists.
@@ -33,7 +33,7 @@ mechanically enforceable by Cargo rather than by review discipline alone.
 
 ## Decision
 
-### Proposed crate graph
+### Crate graph
 
 The `bitty` repository adopts a single Cargo workspace (edition 2024,
 resolver 3, `publish = false`) with the following member crates:
@@ -82,7 +82,7 @@ its contents migrate into `bitty-vt`, `bitty-term-state`, and `bitty-pty` as
 the first implementation milestones land, after which `bitty-core` is retired.
 The migration order itself is implementation work and not decided here.
 
-### MSRV proposal
+### MSRV
 
 - MSRV: Rust **1.85**, the release that stabilized edition 2024, matching the
   accepted edition baseline. The workspace sets `rust-version = "1.85"`.

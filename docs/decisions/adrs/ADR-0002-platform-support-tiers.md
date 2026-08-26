@@ -4,7 +4,7 @@ description: Proposes initial Linux macOS Windows and BSD support tiers with CI 
 category: decisions
 audience: maintainer
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 32
 ---
@@ -13,21 +13,20 @@ sidebar_order: 32
 
 ## Status
 
-Proposed on 2026-08-25. This ADR is not yet accepted; it requires explicit
-project-initiator acceptance before any platform becomes a support commitment.
+Accepted on 2026-08-26 by the project initiator.
 
 This decision closes open question
-[OQ-003](../open-questions.md) if accepted. Until acceptance, no
-platform tier described here is a shipped-behavior claim, and no CI guarantee
-is implemented.
+[OQ-003](../open-questions.md). No platform tier described here is a
+shipped-behavior claim and no CI guarantee is implemented until the
+implementing platform tasks deliver them with evidence.
 
 ## Context
 
 The [product vision](../../product/vision.md) accepts Linux, macOS,
 Windows, and BSD as target platforms and states that Windows must not be an
 afterthought: the platform boundary must model Unix PTYs versus Windows ConPTY
-explicitly. The same document leaves support tiers, CI coverage, and fallback
-strategies as open questions.
+explicitly. The same document left support tiers, CI coverage, and fallback
+strategies as open questions; this ADR resolves them.
 
 The [technology strategy](../../project/technology-strategy.md) records a
 non-approved candidate tier table (Tier 1: Linux x86_64, Windows x86_64, macOS
@@ -152,12 +151,12 @@ release, not retroactively.
 
 ## Affected contracts
 
-If accepted, update in the same change:
+Acceptance on 2026-08-26 applied these same-change updates:
 
-- [Technology strategy](../../project/technology-strategy.md): replace the
-  non-approved candidate tier table with a link here.
-- [Product vision](../../product/vision.md): resolve the platform/open-question
-  wording that references undecided tiers.
+- [Technology strategy](../../project/technology-strategy.md): the candidate
+  tier table is replaced by a link to this ADR as the accepted tier policy.
+- [Product vision](../../product/vision.md): the platform/open-question
+  wording that referenced undecided tiers is resolved.
 - Future platform implementation tasks cite this ADR for their gate scope.
 
 ## Validation basis

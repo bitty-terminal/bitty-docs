@@ -4,7 +4,7 @@ description: Proposes the VT keyboard image clipboard and shell-integration prot
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 11
 ---
@@ -13,10 +13,11 @@ sidebar_order: 11
 
 ## Status
 
-Proposed on 2026-08-25. This RFC is not accepted; it does not authorize
-implementation and makes no shipped-behavior claims.
+Accepted on 2026-08-26 by the project initiator. Acceptance authorizes planning
+against this milestone contract; it makes no shipped-behavior claims until the
+required acceptance evidence exists.
 
-If accepted, it closes open question [OQ-004](../decisions/open-questions.md).
+It closes open question [OQ-004](../decisions/open-questions.md).
 It also feeds, but does not decide, OQ-007 (terminal state model),
 OQ-008 (image protocol), and OQ-016 (structured transports).
 
@@ -152,10 +153,10 @@ Evidence rules:
 
 ## Affected contracts
 
-If accepted, update in the same change:
+Acceptance on 2026-08-26 applied these same-change updates:
 
-- [Technology strategy](../project/technology-strategy.md): replace the
-  candidate compatibility-path bullets with a link to this RFC.
-- [Product vision](../product/vision.md): resolve the compatibility-milestone
-  open question wording.
+- [Technology strategy](../project/technology-strategy.md): the candidate
+  compatibility-path bullets now link to this RFC.
+- [Product vision](../product/vision.md): the compatibility-milestone
+  open-question wording is resolved.
 - Future terminal-state and parser tasks cite this document for M1 scope.

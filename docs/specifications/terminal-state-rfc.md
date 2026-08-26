@@ -4,27 +4,27 @@ description: Proposed parser-to-action-to-state contract preserving Terminal Tru
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 12
 ---
 
 # Terminal state and action invariants
 
-> Status: **proposed** (frontmatter status `draft`). This document is the
-> "Terminal state RFC" named as the next artifact for
-> [OQ-007](../decisions/open-questions.md). It proposes a contract; it does
-> not describe implemented behavior or authorize implementation before review.
+> Status: **accepted** on 2026-08-26 by the project initiator. This document is
+> the "Terminal state RFC" that closes
+> [OQ-007](../decisions/open-questions.md). It defines a contract; it does
+> not describe implemented behavior.
 
 ## Purpose and scope
 
 OQ-007 asks: _what exact parser-to-action-to-state interfaces preserve Terminal
-Truth and deterministic replay?_ This specification answers with a proposed
-typed action interface between the VT parser and terminal state, the invariants
+Truth and deterministic replay?_ This specification answers with a typed
+action interface between the VT parser and terminal state, the invariants
 that state must hold after every action, a damage-tracking model, replay
 determinism guarantees, and a fuzzing/differential-testing strategy.
 
-Normative sources this proposal must not weaken:
+Normative sources this specification must not weaken:
 
 - [Core and Plugin Boundaries](../architecture/core-boundaries.md): parser,
   semantic actions, grid, cursor, modes, scrollback, damage, and replies are
@@ -288,5 +288,4 @@ boundary acceptance.
 - Choice of reference terminals and their scripted state-dump mechanisms.
 - Concrete hash serialization version and its evolution policy.
 
-Adopting this RFC closes OQ-007 at the design level; the register row should be
-updated to point here upon acceptance.
+This RFC closes OQ-007 at the design level; the register row links here.
