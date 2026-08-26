@@ -18,9 +18,9 @@ working directions and the remaining ADR queue.
 | ADR                                                                                   | Status   | Scope                                                                         |
 | ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
 | [ADR 0001 - Repository Bootstrap Baseline](ADR-0001-repository-bootstrap-baseline.md) | Accepted | Minimal implementation-neutral Core and website scaffolding                   |
-| [ADR 0002 - Platform Support Tiers](ADR-0002-platform-support-tiers.md)               | Proposed | Initial Linux/macOS/Windows/BSD support tiers and CI guarantees               |
-| [ADR 0003 - Core Workspace Topology](ADR-0003-core-workspace-topology.md)             | Proposed | Single Cargo workspace crate graph, dependency rules, MSRV                    |
-| [ADR 0004 - Upstream Dependency Set](ADR-0004-upstream-dependencies.md)               | Proposed | Adopt/wrap/reject choices and maintenance policy for first upstream libraries |
+| [ADR 0002 - Platform Support Tiers](ADR-0002-platform-support-tiers.md)               | Accepted | Initial Linux/macOS/Windows/BSD support tiers and CI guarantees               |
+| [ADR 0003 - Core Workspace Topology](ADR-0003-core-workspace-topology.md)             | Accepted | Single Cargo workspace crate graph, dependency rules, MSRV                    |
+| [ADR 0004 - Upstream Dependency Set](ADR-0004-upstream-dependencies.md)               | Accepted | Adopt/wrap/reject choices and maintenance policy for first upstream libraries |
 
 ## Admission criteria
 

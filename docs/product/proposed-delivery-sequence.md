@@ -92,7 +92,7 @@ with its explicit Phase 10 positioning below.
 The source proposes a strict bar for calling any release v1.0:
 
 - Platforms: Tier 1 Linux, Windows, and macOS plus Tier 2 BSD, consistent with
-  the drafted platform tiers in [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md).
+  the platform tiers accepted in [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md).
 - Shell coverage: compatibility across five shells; which shells belong to the
   first milestone remains governed by
   [OQ-004](../decisions/open-questions.md) and the

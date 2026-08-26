@@ -80,7 +80,8 @@ afterthought; the platform boundary must model differences between Unix PTYs and
 Windows ConPTY explicitly.
 
 Being a target platform does not imply equal maturity on day one. Support tiers,
-CI coverage, and fallback strategies remain open questions.
+CI coverage, and fallback strategies are defined in
+[ADR 0002 - Platform Support Tiers](../decisions/adrs/ADR-0002-platform-support-tiers.md).
 
 ### Agent-friendly, not Agent-centric
 
@@ -199,13 +200,15 @@ this vision, but their exact designs still require RFCs.
 
 - Which first-party plugins should the minimal distribution bundle by default?
 - What are the startup-time, idle-memory, input-latency, and package-size targets
-  for lightweight operation?
+  for lightweight operation? (Accepted: [Performance Budget RFC](../specifications/performance-budget-rfc.md).)
 - Should Bitty retain a static auxiliary entry point in addition to the primary
   Lua configuration, and what are the configuration schema and reload semantics?
 - Which platforms belong in Tier 1, Tier 2, and Tier 3, and what is the explicit
-  BSD scope?
+  BSD scope? (Accepted: [ADR 0002 - Platform Support Tiers](../decisions/adrs/ADR-0002-platform-support-tiers.md).)
 - Which VT, keyboard, image, and shell-integration protocols must the first
-  compatibility milestone cover?
+  compatibility milestone cover? (First-milestone set accepted:
+  [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md);
+  image handling remains open.)
 - Should DevTools and the debug protocol enter the first milestone, or follow
   stabilization of the terminal state model?
 - Do a headless runtime, `bittyd`, detach and attach, and a remote UI belong on

@@ -4,7 +4,7 @@ description: Proposes adopt, wrap, or fork decisions for candidate upstream libr
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 34
 ---
@@ -13,7 +13,7 @@ sidebar_order: 34
 
 ## Status
 
-Proposed on 2026-08-25 by documentation task closing open question
+Accepted on 2026-08-26 by the project initiator, closing open question
 [OQ-006](../open-questions.md). Version numbers cited are
 observation evidence at authoring time; the implementing task pins exact
 versions in a lockfile. No dependency is added to any repository by this ADR.

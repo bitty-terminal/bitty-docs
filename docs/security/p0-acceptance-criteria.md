@@ -4,16 +4,17 @@ description: Testable given/when/then acceptance criteria for every normative P0
 category: security
 audience: security-reviewer
 document_type: specification
-status: draft
+status: normative
 website_publish: true
 sidebar_order: 33
 ---
 
 # P0 Security Acceptance Criteria
 
-Status: **proposed**. This document is a pre-implementation test contract and
-requires review by a separate security-auditor persona before any criterion may
-be marked satisfied or this status advances beyond `draft`.
+Status: **normative**, accepted 2026-08-26 by the project initiator. This
+document remains a pre-implementation test contract: no criterion may be marked
+satisfied until a separate security-auditor persona review confirms recorded,
+passing evidence per its verification method.
 
 Every criterion below converts a normative P0 control from
 [security overview](overview.md), [threat model](threat-model.md), and

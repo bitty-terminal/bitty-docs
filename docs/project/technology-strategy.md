@@ -21,17 +21,17 @@ recommendation alone is insufficient.
 
 ## Accepted baseline
 
-| Domain                         | Baseline                                                   | Status                                                                                                |
-| ------------------------------ | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Core language                  | Rust, edition 2024                                         | Accepted                                                                                              |
-| Initialization                 | Minimal repository, toolchain, and CI scaffolding          | Accepted by ADR 0001; zero product functionality and concrete versions remain implementation evidence |
-| Plugin language                | Lua                                                        | Accepted                                                                                              |
-| Primary configuration language | Lua                                                        | Accepted working direction; version, schema, and reload model undecided                               |
-| Product platforms              | Linux, macOS, Windows, and BSD                             | Accepted targets; support tiers undecided                                                             |
-| Website                        | Astro static shell with Bun and Workers Static Assets      | Accepted by ADR 0001; no docs consumer exists and presentation/integration mechanisms remain open     |
-| Repositories                   | Organization polyrepo                                      | Accepted direction                                                                                    |
-| AI                             | Plugin or adapter capability outside the Core product path | Accepted direction                                                                                    |
-| Development management         | CarryCtx with predominantly subagent collaboration         | Accepted project process                                                                              |
+| Domain                         | Baseline                                                   | Status                                                                                                             |
+| ------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Core language                  | Rust, edition 2024                                         | Accepted                                                                                                           |
+| Initialization                 | Minimal repository, toolchain, and CI scaffolding          | Accepted by ADR 0001; zero product functionality and concrete versions remain implementation evidence              |
+| Plugin language                | Lua                                                        | Accepted                                                                                                           |
+| Primary configuration language | Lua                                                        | Accepted working direction; version, schema, and reload model undecided                                            |
+| Product platforms              | Linux, macOS, Windows, and BSD                             | Accepted targets; tiers and CI policy accepted in [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md) |
+| Website                        | Astro static shell with Bun and Workers Static Assets      | Accepted by ADR 0001; no docs consumer exists and presentation/integration mechanisms remain open                  |
+| Repositories                   | Organization polyrepo                                      | Accepted direction                                                                                                 |
+| AI                             | Plugin or adapter capability outside the Core product path | Accepted direction                                                                                                 |
+| Development management         | CarryCtx with predominantly subagent collaboration         | Accepted project process                                                                                           |
 
 ## Accepted bootstrap boundary
 
@@ -49,16 +49,22 @@ Loader, synchronization, version selection, theme, routes, redirects, and
 search remain open.
 
 Concrete package, action, and tool versions plus lockfile results belong to the
-implementation tasks that verify them. The final Cargo graph, MSRV, nightly
-policy, dependencies, release profiles, license, package publication, and
-release automation still require separate decisions. See the
+implementation tasks that verify them. The nightly
+policy, dependencies beyond the accepted first set, release profiles, license,
+package publication, and release automation still require separate decisions;
+the crate graph and MSRV are accepted in
+[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the first
+upstream dependency set in
+[ADR 0004](../decisions/adrs/ADR-0004-upstream-dependencies.md). See the
 [repository bootstrap guide](../development/repository-bootstrap.md).
 
 ## Candidate dependency-governance principles
 
 The goal is not the fewest dependencies. It is controlled core semantics,
-replaceable dependencies, and the smallest possible fork count. The project
-should establish this policy in an ADR before dependency selection.
+replaceable dependencies, and the smallest possible fork count. This policy is
+established in
+[ADR 0004](../decisions/adrs/ADR-0004-upstream-dependencies.md) before
+dependency selection.
 
 | Category               | Default strategy                                                 | Examples                                                            |
 | ---------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -146,8 +152,9 @@ VMs persist to respond to cold-path events.
 
 ## Candidate compatibility path
 
-Protocol priority requires a separate requirements document or RFC. Current
-research suggestions can serve as a starting point:
+Protocol priority for milestone M1 is accepted in the
+[Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md).
+The research suggestions below are retained as background:
 
 - **Foundation**: UTF-8, common VT100/VT220/ECMA-48/xterm behavior, 256/true
   color, alternate screen, paste, mouse, focus, and synchronized updates.
@@ -165,8 +172,9 @@ cwd, prompt, and command zones through escape sequences or structured events.
 
 ## Candidate platform and CI tiers
 
-The discussion recommends the following initial tiers, but they are not
-approved:
+The initial platform support tiers and Tier 1 CI gates are accepted in
+[ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md). The original
+discussion recommendation is retained below:
 
 | Tier   | Candidate platforms                           | Candidate gates                                          |
 | ------ | --------------------------------------------- | -------------------------------------------------------- |
@@ -174,9 +182,10 @@ approved:
 | Tier 2 | Linux ARM64, macOS x86_64, and FreeBSD x86_64 | Build and Core tests at merge time or on a schedule      |
 | Tier 3 | NetBSD, OpenBSD, and other architectures      | Best effort                                              |
 
-The project must define Linux Wayland/X11 coverage, the minimum Windows version,
-the minimum macOS version, BSD CI availability, and GPU/backend fallback. A
-generic claim of Unix support is insufficient.
+Linux Wayland/X11 coverage, minimum platform versions, BSD CI availability, and
+the GPU/backend fallback rule are defined in
+[ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md); the exact
+Windows ConPTY floor is pinned by the implementing platform task.
 
 ## Bootstrap and candidate toolchain
 
@@ -241,15 +250,18 @@ snapshots.
 
 - Accepted: [ADR 0001](../decisions/adrs/ADR-0001-repository-bootstrap-baseline.md)
   defines the minimal Rust 2024 Core and static website bootstrap.
-- Follow-up ADR: final Core crate graph, MSRV, nightly policy, release profiles,
-  license, publication, and toolchain maintenance policy.
+- Follow-up ADR: nightly policy, release profiles, license, publication, and
+  toolchain maintenance policy. Crate graph and MSRV are accepted in
+  [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md).
 - ADR: Lua version, binding, and primary configuration language.
 - ADR: window abstraction and `winit`.
 - ADR: render API, `wgpu`, and software fallback.
 - ADR/RFC: choosing upstream, a fork, or an owned VT parser.
-- RFC: Terminal State and VT Action model.
+- Accepted: [Terminal State RFC](../specifications/terminal-state-rfc.md)
+  defines the Terminal State and VT Action model.
 - RFC: Image and Placement model and protocol priority.
 - RFC: Command, Event, Capability, and declarative UI.
 - RFC: plugin manifest, lazy loading, VM isolation, and HMR.
 - RFC: debug protocol, record/replay, and MCP adapter.
-- ADR: platform support tiers and CI matrix.
+- Accepted: [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md)
+  defines platform support tiers and the CI matrix.

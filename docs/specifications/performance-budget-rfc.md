@@ -4,7 +4,7 @@ description: Proposes measurable startup, memory, latency, package-size, and idl
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 13
 ---
@@ -13,10 +13,9 @@ sidebar_order: 13
 
 ## Document status
 
-- Status: **proposed** (frontmatter uses `draft`; this RFC has not been
-  reviewed or accepted).
-- Closes open question [OQ-001](../decisions/open-questions.md) if and when
-  accepted; acceptance requires independent review per the
+- Status: **accepted** on 2026-08-26 by the project initiator.
+- Closes open question [OQ-001](../decisions/open-questions.md); acceptance was
+  recorded per the
   [documentation workflow](../development/documentation-workflow.md).
 - Implementation status: no Bitty product code exists. Every budget below is a
   **target contract for future implementation**, not a claim about current
@@ -29,7 +28,7 @@ sidebar_order: 13
 ## Purpose and scope
 
 The [product vision](../product/vision.md) accepts "lightweight" as a core
-product property but leaves it unquantified. This RFC proposes measurable
+product property. This RFC quantifies it with measurable
 budgets so that "lightweight" can gate implementation, CI, and release
 decisions instead of remaining marketing language.
 
@@ -106,9 +105,9 @@ Across sources, the consistent pattern is:
 Bitty aims to be Ghostty-class in capability while keeping an Alacritty-class
 floor when plugins are disabled, which motivates budgets between those bands.
 
-## Proposed budgets
+## Budgets
 
-Status: **proposed targets**, none measured. Each budget names its metric,
+Status: **accepted targets**, none measured yet. Each budget names its metric,
 measurement condition, and rationale. Enforcement mechanisms (benchmark
 harness, CI gates) require a follow-up implementation task before any of these
 become acceptance criteria.
