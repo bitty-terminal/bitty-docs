@@ -72,6 +72,12 @@ Canonical categories are `architecture`, `configuration`, `decisions`,
 ## Status meanings
 
 - `draft` is actively shaped and may change without compatibility promises.
+  Draft text does not authorize shipped, stable, normative, or
+  compatibility-guaranteed behavior and does not form public reference;
+  experimental implementation may exist as review evidence but carries no
+  compatibility promise and does not constitute acceptance. The lifecycle is
+  Draft -> experimental review evidence -> Accepted -> normative; only
+  Accepted or normative documents authorize shipped behavior.
 - `accepted` records a reviewed working direction or maintained project fact.
 - `normative` is a required gate or policy, even when implementation evidence is
   not yet available.

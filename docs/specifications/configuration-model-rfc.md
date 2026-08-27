@@ -14,12 +14,15 @@ sidebar_order: 15
 ## Status
 
 Proposed on 2026-08-26. This RFC is not accepted; it does not authorize
-implementation and makes no shipped-behavior claim. It structures the
-candidates behind open question [OQ-010](../decisions/open-questions.md) so
-review can accept, amend, or reject them with named evidence.
+shipped, stable, normative, or compatibility-guaranteed behavior. Experimental
+implementation may exist as review evidence but carries no compatibility promise
+and does not constitute acceptance, and makes no shipped-behavior claim. It
+structures the candidates behind open question
+[OQ-010](../decisions/open-questions.md) so review can accept, amend, or reject
+them with named evidence.
 
-If accepted, it closes OQ-010 at the design level. It depends on the runtime
-and module-resolution contract proposed in the
+If accepted, it would close OQ-010 at the design level. It targets OQ-010; it
+depends on the runtime and module-resolution contract proposed in the
 [Lua Runtime RFC](lua-runtime-rfc.md) (OQ-009), and it feeds OQ-011/OQ-012
 (plugin-facing configuration surfaces), OQ-017 (CLI grammar for
 `bitty config`/`bitty paths` commands), OQ-021/OQ-022 (package manifest and
@@ -214,20 +217,29 @@ security corpus.
 
 ## Open items remaining under OQ-010
 
-- Final decision between Candidates A and C, including whether any v1 runtime
-  overlay exists at all.
-- Schema ownership tooling: how the typed Rust schema and the Lua shape stay
-  provably in sync.
-- The authoritative home for the enumerated field list and merge-class table
-  once the schema stabilizes (this RFC vs the configuration topic document).
-- Per-field reload classification and the minimum restart-required set.
-- Trust database location, grant expiry/review, rename invalidation, and
-  prompt UX for project configuration.
-- Multiple-parent profile inheritance, if adopted.
-- Coexistence rules between the configuration tree and package manifest/lock
-  names (deferred to OQ-021/OQ-022).
-- Native macOS/Windows directory mappings feeding the semantic path set
-  (recorded as open in the topic document; owned by platform follow-ups).
+The following items remain open at the time of proposal. Acceptance of this RFC
+would close OQ-010 only if the items below are either resolved in review or
+migrated to explicitly tracked follow-up tasks with no remaining OQ-010 scope:
 
-Accepting this RFC closes OQ-010 at the design level; the register row should
-then be updated per the open-question register rules.
+- Resolved by this RFC upon acceptance: adoption of the declarative plan with
+  Rust reconciliation (Candidate A, with Candidate C overlay explicitly decided
+  as included or deferred), layer stack and precedence, merge-class contract
+  and attribution, reload classification framework, failure and safe-mode
+  interaction, and project-trust mechanics for declarative-only project
+  configuration with hash-bound consent.
+- Migrated or deferred (remain Open as follow-up work, not as OQ-010 closure
+  blockers unless review decides otherwise): final decision between Candidates
+  A and C including whether any v1 runtime overlay exists, schema ownership
+  tooling for typed Rust schema and Lua shape sync, authoritative home for the
+  enumerated field list and merge-class table once the schema stabilizes, per
+  field reload classification and minimum restart-required set, trust database
+  location/grant expiry/review/rename invalidation/prompt UX for project
+  configuration, multiple-parent profile inheritance if adopted, coexistence
+  rules between the configuration tree and package manifest/lock names
+  (deferred to OQ-021/OQ-022), and native macOS/Windows directory mappings
+  feeding the semantic path set (owned by platform follow-ups).
+
+Would close OQ-010: accepting this RFC would close OQ-010 at the design level
+once the residual items above are either resolved or migrated to tracked
+follow-up tasks; the register row is then updated per the open-question
+register rules. Until then this RFC targets OQ-010 and does not claim closure.
