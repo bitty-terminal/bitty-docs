@@ -12,9 +12,11 @@ sidebar_order: 10
 # Lua configuration and filesystem layout
 
 > Status: pre-implementation architecture. Lua is the accepted working
-> direction for user configuration. Platform path separation, directory
-> contents, filenames, the two-stage configuration plan, merge rules, and CLI
-> examples are candidate contracts pending ADRs.
+> direction for user configuration. The two-stage configuration plan, layer
+> stack, merge rules, reload classification, and project-trust mechanics are
+> accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md)
+> (OQ-010, 2026-08-27). Platform path separation, directory contents,
+> filenames, and CLI examples remain candidate contracts pending ADRs.
 
 Bitty should offer Neovim-like flexibility—`init.lua`, modules, starter
 configurations, profiles, and community distributions—while keeping resolution,
@@ -381,8 +383,7 @@ These commands are further described in [CLI](../interfaces/cli.md).
   configuration VM?
 - What are the module search rules and trusted-module boundaries?
 - What is the final typed configuration schema and source-location model?
-- Should the two-stage `ConfigPlan` and Rust validate/diff/reconcile pipeline be
-  adopted, and which parts require an ADR before becoming normative?
+- Two-stage `ConfigPlan` and Rust validate/diff/reconcile pipeline is accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md) (OQ-010, 2026-08-27); remaining per-field and tooling details are follow-up work.
 - Are system defaults and policy expressed in Lua or a restricted data format?
 - Which layer types may be non-overridable, and how are policy errors reported?
 - What are the final list, keymap, and plugin merge semantics?

@@ -50,24 +50,25 @@ sequence itself is the new proposal recorded here.
 ### Spine implementation presence (as of 2026-08-27, crates present does not imply acceptance)
 
 The `bitty` workspace is now spine-complete in crate presence (fifteen members
-in `bitty/Cargo.toml`). Presence tracks the candidate spine above but every
-stage remains **proposed** until its RFC/ADR is accepted with independent
-review. No entry below self-accepts its contract:
+in `bitty/Cargo.toml`). Presence tracks the candidate spine above; most stages remain
+**proposed** until their RFC/ADR is accepted with independent review, with
+the configuration model now `Accepted` (OQ-010, 2026-08-27). No entry below
+self-accepts its contract:
 
-| Candidate spine stage          | Workspace crate(s)                                    | Presence and review state                                                                                                   |
-| ------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| PTY                            | `bitty-pty`                                           | Present; wraps `portable-pty@0.9`; lifecycle/backpressure owned                                                             |
-| VT                             | `bitty-vt`                                            | Present; `vte@0.15` behind owned `TerminalAction`; no I/O                                                                   |
-| Grid / Correct Terminal        | `bitty-term-state`                                    | Present; grid/cursor/modes/scrollback/damage/image store                                                                    |
-| Font                           | `bitty-render` (`crossfont@0.9`) + `bitty-term-state` | Present; `crossfont` wrapped, `wgpu@25.0`, `sw-fallback` opt-in                                                             |
-| GPU                            | `bitty-render`, `bitty-platform` (`winit@0.30`)       | Present; snapshot-only coupling per ADR-0003 rule 3                                                                         |
-| Config                         | `bitty-config`                                        | Present; typed `ConfigPlan`/validation/migration; Lua binding deferred to OQ-009 RFC (still `Proposed`)                     |
-| Command/Event + Plugin Runtime | `bitty-plugin-host`                                   | Present; registry/capability/lifecycle; `bitty-package` edge added; `mlua`/`piccolo` choice still open under OQ-011..OQ-014 |
-| Plugin Manager                 | `bitty-plugin-host`, `bitty-package`                  | Draft `bitty-package` present (OQ-021/OQ-022 still `Proposed`); discovery/verification/activation contracts not accepted    |
-| DevTools                       | (inside `bitty-runtime` candidate)                    | No dedicated `bitty-debug` crate yet; instrumentation stays open per OQ-013/OQ-019                                          |
-| Rich Presentation              | `bitty-rich`                                          | Draft present; headless placeholders; image/rich-block RFCs (OQ-008/OQ-015/OQ-016) still `Proposed`                         |
-| IPC                            | `bitty-ipc`                                           | Draft std-only stub; bounded framing/channels/stdio; wire/auth/scopes (OQ-018) still `Proposed`                             |
-| Agent                          | `bitty-agent`                                         | Draft std-only stub; bounded messages/side queue; auth/consent/streaming (OQ-018/OQ-019) still `Proposed`                   |
+| Candidate spine stage          | Workspace crate(s)                                    | Presence and review state                                                                                                                                                                                                             |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PTY                            | `bitty-pty`                                           | Present; wraps `portable-pty@0.9`; lifecycle/backpressure owned                                                                                                                                                                       |
+| VT                             | `bitty-vt`                                            | Present; `vte@0.15` behind owned `TerminalAction`; no I/O                                                                                                                                                                             |
+| Grid / Correct Terminal        | `bitty-term-state`                                    | Present; grid/cursor/modes/scrollback/damage/image store                                                                                                                                                                              |
+| Font                           | `bitty-render` (`crossfont@0.9`) + `bitty-term-state` | Present; `crossfont` wrapped, `wgpu@25.0`, `sw-fallback` opt-in                                                                                                                                                                       |
+| GPU                            | `bitty-render`, `bitty-platform` (`winit@0.30`)       | Present; snapshot-only coupling per ADR-0003 rule 3                                                                                                                                                                                   |
+| Config                         | `bitty-config`                                        | Present; typed `ConfigPlan`/validation/migration/reload/project-trust accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md) (OQ-010, 2026-08-27); Lua binding deferred to OQ-009 RFC (still `Proposed`) |
+| Command/Event + Plugin Runtime | `bitty-plugin-host`                                   | Present; registry/capability/lifecycle; `bitty-package` edge added; `mlua`/`piccolo` choice still open under OQ-011..OQ-014                                                                                                           |
+| Plugin Manager                 | `bitty-plugin-host`, `bitty-package`                  | Draft `bitty-package` present (OQ-021/OQ-022 still `Proposed`); discovery/verification/activation contracts not accepted                                                                                                              |
+| DevTools                       | (inside `bitty-runtime` candidate)                    | No dedicated `bitty-debug` crate yet; instrumentation stays open per OQ-013/OQ-019                                                                                                                                                    |
+| Rich Presentation              | `bitty-rich`                                          | Draft present; headless placeholders; image/rich-block RFCs (OQ-008/OQ-015/OQ-016) still `Proposed`                                                                                                                                   |
+| IPC                            | `bitty-ipc`                                           | Draft std-only stub; bounded framing/channels/stdio; wire/auth/scopes (OQ-018) still `Proposed`                                                                                                                                       |
+| Agent                          | `bitty-agent`                                         | Draft std-only stub; bounded messages/side queue; auth/consent/streaming (OQ-018/OQ-019) still `Proposed`                                                                                                                             |
 
 Crate presence satisfies the candidate order above but does not close any open
 question. Acceptance requires the artifact named in the

@@ -1,10 +1,10 @@
 ---
 title: Configuration Model RFC
-description: Proposes candidate configuration pipelines, layer and merge contracts, reload classes, and project-trust mechanics for OQ-010.
+description: Defines the accepted configuration pipeline, layer and merge contracts, reload classes, and project-trust mechanics for OQ-010.
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 15
 ---
@@ -13,28 +13,25 @@ sidebar_order: 15
 
 ## Status
 
-Proposed on 2026-08-26. This RFC is not accepted; it does not authorize
-shipped, stable, normative, or compatibility-guaranteed behavior. Experimental
-implementation may exist as review evidence but carries no compatibility promise
-and does not constitute acceptance, and makes no shipped-behavior claim. It
-structures the candidates behind open question
-[OQ-010](../decisions/open-questions.md) so review can accept, amend, or reject
-them with named evidence.
+Accepted on 2026-08-27 by the project initiator. This RFC defines the accepted
+configuration model; it does not claim shipped, stable, or compatibility-guaranteed
+behavior. Experimental implementation may exist as review evidence but carries no
+compatibility promise beyond the accepted contract. It closes open question
+[OQ-010](../decisions/open-questions.md) at the design level.
 
-Wave-C P1 candidate winner for v1 review evidence (RFC still draft/Proposed,
-not self-accepted): Candidate A (two-stage declarative ConfigPlan pipeline
-`Lua -> ConfigPlan -> typed validation -> merge -> diff -> reconcile`) is
-selected for the v1 prototype; Candidate C (bounded imperative overlay) is
-deferred to a future Plugin/runtime overlay RFC as future work. This note is
-candidate-winner evidence only and does not advance the RFC beyond Proposed;
-acceptance still requires independent review per the lifecycle.
+Accepted P1 pipeline for v1 (retained from Wave-C review evidence): Candidate A
+(two-stage declarative ConfigPlan pipeline
+`Lua -> ConfigPlan -> typed validation -> merge -> diff -> reconcile`) is the
+accepted v1 pipeline; Candidate C (bounded imperative overlay) is deferred to a
+future Plugin/runtime overlay RFC as future work. Candidate B remains the
+rejected baseline. This note was candidate-winner evidence before acceptance and
+is now the accepted contract.
 
-If accepted, it would close OQ-010 at the design level. It targets OQ-010; it
-depends on the runtime and module-resolution contract proposed in the
-[Lua Runtime RFC](lua-runtime-rfc.md) (OQ-009), and it feeds OQ-011/OQ-012
-(plugin-facing configuration surfaces), OQ-017 (CLI grammar for
-`bitty config`/`bitty paths` commands), OQ-021/OQ-022 (package manifest and
-lock coexistence), and budgets PB-1/PB-2 in the
+It targets OQ-010; it depends on the runtime and module-resolution contract
+proposed in the [Lua Runtime RFC](lua-runtime-rfc.md) (OQ-009), and it feeds
+OQ-011/OQ-012 (plugin-facing configuration surfaces), OQ-017 (CLI grammar for
+`bitty config`/`bitty paths` commands), OQ-021/OQ-022 (package manifest and lock
+coexistence), and budgets PB-1/PB-2 in the
 [Performance Budget RFC](performance-budget-rfc.md).
 
 ## Problem statement
@@ -42,12 +39,12 @@ lock coexistence), and budgets PB-1/PB-2 in the
 OQ-010 asks: _are declarative `ConfigPlan` generation and Rust reconciliation
 adopted, and how do XDG layers, profiles, merge rules, reload, and project
 trust work?_ The accepted direction ([DIR-003](../decisions/index.md)) fixes
-Lua as the primary configuration language; the candidate lifecycle,
-layer stack, merge rules, profiles, and trust behavior are recorded as
-**candidate contracts** in [Lua and XDG configuration](../configuration/lua-and-xdg.md)
-but nothing yet adopts them, defines failure semantics, or classifies reload.
+Lua as the primary configuration language; the lifecycle, layer stack, merge
+rules, profiles, and trust behavior were recorded as candidate contracts in
+[Lua and XDG configuration](../configuration/lua-and-xdg.md) and are now
+adopted by this RFC, which defines failure semantics and reload classification.
 
-Normative sources this proposal must not weaken:
+Normative sources this specification must not weaken:
 
 - [Security overview](../security/overview.md): user `init.lua` is trusted code
   evaluated in a Config VM toward a validated plan; system/distribution
@@ -68,7 +65,7 @@ manifest/lock file formats (OQ-021/OQ-022), plugin capability grants
 
 ## Pipeline candidates
 
-### Candidate A: two-stage declarative plan with Rust reconciliation (selected for v1 — P1 candidate winner, RFC still Proposed)
+### Candidate A: two-stage declarative plan with Rust reconciliation (accepted v1 pipeline)
 
 Configuration modules evaluate to plain data; Rust owns everything after that:
 schema validation, layer merge, diffing, reconciliation into live state, and
@@ -78,9 +75,9 @@ reload. The pipeline is the one sketched in the existing topic document:
 Lua -> ConfigPlan -> typed validation -> merge -> diff -> reconcile
 ```
 
-Wave-C P1 decision: Candidate A per Wave-C P1 is the v1 pipeline for prototype
-review evidence. The RFC remains draft/Proposed and is not self-accepted; this
-selection is a candidate winner recorded for review, not an Accepted status.
+Accepted decision: Candidate A is the accepted v1 pipeline. This selection was
+recorded as the Wave-C P1 candidate winner for prototype review evidence and
+is now the accepted contract.
 
 Trade-offs:
 
@@ -130,10 +127,10 @@ Trade-offs:
 Candidate A for all static configuration, plus a narrow runtime API through
 which scripts may adjust presentation-level settings on events after startup.
 
-Wave-C P1 decision: Candidate C is deferred to a future Plugin/runtime overlay
+Deferred decision: Candidate C is deferred to a future Plugin/runtime overlay
 RFC as future work and is not part of v1. The overlay direction remains a
-candidate for later review; v1 adopts Candidate A only. The RFC remains
-draft/Proposed.
+candidate for later review; v1 adopts Candidate A only. This deferral was
+recorded as the Wave-C P1 decision and is retained upon acceptance.
 
 Trade-offs:
 
@@ -149,17 +146,17 @@ Trade-offs:
 - Con: scope creep risk: each new overlay capability reopens the question of
   which fields are presentation-only.
 
-Wave-C P1 records A as the v1 winner and C as deferred; B remains the rejected
-baseline. Review of the future overlay RFC will decide whether any bounded
-overlay enters after v1.
+Candidate A is the accepted v1 pipeline and Candidate C is deferred; Candidate B
+remains the rejected baseline. Review of the future overlay RFC will decide
+whether any bounded overlay enters after v1.
 
 ## Layers, merge, and attribution
 
-Status: **proposed adoption** of the candidate layer stack and precedence in
+Status: **accepted contract** defining the layer stack and precedence in
 [Lua and XDG configuration](../configuration/lua-and-xdg.md) (core defaults →
 system → distribution → profile → user → trusted local override → CLI), with
-the following contract obligations added; the authoritative enumeration stays
-in that document and this RFC binds its semantics:
+the following contract obligations; the authoritative enumeration stays in that
+document and this RFC binds its semantics:
 
 1. Every schema field declares exactly one merge class (scalar replace,
    schema-guided deep merge, set-by-identifier, or explicit list policy);
@@ -177,7 +174,7 @@ in that document and this RFC binds its semantics:
 
 ## Reload classification
 
-Status: **proposed framework**, with the per-field table deferred until an
+Status: **accepted framework**, with the per-field table deferred until an
 implementation inventory exists.
 
 Every schema change from a reloaded plan lands in exactly one class:
@@ -197,7 +194,7 @@ is shared with the module-resolution rules in the
 
 ## Project trust
 
-Status: **proposed mechanics**, implementing the normative T-08 defense, not
+Status: **accepted mechanics**, implementing the normative T-08 defense, not
 reopening it.
 
 1. Project configuration is declarative-data-only; project-scope Lua execution
@@ -205,10 +202,10 @@ reopening it.
    honored, its content is data validated against a restricted project schema.
 2. Consent is bound to canonical path plus content hash; any content change
    invalidates prior approval (normative already — this RFC inherits it).
-3. Proposed consent lifecycle per untrusted project config: ask once, ask
+3. Consent lifecycle per untrusted project config: ask once, ask
    always-on-entry, or deny, with deny as the default when origin detection is
    not positively local (R-020's restrictive `Unknown` rule).
-4. Open mechanics left to review: trust database location and format,
+4. Open mechanics left to follow-up: trust database location and format,
    invalidation on directory rename/move, expiry or review cadence for stored
    grants, and the exact prompt UX. None of these may weaken the hash binding.
 
@@ -218,8 +215,8 @@ On first start with missing or broken configuration, Bitty proceeds with the
 minimal built-in configuration and reports diagnostics; on later failures it
 retains the last good plan. `bitty --safe` remains an unconditional override
 that skips all external configuration and plugins regardless of configuration
-health (R-009). These behaviors are obligations of whichever pipeline
-candidate review accepts; Candidate B would have to reprove them.
+health (R-009). These behaviors are obligations of the accepted pipeline;
+Candidate B would have to reprove them if ever reconsidered.
 
 ## Security review notes
 
@@ -235,22 +232,22 @@ evidence remain with the security corpus.
 
 ## Open items remaining under OQ-010
 
-The following items remain open at the time of proposal. Acceptance of this RFC
-would close OQ-010 only if the items below are either resolved in review or
-migrated to explicitly tracked follow-up tasks with no remaining OQ-010 scope:
+The following items were open at proposal and are now dispositioned upon
+acceptance on 2026-08-27. Acceptance of this RFC closes OQ-010 at the design
+level; residual items below are tracked as follow-up work with no remaining
+OQ-010 closure blocker unless review decides otherwise:
 
 - Resolved by this RFC upon acceptance: adoption of the declarative plan with
-  Rust reconciliation (Candidate A selected for v1 per Wave-C P1, with Candidate
-  C explicitly deferred to a future Plugin/runtime overlay RFC), layer stack and
-  precedence, merge-class contract and attribution, reload classification
-  framework, failure and safe-mode interaction, and project-trust mechanics for
-  declarative-only project configuration with hash-bound consent.
-- Migrated or deferred (remain Open as follow-up work, not as OQ-010 closure
-  blockers unless review decides otherwise): Plugin/runtime overlay RFC defining
-  whether any bounded imperative overlay exists after v1 (Candidate C future
-  work), schema ownership tooling for typed Rust schema and Lua shape sync,
-  authoritative home for the enumerated field list and merge-class table once the
-  schema stabilizes, per field reload classification and minimum
+  Rust reconciliation (Candidate A accepted for v1, with Candidate C explicitly
+  deferred to a future Plugin/runtime overlay RFC), layer stack and precedence,
+  merge-class contract and attribution, reload classification framework, failure
+  and safe-mode interaction, and project-trust mechanics for declarative-only
+  project configuration with hash-bound consent.
+- Migrated or deferred (remain open as follow-up work): Plugin/runtime overlay
+  RFC defining whether any bounded imperative overlay exists after v1 (Candidate
+  C future work), schema ownership tooling for typed Rust schema and Lua shape
+  sync, authoritative home for the enumerated field list and merge-class table
+  once the schema stabilizes, per field reload classification and minimum
   restart-required set, trust database location/grant expiry/review/rename
   invalidation/prompt UX for project configuration, multiple-parent profile
   inheritance if adopted, coexistence rules between the configuration tree and
@@ -258,11 +255,7 @@ migrated to explicitly tracked follow-up tasks with no remaining OQ-010 scope:
   macOS/Windows directory mappings feeding the semantic path set (owned by
   platform follow-ups).
 
-Would close OQ-010: accepting this RFC would close OQ-010 at the design level
-once the residual items above are either resolved or migrated to tracked
-follow-up tasks; the register row is then updated per the open-question
-register rules. Until then this RFC targets OQ-010 and does not claim closure.
-Wave-C P1 candidate winner note: OQ-010 remains Open until the RFC is Accepted;
-Candidate A is the selected v1 pipeline for prototype review evidence and
-Candidate C is deferred, recorded here per the new lifecycle policy, without
-self-accepting this RFC.
+Closes OQ-010: this RFC closes OQ-010 at the design level; the register row is
+updated per the open-question register rules. Candidate A is the accepted v1
+pipeline and Candidate C is deferred, retained from the Wave-C P1 winner note
+without remaining OQ-010 scope.
