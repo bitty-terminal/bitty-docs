@@ -58,6 +58,7 @@ records a reviewed contract, not implementation evidence:
 | [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006 | Accepted |
 | [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007 | Accepted |
 | [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010 | Accepted |
+| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -100,8 +101,10 @@ the historical conversation:
 - Rich blocks, semantic zones, structured transports, and TUI transformation.
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
 - Package manifest/lock formats, resolver, registry, and update UX.
-  (Drafted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
-  — proposed.)
+  (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
+  — lifecycle and integrity model for OQ-021; resolver (OQ-026), version
+  lifecycle (OQ-027), registry (OQ-028), and key directory (OQ-029) remain
+  open.)
 - Headless daemon, detach/reattach, and remote UI architecture.
 
 Each candidate is represented by an item in the
