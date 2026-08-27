@@ -110,6 +110,10 @@ the historical conversation:
   open.)
 - Headless daemon, detach/reattach, and remote UI architecture.
 - Isolation resource ceilings and failure semantics. ([Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — `Proposed` draft, not accepted; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17 headless tests, queue budgets `BoundedText`/`drain_batch`) and CTX-0040 `d67a65b` (15 headless `measurement_lua.rs` RC-1 10^7/50ms/8ms + RC-2 32 MiB via `piccolo`/`Lua::total_memory()` + 21 headless `measurement.rs` Global 8192/2MiB hard-gated at Host admission, worktree `bitty/.worktrees/ctx-0040-feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as experimental review evidence, pending P0 security-auditor review before acceptance; frontmatter remains `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`.)
+- Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit.
+  (Proposed: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua
+  5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and audit
+  gates for [OQ-030](open-questions.md); pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
