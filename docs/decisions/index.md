@@ -118,6 +118,12 @@ the historical conversation:
   (Proposed: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial,
   desensitized bitty.env.get with capability-gated allowlist, audit logging,
   and migration for [OQ-031](open-questions.md); pending acceptance.)
+- Async/Send boundary, GC tuning, Config VM budget charging, and
+  reload/module-cache interaction. (Proposed:
+  [ADR 0007](adrs/ADR-0007-async-gc.md) — `Send`/`Sync` boundary (mlua vs
+  piccolo, tasks 64/timers 32), GC tuning (incremental pause/step, budget),
+  Config VM charging against PB-1 and PB-2, and per-VM module-cache reload
+  interaction for [OQ-032](open-questions.md); pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
