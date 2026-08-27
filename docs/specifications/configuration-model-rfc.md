@@ -21,6 +21,14 @@ structures the candidates behind open question
 [OQ-010](../decisions/open-questions.md) so review can accept, amend, or reject
 them with named evidence.
 
+Wave-C P1 candidate winner for v1 review evidence (RFC still draft/Proposed,
+not self-accepted): Candidate A (two-stage declarative ConfigPlan pipeline
+`Lua -> ConfigPlan -> typed validation -> merge -> diff -> reconcile`) is
+selected for the v1 prototype; Candidate C (bounded imperative overlay) is
+deferred to a future Plugin/runtime overlay RFC as future work. This note is
+candidate-winner evidence only and does not advance the RFC beyond Proposed;
+acceptance still requires independent review per the lifecycle.
+
 If accepted, it would close OQ-010 at the design level. It targets OQ-010; it
 depends on the runtime and module-resolution contract proposed in the
 [Lua Runtime RFC](lua-runtime-rfc.md) (OQ-009), and it feeds OQ-011/OQ-012
@@ -60,7 +68,7 @@ manifest/lock file formats (OQ-021/OQ-022), plugin capability grants
 
 ## Pipeline candidates
 
-### Candidate A: two-stage declarative plan with Rust reconciliation (recommended for review)
+### Candidate A: two-stage declarative plan with Rust reconciliation (selected for v1 — P1 candidate winner, RFC still Proposed)
 
 Configuration modules evaluate to plain data; Rust owns everything after that:
 schema validation, layer merge, diffing, reconciliation into live state, and
@@ -69,6 +77,10 @@ reload. The pipeline is the one sketched in the existing topic document:
 ```text
 Lua -> ConfigPlan -> typed validation -> merge -> diff -> reconcile
 ```
+
+Wave-C P1 decision: Candidate A per Wave-C P1 is the v1 pipeline for prototype
+review evidence. The RFC remains draft/Proposed and is not self-accepted; this
+selection is a candidate winner recorded for review, not an Accepted status.
 
 Trade-offs:
 
@@ -84,7 +96,7 @@ Trade-offs:
   without executing third-party code at compose time.
 - Con: expressiveness ceiling — values must resolve to data at evaluation
   time; genuinely dynamic behavior needs a separate runtime path (this is why
-  Candidate C exists).
+  Candidate C was considered and is now deferred).
 - Con: dual representation cost: the typed Rust schema and the documented Lua
   shape can drift; one of them must be generated or cross-checked in CI, and
   this RFC leaves that tooling choice open.
@@ -113,10 +125,15 @@ Trade-offs:
 - Review note: rejected unless review accepts the recovery and attribution
   costs; recorded here because it is the incumbent idiom users know.
 
-### Candidate C: hybrid — declarative plan plus bounded imperative overlay
+### Candidate C: hybrid — declarative plan plus bounded imperative overlay (deferred to Plugin/runtime overlay RFC)
 
 Candidate A for all static configuration, plus a narrow runtime API through
 which scripts may adjust presentation-level settings on events after startup.
+
+Wave-C P1 decision: Candidate C is deferred to a future Plugin/runtime overlay
+RFC as future work and is not part of v1. The overlay direction remains a
+candidate for later review; v1 adopts Candidate A only. The RFC remains
+draft/Proposed.
 
 Trade-offs:
 
@@ -132,8 +149,9 @@ Trade-offs:
 - Con: scope creep risk: each new overlay capability reopens the question of
   which fields are presentation-only.
 
-Review should decide A versus C explicitly; B is recorded as the rejected
-baseline.
+Wave-C P1 records A as the v1 winner and C as deferred; B remains the rejected
+baseline. Review of the future overlay RFC will decide whether any bounded
+overlay enters after v1.
 
 ## Layers, merge, and attribution
 
@@ -209,11 +227,11 @@ The declarative-plan direction strengthens the P0 posture: side-effect-free
 evaluation keeps project and distribution content inert until trust decisions
 land (T-08/R-010); last-good-plan retention and the built-in fallback give
 R-009 a testable recovery path; attribution and conflict reporting make silent
-policy override visible instead of deniable. Any accepted overlay API
-(Candidate C) must ship negative tests proving overlay writes cannot reach
-security-relevant or policy-owned fields. No control here downgrades the
-normative baseline; thresholds and enforcement evidence remain with the
-security corpus.
+policy override visible instead of deniable. Any future overlay API (deferred
+Candidate C) must ship negative tests proving overlay writes cannot reach
+security-relevant or policy-owned fields, if that overlay RFC is later accepted.
+No control here downgrades the normative baseline; thresholds and enforcement
+evidence remain with the security corpus.
 
 ## Open items remaining under OQ-010
 
@@ -222,24 +240,29 @@ would close OQ-010 only if the items below are either resolved in review or
 migrated to explicitly tracked follow-up tasks with no remaining OQ-010 scope:
 
 - Resolved by this RFC upon acceptance: adoption of the declarative plan with
-  Rust reconciliation (Candidate A, with Candidate C overlay explicitly decided
-  as included or deferred), layer stack and precedence, merge-class contract
-  and attribution, reload classification framework, failure and safe-mode
-  interaction, and project-trust mechanics for declarative-only project
-  configuration with hash-bound consent.
+  Rust reconciliation (Candidate A selected for v1 per Wave-C P1, with Candidate
+  C explicitly deferred to a future Plugin/runtime overlay RFC), layer stack and
+  precedence, merge-class contract and attribution, reload classification
+  framework, failure and safe-mode interaction, and project-trust mechanics for
+  declarative-only project configuration with hash-bound consent.
 - Migrated or deferred (remain Open as follow-up work, not as OQ-010 closure
-  blockers unless review decides otherwise): final decision between Candidates
-  A and C including whether any v1 runtime overlay exists, schema ownership
-  tooling for typed Rust schema and Lua shape sync, authoritative home for the
-  enumerated field list and merge-class table once the schema stabilizes, per
-  field reload classification and minimum restart-required set, trust database
-  location/grant expiry/review/rename invalidation/prompt UX for project
-  configuration, multiple-parent profile inheritance if adopted, coexistence
-  rules between the configuration tree and package manifest/lock names
-  (deferred to OQ-021/OQ-022), and native macOS/Windows directory mappings
-  feeding the semantic path set (owned by platform follow-ups).
+  blockers unless review decides otherwise): Plugin/runtime overlay RFC defining
+  whether any bounded imperative overlay exists after v1 (Candidate C future
+  work), schema ownership tooling for typed Rust schema and Lua shape sync,
+  authoritative home for the enumerated field list and merge-class table once the
+  schema stabilizes, per field reload classification and minimum
+  restart-required set, trust database location/grant expiry/review/rename
+  invalidation/prompt UX for project configuration, multiple-parent profile
+  inheritance if adopted, coexistence rules between the configuration tree and
+  package manifest/lock names (deferred to OQ-021/OQ-022), and native
+  macOS/Windows directory mappings feeding the semantic path set (owned by
+  platform follow-ups).
 
 Would close OQ-010: accepting this RFC would close OQ-010 at the design level
 once the residual items above are either resolved or migrated to tracked
 follow-up tasks; the register row is then updated per the open-question
 register rules. Until then this RFC targets OQ-010 and does not claim closure.
+Wave-C P1 candidate winner note: OQ-010 remains Open until the RFC is Accepted;
+Candidate A is the selected v1 pipeline for prototype review evidence and
+Candidate C is deferred, recorded here per the new lifecycle policy, without
+self-accepting this RFC.
