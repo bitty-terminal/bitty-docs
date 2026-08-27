@@ -101,7 +101,7 @@ the historical conversation:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
   UI/scene primitives and hot-reload mechanics remain follow-up work.)
-- Rich blocks, semantic zones, structured transports, and TUI transformation.
+- Rich blocks, semantic zones, structured transports, and TUI transformation. (Proposed: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `draft`, pending acceptance.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
 - Package manifest/lock formats, resolver, registry, and update UX.
   (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
