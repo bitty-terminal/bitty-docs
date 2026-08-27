@@ -130,6 +130,11 @@ the historical conversation:
   instrumentation, observability event pipeline, and versioned debug protocol with
   `debug.inspect`/`trace`/`control` scopes for [OQ-019](open-questions.md);
   pending acceptance.)
+- Default distribution, bundled-plugin set, and disable mechanism. (Proposed:
+  [Default Distribution RFC](../specifications/default-distribution-rfc.md) —
+  bundled-disabled-by-default distribution, empty v1 enabled set, five
+  disable surfaces (config, managed manifest, CLI, profile, `--safe`) and
+  promotion criteria for [OQ-002](open-questions.md); pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,

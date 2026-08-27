@@ -27,12 +27,13 @@ document still apply:
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 
-| Draft                                               | Targets                | Status   |
-| --------------------------------------------------- | ---------------------- | -------- |
-| [Isolation Resource RFC](isolation-resource-rfc.md) | OQ-014                 | Proposed |
-| [DevTools RFC](devtools-rfc.md)                     | OQ-019                 | Proposed |
-| [Rich presentation RFC](rich-presentation-rfc.md)   | OQ-008, OQ-015, OQ-016 | Proposed |
-| [IPC and Agent RFC](ipc-agent-rfc.md)               | OQ-018                 | Draft    |
+| Draft                                                   | Targets                | Status   |
+| ------------------------------------------------------- | ---------------------- | -------- |
+| [Isolation Resource RFC](isolation-resource-rfc.md)     | OQ-014                 | Proposed |
+| [DevTools RFC](devtools-rfc.md)                         | OQ-019                 | Proposed |
+| [Rich presentation RFC](rich-presentation-rfc.md)       | OQ-008, OQ-015, OQ-016 | Proposed |
+| [IPC and Agent RFC](ipc-agent-rfc.md)                   | OQ-018                 | Draft    |
+| [Default Distribution RFC](default-distribution-rfc.md) | OQ-002                 | Draft    |
 
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
@@ -42,7 +43,7 @@ Review note (2026-08-28): the Configuration Model RFC targeting OQ-010,
 the Plugin Platform RFC targeting OQ-011/OQ-012/OQ-013, the Package Lifecycle RFC
 targeting OQ-021, and the Lua Runtime RFC targeting OQ-009 are `Accepted` with
 frontmatter `accepted` since 2026-08-27; the remaining drafts
-(Isolation Resource RFC targeting OQ-014, DevTools RFC targeting OQ-019, Rich presentation RFC targeting OQ-008/OQ-015/OQ-016, and IPC and Agent RFC targeting OQ-018)
+(Isolation Resource RFC targeting OQ-014, DevTools RFC targeting OQ-019, Rich presentation RFC targeting OQ-008/OQ-015/OQ-016, IPC and Agent RFC targeting OQ-018, and Default Distribution RFC targeting OQ-002)
 remain `Draft`/`Proposed` with frontmatter `draft` and require independent
 category-owner, docs-curator, and security-reviewer evidence; crate presence of
 `bitty-config`, `bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, and
