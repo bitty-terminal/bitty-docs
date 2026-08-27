@@ -26,6 +26,7 @@ not claim that product code exists or that a proposed design has shipped.
   normative contracts, and candidate decisions.
 - [Open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) — unresolved work
   that must not be silently treated as decided.
+- [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/ipc-agent-rfc.md) — draft bounded framing, wire/auth/scopes and Agent bounded messages, auth/consent/streaming for OQ-018.
 - [Docs-first TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — documentation and initialization work before
   product implementation.
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
