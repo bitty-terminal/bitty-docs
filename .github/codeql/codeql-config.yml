@@ -1,0 +1,10 @@
+name: "CodeQL config for bitty-docs"
+
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  - node_modules
+  - tmp
+  - .trash
+  - .worktrees
