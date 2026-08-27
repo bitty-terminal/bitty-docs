@@ -14,9 +14,12 @@ sidebar_order: 33
 ## Status
 
 Accepted on 2026-08-26 by the project initiator, closing open question
-[OQ-005](../open-questions.md). This ADR does not claim any
-crate beyond the [ADR 0001](ADR-0001-repository-bootstrap-baseline.md)
-bootstrap pair (`bitty-core`, `bitty-app`) exists.
+[OQ-005](../open-questions.md). The accepted topology is the ten-crate
+graph below. As of 2026-08-27 the `bitty` workspace additionally contains
+four draft spine crates (`bitty-package`, `bitty-rich`, `bitty-ipc`,
+`bitty-agent`) ahead of acceptance; they are not part of the accepted graph
+and remain governed by their proposed RFCs. See the implementation note after
+the table.
 
 ## Context
 
@@ -38,18 +41,37 @@ mechanically enforceable by Cargo rather than by review discipline alone.
 The `bitty` repository adopts a single Cargo workspace (edition 2024,
 resolver 3, `publish = false`) with the following member crates:
 
-| Crate               | Role                                                                                     | Depends on (workspace crates)       |
-| ------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------- |
-| `bitty-vt`          | Byte-stream VT parser producing semantic `TerminalAction` values; no state, no I/O       | none                                |
-| `bitty-term-state`  | Terminal Truth: grid, cursor, modes, scrollback, damage, replies, image store/placement  | `bitty-vt`                          |
-| `bitty-pty`         | PTY/ConPTY process lifecycle, resize, signals, I/O backpressure                          | none                                |
-| `bitty-render`      | Render snapshots from damage, glyph cache, renderer abstraction, software fallback       | `bitty-term-state`                  |
-| `bitty-ui`          | View, `LayoutNode`, split/stack/overlay/focus/resize, selection primitives               | `bitty-term-state`                  |
-| `bitty-platform`    | Window/event loop adapter, clipboard primitives, DPI, monitors, notification primitives  | none                                |
-| `bitty-config`      | Typed runtime configuration, validation, migration, reload/reconcile; `ConfigPlan` model | none                                |
-| `bitty-plugin-host` | Command/Event/Capability registry, plugin lifecycle, per-plugin VM hosting, budgets      | `bitty-term-state`, `bitty-config`  |
-| `bitty-runtime`     | Runtime orchestration: command/event/service/lifecycle wiring, cold-path event queue     | all of the above except `bitty-app` |
-| `bitty-app`         | Binary entry point; argument handling, startup, safe-mode selection                      | `bitty-runtime`                     |
+| Crate               | Role                                                                                     | Depends on (workspace crates)                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `bitty-vt`          | Byte-stream VT parser producing semantic `TerminalAction` values; no state, no I/O       | none                                                                                                           |
+| `bitty-term-state`  | Terminal Truth: grid, cursor, modes, scrollback, damage, replies, image store/placement  | `bitty-vt`                                                                                                     |
+| `bitty-pty`         | PTY/ConPTY process lifecycle, resize, signals, I/O backpressure                          | none                                                                                                           |
+| `bitty-platform`    | Window/event loop adapter, clipboard primitives, DPI, monitors, notification primitives  | none                                                                                                           |
+| `bitty-config`      | Typed runtime configuration, validation, migration, reload/reconcile; `ConfigPlan` model | none                                                                                                           |
+| `bitty-render`      | Render snapshots from damage, glyph cache, renderer abstraction, software fallback       | `bitty-term-state`, `bitty-platform`                                                                           |
+| `bitty-ui`          | View, `LayoutNode`, split/stack/overlay/focus/resize, selection primitives               | `bitty-term-state`                                                                                             |
+| `bitty-plugin-host` | Command/Event/Capability registry, plugin lifecycle, per-plugin VM hosting, budgets      | `bitty-term-state`, `bitty-config`, `bitty-package`                                                            |
+| `bitty-runtime`     | Runtime orchestration: command/event/service/lifecycle wiring, cold-path event queue     | `bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-render`, `bitty-platform`, `bitty-ui`, `bitty-plugin-host` |
+| `bitty-package`     | Package manifest, lockfile, integrity chain, lifecycle states, publisher trust           | none                                                                                                           |
+| `bitty-rich`        | Rich presentation helpers, image placeholders, hyperlink and shell-integration models    | `bitty-term-state`, `bitty-vt`                                                                                 |
+| `bitty-ipc`         | Bounded IPC/MCP framing, channels, and stdio transport stub                              | none                                                                                                           |
+| `bitty-agent`       | Bounded Agent identity, messages, tool vocabulary, observation side queue                | none                                                                                                           |
+| `bitty-app`         | Binary entry point; argument handling, startup, safe-mode selection                      | `bitty-runtime`, `bitty-platform`                                                                              |
+| `bitty-core`        | Bootstrap seed library retained for migration; to be retired                             | none                                                                                                           |
+
+Implementation note (2026-08-27): the workspace resolves to fifteen
+members (`bitty-core` plus fourteen active crates) as pinned in
+`bitty/Cargo.toml` and `Cargo.lock`. The four additional crates
+(`bitty-package`, `bitty-rich`, `bitty-ipc`, `bitty-agent`) implement the
+tail of the candidate build-order spine (`Proposed Delivery Sequence`) as
+draft, headless, `forbid(unsafe_code)` libraries. Their contracts remain
+proposed and require independent review before any acceptance claim:
+`bitty-package` tracks the Package Lifecycle RFC (OQ-021/OQ-022),
+`bitty-rich` the rich-content interfaces (OQ-008/OQ-015/OQ-016),
+`bitty-ipc` the IPC/MCP boundary (OQ-018), and `bitty-agent` the Agent core
+(OQ-018/OQ-019). They are not wired into `bitty-runtime` hot paths and do not
+expand the accepted topology; a future revision of this ADR or a successor ADR
+will decide final placement.
 
 Dependency rules:
 
@@ -82,6 +104,14 @@ its contents migrate into `bitty-vt`, `bitty-term-state`, and `bitty-pty` as
 the first implementation milestones land, after which `bitty-core` is retired.
 The migration order itself is implementation work and not decided here.
 
+As of 2026-08-27 the workspace is spine-complete in crate presence:
+`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
+`bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
+`bitty-runtime`, `bitty-package`, `bitty-rich`, `bitty-ipc`,
+`bitty-agent`, plus `bitty-app` and the retained `bitty-core` seed. Presence
+does not imply acceptance of the draft tail crates; they remain proposed
+implementations tracked by their RFCs.
+
 ### MSRV
 
 - MSRV: Rust **1.85**, the release that stabilized edition 2024, matching the
@@ -108,7 +138,8 @@ The migration order itself is implementation work and not decided here.
 - Exact placement of debug instrumentation and the debug protocol crate
   (inside `bitty-runtime` versus a dedicated `bitty-debug`) follows OQ-013.
 - Image decoding placement inside `bitty-term-state` versus a `bitty-image`
-  sibling follows OQ-008's image RFC.
+  sibling follows OQ-008's image RFC; the current `bitty-rich` draft is a
+  headless presentation sibling and not a final placement decision.
 - Input-domain placement (keyboard/mouse encoding, IME, focus, paste, and the
   keymap registry) behind the `bitty-platform` event adapter versus in a
   dedicated input crate is open; no register question owns it yet, so this
@@ -117,3 +148,7 @@ The migration order itself is implementation work and not decided here.
   fallback, shaping, and emoji) inside `bitty-term-state` versus a dedicated
   text sibling follows the text RFC named in
   [ADR 0004](ADR-0004-upstream-dependencies.md).
+- Final dependency wiring for the draft tail crates (`bitty-package`,
+  `bitty-rich`, `bitty-ipc`, `bitty-agent`) and whether they remain
+  standalone or merge into runtime/host siblings awaits the follow-up RFCs
+  and a successor topology ADR.

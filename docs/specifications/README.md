@@ -35,6 +35,19 @@ Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
 applied only together with an update of all inbound links.
 
+Review note (2026-08-27): the Wave-C batch of five drafts
+(Lua Runtime RFC closing OQ-009, Configuration Model RFC closing OQ-010,
+Plugin Platform RFC closing OQ-011/OQ-012/OQ-013, Isolation Resource RFC
+closing OQ-014, Package Lifecycle RFC closing OQ-021/OQ-022) remains
+`Proposed` with frontmatter `draft` and requires independent category-owner,
+docs-curator, and security-reviewer evidence; crate presence of
+`bitty-config`, `bitty-plugin-host`, `bitty-package`, `bitty-rich`,
+`bitty-ipc`, and `bitty-agent` does not self-accept any draft. The foundation
+six accepted artifacts (Performance Budget RFC OQ-001, ADR-0002 OQ-003,
+Compatibility Milestone RFC OQ-004, ADR-0003 OQ-005, ADR-0004 OQ-006, Terminal
+State RFC OQ-007) remain `Accepted` as recorded in the
+[decision register](../decisions/index.md).
+
 ## Admission criteria
 
 A specification defines boundaries, inputs, outputs, invariants, errors,
