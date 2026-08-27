@@ -109,6 +109,10 @@ the historical conversation:
   lifecycle (OQ-027), registry (OQ-028), and key directory (OQ-029) remain
   open.)
 - Headless daemon, detach/reattach, and remote UI architecture.
+  (Proposed: [ADR 0008](adrs/ADR-0008-headless.md) — deferral to post-v1.0,
+  headless-runtime/daemon/remote taxonomy, session-grained detach/reattach,
+  bounded persistence, contained failure, and trust-boundary analysis gate for
+  [OQ-020](open-questions.md); pending acceptance.)
 - Isolation resource ceilings and failure semantics. ([Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — `Proposed` draft, not accepted; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17 headless tests, queue budgets `BoundedText`/`drain_batch`) and CTX-0040 `d67a65b` (15 headless `measurement_lua.rs` RC-1 10^7/50ms/8ms + RC-2 32 MiB via `piccolo`/`Lua::total_memory()` + 21 headless `measurement.rs` Global 8192/2MiB hard-gated at Host admission, worktree `bitty/.worktrees/ctx-0040-feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as experimental review evidence, pending P0 security-auditor review before acceptance; frontmatter remains `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`.)
 - Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Proposed: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); pending security review.)
 - Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit.
