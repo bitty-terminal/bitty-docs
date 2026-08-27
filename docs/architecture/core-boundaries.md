@@ -17,8 +17,15 @@ The project initiator has confirmed the small-core and plugin-extension
 direction, the placement of most AI and Agent experiences in plugins, and one
 independent repository per plugin. The remaining concrete boundaries on this
 page come from architecture recommendations and still require RFCs or ADRs.
-“Core” and “Plugin” in the tables indicate candidate ownership, not existing
-implementation or a formal API.
+“Core” and “Plugin” in the tables indicate candidate ownership, not a stable
+API. The `bitty` workspace is now spine-complete in crate presence
+(`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
+`bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
+`bitty-runtime`, plus draft `bitty-package`, `bitty-rich`, `bitty-ipc`,
+`bitty-agent` ahead of acceptance, plus `bitty-app` and the retained
+`bitty-core` seed) per
+[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the draft
+tail crates implement proposed contracts and do not imply shipped behavior.
 
 ## Candidate decision rule
 
@@ -83,9 +90,12 @@ acceptance evidence.
 
 ## Candidate Core ownership
 
-The table describes architecture ownership. It does not claim that these
-capabilities are implemented or that every protocol belongs in the first
-milestone.
+The table describes architecture ownership. It does not claim that every
+capability or protocol belongs in the first milestone. Crate presence is
+spine-complete per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md)
+but the mappings below remain candidates; the four draft tail crates
+(`bitty-package`, `bitty-rich`, `bitty-ipc`, `bitty-agent`) are proposed
+implementations of their RFC phases and do not expand the accepted topology.
 
 | Domain               | Core mechanisms and invariants                                                                       |
 | -------------------- | ---------------------------------------------------------------------------------------------------- |
