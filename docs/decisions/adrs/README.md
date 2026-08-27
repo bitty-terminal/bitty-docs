@@ -15,12 +15,13 @@ This directory contains accepted, proposed, superseded, and historical
 architecture decisions. The [decision register](../index.md) records broader
 working directions and the remaining ADR queue.
 
-| ADR                                                                                   | Status   | Scope                                                                         |
-| ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
-| [ADR 0001 - Repository Bootstrap Baseline](ADR-0001-repository-bootstrap-baseline.md) | Accepted | Minimal implementation-neutral Core and website scaffolding                   |
-| [ADR 0002 - Platform Support Tiers](ADR-0002-platform-support-tiers.md)               | Accepted | Initial Linux/macOS/Windows/BSD support tiers and CI guarantees               |
-| [ADR 0003 - Core Workspace Topology](ADR-0003-core-workspace-topology.md)             | Accepted | Single Cargo workspace crate graph, dependency rules, MSRV                    |
-| [ADR 0004 - Upstream Dependency Set](ADR-0004-upstream-dependencies.md)               | Accepted | Adopt/wrap/reject choices and maintenance policy for first upstream libraries |
+| ADR                                                                                                                | Status   | Scope                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------ | -------- | -------------------------------------------------------------------------------------------------------------- |
+| [ADR 0001 - Repository Bootstrap Baseline](ADR-0001-repository-bootstrap-baseline.md)                              | Accepted | Minimal implementation-neutral Core and website scaffolding                                                    |
+| [ADR 0002 - Platform Support Tiers](ADR-0002-platform-support-tiers.md)                                            | Accepted | Initial Linux/macOS/Windows/BSD support tiers and CI guarantees                                                |
+| [ADR 0003 - Core Workspace Topology](ADR-0003-core-workspace-topology.md)                                          | Accepted | Single Cargo workspace crate graph, dependency rules, MSRV                                                     |
+| [ADR 0004 - Upstream Dependency Set](ADR-0004-upstream-dependencies.md)                                            | Accepted | Adopt/wrap/reject choices and maintenance policy for first upstream libraries                                  |
+| [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](ADR-0005-lua-pins-and-stdlib.md) | Proposed | Exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, upgrade cadence, vendored verification, allowlist, and unsafe audit |
 
 ## Admission criteria
 
