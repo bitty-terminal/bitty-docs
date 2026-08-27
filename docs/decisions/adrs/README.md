@@ -22,6 +22,7 @@ working directions and the remaining ADR queue.
 | [ADR 0003 - Core Workspace Topology](ADR-0003-core-workspace-topology.md)                                          | Accepted | Single Cargo workspace crate graph, dependency rules, MSRV                                                     |
 | [ADR 0004 - Upstream Dependency Set](ADR-0004-upstream-dependencies.md)                                            | Accepted | Adopt/wrap/reject choices and maintenance policy for first upstream libraries                                  |
 | [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](ADR-0005-lua-pins-and-stdlib.md) | Proposed | Exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, upgrade cadence, vendored verification, allowlist, and unsafe audit |
+| [ADR 0006 - os.getenv Exposure and Bitty Module Policy](ADR-0006-os-env-policy.md)                                 | Proposed | os.getenv denial, desensitized bitty.env.get with capability-gated allowlist, audit logging, and migration     |
 
 ## Admission criteria
 

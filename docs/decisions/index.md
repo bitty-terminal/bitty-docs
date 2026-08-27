@@ -114,6 +114,10 @@ the historical conversation:
   (Proposed: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua
   5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and audit
   gates for [OQ-030](open-questions.md); pending acceptance.)
+- os.getenv exposure, desensitization, and bitty module policy.
+  (Proposed: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial,
+  desensitized bitty.env.get with capability-gated allowlist, audit logging,
+  and migration for [OQ-031](open-questions.md); pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
