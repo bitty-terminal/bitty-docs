@@ -30,24 +30,25 @@ The following drafts are under review and do not authorize shipped, stable, norm
 | Draft                                               | Targets | Status   |
 | --------------------------------------------------- | ------- | -------- |
 | [Isolation Resource RFC](isolation-resource-rfc.md) | OQ-014  | Proposed |
+| [DevTools RFC](devtools-rfc.md)                     | OQ-019  | Proposed |
 
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
 applied only together with an update of all inbound links.
 
-Review note (2026-08-27): the Configuration Model RFC targeting OQ-010,
+Review note (2026-08-28): the Configuration Model RFC targeting OQ-010,
 the Plugin Platform RFC targeting OQ-011/OQ-012/OQ-013, the Package Lifecycle RFC
 targeting OQ-021, and the Lua Runtime RFC targeting OQ-009 are `Accepted` with
-frontmatter `accepted` since 2026-08-27; the remaining Wave-C batch of one draft
-(Isolation Resource RFC targeting OQ-014) remains `Proposed` with frontmatter
-`draft` and requires independent category-owner, docs-curator, and
-security-reviewer evidence; crate presence of `bitty-config`,
-`bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, and `bitty-agent` does not
-self-accept any draft, and `bitty-package` lifecycle and integrity model is
-accepted while real signature verification remains draft per crate docs. The ten
-accepted artifacts (Performance Budget RFC OQ-001, ADR-0002 OQ-003,
-Compatibility Milestone RFC OQ-004, ADR-0003 OQ-005, ADR-0004 OQ-006, Terminal
-State RFC OQ-007, Configuration Model RFC OQ-010, Plugin Platform RFC
+frontmatter `accepted` since 2026-08-27; the remaining drafts
+(Isolation Resource RFC targeting OQ-014 and DevTools RFC targeting OQ-019)
+remain `Proposed` with frontmatter `draft` and require independent
+category-owner, docs-curator, and security-reviewer evidence; crate presence of
+`bitty-config`, `bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, and
+`bitty-agent` does not self-accept any draft, and `bitty-package` lifecycle and
+integrity model is accepted while real signature verification remains draft per
+crate docs. The ten accepted artifacts (Performance Budget RFC OQ-001, ADR-0002
+OQ-003, Compatibility Milestone RFC OQ-004, ADR-0003 OQ-005, ADR-0004 OQ-006,
+Terminal State RFC OQ-007, Configuration Model RFC OQ-010, Plugin Platform RFC
 OQ-011/OQ-012/OQ-013, Package Lifecycle RFC OQ-021, Lua Runtime RFC OQ-009)
 remain `Accepted` as recorded in the [decision register](../decisions/index.md).
 

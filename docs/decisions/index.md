@@ -124,6 +124,11 @@ the historical conversation:
   piccolo, tasks 64/timers 32), GC tuning (incremental pause/step, budget),
   Config VM charging against PB-1 and PB-2, and per-VM module-cache reload
   interaction for [OQ-032](open-questions.md); pending acceptance.)
+- DevTools instrumentation, event pipeline, and debug protocol for the plugin
+  runtime. (Proposed: [DevTools RFC](../specifications/devtools-rfc.md) —
+  instrumentation, observability event pipeline, and versioned debug protocol with
+  `debug.inspect`/`trace`/`control` scopes for [OQ-019](open-questions.md);
+  pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
