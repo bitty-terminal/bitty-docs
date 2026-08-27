@@ -29,7 +29,7 @@ unresolved choices are tracked in the
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DIR-001 | Keep a small terminal core and move optional behavior behind governed extension surfaces.                                                                                    | Product intent and maintained architecture                     | [Product vision](../product/vision.md); [core boundaries](../architecture/core-boundaries.md)                            | Plugin API v1 RFC                                                                                                                                                                |
 | DIR-002 | Use Rust 2024 for the core implementation.                                                                                                                                   | Explicit project direction                                     | [Technology strategy](../project/technology-strategy.md)                                                                 | Toolchain maintenance policy; MSRV is accepted in [ADR 0003](adrs/ADR-0003-core-workspace-topology.md)                                                                           |
-| DIR-003 | Use Lua for plugins and as the main configuration language.                                                                                                                  | Explicit user direction in source turns 3 and 15               | [Technology strategy](../project/technology-strategy.md); [Lua and XDG](../configuration/lua-and-xdg.md)                 | Runtime/binding/configuration RFCs                                                                                                                                               |
+| DIR-003 | Use Lua for plugins and as the main configuration language.                                                                                                                  | Explicit user direction in source turns 3 and 15               | [Technology strategy](../project/technology-strategy.md); [Lua and XDG](../configuration/lua-and-xdg.md)                 | Runtime/binding RFCs (configuration model accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md))                                                   |
 | DIR-004 | Target Linux, macOS, Windows, and BSD without assuming identical support on day one.                                                                                         | Explicit product direction                                     | [Product vision](../product/vision.md); [technology strategy](../project/technology-strategy.md)                         | None; tiers and CI policy accepted in [ADR 0002](adrs/ADR-0002-platform-support-tiers.md)                                                                                        |
 | DIR-005 | Keep AI/Agent functionality outside the terminal core as optional plugin or adapter integrations.                                                                            | Explicit boundary requested by the user                        | [Core boundaries](../architecture/core-boundaries.md)                                                                    | Integration/capability RFC                                                                                                                                                       |
 | DIR-006 | Organize formal components as independent Git repositories under `github.com/bitty-terminal`; keep umbrella/grouping directories non-Git.                                    | Explicit organization direction and current workspace evidence | [Repository map](../project/repository-map.md)                                                                           | Cross-repository release policy                                                                                                                                                  |
@@ -45,9 +45,9 @@ it does not freeze public API details or prove implementation.
 
 ## Accepted foundation artifacts
 
-The following reviewed artifacts were accepted on 2026-08-26 by the project
-initiator. Each closes the open-question entry it names; acceptance records a
-reviewed contract, not implementation evidence:
+The following reviewed artifacts were accepted on 2026-08-26 and 2026-08-27 by the
+project initiator. Each closes the open-question entry it names; acceptance
+records a reviewed contract, not implementation evidence:
 
 | Artifact                                                                        | Closes | Status   |
 | ------------------------------------------------------------------------------- | ------ | -------- |
@@ -57,6 +57,7 @@ reviewed contract, not implementation evidence:
 | [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005 | Accepted |
 | [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006 | Accepted |
 | [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007 | Accepted |
+| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -93,7 +94,6 @@ facts before relying on them operationally.
 The following proposals have not been accepted merely because they appeared in
 the historical conversation:
 
-- Two-phase declarative `ConfigPlan` generation and Rust reconciliation.
 - Plugin API v1, capability/manifest model, and event phases. (Drafted:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — proposed;
   UI/scene primitives and hot-reload mechanics remain open there.)

@@ -21,17 +21,17 @@ recommendation alone is insufficient.
 
 ## Accepted baseline
 
-| Domain                         | Baseline                                                   | Status                                                                                                             |
-| ------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Core language                  | Rust, edition 2024                                         | Accepted                                                                                                           |
-| Initialization                 | Minimal repository, toolchain, and CI scaffolding          | Accepted by ADR 0001; zero product functionality and concrete versions remain implementation evidence              |
-| Plugin language                | Lua                                                        | Accepted                                                                                                           |
-| Primary configuration language | Lua                                                        | Accepted working direction; version, schema, and reload model undecided                                            |
-| Product platforms              | Linux, macOS, Windows, and BSD                             | Accepted targets; tiers and CI policy accepted in [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md) |
-| Website                        | Astro static shell with Bun and Workers Static Assets      | Accepted by ADR 0001; no docs consumer exists and presentation/integration mechanisms remain open                  |
-| Repositories                   | Organization polyrepo                                      | Accepted direction                                                                                                 |
-| AI                             | Plugin or adapter capability outside the Core product path | Accepted direction                                                                                                 |
-| Development management         | CarryCtx with predominantly subagent collaboration         | Accepted project process                                                                                           |
+| Domain                         | Baseline                                                   | Status                                                                                                                                                                                                    |
+| ------------------------------ | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Core language                  | Rust, edition 2024                                         | Accepted                                                                                                                                                                                                  |
+| Initialization                 | Minimal repository, toolchain, and CI scaffolding          | Accepted by ADR 0001; zero product functionality and concrete versions remain implementation evidence                                                                                                     |
+| Plugin language                | Lua                                                        | Accepted                                                                                                                                                                                                  |
+| Primary configuration language | Lua                                                        | Accepted working direction; model, layer, merge, and reload contracts accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md) (OQ-010); Lua version and binding remain OQ-009 |
+| Product platforms              | Linux, macOS, Windows, and BSD                             | Accepted targets; tiers and CI policy accepted in [ADR 0002](../decisions/adrs/ADR-0002-platform-support-tiers.md)                                                                                        |
+| Website                        | Astro static shell with Bun and Workers Static Assets      | Accepted by ADR 0001; no docs consumer exists and presentation/integration mechanisms remain open                                                                                                         |
+| Repositories                   | Organization polyrepo                                      | Accepted direction                                                                                                                                                                                        |
+| AI                             | Plugin or adapter capability outside the Core product path | Accepted direction                                                                                                                                                                                        |
+| Development management         | CarryCtx with predominantly subagent collaboration         | Accepted project process                                                                                                                                                                                  |
 
 ## Accepted bootstrap boundary
 
@@ -89,23 +89,23 @@ The preference order is:
 
 ## Candidate technology matrix
 
-| Domain                | Current candidate                                               | Required validation before adoption                                                                     |
-| --------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Lua runtime           | Lua 5.4 plus vendored `mlua`                                    | Windows/macOS/Linux/BSD builds, sandbox capability, VM cost, and async/send requirements                |
-| Primary configuration | `init.lua` to declarative `ConfigPlan`                          | Schema, error locations, hot reload, side-effect-free evaluation, and fallback to the old configuration |
-| Window/input          | `winit` behind `bitty-platform`                                 | Wayland/X11 IME, macOS title bar, Win32 input/DPI, and BSD builds                                       |
-| GPU                   | `wgpu` behind the render API                                    | Backend coverage, startup/memory, glyph and image workloads, and driver fallback                        |
-| Software rendering    | `softbuffer` or a Bitty-owned backend                           | Snapshot consistency, CI/headless use, remote desktop, and performance floor                            |
-| VT parser             | Alacritty `vte` upstream or a narrow fork                       | APC/Kitty Graphics, synchronization cost, throughput, fuzzing, and protocol coverage                    |
-| Terminal state        | Bitty-owned implementation                                      | xterm/VT compatibility corpus, scrollback, Unicode, damage, and reference oracle                        |
-| Unix PTY              | `nix` plus a thin Bitty abstraction                             | Linux/macOS/BSD differences, signals, resize, and child lifecycle                                       |
-| Windows PTY           | Direct ConPTY backend                                           | UTF-8/VT pipes, deadlock/backpressure, resize, and process tree                                         |
-| Font                  | `cosmic-text` wrapper, descending layer by layer if necessary   | Cell-constrained shaping, ligatures, fallback, emoji, and Nerd Font overflow                            |
-| File watch            | `notify`                                                        | Rename/write storms, atomic saves, and cross-platform debounce                                          |
-| CPU tracing           | `tracing` plus a Tracy/Puffin adapter                           | Release overhead and stable event schema                                                                |
-| GPU profiling         | `wgpu-profiler`                                                 | Timestamp support, Chrome traces, and backend coverage                                                  |
-| IPC                   | Unix socket plus Windows named pipe with a Bitty-owned protocol | Versioning, authentication, discovery, multi-client behavior, and backpressure                          |
-| Async                 | Runtime-agnostic Core with local Tokio use in services          | Thread/event-loop integration, binary cost, and shutdown semantics                                      |
+| Domain                | Current candidate                                               | Required validation before adoption                                                                                                                                                      |
+| --------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lua runtime           | Lua 5.4 plus vendored `mlua`                                    | Windows/macOS/Linux/BSD builds, sandbox capability, VM cost, and async/send requirements                                                                                                 |
+| Primary configuration | `init.lua` to declarative `ConfigPlan`                          | Accepted: schema, merge, reload, and project-trust contracts defined in [Configuration Model RFC](../specifications/configuration-model-rfc.md) (OQ-010); Lua binding deferred to OQ-009 |
+| Window/input          | `winit` behind `bitty-platform`                                 | Wayland/X11 IME, macOS title bar, Win32 input/DPI, and BSD builds                                                                                                                        |
+| GPU                   | `wgpu` behind the render API                                    | Backend coverage, startup/memory, glyph and image workloads, and driver fallback                                                                                                         |
+| Software rendering    | `softbuffer` or a Bitty-owned backend                           | Snapshot consistency, CI/headless use, remote desktop, and performance floor                                                                                                             |
+| VT parser             | Alacritty `vte` upstream or a narrow fork                       | APC/Kitty Graphics, synchronization cost, throughput, fuzzing, and protocol coverage                                                                                                     |
+| Terminal state        | Bitty-owned implementation                                      | xterm/VT compatibility corpus, scrollback, Unicode, damage, and reference oracle                                                                                                         |
+| Unix PTY              | `nix` plus a thin Bitty abstraction                             | Linux/macOS/BSD differences, signals, resize, and child lifecycle                                                                                                                        |
+| Windows PTY           | Direct ConPTY backend                                           | UTF-8/VT pipes, deadlock/backpressure, resize, and process tree                                                                                                                          |
+| Font                  | `cosmic-text` wrapper, descending layer by layer if necessary   | Cell-constrained shaping, ligatures, fallback, emoji, and Nerd Font overflow                                                                                                             |
+| File watch            | `notify`                                                        | Rename/write storms, atomic saves, and cross-platform debounce                                                                                                                           |
+| CPU tracing           | `tracing` plus a Tracy/Puffin adapter                           | Release overhead and stable event schema                                                                                                                                                 |
+| GPU profiling         | `wgpu-profiler`                                                 | Timestamp support, Chrome traces, and backend coverage                                                                                                                                   |
+| IPC                   | Unix socket plus Windows named pipe with a Bitty-owned protocol | Versioning, authentication, discovery, multi-client behavior, and backpressure                                                                                                           |
+| Async                 | Runtime-agnostic Core with local Tokio use in services          | Thread/event-loop integration, binary cost, and shutdown semantics                                                                                                                       |
 
 Versions cannot be pinned directly from the early discussion. Each ADR should
 use the official documentation, maintenance status, and a local prototype as
@@ -116,8 +116,13 @@ they exist at decision time.
 ### Accepted
 
 - Plugins use Lua.
-- Primary configuration uses Lua; whether to retain a static auxiliary entry
-  point remains undecided.
+- Primary configuration uses Lua; configuration pipeline, layer stack, merge
+  rules, reload classification, and project-trust mechanics are accepted in
+  [Configuration Model RFC](../specifications/configuration-model-rfc.md)
+  (OQ-010, 2026-08-27). Whether to retain a static auxiliary entry point and
+  the bounded overlay API remain deferred to follow-up RFCs.
+- Lua configuration produces a declarative `ConfigPlan` for Rust validation,
+  diff, and reconciliation (accepted per OQ-010).
 
 ### Normative security baseline
 
@@ -135,8 +140,6 @@ the chat:
 ### Candidates
 
 - Lua 5.4 rather than LuaJIT.
-- Lua configuration produces a declarative `ConfigPlan` for Rust validation,
-  diff, and reconciliation.
 - The configuration VM and plugin VMs are separate.
 - The concrete per-plugin VM implementation, creation cost, and VM lifecycle for
   lazy plugins.
@@ -146,7 +149,7 @@ the chat:
   executes.
 
 Using the same language for configuration syntax and plugins does not imply the
-same lifecycle. In the candidate model, configuration produces only a typed
+same lifecycle. In the accepted model, configuration produces only a typed
 `ConfigPlan`; Rust performs validation, diffing, and reconciliation. Plugin
 VMs persist to respond to cold-path events.
 

@@ -68,9 +68,12 @@ The terminal core will use Rust. Plugin extensions and the primary configuration
 language will use Lua to keep the extension barrier low and provide a plugin
 development experience similar to Neovim.
 
-Whether to retain a static auxiliary configuration entry point, which Lua
-version to use, the configuration evaluation model, and plugin VM isolation
-details still require formal decisions. See the
+The configuration evaluation model (declarative `ConfigPlan` pipeline with Rust
+reconciliation) is accepted in
+[Configuration Model RFC](../specifications/configuration-model-rfc.md)
+(OQ-010, 2026-08-27). Whether to retain a static auxiliary entry point, which
+Lua version and binding to use, and plugin VM isolation details still require
+formal decisions. See the
 [Technology and Dependency Strategy](../project/technology-strategy.md).
 
 ### Cross-platform is a product goal
@@ -202,7 +205,11 @@ this vision, but their exact designs still require RFCs.
 - What are the startup-time, idle-memory, input-latency, and package-size targets
   for lightweight operation? (Accepted: [Performance Budget RFC](../specifications/performance-budget-rfc.md).)
 - Should Bitty retain a static auxiliary entry point in addition to the primary
-  Lua configuration, and what are the configuration schema and reload semantics?
+  Lua configuration? Configuration pipeline, layers, merge, reload, and
+  project-trust mechanics are defined in
+  [Configuration Model RFC](../specifications/configuration-model-rfc.md)
+  (Accepted, OQ-010, 2026-08-27); static auxiliary entry point and overlay
+  mechanics remain follow-up work.
 - Which platforms belong in Tier 1, Tier 2, and Tier 3, and what is the explicit
   BSD scope? (Accepted: [ADR 0002 - Platform Support Tiers](../decisions/adrs/ADR-0002-platform-support-tiers.md).)
 - Which VT, keyboard, image, and shell-integration protocols must the first
