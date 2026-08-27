@@ -27,7 +27,7 @@ unresolved choices are tracked in the
 
 | ID      | Direction                                                                                                                                                                    | Basis                                                          | Canonical document                                                                                                       | Contract still needed                                                                                                                                                            |
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DIR-001 | Keep a small terminal core and move optional behavior behind governed extension surfaces.                                                                                    | Product intent and maintained architecture                     | [Product vision](../product/vision.md); [core boundaries](../architecture/core-boundaries.md)                            | Plugin API v1 RFC                                                                                                                                                                |
+| DIR-001 | Keep a small terminal core and move optional behavior behind governed extension surfaces.                                                                                    | Product intent and maintained architecture                     | [Product vision](../product/vision.md); [core boundaries](../architecture/core-boundaries.md)                            | Accepted in [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) (OQ-011/OQ-012/OQ-013)                                                                               |
 | DIR-002 | Use Rust 2024 for the core implementation.                                                                                                                                   | Explicit project direction                                     | [Technology strategy](../project/technology-strategy.md)                                                                 | Toolchain maintenance policy; MSRV is accepted in [ADR 0003](adrs/ADR-0003-core-workspace-topology.md)                                                                           |
 | DIR-003 | Use Lua for plugins and as the main configuration language.                                                                                                                  | Explicit user direction in source turns 3 and 15               | [Technology strategy](../project/technology-strategy.md); [Lua and XDG](../configuration/lua-and-xdg.md)                 | Runtime/binding RFCs (configuration model accepted in [Configuration Model RFC](../specifications/configuration-model-rfc.md))                                                   |
 | DIR-004 | Target Linux, macOS, Windows, and BSD without assuming identical support on day one.                                                                                         | Explicit product direction                                     | [Product vision](../product/vision.md); [technology strategy](../project/technology-strategy.md)                         | None; tiers and CI policy accepted in [ADR 0002](adrs/ADR-0002-platform-support-tiers.md)                                                                                        |
@@ -49,16 +49,17 @@ The following reviewed artifacts were accepted on 2026-08-26 and 2026-08-27 by t
 project initiator. Each closes the open-question entry it names; acceptance
 records a reviewed contract, not implementation evidence:
 
-| Artifact                                                                        | Closes | Status   |
-| ------------------------------------------------------------------------------- | ------ | -------- |
-| [Performance Budget RFC](../specifications/performance-budget-rfc.md)           | OQ-001 | Accepted |
-| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)    | OQ-003 | Accepted |
-| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md) | OQ-004 | Accepted |
-| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005 | Accepted |
-| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006 | Accepted |
-| [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007 | Accepted |
-| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010 | Accepted |
-| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021 | Accepted |
+| Artifact                                                                        | Closes                 | Status   |
+| ------------------------------------------------------------------------------- | ---------------------- | -------- |
+| [Performance Budget RFC](../specifications/performance-budget-rfc.md)           | OQ-001                 | Accepted |
+| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)    | OQ-003                 | Accepted |
+| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md) | OQ-004                 | Accepted |
+| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005                 | Accepted |
+| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006                 | Accepted |
+| [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007                 | Accepted |
+| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010                 | Accepted |
+| [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013 | Accepted |
+| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -95,9 +96,10 @@ facts before relying on them operationally.
 The following proposals have not been accepted merely because they appeared in
 the historical conversation:
 
-- Plugin API v1, capability/manifest model, and event phases. (Drafted:
-  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — proposed;
-  UI/scene primitives and hot-reload mechanics remain open there.)
+- Plugin API v1, capability/manifest model, and event phases. (Accepted:
+  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
+  v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
+  UI/scene primitives and hot-reload mechanics remain follow-up work.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation.
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
 - Package manifest/lock formats, resolver, registry, and update UX.
