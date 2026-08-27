@@ -59,28 +59,29 @@ edition 2024). Third-party pins below are per-crate; workspace inheritance
 keeps lints (`unsafe_code = "deny"`) uniform. Crates marked std-only carry
 no third-party runtime dependencies and are headless, `forbid(unsafe_code)`:
 
-| Crate               | Third-party pins                                                                                               | Notes                                                       |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `bitty-vt`          | `vte@0.15`                                                                                                     | Parser tables behind owned `TerminalAction`; no I/O         |
-| `bitty-term-state`  | `bitty-vt` only                                                                                                | Pure terminal truth; dev `proptest` only                    |
-| `bitty-pty`         | `portable-pty@0.9`                                                                                             | Wrapper; lifecycle/backpressure owned                       |
-| `bitty-platform`    | `winit@0.30`, `raw-window-handle@=0.6.2`                                                                       | `wgpu` surface pin `0.6` side; `gui-tests` feature opt-in   |
-| `bitty-config`      | std-only                                                                                                       | Typed config, validation, migration; no extra pins          |
-| `bitty-render`      | `wgpu@25.0`, `crossfont@0.9` plus `bitty-term-state`, `bitty-platform`                                         | ADR-0004 rendering rows; `sw-fallback` feature opt-in       |
-| `bitty-ui`          | `bitty-term-state` only                                                                                        | View/layout/selection primitives; headless                  |
-| `bitty-plugin-host` | `bitty-term-state`, `bitty-config`, `bitty-package`                                                            | Host registry/capability/lifecycle; no GPU/PTY handles      |
-| `bitty-runtime`     | `bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-render`, `bitty-platform`, `bitty-ui`, `bitty-plugin-host` | Orchestration; no new third-party pins                      |
-| `bitty-package`     | std-only                                                                                                       | Draft package lifecycle; deterministic SHA-256 stub; no I/O |
-| `bitty-rich`        | `bitty-term-state`, `bitty-vt` (and dev)                                                                       | Draft rich presentation; no decoder/renderer dep            |
-| `bitty-ipc`         | std-only                                                                                                       | Draft bounded framing/channels/stdio stub; no socket/pipe   |
-| `bitty-agent`       | std-only                                                                                                       | Draft bounded messages/tool stubs/side queue; no LLM I/O    |
-| `bitty-app`         | `bitty-runtime`, `bitty-platform`                                                                              | Thin composition root; no new pins                          |
-| `bitty-core`        | std-only                                                                                                       | Bootstrap seed; to be retired                               |
+| Crate               | Third-party pins                                                                                               | Notes                                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bitty-vt`          | `vte@0.15`                                                                                                     | Parser tables behind owned `TerminalAction`; no I/O                                                                                        |
+| `bitty-term-state`  | `bitty-vt` only                                                                                                | Pure terminal truth; dev `proptest` only                                                                                                   |
+| `bitty-pty`         | `portable-pty@0.9`                                                                                             | Wrapper; lifecycle/backpressure owned                                                                                                      |
+| `bitty-platform`    | `winit@0.30`, `raw-window-handle@=0.6.2`                                                                       | `wgpu` surface pin `0.6` side; `gui-tests` feature opt-in                                                                                  |
+| `bitty-config`      | std-only                                                                                                       | Typed config, validation, migration; no extra pins                                                                                         |
+| `bitty-render`      | `wgpu@25.0`, `crossfont@0.9` plus `bitty-term-state`, `bitty-platform`                                         | ADR-0004 rendering rows; `sw-fallback` feature opt-in                                                                                      |
+| `bitty-ui`          | `bitty-term-state` only                                                                                        | View/layout/selection primitives; headless                                                                                                 |
+| `bitty-plugin-host` | `bitty-term-state`, `bitty-config`, `bitty-package`                                                            | Host registry/capability/lifecycle; no GPU/PTY handles                                                                                     |
+| `bitty-runtime`     | `bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-render`, `bitty-platform`, `bitty-ui`, `bitty-plugin-host` | Orchestration; no new third-party pins                                                                                                     |
+| `bitty-package`     | std-only                                                                                                       | Lifecycle and integrity model accepted (OQ-021, 2026-08-27); real signature verification remains draft; deterministic SHA-256 stub; no I/O |
+| `bitty-rich`        | `bitty-term-state`, `bitty-vt` (and dev)                                                                       | Draft rich presentation; no decoder/renderer dep                                                                                           |
+| `bitty-ipc`         | std-only                                                                                                       | Draft bounded framing/channels/stdio stub; no socket/pipe                                                                                  |
+| `bitty-agent`       | std-only                                                                                                       | Draft bounded messages/tool stubs/side queue; no LLM I/O                                                                                   |
+| `bitty-app`         | `bitty-runtime`, `bitty-platform`                                                                              | Thin composition root; no new pins                                                                                                         |
+| `bitty-core`        | std-only                                                                                                       | Bootstrap seed; to be retired                                                                                                              |
 
 `bitty-ipc` and `bitty-agent` currently carry no third-party pins and remain
-std-only; `bitty-package` and `bitty-rich` likewise carry only workspace-crate
-edges plus the bounds above. Any new upstream for the draft tail requires an
-ADR 0004 revision.
+std-only; `bitty-rich` likewise carries only workspace-crate edges plus the
+bounds above, and `bitty-package` carries only workspace-crate edges with the
+lifecycle and integrity model accepted (signatures remain draft per crate docs).
+Any new upstream for the remaining draft tail requires an ADR 0004 revision.
 
 ## Local gate tools and hook wiring
 

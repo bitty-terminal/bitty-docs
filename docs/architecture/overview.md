@@ -17,15 +17,17 @@ This document describes Bitty's candidate target architecture, not stable
 product behavior. The `bitty` workspace is now spine-complete in crate
 presence (`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
 `bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
-`bitty-runtime`, plus draft `bitty-package`, `bitty-rich`, `bitty-ipc`,
-`bitty-agent` ahead of acceptance, plus `bitty-app` and the retained
-`bitty-core` seed) as defined in
+`bitty-runtime`, `bitty-package` (lifecycle and integrity model accepted,
+OQ-021, 2026-08-27; signatures still draft), plus draft `bitty-rich`,
+`bitty-ipc`, `bitty-agent` ahead of acceptance, plus `bitty-app` and the
+retained `bitty-core` seed) as defined in
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and pinned
 in `bitty/Cargo.toml`. Component names remain architecture vocabulary: apart
 from the Rust core, primary Lua configuration and plugins, cross-platform
-goal, and plugin-oriented product direction, the layers and data flows on this
-page remain candidates requiring RFC or ADR acceptance, and the draft tail
-crates do not imply shipped behavior.
+goal, plugin-oriented product direction, and the accepted package lifecycle
+model, the layers and data flows on this page remain candidates requiring RFC
+or ADR acceptance, and the remaining draft tail crates do not imply shipped
+behavior.
 
 ## Overall model
 
@@ -193,9 +195,10 @@ These are logical boundaries. The final crate granularity should follow
 dependency direction, independent testing value, and compilation cost. It
 should not turn every source module into a crate. The adopted workspace
 decomposition and dependency edges are fixed in
-[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); four
-additional draft crates (`bitty-package`, `bitty-rich`, `bitty-ipc`,
-`bitty-agent`) implement the tail of the
+[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
+`bitty-package` lifecycle and integrity model is accepted (OQ-021, 2026-08-27)
+and three additional draft crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`)
+implement the tail of the
 [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) as
 proposed, headless libraries without expanding the accepted topology.
 

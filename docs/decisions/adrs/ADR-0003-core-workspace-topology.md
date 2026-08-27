@@ -16,10 +16,13 @@ sidebar_order: 33
 Accepted on 2026-08-26 by the project initiator, closing open question
 [OQ-005](../open-questions.md). The accepted topology is the ten-crate
 graph below. As of 2026-08-27 the `bitty` workspace additionally contains
-four draft spine crates (`bitty-package`, `bitty-rich`, `bitty-ipc`,
-`bitty-agent`) ahead of acceptance; they are not part of the accepted graph
-and remain governed by their proposed RFCs. See the implementation note after
-the table.
+`bitty-package` with lifecycle and integrity model accepted
+([Package Lifecycle RFC](../../specifications/package-lifecycle-rfc.md),
+OQ-021, 2026-08-27) and three draft spine crates (`bitty-rich`,
+`bitty-ipc`, `bitty-agent`) ahead of acceptance; they are not part of the
+accepted graph and remain governed by their proposed RFCs, while
+`bitty-package` real signature verification remains draft per crate docs.
+See the implementation note after the table.
 
 ## Context
 
@@ -61,17 +64,18 @@ resolver 3, `publish = false`) with the following member crates:
 
 Implementation note (2026-08-27): the workspace resolves to fifteen
 members (`bitty-core` plus fourteen active crates) as pinned in
-`bitty/Cargo.toml` and `Cargo.lock`. The four additional crates
-(`bitty-package`, `bitty-rich`, `bitty-ipc`, `bitty-agent`) implement the
-tail of the candidate build-order spine (`Proposed Delivery Sequence`) as
-draft, headless, `forbid(unsafe_code)` libraries. Their contracts remain
-proposed and require independent review before any acceptance claim:
-`bitty-package` tracks the Package Lifecycle RFC (OQ-021/OQ-022),
-`bitty-rich` the rich-content interfaces (OQ-008/OQ-015/OQ-016),
-`bitty-ipc` the IPC/MCP boundary (OQ-018), and `bitty-agent` the Agent core
-(OQ-018/OQ-019). They are not wired into `bitty-runtime` hot paths and do not
-expand the accepted topology; a future revision of this ADR or a successor ADR
-will decide final placement.
+`bitty/Cargo.toml` and `Cargo.lock`. `bitty-package` implements the tail of
+the candidate build-order spine (`Proposed Delivery Sequence`) with lifecycle
+and integrity model accepted
+([Package Lifecycle RFC](../../specifications/package-lifecycle-rfc.md),
+OQ-021, 2026-08-27) and `bitty-rich`, `bitty-ipc`, `bitty-agent` as draft,
+headless, `forbid(unsafe_code)` libraries. `bitty-package` real signature
+verification, registry, and key-directory contracts remain draft per crate docs
+and OQ-022/OQ-026 through OQ-029; `bitty-rich` the rich-content interfaces
+(OQ-008/OQ-015/OQ-016), `bitty-ipc` the IPC/MCP boundary (OQ-018), and
+`bitty-agent` the Agent core (OQ-018/OQ-019) remain proposed. They are not
+wired into `bitty-runtime` hot paths and do not expand the accepted topology;
+a future revision of this ADR or a successor ADR will decide final placement.
 
 Dependency rules:
 
@@ -109,8 +113,10 @@ As of 2026-08-27 the workspace is spine-complete in crate presence:
 `bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
 `bitty-runtime`, `bitty-package`, `bitty-rich`, `bitty-ipc`,
 `bitty-agent`, plus `bitty-app` and the retained `bitty-core` seed. Presence
-does not imply acceptance of the draft tail crates; they remain proposed
-implementations tracked by their RFCs.
+does not imply acceptance of the draft tail crates except `bitty-package`
+whose lifecycle and integrity model is accepted (OQ-021, 2026-08-27) with
+signatures still draft; the remaining three stay proposed implementations
+tracked by their RFCs.
 
 ### MSRV
 
@@ -148,7 +154,7 @@ implementations tracked by their RFCs.
   fallback, shaping, and emoji) inside `bitty-term-state` versus a dedicated
   text sibling follows the text RFC named in
   [ADR 0004](ADR-0004-upstream-dependencies.md).
-- Final dependency wiring for the draft tail crates (`bitty-package`,
-  `bitty-rich`, `bitty-ipc`, `bitty-agent`) and whether they remain
-  standalone or merge into runtime/host siblings awaits the follow-up RFCs
-  and a successor topology ADR.
+- Final dependency wiring for `bitty-package` (lifecycle accepted, signatures
+  draft) and the draft tail crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`)
+  and whether they remain standalone or merge into runtime/host siblings awaits
+  the follow-up RFCs and a successor topology ADR.

@@ -21,11 +21,13 @@ page come from architecture recommendations and still require RFCs or ADRs.
 API. The `bitty` workspace is now spine-complete in crate presence
 (`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
 `bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
-`bitty-runtime`, plus draft `bitty-package`, `bitty-rich`, `bitty-ipc`,
-`bitty-agent` ahead of acceptance, plus `bitty-app` and the retained
-`bitty-core` seed) per
-[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the draft
-tail crates implement proposed contracts and do not imply shipped behavior.
+`bitty-runtime`, `bitty-package` (lifecycle and integrity model accepted,
+OQ-021, 2026-08-27; signatures still draft), plus draft `bitty-rich`,
+`bitty-ipc`, `bitty-agent` ahead of acceptance, plus `bitty-app` and the
+retained `bitty-core` seed) per
+[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the
+remaining draft tail crates implement proposed contracts and do not imply
+shipped behavior.
 
 ## Candidate decision rule
 
@@ -93,9 +95,11 @@ acceptance evidence.
 The table describes architecture ownership. It does not claim that every
 capability or protocol belongs in the first milestone. Crate presence is
 spine-complete per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md)
-but the mappings below remain candidates; the four draft tail crates
-(`bitty-package`, `bitty-rich`, `bitty-ipc`, `bitty-agent`) are proposed
-implementations of their RFC phases and do not expand the accepted topology.
+but the mappings below remain candidates; `bitty-package` lifecycle and
+integrity model is accepted (OQ-021, 2026-08-27) with signatures still draft,
+and the remaining three draft tail crates (`bitty-rich`, `bitty-ipc`,
+`bitty-agent`) are proposed implementations of their RFC phases and do not
+expand the accepted topology.
 
 | Domain               | Core mechanisms and invariants                                                                       |
 | -------------------- | ---------------------------------------------------------------------------------------------------- |
