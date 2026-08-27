@@ -102,7 +102,7 @@ the historical conversation:
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
   UI/scene primitives and hot-reload mechanics remain follow-up work.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Proposed: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `draft`, pending acceptance.)
-- Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol.
+- Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Proposed: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); pending category-owner, docs-curator, and security review.)
 - Package manifest/lock formats, resolver, registry, and update UX.
   (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
   — lifecycle and integrity model for OQ-021; resolver (OQ-026), version
