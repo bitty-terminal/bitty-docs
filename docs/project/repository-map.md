@@ -74,15 +74,15 @@ have been pushed with an initial snapshot commit, and each repository's
 `main` branch is protected on GitHub: squash-only merging with required status
 checks matching that repository's CI job names.
 
-| Local directory                        | Public remote                                             | Current state                                           | Required `main` status checks |
-| -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------- | ----------------------------- |
-| `bitty/`                               | `https://github.com/bitty-terminal/bitty`                 | Initial snapshot pushed; `main` protected (squash-only) | `quality`                     |
-| `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only) | `docs-quality`                |
-| `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only) | `quality`                     |
-| `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
-| `bitty-mcp/`                           | `https://github.com/bitty-terminal/bitty-mcp`             | Initial snapshot pushed; `main` protected (squash-only) | `gates`, `actionlint`         |
-| `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
-| `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only) | `check`, `actionlint`         |
+| Local directory                        | Public remote                                             | Current state                                           | Required `main` status checks                    |
+| -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
+| `bitty/`                               | `https://github.com/bitty-terminal/bitty`                 | Initial snapshot pushed; `main` protected (squash-only) | `Quality gates`                                  |
+| `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only) | `Docs quality`                                   |
+| `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only) | `Website quality`                                |
+| `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
+| `bitty-mcp/`                           | `https://github.com/bitty-terminal/bitty-mcp`             | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
+| `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only) | `Actionlint`, `Quality gates`                    |
+| `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
 
 Neither the umbrella root nor `bitty-plugins/` is initialized as a Git
 repository. This is an intentional routing and grouping boundary, not an
