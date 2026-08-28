@@ -141,6 +141,12 @@ the historical conversation:
   bundled-disabled-by-default distribution, empty v1 enabled set, five
   disable surfaces (config, managed manifest, CLI, profile, `--safe`) and
   promotion criteria for [OQ-002](open-questions.md); pending acceptance.)
+- Repository governance: licenses, branch protections, ownership, compatibility policy, and cross-repository release flow. (Proposed:
+  [Governance RFC](../specifications/governance-rfc.md) — MIT license,
+  squash-only `main` with required checks and CODEOWNERS, semver with MSRV
+  1.85 and Tier 1 platform policy, and dependency-ordered release train with
+  `Docs-PR`/`Code-PR` trailers for [OQ-024](open-questions.md); pending
+  acceptance.)
 - Risk evidence and P0 closure. (Proposed:
   [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) —
   risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and
