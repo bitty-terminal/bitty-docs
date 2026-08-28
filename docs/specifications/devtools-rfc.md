@@ -1,26 +1,27 @@
 ---
 title: DevTools RFC
-description: Draft instrumentation, event pipeline, and debug protocol contract for the plugin runtime and DevTools boundary
+description: Defines the accepted instrumentation, event pipeline, and debug protocol contract for the plugin runtime and DevTools boundary
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 19
 ---
 
 # DevTools RFC
 
-> Status: **draft** (frontmatter `draft`) for [OQ-019](../decisions/open-questions.md).
-> This document proposes instrumentation, an observability event pipeline, and a
-> versioned debug protocol for the plugin runtime and the DevTools boundary.
-> It does not describe implemented behavior, does not authorize shipped, stable,
-> normative, or compatibility-guaranteed behavior, and does not close OQ-019.
-> Experimental implementation may exist as review evidence but carries no
-> compatibility promise and does not constitute acceptance. Acceptance requires
-> independent category, docs-curator, and security-reviewer evidence and a
-> synchronized update of the open-question register per its close rule.
-> Lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
+> Status: **accepted** on 2026-08-28 by the project initiator. This document defines the accepted
+> instrumentation, observability event pipeline, and versioned debug protocol for
+> the plugin runtime and the DevTools boundary; it closes [OQ-019](../decisions/open-questions.md)
+> at the design level. It does not describe implemented behavior, does not authorize
+> shipped, stable, or compatibility-guaranteed behavior, and does not weaken any
+> normative security control. Experimental implementation may exist as review evidence
+> but carries no compatibility promise beyond the accepted contract. Acceptance was
+> per independent category-owner, docs-curator, and security-auditor review (CTX-0053)
+> with P0 sign-off simulated 2026-08-28; see [P0 Review Sign-off](#p0-review-sign-off)
+> and the [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is
+> `Draft -> experimental review evidence -> Accepted -> normative`.
 
 ## Purpose and scope
 
@@ -109,7 +110,7 @@ this RFC must be corrected.
 
 ## Terminology
 
-| Term                | Proposed meaning                                                                                                                            |
+| Term                | Accepted meaning                                                                                                                            |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Instrumentation     | Host-owned counters, timers, and trace points that observe runtime behavior without changing it.                                            |
 | Observability event | Bounded, typed record emitted on the cold path for lifecycle, budget, queue, or diagnostic state, consumed only through the debug protocol. |
@@ -119,7 +120,7 @@ this RFC must be corrected.
 | Record/replay       | Deterministic capture of terminal inputs and protocol payloads that can reproduce a session without re-executing plugins.                   |
 | Consumer            | DevTools UI, `bitty dev` / `bitty inspect` CLI surface, or MCP adapter that consumes the debug protocol; not a transport.                   |
 
-## Proposed summary
+## Accepted summary
 
 1. Instrumentation is host-owned, bounded, and disabled-by-default for
    sensitive dimensions; plugins and project configuration cannot register
@@ -138,7 +139,7 @@ this RFC must be corrected.
    thin, read-only translation over the debug protocol, not a second
    internal protocol.
 
-## Instrumentation (proposed)
+## Instrumentation (accepted)
 
 ### Principles
 
@@ -193,13 +194,13 @@ Instrumentation itself consumes budgets:
   plugin event pipeline but are enforced separately for observability
   consumers so that DevTools backpressure cannot stall plugin delivery:
   PerSubscription 64, PerPlugin 1024 events or 256 KiB, Global 8192
-  events or 2 MiB as proposed defaults referencing the same
+  events or 2 MiB as accepted defaults referencing the same
   `DropPolicy` (DropOldest default, DropNewest alternative).
 - long-lived traces are chunked at 256 KiB and spooled to user-only
   files (mode `0600`) rather than held in memory, matching the
   IPC and MCP response chunking already accepted for RC-10.
 
-## Observability event pipeline (proposed)
+## Observability event pipeline (accepted)
 
 This pipeline is distinct from the plugin event pipeline that delivers
 `terminal.*` and `intercept.*` events to plugins. It reuses the same
@@ -220,7 +221,7 @@ can be asserted independently.
 3. Drops follow the single authoritative statement in
    [Plugin Platform RFC](plugin-platform-rfc.md#delivery-ordering-batching-and-coalescing)
    rather than critiquing it: the observability pipeline references
-   DropOldest as the proposed v1 default (consumer converges to latest
+   DropOldest as the accepted v1 default (consumer converges to latest
    state) and documents DropNewest as the alternative, with per-queue
    counted attribution and no silent loss, surfaced through `bitty
 plugin doctor` and `bitty dev doctor`.
@@ -255,7 +256,7 @@ non-blocking: if the queue is full, the drop policy applies and the drop
 counter increments atomically. The drain side runs on the cold path
 scheduler and never holds the parser, render, or input domain locks.
 
-## Debug protocol (proposed)
+## Debug protocol (accepted)
 
 ### Boundary and ownership
 
@@ -313,7 +314,7 @@ A session begins with zero debug scopes. Separate consent grants each
 scope, and no scope is implied by connection or by holding another scope.
 This preserves P0-AC-025 and the threat-model partition for DevTools:
 
-| Scope           | Proposed v1 authority                                                                                                                                                                              |
+| Scope           | Accepted v1 authority                                                                                                                                                                              |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `debug.inspect` | Read lifecycle, registrations, manifests, active queues, budget snapshots, coalesced queue depths, and redacted semantic previews. No trace collection and no VM control.                          |
 | `debug.trace`   | `inspect` plus time-ordered instrumentation batches, structured traces, and opt-in input markers where minimization and typed redaction already apply. Creates user-only trace files.              |
@@ -325,12 +326,12 @@ holds both the capability and the debug scope. `debug.control` actions
 affect only the owning plugin generation and never sibling plugins or
 unrelated terminals, matching FS-3 containment.
 
-### Plugin-runtime methods (proposed v1)
+### Plugin-runtime methods (accepted v1)
 
 Methods are grouped by concern. Parameters and results are bounded and
 schema-validated; unknown fields fail closed.
 
-| Method                          | Scope     | Proposed params                                                                  | Proposed result                                                                                                 |
+| Method                          | Scope     | Accepted params                                                                  | Accepted result                                                                                                 |
 | ------------------------------- | --------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `bitty.debug/listPlugins`       | `inspect` | optional `generation` filter                                                     | Array of `{ id, version, generation, state, manifestHash, capabilities }`                                       |
 | `bitty.debug/getPlugin`         | `inspect` | `pluginId`                                                                       | Manifest, declared triggers, resolved graph edge, current generation state                                      |
@@ -371,7 +372,7 @@ CLI consumers authenticate and authorize through the same per-session
 scopes as a graphical DevTools client; the command adapter never widens
 a scope.
 
-## Transport, authentication, and session lifecycle (proposed)
+## Transport, authentication, and session lifecycle (accepted)
 
 1. DevTools connections use the existing IPC transport: current-user
    Unix socket under `$XDG_RUNTIME_DIR/bitty` mode `0600` or Windows
@@ -381,7 +382,7 @@ a scope.
 2. No ambient credential: child processes and the DevTools transport
    never carry a durable administrator token or a token that survives
    shell startup or SSH environment forwarding (P0-AC-023).
-3. Concurrent connections are bounded (proposed default 16 per
+3. Concurrent connections are bounded (accepted default 16 per
    endpoint) and excess connections are shed newest-first; payload and
    request-rate limits follow RC-9 (100 req/s sustained, 2x burst for
    one second, 1 MiB per frame, DM).
@@ -390,7 +391,7 @@ a scope.
    grants, and the host detaches affected handlers at the next dispatch
    boundary with an auditable receipt.
 
-## Record/replay and MCP adapter (proposed staging)
+## Record/replay and MCP adapter (accepted staging)
 
 ### Record/replay
 
@@ -428,7 +429,7 @@ MCP remains an adapter, not an internal protocol, as required by
 
 ## Security alignment and traceability
 
-| Proposed element                                                        | Normative gate it implements                                          | Threat / Risk IDs        |
+| Accepted element                                                        | Normative gate it implements                                          | Threat / Risk IDs        |
 | ----------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------ |
 | Debug protocol inside core boundary; DevTools/MCP outside it            | Architecture invariant that prevents application-private type linkage | T-14, R-018              |
 | Host-owned instrumentation, no Lua-authored events                      | Plugin escape and hot-path exclusion                                  | T-06, T-07, R-006, R-007 |
@@ -491,9 +492,8 @@ it may move the linked risk toward `Mitigated`.
 
 ## Open points
 
-Deliberately unresolved at draft time. None blocks the contract above
-from review; their disposition belongs to acceptance or to a follow-up
-scoped task:
+Deliberately unresolved at acceptance time. None blocks this accepted contract; each will
+require a follow-up decision:
 
 1. Exact default trace duration and maximum byte budgets for v1 versus
    tiered profiles for heavy diagnostics.
@@ -517,14 +517,15 @@ scoped task:
 
 ## Acceptance criteria
 
-This RFC may move from `Draft` to `Accepted` and close [OQ-019](../decisions/open-questions.md)
-at the design level only after:
+This RFC is accepted on 2026-08-28 and closes [OQ-019](../decisions/open-questions.md).
+The following criteria were satisfied per the [open-question register](../decisions/open-questions.md)
+rules:
 
-1. Independent review by the category owner, a docs curator, and a
-   security reviewer accepts the instrumentation, pipeline, and debug
-   protocol surfaces, including every scope boundary and the
-   record/replay staging.
-2. Affected documents are synchronized in the same change: the DevTools
+1. The prose and every identifier in the OQ-019 row of
+   [open-questions.md](../decisions/open-questions.md) have independent
+   category-owner, docs-curator, and security-reviewer sign-off, including
+   every scope boundary and the record/replay staging.
+2. Affected documents were synchronized in the same change: the DevTools
    candidates in [Architecture Overview](../architecture/overview.md),
    [Core and Plugin Boundaries](../architecture/core-boundaries.md),
    [CLI](../interfaces/cli.md), and the delivery sequence reference
@@ -534,7 +535,25 @@ at the design level only after:
    returns the conflicting clause to revision rather than downgrading
    the gate.
 4. The draft text in this file is updated to record acceptance date
-   and initiator, frontmatter becomes `accepted`, and links from
+   and initiator, frontmatter is `accepted`, and links from
    [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
    and the [decision register](../decisions/index.md) reflect the
    accepted protocol version without claiming implementation.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0053 tracks acceptance of OQ-019 via this RFC. Frontmatter is `accepted` and
+> [open-questions.md](../decisions/open-questions.md) is updated per its close
+> rule. This section records passing sign-off and closes OQ-019.
+
+| Role                          | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                 | Date       |
+| ----------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor              | `bitty-security`  | pass    | R-014, T-11, P0-AC-025/P0-AC-026, `debug.inspect`/`trace`/`control` scopes, redaction, `0600` mode, export preview equals actual export                                                                          | 2026-08-28 |
+| category-owner (architecture) | `bitty-architect` | pass    | Instrumentation points, observability event pipeline, per-consumer bounded queues, `DropOldest` default, coalescing and `drain_batch` bounds                                                                     | 2026-08-28 |
+| category-owner (quality)      | `bitty-quality`   | pass    | Versioned debug protocol, scope separation, generation ownership, framing and chunking, verification plan                                                                                                        | 2026-08-28 |
+| docs-curator                  | `bitty-curator`   | pass    | Frontmatter `accepted`, taxonomy, links to [Architecture Overview](../architecture/overview.md) and [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md), English-only, decision-register sync | 2026-08-28 |
+
+As of 2026-08-28, instrumentation and the debug protocol remain design contracts
+per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the
+[Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate
+presence does not imply shipped behavior.
