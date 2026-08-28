@@ -49,22 +49,23 @@ The following reviewed artifacts were accepted on 2026-08-26, 2026-08-27, and 20
 project initiator. Each closes the open-question entry it names; acceptance
 records a reviewed contract, not implementation evidence:
 
-| Artifact                                                                        | Closes                 | Status   |
-| ------------------------------------------------------------------------------- | ---------------------- | -------- |
-| [Performance Budget RFC](../specifications/performance-budget-rfc.md)           | OQ-001                 | Accepted |
-| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)    | OQ-003                 | Accepted |
-| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md) | OQ-004                 | Accepted |
-| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005                 | Accepted |
-| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006                 | Accepted |
-| [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007                 | Accepted |
-| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010                 | Accepted |
-| [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013 | Accepted |
-| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                 | Accepted |
-| [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                 | Accepted |
-| [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016 | Accepted |
-| [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                 | Accepted |
-| [CLI Contract RFC](../specifications/cli-contract-rfc.md)                       | OQ-017                 | Accepted |
-| [DevTools RFC](../specifications/devtools-rfc.md)                               | OQ-019                 | Accepted |
+| Artifact                                                                        | Closes                                 | Status   |
+| ------------------------------------------------------------------------------- | -------------------------------------- | -------- |
+| [Performance Budget RFC](../specifications/performance-budget-rfc.md)           | OQ-001                                 | Accepted |
+| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)    | OQ-003                                 | Accepted |
+| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md) | OQ-004                                 | Accepted |
+| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005                                 | Accepted |
+| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006                                 | Accepted |
+| [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007                                 | Accepted |
+| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010                                 | Accepted |
+| [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013                 | Accepted |
+| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                                 | Accepted |
+| [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                                 | Accepted |
+| [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016                 | Accepted |
+| [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                                 | Accepted |
+| [CLI Contract RFC](../specifications/cli-contract-rfc.md)                       | OQ-017                                 | Accepted |
+| [Package Follow-up RFC](../specifications/package-followup-rfc.md)              | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
+| [DevTools RFC](../specifications/devtools-rfc.md)                               | OQ-019                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
