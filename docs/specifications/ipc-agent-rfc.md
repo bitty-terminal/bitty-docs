@@ -11,7 +11,7 @@ sidebar_order: 18
 
 # IPC and Agent RFC
 
-> Status: **draft** (frontmatter `draft`). This document is the
+> Status: **proposed** (frontmatter `draft`; P0 review in progress per CTX-0064, 2026-08-28). This document is the
 > IPC/MCP protocol RFC with security review named as the next artifact for
 > [OQ-018](../decisions/open-questions.md). It proposes mechanisms for how local
 > instances are selected, authenticated, authorized, rate-limited, and exposed
@@ -21,7 +21,8 @@ sidebar_order: 18
 > compatibility-guaranteed behavior. Experimental implementation may exist as
 > review evidence in `bitty-ipc` and `bitty-agent` but carries no
 > compatibility promise and does not constitute acceptance; acceptance requires
-> independent security-auditor review.
+> independent security-auditor review per the
+> [P0 review checklist](../reviews/p0-review-checklist.md).
 >
 > OQ-018 remains **Open** until this RFC is accepted. Frontmatter stays `draft`;
 > lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
@@ -806,6 +807,30 @@ needed; a follow-up PR must keep them synchronized):
 
 These are explicitly out of this RFC's scope; they remain in OQ-018 or its
 follow-ups and must not be silently chosen by implementation.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0064 tracks acceptance of OQ-018 via this RFC. Frontmatter
+> remains `draft` until all reviewers record passing evidence and
+> [open-questions.md](../decisions/open-questions.md) is updated per its close
+> rule. This section is placeholder sign-off and does not close any open
+> question.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer (placeholder) | Verdict | Evidence / scope                                                                                                                                                                                                                                                                             | Date       |
+| ------------------------------------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`       | pending | R-011, R-012, R-013, R-014, T-09, T-10, T-01, P0-AC-021/022/023, 256 KiB framing, `SO_PEERCRED`/`LOCAL_PEERCRED`, scopes, RC-9/RC-10, untrusted-observation labeling, secret minimization                                                                                                    | 2026-08-28 |
+| category-owner (security-and-quality) | `bitty-quality`        | pending | Instance selection precedence, transport framing `256 KiB`/`512 KiB`, bounded channels `MAX_CHANNEL_CAPACITY` 256 / `MAX_PENDING_REQUESTS` 64 / `DEFAULT_TRANSPORT_CAPACITY` 64, wire envelope `v1`, method validation, auth, scopes, streaming, `bitty-ipc`/`bitty-agent` headless evidence | 2026-08-28 |
+| docs-curator                          | `bitty-curator`        | pending | Frontmatter `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`, links to [CLI](../interfaces/cli.md) and [Threat Model](../security/threat-model.md) and [P0 review checklist](../reviews/p0-review-checklist.md), English-only                             | 2026-08-28 |
+
+<!-- markdownlint-enable MD013 -->
+
+Until then, `bitty-ipc` and `bitty-agent` remain draft headless crates ahead of
+acceptance per
+[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the
+[Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate
+presence does not imply shipped behavior.
 
 ## References
 
