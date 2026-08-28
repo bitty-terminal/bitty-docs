@@ -62,6 +62,7 @@ records a reviewed contract, not implementation evidence:
 | [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                 | Accepted |
 | [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                 | Accepted |
 | [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016 | Accepted |
+| [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -116,7 +117,7 @@ the historical conversation:
   headless-runtime/daemon/remote taxonomy, session-grained detach/reattach,
   bounded persistence, contained failure, and trust-boundary analysis gate for
   [OQ-020](open-questions.md); pending acceptance.)
-- Isolation resource ceilings and failure semantics. ([Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — `Proposed` draft, not accepted; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17 headless tests, queue budgets `BoundedText`/`drain_batch`) and CTX-0040 `d67a65b` (15 headless `measurement_lua.rs` RC-1 10^7/50ms/8ms + RC-2 32 MiB via `piccolo`/`Lua::total_memory()` + 21 headless `measurement.rs` Global 8192/2MiB hard-gated at Host admission, worktree `bitty/.worktrees/ctx-0040-feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as experimental review evidence, pending P0 security-auditor review before acceptance; frontmatter remains `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`.)
+- Isolation resource ceilings and failure semantics. (Accepted: [Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — accepted 2026-08-28 for OQ-014, `Accepted` with frontmatter `accepted`; isolation domains IR-D1..D3, resource ceilings RC-1..RC-10 (three-level queue PerSub 64 / PerPlugin 1024 events/256 KiB / Global 8192 events/2 MiB hard-gated, RC-1 10^7/50 ms/8 ms, RC-2 32 MiB), failure semantics FS-1..FS-9, and adversarial AT-IR-001..015; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17/21 headless `measurement.rs`, 15 headless `measurement_lua.rs` @ `d67a65b`, worktree `ctx-0040/feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as reviewed evidence; lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-28) -> normative`.)
 - Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Proposed: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); pending security review.)
 - Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit.
   (Proposed: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua
