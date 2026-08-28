@@ -4,7 +4,7 @@ description: Defers headless daemon detach reattach and remote UI to post-v1.0 w
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 38
 ---
@@ -13,12 +13,13 @@ sidebar_order: 38
 
 ## Status
 
-Proposed on 2026-08-28 — closes [OQ-020](../open-questions.md) when accepted;
-does not ship code. This ADR defers the headless daemon, detach/reattach, and
-remote UI to post-v1.0 and records the trust-boundary analysis gate that any
-future daemon must pass. It does not authorize implementation, add a crate, or
-change any normative P0 control. Frontmatter `status` is `draft` per the
-repository metadata schema; document status is Proposed.
+Accepted on 2026-08-28 by the project initiator, closing
+[OQ-020](../open-questions.md). This ADR defers the headless daemon,
+detach/reattach, and remote UI to post-v1.0 and records the trust-boundary
+analysis gate that any future daemon must pass. It does not ship code, does not
+authorize implementation, add a crate, or change any normative P0 control.
+Frontmatter `status` is `accepted` per the repository metadata schema; document
+status is Accepted.
 
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per [Threat Model](../../security/threat-model.md) T-09 and R-011 and P0-AC-021
