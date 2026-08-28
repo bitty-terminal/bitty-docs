@@ -105,9 +105,11 @@ the historical conversation:
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Proposed: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); pending category-owner, docs-curator, and security review.)
 - Package manifest/lock formats, resolver, registry, and update UX.
   (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
-  — lifecycle and integrity model for OQ-021; resolver (OQ-026), version
-  lifecycle (OQ-027), registry (OQ-028), and key directory (OQ-029) remain
-  open.)
+  — lifecycle and integrity model for OQ-021; Draft:
+  [Package Follow-up RFC](../specifications/package-followup-rfc.md) —
+  resolver (OQ-026), version lifecycle (OQ-027), registry (OQ-028), and key
+  directory (OQ-029), pending category-owner, docs-curator, and security
+  review.)
 - Headless daemon, detach/reattach, and remote UI architecture.
   (Proposed: [ADR 0008](adrs/ADR-0008-headless.md) — deferral to post-v1.0,
   headless-runtime/daemon/remote taxonomy, session-grained detach/reattach,

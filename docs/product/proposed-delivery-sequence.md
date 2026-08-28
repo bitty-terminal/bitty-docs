@@ -171,3 +171,36 @@ section remains the boundary-level description.
 - Acceptance of any item requires the reviewable artifact named in the
   [open-question register](../decisions/open-questions.md) or a new scoped
   ADR/RFC.
+
+## Companion release ladder (CTX-0044 draft)
+
+This section records the concrete companion proposed in bitty CTX-0044
+`docs/product/release-ladder.md` (branch `ctx-0044/docs-release-ladder`,
+worktree `.worktrees/ctx-0044-docs-release-ladder` in the `bitty`
+repository) on top of CTX-0043
+`chore(crate): prepare workspace for crates.io v0.1.0`
+(branch `ctx-0043/chore-crate-publish`, PR #74,
+`workspace.package.version 0.0.0 -> 0.1.0`, nine `publish = true` /
+seven `publish = false`). It does **not** accept this record.
+
+- Version mapping: `0.1.0` for the `v0.1` minimal shell slice
+  (VT + PTY + Terminal Truth + platform + config + render + UI + runtime + app
+  headless slice), `0.2.0` VT/TUI, `0.3.0` GPU, `0.4.0` Lua, `0.5.0` Plugin API,
+  `0.6.0` manager, `0.7.0` DevTools, `0.8.0` Rich, `0.9.0` IPC, `1.0` stabilized —
+  maturity labels, not dates; patches stay semver-compatible.
+- Crate publish order (DAG-forced, CTX-0043 `version = "0.1.0"` pins):
+  **Group 1 leaves** `bitty-vt`, `bitty-pty`, `bitty-platform`, `bitty-config`,
+  `bitty-package`, `bitty-lua` (`publish = true`, no workspace deps) ->
+  **Group 2** `bitty-term-state` (`-> vt`) ->
+  **Group 3** `bitty-ui` (`-> term-state`) and `bitty-render`
+  (`-> term-state` + `platform`) in parallel ->
+  **Group 4 tail deferred** (`publish = false` at `0.1.0`)
+  `bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, `bitty-agent`,
+  `bitty-runtime`, `bitty-app`, `bitty-core`.
+- The ladder overlays this publish order on the candidate spine without
+  weakening normative security controls; acceptance of any slice still
+  requires its RFC/ADR with independent review. The companion file
+  `bitty/docs/product/release-ladder.md` (draft, `status: draft`) is the
+  reviewable source for the table and verification gates
+  (`cargo publish --dry-run` leaf PASS, dependent crates valid but awaiting
+  index, `just check` green).
