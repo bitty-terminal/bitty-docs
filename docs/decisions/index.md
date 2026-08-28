@@ -63,6 +63,7 @@ records a reviewed contract, not implementation evidence:
 | [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                 | Accepted |
 | [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016 | Accepted |
 | [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                 | Accepted |
+| [CLI Contract RFC](../specifications/cli-contract-rfc.md)                       | OQ-017                 | Accepted |
 | [DevTools RFC](../specifications/devtools-rfc.md)                               | OQ-019                 | Accepted |
 
 ## Normative pre-implementation contracts
@@ -105,7 +106,7 @@ the historical conversation:
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
   UI/scene primitives and hot-reload mechanics remain follow-up work.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
-- Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Proposed: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); pending category-owner, docs-curator, and security review.)
+- Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
   (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
   — lifecycle and integrity model for OQ-021; Draft:
