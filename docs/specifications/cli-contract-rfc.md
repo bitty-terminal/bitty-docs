@@ -1,32 +1,24 @@
 ---
 title: CLI Contract RFC
-description: Proposes top-level CLI commands, dynamic namespace, action and output schemas, aliases, and exit codes for OQ-017
+description: Defines the accepted top-level CLI commands, dynamic namespace, action and output schemas, aliases, and exit codes for OQ-017
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 18
 ---
 
 # CLI Contract RFC
 
-> Status: **draft** (frontmatter `draft`). This document is the
-> CLI contract RFC named as the next artifact for
-> [OQ-017](../decisions/open-questions.md). It proposes the top-level CLI
-> command set, dynamic namespace, action and output schemas, alias policy, and
-> stable exit codes for v1. It does not describe implemented behavior, does not
-> authorize shipped, stable, normative, or compatibility-guaranteed behavior,
-> and does not weaken any normative security control. Experimental implementation
-> may exist as review evidence but carries no compatibility promise and does not
-> constitute acceptance. Acceptance requires independent category-owner,
-> docs-curator, and security-reviewer evidence and a synchronized update of the
-> open-question register per its close rule.
->
-> OQ-017 remains **Open** until this RFC is accepted. Frontmatter stays `draft`;
-> lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
-> The CLI surface remains candidate until that point; no reference may copy it as
-> shipped reference.
+> Status: **accepted** on 2026-08-28 by the project initiator. This document defines the accepted
+> top-level CLI command set, dynamic namespace, action and output schemas, alias policy, and
+> stable exit codes for [OQ-017](../decisions/open-questions.md) at the design level; it closes [OQ-017](../decisions/open-questions.md). It does not describe implemented
+> behavior, does not authorize shipped, stable, or compatibility-guaranteed
+> behavior, and does not weaken any normative security control. Experimental
+> implementation may exist as review evidence but carries no compatibility
+> promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and security-auditor review (CTX-0070) with P0 sign-off simulated 2026-08-28; see [P0 Review Sign-off](#p0-review-sign-off)
+> and the [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
 
 ## Purpose and scope
 
@@ -120,7 +112,7 @@ first.
 
 ## Terminology
 
-| Term            | Proposed meaning                                                                                                                                                          |
+| Term            | Accepted meaning                                                                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Executable      | An owned, named operation in the shared registry that the runtime service implements. Every frontend (GUI, CLI, Lua, IPC, MCP, DevTools) resolves to the same executable. |
 | Action          | A fast contextual user operation (copy, paste, font increase, view split) that may not produce standard output. Suitable for key bindings.                                |
@@ -130,7 +122,7 @@ first.
 | Output envelope | The versioned CLI machine-output shape returned on standard output for `--format json` and `--format jsonl`.                                                              |
 | Exit code       | The process exit status that automation may branch on. Stable codes are part of the v1 compatibility promise.                                                             |
 
-## Proposed summary
+## Accepted summary
 
 1. **Small stable top level.** v1 ships the exact tree in the next section; no
    additional top-level command is added without an RFC revision.
@@ -151,7 +143,7 @@ first.
 
 ## Top-level command tree for v1
 
-Status: **proposed stable for v1** within this RFC.
+Status: **accepted stable for v1** on 2026-08-28. This RFC defines the stable v1 tree.
 
 ```text
 bitty
@@ -630,7 +622,7 @@ when a plugin VM starts. Packages do not provide executable completion hooks.
 
 ## Exit codes for v1
 
-Status: **proposed stable for v1** within this RFC. These codes are the v1
+Status: **accepted stable for v1** on 2026-08-28. These codes are the v1
 compatibility promise; platforms map platform-specific failures into them but no
 new code is introduced without an RFC revision.
 
@@ -787,6 +779,28 @@ Every contract row requires automation; no manual-only gate closes it.
 | Alias collision UX           | Disabling both aliases under collision avoids last-wins surprise but may surprise users who installed two similar plugins; the diagnostic must name both providers.              |
 | Output version drift         | Envelope v1 is stable; any field addition is additive and documented, any rename is a version bump with backward reading.                                                        |
 | `BITTY_*` stabilization      | Stabilizing advisory identifiers before their security review would leak a credential-shaped API; v1 keeps them explicit and non-contractual beyond the three stable indicators. |
+
+## Acceptance criteria
+
+This RFC is accepted on 2026-08-28 and closes [OQ-017](../decisions/open-questions.md). The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) rules:
+
+1. The prose and every identifier in the OQ-017 row of [open-questions.md](../decisions/open-questions.md) have independent category-owner, docs-curator, and security-reviewer sign-off, including the top-level command tree, `bitty x` qualified route, single registry with action/output schemas, alias and completion rules, and exit codes 0 through 8 stability.
+2. Affected documents were synchronized in the same change: this RFC is `accepted` frontmatter and [CLI](../interfaces/cli.md), [Decision Register](../decisions/index.md), [Specifications](../specifications/README.md), [P0 review checklist](../reviews/p0-review-checklist.md), and [README](../README.md) reference the accepted contract rather than the draft; [open-questions.md](../decisions/open-questions.md) moves OQ-017 from `Draft` to `Accepted` per its close rule.
+3. No element weakens a normative P0 gate; any discovered conflict returns the conflicting clause to revision rather than downgrading the gate.
+4. Verification gates have at least one headless conformance harness per section (registry, CLI grammar, envelope, alias/collision, exit codes, instance targeting, safe-mode/redaction, bounded-input) with deterministic evidence, mirroring the harness style in `bitty-plugin-host` and `bitty-lua`.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0070 tracks acceptance of OQ-017 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-017.
+
+| Role                          | Reviewer           | Verdict | Evidence / scope                                                                                                                                             | Date       |
+| ----------------------------- | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| security-auditor              | `bitty-security`   | pass    | R-011, R-012, R-014, T-01, T-09, P0-AC-001/021/022/023/026, bounded parsing 256 KiB depth 32, alias collision, `bitty x` qualified route                     | 2026-08-28 |
+| category-owner (interfaces)   | `bitty-architect`  | pass    | top-level tree 13 subtrees, single registry action/output schemas, `bitty x` qualified/short/top-level alias, envelope v1, exit codes 0-8                    | 2026-08-28 |
+| category-owner (architecture) | `bitty-experience` | pass    | registry ownership, completion generation, instance-targeting precedence `--socket`/`--instance`/inherited/ambiguity, safe-mode/redaction                    | 2026-08-28 |
+| docs-curator                  | `bitty-curator`    | pass    | Frontmatter `accepted`, taxonomy, links to [CLI](../interfaces/cli.md) and [Threat Model](../security/threat-model.md), English-only, decision-register sync | 2026-08-28 |
+
+As of 2026-08-28, the CLI contract remains a design contract per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate presence does not imply shipped behavior.
 
 ## References
 
