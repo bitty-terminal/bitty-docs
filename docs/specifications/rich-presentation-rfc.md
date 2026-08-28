@@ -11,7 +11,7 @@ sidebar_order: 19
 
 # Rich Presentation RFC
 
-> Status: **draft** (frontmatter `draft`). This document proposes the
+> Status: **proposed** (frontmatter `draft`; P0 review in progress per CTX-0062, 2026-08-28). This document proposes the
 > image, rich-block, scene, zone, and structured-transport contracts for
 > [OQ-008](../decisions/open-questions.md),
 > [OQ-015](../decisions/open-questions.md), and
@@ -20,7 +20,8 @@ sidebar_order: 19
 > behavior, and does not weaken any normative security control. Experimental
 > implementation may exist as review evidence but carries no compatibility
 > promise; acceptance requires independent category-owner, docs-curator, and
-> security-reviewer evidence. The lifecycle is
+> security-reviewer evidence per the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is
 > `Draft -> experimental review evidence -> Accepted -> normative`.
 
 ## Purpose and scope
@@ -659,6 +660,20 @@ This RFC will be considered for acceptance when:
    section (image bounds, zone anchoring, structured-transport framing) with
    deterministic measurement evidence, mirroring the isolation-budget harness
    style in `bitty-plugin-host` and `bitty-lua`.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0062 tracks acceptance of OQ-008, OQ-015, and OQ-016 via this
+> RFC. Frontmatter remains `draft` until all reviewers record passing evidence and
+> [open-questions.md](../decisions/open-questions.md) is updated per its close
+> rule. This section is placeholder sign-off and does not close any open question.
+
+| Role                           | Reviewer (placeholder) | Verdict | Evidence / scope                                                                                                                                                                                         | Date       |
+| ------------------------------ | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor               | `bitty-security`       | pending | T-02/T-03/T-05/T-13, R-002/R-003/R-005/R-008/R-013/R-021, P0-AC-003/004/005/021, image bounds before allocation, deny-by-default resource loader, authenticated transport, alternate-screen default-deny | 2026-08-28 |
+| category-owner (architecture)  | `bitty-architect`      | pending | Presentation model, `ImageStore`/`ImagePlacement`, `RichBlock`/`Scene`/`SemanticZone`, anchor survival, selection/a11y/search/export contracts                                                           | 2026-08-28 |
+| category-owner (extensibility) | `bitty-experience`     | pending | `ui.rich` and `ui.protocol-register` capability gates, structured-transport framing/backpressure/lifecycle, declarative scene limits                                                                     | 2026-08-28 |
+| docs-curator                   | `bitty-curator`        | pending | Frontmatter, taxonomy, links to [Rich Content](../interfaces/rich-content.md) and [Threat Model](../security/threat-model.md), English-only, decision-register sync                                      | 2026-08-28 |
 
 Until then, `bitty-rich`, `bitty-ipc`, and `bitty-agent` remain draft
 headless crates ahead of acceptance per
