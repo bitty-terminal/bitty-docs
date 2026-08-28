@@ -145,24 +145,16 @@ The source proposes a strict bar for calling any release v1.0:
 
 ## Candidate daemon staging
 
-For the headless `bittyd` daemon question, the source records a definite
-position that this corpus has **not** adopted:
+For the headless `bittyd` daemon question, the source's positioning is now the
+accepted direction per [ADR 0008](../decisions/adrs/ADR-0008-headless.md), which
+defers the daemon to post-v1.0, accommodates the headless runtime early, and
+gates any future daemon or remote work on a mandatory trust-boundary analysis:
 
-- Positioning: place the daemon after v1.0, or at earliest near v1.0. The
-  architecture should accommodate it early, but implementation should not
-  start early.
-- Candidate feature scope if ever adopted: detach/attach of running terminals,
-  persistent sessions, a remote frontend, and multiplexer-style ownership of
-  multiple terminals.
-- Recorded rationale: building the daemon first would greatly increase
-  terminal-lifecycle complexity compared with the single-process design.
+- Positioning: after v1.0, or at earliest near v1.0; accommodate early, do not implement early (accepted via ADR 0008).
+- Candidate feature scope if ever adopted: detach/attach of running terminals, persistent sessions, a remote frontend, and multiplexer-style ownership of multiple terminals (candidate scope per ADR 0008).
+- Recorded rationale: building the daemon first would greatly increase terminal-lifecycle complexity compared with the single-process design.
 
-This staging is offered to [OQ-020](../decisions/open-questions.md) as a
-candidate consideration only. OQ-020 stays open, including its trust-boundary
-half, which requires analysis against the
-[threat model](../security/threat-model.md). The existing candidate bullet in
-the [Architecture Overview](../architecture/overview.md) long-term evolution
-section remains the boundary-level description.
+This staging was offered to [OQ-020](../decisions/open-questions.md) as a candidate and is now deferred to post-v1.0 with trust-boundary gate per [ADR 0008](../decisions/adrs/ADR-0008-headless.md). The trust-boundary half requires analysis against the [threat model](../security/threat-model.md) per that ADR. The existing candidate bullet in the [Architecture Overview](../architecture/overview.md) long-term evolution section now cites ADR 0008 as the accepted daemon positioning.
 
 ## Relationship to registers
 

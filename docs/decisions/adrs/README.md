@@ -24,7 +24,7 @@ working directions and the remaining ADR queue.
 | [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](ADR-0005-lua-pins-and-stdlib.md) | Proposed | Exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, upgrade cadence, vendored verification, allowlist, and unsafe audit                                                                       |
 | [ADR 0006 - os.getenv Exposure and Bitty Module Policy](ADR-0006-os-env-policy.md)                                 | Proposed | os.getenv denial, desensitized bitty.env.get with capability-gated allowlist, audit logging, and migration                                                                           |
 | [ADR 0007 - Async/Send Boundary and GC Tuning for Lua VMs](ADR-0007-async-gc.md)                                   | Proposed | Async/Send boundary (mlua vs piccolo, Send/Sync, tasks 64/timers 32), GC tuning (incremental pause/step), Config VM budget charging (PB-1/PB-2), and reload/module-cache interaction |
-| [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](ADR-0008-headless.md)                   | Proposed | Headless daemon detach/reattach and remote UI deferred to post-v1.0 with trust-boundary analysis gate                                                                                |
+| [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](ADR-0008-headless.md)                   | Accepted | Headless daemon detach/reattach and remote UI deferred to post-v1.0 with trust-boundary analysis gate                                                                                |
 
 ## Admission criteria
 
