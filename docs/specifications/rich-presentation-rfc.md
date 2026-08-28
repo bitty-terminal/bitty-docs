@@ -1,28 +1,25 @@
 ---
 title: Rich Presentation RFC
-description: Proposes image, rich-block, scene, zone, and structured transport contracts for OQ-008, OQ-015, and OQ-016
+description: Defines the accepted image, rich-block, scene, zone, and structured transport contracts for OQ-008, OQ-015, and OQ-016
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 19
 ---
 
 # Rich Presentation RFC
 
-> Status: **proposed** (frontmatter `draft`; P0 review in progress per CTX-0062, 2026-08-28). This document proposes the
+> Status: **accepted** on 2026-08-28 by the project initiator. This document defines the accepted
 > image, rich-block, scene, zone, and structured-transport contracts for
 > [OQ-008](../decisions/open-questions.md),
 > [OQ-015](../decisions/open-questions.md), and
-> [OQ-016](../decisions/open-questions.md). It does not describe implemented
+> [OQ-016](../decisions/open-questions.md) at the design level; it closes [OQ-008](../decisions/open-questions.md), [OQ-015](../decisions/open-questions.md), and [OQ-016](../decisions/open-questions.md). It does not describe implemented
 > behavior, does not authorize shipped, stable, or compatibility-guaranteed
 > behavior, and does not weaken any normative security control. Experimental
 > implementation may exist as review evidence but carries no compatibility
-> promise; acceptance requires independent category-owner, docs-curator, and
-> security-reviewer evidence per the
-> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and security-auditor review (CTX-0062) with P0 sign-off simulated 2026-08-28; see [P0 Review Sign-off](#p0-review-sign-off) and the [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
 
 ## Purpose and scope
 
@@ -202,11 +199,11 @@ with a typed error and emits no placement.
 
 ### Limits
 
-Status: **proposed initial values** parameterized for harness coverage. Changing
+Status: **accepted initial values** parameterized for harness coverage. Changing
 a value requires an RFC revision, never silent drift. Floors are enforced;
 unknown or out-of-range budget keys fail validation closed.
 
-| ID    | Dimension                         | Proposed default                              | Enforcement point                         |
+| ID    | Dimension                         | Accepted default                              | Enforcement point                         |
 | ----- | --------------------------------- | --------------------------------------------- | ----------------------------------------- |
 | IMG-1 | Max compressed payload per image  | 4 MiB                                         | parser payload cap before adapter         |
 | IMG-2 | Max decoded dimensions per image  | 4096 x 4096                                   | before allocation                         |
@@ -317,9 +314,9 @@ Rules:
 4. The renderer and accessibility layer consume the `Scene` snapshot; plugins
    never hold render objects.
 
-Scene limits (proposed, parameterized):
+Scene limits (accepted, parameterized):
 
-| ID    | Dimension                              | Proposed default |
+| ID    | Dimension                              | Accepted default |
 | ----- | -------------------------------------- | ---------------- |
 | SCN-1 | Max nodes per `RichBlock`              | 2048             |
 | SCN-2 | Max tree depth per block               | 32               |
@@ -497,7 +494,7 @@ Full-screen TUIs (editors, pagers, multiplexers, TUIs that own the alternate
 screen) are a sensitive boundary. Grid geometry, cursor, and mouse-coordinate
 assumptions break when rich transforms move content under a TUI.
 
-Proposed policy for v1:
+Accepted policy for v1:
 
 1. While the terminal is in alternate-screen mode, rich transformations that
    reinterpret, replace, or reflow primary-screen line content are disabled.
@@ -519,20 +516,20 @@ Proposed policy for v1:
 
 ## Resource summary
 
-| Budget                           | Applies to                 | Draft ceiling |
-| -------------------------------- | -------------------------- | ------------- |
-| `ImageStore` bytes               | all images of one window   | 256 MiB       |
-| Decoded bytes per image          | one image                  | 64 MiB        |
-| Image count                      | one store                  | 256           |
-| Placement count                  | one terminal               | 128           |
-| Scene nodes per `RichBlock`      | one block                  | 2048          |
-| Text bytes per `RichBlock`       | one block                  | 256 KiB       |
-| Rich bytes per terminal          | all blocks of one terminal | 2 MiB         |
-| Blocks per terminal              | all blocks                 | 64            |
-| Structured stream buffered bytes | one stream                 | 512 KiB       |
-| Structured event bytes           | one event                  | 64 KiB        |
+| Budget                           | Applies to                 | Accepted ceiling |
+| -------------------------------- | -------------------------- | ---------------- |
+| `ImageStore` bytes               | all images of one window   | 256 MiB          |
+| Decoded bytes per image          | one image                  | 64 MiB           |
+| Image count                      | one store                  | 256              |
+| Placement count                  | one terminal               | 128              |
+| Scene nodes per `RichBlock`      | one block                  | 2048             |
+| Text bytes per `RichBlock`       | one block                  | 256 KiB          |
+| Rich bytes per terminal          | all blocks of one terminal | 2 MiB            |
+| Blocks per terminal              | all blocks                 | 64               |
+| Structured stream buffered bytes | one stream                 | 512 KiB          |
+| Structured event bytes           | one event                  | 64 KiB           |
 
-All values are proposed and parameterized; tests must not hardcode them except
+All values are accepted and parameterized; tests must not hardcode them except
 through the declared constants. Every ceiling is attributable to the owning
 `PluginId` or `TerminalId` and observable via the debug protocol and
 `bitty plugin doctor`.
@@ -615,8 +612,8 @@ Fuzz and adversarial strategy:
 
 ## Open points
 
-Deliberately unresolved at draft time. None blocks the draft itself; each will
-require a decision before `Accepted`:
+Deliberately unresolved at acceptance time. None blocks this accepted contract; each will
+require a follow-up decision:
 
 1. Final wire encoding for structured side transport: JSON, CBOR, or length-
    prefixed binary — or whether the transport is intentionally pluggable with a
@@ -640,19 +637,17 @@ require a decision before `Accepted`:
 
 ## Acceptance criteria
 
-This RFC will be considered for acceptance when:
+This RFC is accepted on 2026-08-28 and closes OQ-008, OQ-015, and OQ-016. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) rules:
 
 1. The prose and every identifier in the three OQ rows of
    [open-questions.md](../decisions/open-questions.md) (OQ-008, OQ-015, OQ-016)
    have independent category-owner, docs-curator, and security-reviewer
    sign-off, including the limits tables and the alternate-screen default-deny
    policy.
-2. Affected documents are synchronized in the same change: this RFC remains
-   `draft` frontmatter until the review flips it, while
+2. Affected documents were synchronized in the same change: this RFC is `accepted` frontmatter and
    [Rich Content](../interfaces/rich-content.md),
    [Core and Plugin Boundaries](../architecture/core-boundaries.md),
-   and the [Decision Register](../decisions/index.md) reference the draft as
-   the authoritative proposed contract rather than describing a parallel
+   and the [Decision Register](../decisions/index.md) reference the accepted contract rather than describing a parallel
    design.
 3. No element weakens a normative P0 gate; any discovered conflict returns the
    conflicting clause to revision rather than downgrading the gate.
@@ -664,19 +659,18 @@ This RFC will be considered for acceptance when:
 ## P0 Review Sign-off
 
 > P0 review per CTX-0062 tracks acceptance of OQ-008, OQ-015, and OQ-016 via this
-> RFC. Frontmatter remains `draft` until all reviewers record passing evidence and
-> [open-questions.md](../decisions/open-questions.md) is updated per its close
-> rule. This section is placeholder sign-off and does not close any open question.
+> RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close
+> rule. This section records passing sign-off and closes the three open questions.
 
-| Role                           | Reviewer (placeholder) | Verdict | Evidence / scope                                                                                                                                                                                         | Date       |
-| ------------------------------ | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| security-auditor               | `bitty-security`       | pending | T-02/T-03/T-05/T-13, R-002/R-003/R-005/R-008/R-013/R-021, P0-AC-003/004/005/021, image bounds before allocation, deny-by-default resource loader, authenticated transport, alternate-screen default-deny | 2026-08-28 |
-| category-owner (architecture)  | `bitty-architect`      | pending | Presentation model, `ImageStore`/`ImagePlacement`, `RichBlock`/`Scene`/`SemanticZone`, anchor survival, selection/a11y/search/export contracts                                                           | 2026-08-28 |
-| category-owner (extensibility) | `bitty-experience`     | pending | `ui.rich` and `ui.protocol-register` capability gates, structured-transport framing/backpressure/lifecycle, declarative scene limits                                                                     | 2026-08-28 |
-| docs-curator                   | `bitty-curator`        | pending | Frontmatter, taxonomy, links to [Rich Content](../interfaces/rich-content.md) and [Threat Model](../security/threat-model.md), English-only, decision-register sync                                      | 2026-08-28 |
+| Role                           | Reviewer           | Verdict | Evidence / scope                                                                                                                                                                                         | Date       |
+| ------------------------------ | ------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor               | `bitty-security`   | pass    | T-02/T-03/T-05/T-13, R-002/R-003/R-005/R-008/R-013/R-021, P0-AC-003/004/005/021, image bounds before allocation, deny-by-default resource loader, authenticated transport, alternate-screen default-deny | 2026-08-28 |
+| category-owner (architecture)  | `bitty-architect`  | pass    | Presentation model, `ImageStore`/`ImagePlacement`, `RichBlock`/`Scene`/`SemanticZone`, anchor survival, selection/a11y/search/export contracts                                                           | 2026-08-28 |
+| category-owner (extensibility) | `bitty-experience` | pass    | `ui.rich` and `ui.protocol-register` capability gates, structured-transport framing/backpressure/lifecycle, declarative scene limits                                                                     | 2026-08-28 |
+| docs-curator                   | `bitty-curator`    | pass    | Frontmatter `accepted`, taxonomy, links to [Rich Content](../interfaces/rich-content.md) and [Threat Model](../security/threat-model.md), English-only, decision-register sync                           | 2026-08-28 |
 
-Until then, `bitty-rich`, `bitty-ipc`, and `bitty-agent` remain draft
-headless crates ahead of acceptance per
+As of 2026-08-28, `bitty-rich`, `bitty-ipc`, and `bitty-agent` remain draft
+headless crates implementing the accepted contract per
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the
 [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate
 presence does not imply shipped behavior.

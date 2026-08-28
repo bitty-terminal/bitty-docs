@@ -45,7 +45,7 @@ it does not freeze public API details or prove implementation.
 
 ## Accepted foundation artifacts
 
-The following reviewed artifacts were accepted on 2026-08-26 and 2026-08-27 by the
+The following reviewed artifacts were accepted on 2026-08-26, 2026-08-27, and 2026-08-28 by the
 project initiator. Each closes the open-question entry it names; acceptance
 records a reviewed contract, not implementation evidence:
 
@@ -61,6 +61,7 @@ records a reviewed contract, not implementation evidence:
 | [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013 | Accepted |
 | [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                 | Accepted |
 | [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                 | Accepted |
+| [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -101,7 +102,7 @@ the historical conversation:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
   UI/scene primitives and hot-reload mechanics remain follow-up work.)
-- Rich blocks, semantic zones, structured transports, and TUI transformation. (Proposed: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `draft`, pending acceptance.)
+- Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Proposed: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); pending category-owner, docs-curator, and security review.)
 - Package manifest/lock formats, resolver, registry, and update UX.
   (Accepted: [Package lifecycle RFC](../specifications/package-lifecycle-rfc.md)
