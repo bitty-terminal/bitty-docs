@@ -141,6 +141,11 @@ the historical conversation:
   bundled-disabled-by-default distribution, empty v1 enabled set, five
   disable surfaces (config, managed manifest, CLI, profile, `--safe`) and
   promotion criteria for [OQ-002](open-questions.md); pending acceptance.)
+- Risk evidence and P0 closure. (Proposed:
+  [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) —
+  risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and
+  review gates for closing risks without weakening controls for
+  [OQ-025](open-questions.md); frontmatter `draft`, pending acceptance.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
