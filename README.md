@@ -26,6 +26,7 @@ not claim that product code exists or that a proposed design has shipped.
   normative contracts, and candidate decisions.
 - [Open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) — unresolved work
   that must not be silently treated as decided.
+- [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/isolation-resource-rfc.md) — accepted isolation boundaries, resource ceilings, and failure semantics with adversarial tests for OQ-014 (2026-08-28).
 - [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/ipc-agent-rfc.md) — draft bounded framing, wire/auth/scopes and Agent bounded messages, auth/consent/streaming for OQ-018.
 - [CLI Contract RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/cli-contract-rfc.md) — draft top-level commands, dynamic `bitty x` namespace, action/output schemas, aliases, and exit codes 0-8 for OQ-017.
 - [Governance RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/governance-rfc.md) — draft licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024.
