@@ -63,6 +63,7 @@ records a reviewed contract, not implementation evidence:
 | [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                 | Accepted |
 | [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016 | Accepted |
 | [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                 | Accepted |
+| [DevTools RFC](../specifications/devtools-rfc.md)                               | OQ-019                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -134,10 +135,9 @@ the historical conversation:
   Config VM charging against PB-1 and PB-2, and per-VM module-cache reload
   interaction for [OQ-032](open-questions.md); pending acceptance.)
 - DevTools instrumentation, event pipeline, and debug protocol for the plugin
-  runtime. (Proposed: [DevTools RFC](../specifications/devtools-rfc.md) —
+  runtime. (Accepted: [DevTools RFC](../specifications/devtools-rfc.md) —
   instrumentation, observability event pipeline, and versioned debug protocol with
-  `debug.inspect`/`trace`/`control` scopes for [OQ-019](open-questions.md);
-  pending acceptance.)
+  `debug.inspect`/`trace`/`control` scopes for [OQ-019](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Default distribution, bundled-plugin set, and disable mechanism. (Proposed:
   [Default Distribution RFC](../specifications/default-distribution-rfc.md) —
   bundled-disabled-by-default distribution, empty v1 enabled set, five
