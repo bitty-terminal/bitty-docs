@@ -28,6 +28,7 @@ not claim that product code exists or that a proposed design has shipped.
   that must not be silently treated as decided.
 - [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/ipc-agent-rfc.md) — draft bounded framing, wire/auth/scopes and Agent bounded messages, auth/consent/streaming for OQ-018.
 - [CLI Contract RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/cli-contract-rfc.md) — draft top-level commands, dynamic `bitty x` namespace, action/output schemas, aliases, and exit codes 0-8 for OQ-017.
+- [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — draft risk-to-P0-AC traceability, evidence taxonomy, and review gates for OQ-025.
 - [Docs-first TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — documentation and initialization work before
   product implementation.
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
