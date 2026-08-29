@@ -32,13 +32,13 @@ document still apply:
 | [Default Distribution RFC](default-distribution-rfc.md)       | OQ-002                                 | Accepted |
 | [IPC and Agent RFC](ipc-agent-rfc.md)                         | OQ-018                                 | Accepted |
 | [Governance RFC](governance-rfc.md)                           | OQ-024                                 | Accepted |
+| [Risk Evidence RFC](risk-evidence-rfc.md)                     | OQ-025                                 | Accepted |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 
 | Draft                                           | Targets | Status |
 | ----------------------------------------------- | ------- | ------ |
 | [Website Delivery RFC](website-delivery-rfc.md) | OQ-023  | Draft  |
-| [Risk Evidence RFC](risk-evidence-rfc.md)       | OQ-025  | Draft  |
 
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
@@ -46,18 +46,18 @@ applied only together with an update of all inbound links.
 
 Review note (2026-08-29): the Configuration Model RFC targeting OQ-010,
 the Plugin Platform RFC targeting OQ-011/OQ-012/OQ-013, the Package Lifecycle RFC
-targeting OQ-021, the Lua Runtime RFC targeting OQ-009, the Rich Presentation RFC targeting OQ-008/OQ-015/OQ-016, the Isolation Resource RFC targeting OQ-014, the CLI Contract RFC targeting OQ-017, the Package Follow-up RFC targeting OQ-022, OQ-026, OQ-027, OQ-028, OQ-029, the DevTools RFC targeting OQ-019, the Default Distribution RFC targeting OQ-002, the IPC and Agent RFC targeting OQ-018, and the Governance RFC targeting OQ-024 are `Accepted` with
-frontmatter `accepted` since 2026-08-29; the remaining drafts
-(Website Delivery RFC targeting OQ-023 and Risk Evidence RFC targeting OQ-025)
+targeting OQ-021, the Lua Runtime RFC targeting OQ-009, the Rich Presentation RFC targeting OQ-008/OQ-015/OQ-016, the Isolation Resource RFC targeting OQ-014, the CLI Contract RFC targeting OQ-017, the Package Follow-up RFC targeting OQ-022, OQ-026, OQ-027, OQ-028, OQ-029, the DevTools RFC targeting OQ-019, the Default Distribution RFC targeting OQ-002, the IPC and Agent RFC targeting OQ-018, the Governance RFC targeting OQ-024, and the Risk Evidence RFC targeting OQ-025 are `Accepted` with
+frontmatter `accepted` since 2026-08-29; the remaining draft
+(Website Delivery RFC targeting OQ-023)
 remain `Draft`/`Proposed` with frontmatter `draft` and require independent
 category-owner, docs-curator, and security-reviewer evidence; crate presence of
 `bitty-config`, `bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, and
 `bitty-agent` does not self-accept any draft beyond the accepted IPC and Agent RFC, and `bitty-package` lifecycle and
 integrity model is accepted while real signature verification remains draft per
-crate docs. The eighteen accepted artifacts (Performance Budget RFC OQ-001, ADR-0002
+crate docs. The nineteen accepted artifacts (Performance Budget RFC OQ-001, ADR-0002
 OQ-003, Compatibility Milestone RFC OQ-004, ADR-0003 OQ-005, ADR-0004 OQ-006,
 Terminal State RFC OQ-007, Configuration Model RFC OQ-010, Plugin Platform RFC
-OQ-011/OQ-012/OQ-013, Package Lifecycle RFC OQ-021, Lua Runtime RFC OQ-009, Rich Presentation RFC OQ-008/OQ-015/OQ-016, Isolation Resource RFC OQ-014, CLI Contract RFC OQ-017, Package Follow-up RFC OQ-022, OQ-026, OQ-027, OQ-028, OQ-029, DevTools RFC OQ-019, Default Distribution RFC OQ-002, IPC and Agent RFC OQ-018, Governance RFC OQ-024)
+OQ-011/OQ-012/OQ-013, Package Lifecycle RFC OQ-021, Lua Runtime RFC OQ-009, Rich Presentation RFC OQ-008/OQ-015/OQ-016, Isolation Resource RFC OQ-014, CLI Contract RFC OQ-017, Package Follow-up RFC OQ-022, OQ-026, OQ-027, OQ-028, OQ-029, DevTools RFC OQ-019, Default Distribution RFC OQ-002, IPC and Agent RFC OQ-018, Governance RFC OQ-024, Risk Evidence RFC OQ-025)
 remain `Accepted` as recorded in the [decision register](../decisions/index.md).
 
 ## Admission criteria

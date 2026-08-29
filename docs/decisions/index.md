@@ -70,6 +70,7 @@ records a reviewed contract, not implementation evidence:
 | [Default Distribution RFC](../specifications/default-distribution-rfc.md)                             | OQ-002                                 | Accepted |
 | [IPC and Agent RFC](../specifications/ipc-agent-rfc.md)                                               | OQ-018                                 | Accepted |
 | [Governance RFC](../specifications/governance-rfc.md)                                                 | OQ-024                                 | Accepted |
+| [Risk Evidence RFC](../specifications/risk-evidence-rfc.md)                                           | OQ-025                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -144,11 +145,10 @@ the historical conversation:
 - Repository governance: licenses, branch protections, ownership, compatibility policy, and cross-repository release flow. (Accepted: [Governance RFC](../specifications/governance-rfc.md) — MIT license, squash-only `main` with required checks and CODEOWNERS, semver with MSRV 1.85 and Tier 1 platform policy, and dependency-ordered release train with `Docs-PR`/`Code-PR` trailers for [OQ-024](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Website delivery: loader, synchronization, release selector, multi-version URL scheme, route mapping, and redirect manifest. (Proposed:
   [Website Delivery RFC](../specifications/website-delivery-rfc.md) — Astro content-collection loader with eight-field schema and `title == H1` check, pinned `src/content/docs-revision.json` with `sync:docs --pin` copy and stale-mirror rejection, `src/content/versions.json` selector with `latest`/`stable` aliases, `/docs/<version>/<path>/` multi-version scheme with per-version `dist` isolation and 301 canonical redirects, deterministic `docs/<category>/<file>.md -> /docs/<version>/<category>/<slug>/` mapping with collision gate, and split redirect manifest `docs/project/redirects.json` intent plus `src/redirects.json` implementation for [OQ-023](open-questions.md); frontmatter `draft`, pending acceptance.)
-- Risk evidence and P0 closure. (Proposed:
-  [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) —
+- Risk evidence and P0 closure. (Accepted: [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) —
   risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and
   review gates for closing risks without weakening controls for
-  [OQ-025](open-questions.md); frontmatter `draft`, pending acceptance.)
+  [OQ-025](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
