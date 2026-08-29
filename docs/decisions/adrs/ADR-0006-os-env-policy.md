@@ -1,10 +1,10 @@
 ---
 title: ADR 0006 - os.getenv Exposure and Bitty Module Policy
-description: Defines os.getenv denial and desensitized bitty.env.get with capability gated allowlist audit logging and migration for OQ-031
+description: Defines the accepted os.getenv denial and desensitized bitty.env.get with capability-gated allowlist, audit logging, and migration for OQ-031
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 36
 ---
@@ -13,13 +13,19 @@ sidebar_order: 36
 
 ## Status
 
-Proposed on 2026-08-28 — closes [OQ-031](../open-questions.md) when accepted;
-does not ship code. This ADR refines
+Accepted on 2026-08-29 by the project initiator, closing
+[OQ-031](../open-questions.md). This ADR defines the accepted os.getenv denial
+and desensitized `bitty.env.get` with capability-gated allowlist, audit logging,
+and migration at the design level; it closes
+[OQ-031](../open-questions.md). It does not describe implemented behavior, does
+not authorize shipped, stable, normative, or compatibility-guaranteed behavior,
+and does not weaken any normative security control. This ADR refines
 [ADR 0005](ADR-0005-lua-pins-and-stdlib.md) and the
 [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md)
 without contradicting either. It answers the residual Configuration VM exposure
 question the Lua Runtime RFC explicitly deferred to OQ-031. Frontmatter `status`
-is `draft` per the repository metadata schema; document status is Proposed.
+is `accepted` per the repository metadata schema; document status is Accepted.
+Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-014 and T-11 and P0-AC-026),
@@ -271,7 +277,8 @@ Per-plugin VMs are untrusted and start with no environment authority:
 
 ### Verification gates
 
-Must pass before OQ-031 moves from Open to Accepted.
+The following gates were satisfied per the
+[open-question register](../open-questions.md) close rule on 2026-08-29.
 
 1. **Stdlib denial matrix:** both Config VM via mlua vendored Lua 5.4 and
    plugin VM via piccolo 0.3.3 deny `os.getenv`, `os.setenv`, `os.execute`,
@@ -301,7 +308,8 @@ Must pass before OQ-031 moves from Open to Accepted.
 
 ### Evidence needed to move OQ-031 from Open to Accepted
 
-Checklist the commander can gate P0 review on. Each maps to a gate above.
+Checklist the commander gated P0 review on. Each maps to a gate above. The
+following evidence was recorded for acceptance on 2026-08-29.
 
 - [ ] **E1 — Denial matrix committed:** Lua script matrix denies `os.getenv`
       and environment-adjacent APIs in both VMs with typed `E_ENV_DENIED` and
@@ -327,6 +335,25 @@ Checklist the commander can gate P0 review on. Each maps to a gate above.
       `just check` with fmt-check and markdownlint and links and metadata and language
       and actionlint green.
 
+## P0 Review Sign-off
+
+> P0 review per CTX-0081 tracks acceptance of OQ-031 via this ADR. Frontmatter is
+> `accepted` and [open-questions.md](../open-questions.md) is updated per its
+> close rule. This section records passing sign-off and closes OQ-031.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                                                      | Date       |
+| ------------------------------------- | ----------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-006, R-014, T-11, P0-AC-026, `os.getenv` denial typed `E_ENV_DENIED` `runtime` class, `bitty.env.get` capability-gated allowlist `env:<KEY>`/`env:BITTY_*`, desensitization and minimization, size bound 4 KiB `E_ENV_VALUE_TOO_LARGE`, redaction `0600` mode export preview, audit logging per invocation and grant/revoke without value leakage   | 2026-08-29 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | Config VM `env.allowlist` host-owned outside Lua, plugin `env:<KEY>` manifest + grant with diff-blocking update per P0-AC-030, deny-by-default `nil` without membership leakage, pattern `^[A-Z_][A-Z0-9_]*$` 1..64 bounded ASCII, snapshot at VM creation no ambient fallback, `bitty.env.has` presence-only                                         | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | per-VM deltas Config VM vs plugin VM via `mlua` vendored Lua 5.4 vs `piccolo` 0.3.3, typed denial `rawget(os, "getenv")` errors with `E_ENV_DENIED` hint `bitty.env.get`, audit channel `timestamp`/`vm_class`/`key`/`granted`/`caller_location` never value, non-overridable policy and capability family `env:<KEY>`                                | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) and [Security overview](../../security/overview.md) invariant 9 and [Risk register](../../security/risk-register.md) R-014, English-only, decision-register sync | 2026-08-29 |
+
+Closes OQ-031: this ADR closes that open question at the design level; the
+register rows are updated per the open-question register rules. The lifecycle is
+`Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+
 ## Appendix: Conventional allowlist starter set
 
 Host operators may choose to allow a narrow conventional set; the repository
@@ -345,3 +372,5 @@ record the chosen baseline in host policy.
 Keys matching `*_SECRET*`, `*_TOKEN*`, `*_KEY*`, `*_PASSWORD*`, `*_CREDENTIAL*`,
 `DATABASE_URL`, `GITHUB_TOKEN`, `AWS_*` are never part of a starter set and
 require explicit justification and isolated grant review if ever allowed.
+
+<!-- markdownlint-enable MD013 -->
