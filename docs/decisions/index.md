@@ -73,6 +73,7 @@ records a reviewed contract, not implementation evidence:
 | [Risk Evidence RFC](../specifications/risk-evidence-rfc.md)                                                             | OQ-025                                 | Accepted |
 | [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](adrs/ADR-0005-lua-pins-and-stdlib.md) | OQ-030                                 | Accepted |
 | [ADR 0006 - os.getenv Exposure and Bitty Module Policy](adrs/ADR-0006-os-env-policy.md)                                 | OQ-031                                 | Accepted |
+| [ADR 0007 - Async/Send Boundary and GC Tuning for Lua VMs](adrs/ADR-0007-async-gc.md)                                   | OQ-032                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -127,12 +128,7 @@ the historical conversation:
 - Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Accepted: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit. (Accepted: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and unsafe-surface audit gates for [OQ-030](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - os.getenv exposure, desensitization, and bitty module policy. (Accepted: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial, desensitized bitty.env.get with capability-gated allowlist, audit logging, and migration for [OQ-031](open-questions.md); frontmatter `accepted` on 2026-08-29.)
-- Async/Send boundary, GC tuning, Config VM budget charging, and
-  reload/module-cache interaction. (Proposed:
-  [ADR 0007](adrs/ADR-0007-async-gc.md) — `Send`/`Sync` boundary (mlua vs
-  piccolo, tasks 64/timers 32), GC tuning (incremental pause/step, budget),
-  Config VM charging against PB-1 and PB-2, and per-VM module-cache reload
-  interaction for [OQ-032](open-questions.md); pending acceptance.)
+- Async/Send boundary, GC tuning, Config VM budget charging, and reload/module-cache interaction. (Accepted: [ADR 0007](adrs/ADR-0007-async-gc.md) — `Send`/`Sync` boundary (mlua vs piccolo, tasks 64/timers 32), GC tuning (incremental pause/step, budget), Config VM charging against PB-1 and PB-2, and per-VM module-cache reload interaction for [OQ-032](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - DevTools instrumentation, event pipeline, and debug protocol for the plugin
   runtime. (Accepted: [DevTools RFC](../specifications/devtools-rfc.md) —
   instrumentation, observability event pipeline, and versioned debug protocol with

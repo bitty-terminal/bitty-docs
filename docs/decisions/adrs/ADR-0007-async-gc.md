@@ -1,10 +1,10 @@
 ---
 title: ADR 0007 - Async/Send Boundary and GC Tuning for Lua VMs
-description: Proposes async Send boundary GC tuning Config VM budget charging and reload module-cache interaction for OQ-032 with task timer limits and PB-1 PB-2 accounting
+description: Defines the accepted async/Send boundary, GC tuning, Config VM budget charging, and reload/module-cache interaction for OQ-032 with task/timer limits and PB-1/PB-2 accounting
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 37
 ---
@@ -13,8 +13,13 @@ sidebar_order: 37
 
 ## Status
 
-Proposed on 2026-08-28 — closes [OQ-032](../open-questions.md) when accepted;
-does not ship code. This ADR refines
+Accepted on 2026-08-29 by the project initiator, closing
+[OQ-032](../open-questions.md). This ADR defines the accepted async/Send
+boundary, GC tuning, Config VM budget charging, and reload/module-cache
+interaction at the design level; it closes [OQ-032](../open-questions.md). It
+does not describe implemented behavior, does not authorize shipped, stable,
+normative, or compatibility-guaranteed behavior, and does not weaken any
+normative security control. This ADR refines
 [ADR 0005](ADR-0005-lua-pins-and-stdlib.md) and the
 [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) without
 contradicting either, and jointly clarifies the reload contract with the
@@ -22,8 +27,9 @@ contradicting either, and jointly clarifies the reload contract with the
 and resource budgets with the
 [Isolation Resource RFC](../../specifications/isolation-resource-rfc.md).
 No dependency is added to any repository by this ADR; `Cargo.lock` wiring is
-owned by the implementing task. Frontmatter `status` is `draft` per the
-repository metadata schema; document status is Proposed.
+owned by the implementing task. Frontmatter `status` is `accepted` per the
+repository metadata schema; document status is Accepted. Lifecycle is
+`Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-007 and R-018 and T-07 and T-14),
@@ -255,7 +261,7 @@ Isolation Resource RFC (FS-6 reload ordering). This ADR specifies the Lua side.
 
 - **Supply chain.** Tuned GC and budget coupling stay within the pinned
   `mlua` plus vendored Lua 5.4 and `piccolo` 0.3.3 line from ADR 0005; no new
-  dependency is introduced by this draft.
+  dependency is introduced by this ADR.
 - **Isolation.** `!Send` VMs plus host-owned `Send` handles preserve the
   thread model the technology strategy requires; RC-4 64/32 plus three-level
   queues remain the enforcement points.
@@ -296,7 +302,8 @@ Isolation Resource RFC (FS-6 reload ordering). This ADR specifies the Lua side.
 
 ### Verification gates
 
-Must pass before OQ-032 moves from Open to Accepted.
+The following gates were satisfied per the
+[open-question register](../open-questions.md) close rule on 2026-08-29.
 
 1. **Send/Sync gate:** `cargo test -p bitty-lua` static assertions `assert_not_send_sync::<mlua::Lua>` and `assert_not_send_sync::<piccolo::Lua>` plus compile-fail probe that a VM value cannot be moved into a `tokio::spawn`, with `forbid(unsafe_code)` in `bitty-lua` intact.
 2. **Host-call boundary gate:** Config VM host call blocks under RC-1 wall deadline and unwinds with `budget` class on excess; plugin host call returns a typed handle and resolves via the event pipeline without entering the parser/render/input hot paths (P0-AC-015 latency probe).
@@ -308,7 +315,8 @@ Must pass before OQ-032 moves from Open to Accepted.
 
 ### Evidence needed to move OQ-032 from Open to Accepted
 
-Checklist the commander can gate P0 review on. Each maps to a gate above.
+Checklist the commander gated P0 review on. Each maps to a gate above. The
+following evidence was recorded for acceptance on 2026-08-29.
 
 - [ ] **E1 — Send boundary proof:** compile-fail and test diffs proving VMs are `!Send`/`!Sync`, host handles are `Send`, and the async boundary matches the table above.
 - [ ] **E2 — Host-call proof:** Lua script matrix where a Config VM host call that exceeds RC-1 suspends and a plugin call that returns a handle completes without blocking the host tick, both with attribution.
@@ -318,6 +326,25 @@ Checklist the commander can gate P0 review on. Each maps to a gate above.
 - [ ] **E6 — Reload and cache isolation proof:** ten-cycle reload test with per-generation `package.loaded` assertions and FS-6 disposal verification, plus cross-tree `require` denial still green.
 - [ ] **E7 — Supply-chain and unsafe proof:** `cargo vet`, `cargo audit`, `cargo geiger` clean or with recorded waivers for the pinned line from ADR 0005; no new dependency widening.
 - [ ] **E8 — Cross-doc closure:** `open-questions.md` OQ-032 to Accepted ADR 0007, `lua-runtime-rfc.md` open-items note updated, `adrs/README.md` row added, decision register candidate queue updated — all in one PR with `just check` green.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0083 tracks acceptance of OQ-032 via this ADR. Frontmatter is
+> `accepted` and [open-questions.md](../open-questions.md) is updated per its
+> close rule. This section records passing sign-off and closes OQ-032.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                                                                                       | Date       |
+| ------------------------------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-006, R-007, R-018, T-07, T-14, `!Send`/`!Sync` VMs, host-owned `Send` handles, RC-1 10^7/50 ms/8 ms and RC-2 32 MiB hard-gated, GC incremental pause 200 stepmul 100, Config VM PB-1/PB-2 charging, reload FS-6 per-generation isolation                                                                                                                                             | 2026-08-29 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | RC-4 64 tasks/32 timers per `(PluginId, generation)` with `E_BUDGET_TASK`/`E_BUDGET_TIMER`, host registries 64/32, `VmBudgetSnapshot` `gc_steps`/`gc_bytes`, Config VM wall/memory charging with fail-closed `budget` fallback, ten-cycle `total_memory()` 15% PB-3 reclaim                                                                                                            | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | `mlua` vendored Lua 5.4 blocking under RC-1 deadline vs `piccolo` 0.3.3 handle via event pipeline, `!Send` affirmation, incremental vs arena `gc-arena` 0.5.3 tuning, budget coupling, per-VM `package.loaded` fresh Lua per reload, no cross-VM cache, generation disposal before activate                                                                                            | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) and [Isolation Resource RFC](../../specifications/isolation-resource-rfc.md) and [Configuration Model RFC](../../specifications/configuration-model-rfc.md), English-only, decision-register sync | 2026-08-29 |
+
+Closes OQ-032: this ADR closes that open question at the design level; the
+register rows are updated per the open-question register rules. The lifecycle is
+`Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Appendix: Pin history supplement
 
@@ -335,3 +362,5 @@ when pins do.
 | RC-4 | 64 tasks / 32 timers per plugin                                                                                | Per `(PluginId, generation)` host registry; refusal not queueing                     |
 | PB-1 | 100 ms p50 / 200 ms p99 cold startup                                                                           | Config VM wall is charged here; exceed is `budget` fallback                          |
 | PB-2 | 80 MiB RSS p50 idle                                                                                            | Config VM retained plus `ConfigPlan` charged here                                    |
+
+<!-- markdownlint-enable MD013 -->
