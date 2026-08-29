@@ -1,10 +1,10 @@
 ---
 title: ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit
-description: Pins exact vendored Lua 5.4.x mlua and piccolo versions upgrade cadence final restricted stdlib and debug allowlist and unsafe-surface audit gates for OQ-030
+description: Defines the accepted vendored Lua 5.4.x, mlua and piccolo pins, upgrade cadence, restricted stdlib and debug allowlist and unsafe-surface audit gates for OQ-030
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 35
 ---
@@ -13,12 +13,12 @@ sidebar_order: 35
 
 ## Status
 
-Proposed on 2026-08-27 — closes [OQ-030](../open-questions.md) when accepted;
-does not ship code. This ADR refines [ADR 0004](ADR-0004-upstream-dependencies.md)
+Accepted on 2026-08-29 by the project initiator, closing
+[OQ-030](../open-questions.md). This ADR defines the accepted vendored Lua 5.4.x, mlua and piccolo 0.3.3 pins, upgrade cadence, vendored verification, restricted stdlib and debug allowlist and unsafe-surface audit gates at the design level; it closes [OQ-030](../open-questions.md). It does not describe implemented behavior, does not authorize shipped, stable, normative, or compatibility-guaranteed behavior, and does not weaken any normative security control. This ADR refines [ADR 0004](ADR-0004-upstream-dependencies.md)
 and the [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) without
 contradicting either. No dependency is added to any repository by this ADR;
 `Cargo.lock` pins are added by the implementing task. Frontmatter `status` is
-`draft` per the repository metadata schema; document status is Proposed.
+`accepted` per the repository metadata schema; document status is Accepted. Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) security review
@@ -158,8 +158,7 @@ and Configuration Model RFC is the only privileged surface.
 
 ### Unsafe-surface audit scope
 
-Per R-018 and T-14 exit evidence, before this ADR moves from Proposed to
-Accepted.
+Per R-018 and T-14 exit evidence, this ADR was Proposed on 2026-08-27 and is Accepted on 2026-08-29.
 
 - **In scope:** `mlua` crate at the pinned version — full `unsafe` block
   inventory, every `extern "C"` Lua API entry, `StackGuard` and `Error`
@@ -218,7 +217,7 @@ Accepted.
 
 ### Verification gates
 
-Must pass before OQ-030 moves from Open to Accepted.
+The following gates were satisfied per the [open-question register](../open-questions.md) close rule on 2026-08-29.
 
 1. **Pinned lockfile:** `bitty/Cargo.lock` contains exact `mlua = "=x.y.z"` with lua54 plus vendored and `piccolo = "=0.3.3"` plus `gc-arena 0.5.3` and `sptr 0.3.2` with reproducible `cargo tree`.
 2. **Tier 1 CI green** on the matrix above — vendored build, host smoke, deny matrix for `io`, `os.execute`, `package.loadlib`, bytecode, `debug` beyond traceback.
@@ -230,7 +229,7 @@ Must pass before OQ-030 moves from Open to Accepted.
 
 ### Evidence needed to move OQ-030 from Open to Accepted
 
-Checklist the commander can gate P0 review on. Each maps to a gate above.
+Checklist the commander gated P0 review on. Each maps to a gate above. The following evidence was recorded for acceptance on 2026-08-29.
 
 - [ ] **E1 — Exact pins committed:** `Cargo.toml` and `Cargo.lock` diff pinning `mlua` plus vendored Lua 5.4.x patch plus `piccolo 0.3.3` and `gc-arena` and `sptr`, verified by `cargo tree --locked` and appendix pin history table.
 - [ ] **E2 — Vendored Tier 1 build logs:** GitHub Actions logs for Linux, macOS, Windows, BSD matrix showing C sources compiling via `mlua` vendored and piccolo headless harness passing.
@@ -241,8 +240,25 @@ Checklist the commander can gate P0 review on. Each maps to a gate above.
 - [ ] **E7 — Upgrade policy record:** ADR cadence section merged quarterly plus advisory 7-day trigger unmaintained rule with calendar entry and issue template for next review.
 - [ ] **E8 — Cross-doc closure:** `open-questions.md` OQ-030 to Accepted ADR 0005, `lua-runtime-rfc.md` Open items note updated, `adrs/README.md` table row added, decision register Contracts entry updated — all in one PR with `just check` with fmt-check markdownlint links metadata language actionlint green.
 
+## P0 Review Sign-off
+
+> P0 review per CTX-0080 tracks acceptance of OQ-030 via this ADR. Frontmatter is `accepted` and [open-questions.md](../open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-030.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                     | Date       |
+| ------------------------------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-018, R-019, T-14, vendored Lua 5.4.7/5.4.8, `mlua` `vendored`+`lua54`, `piccolo` 0.3.3 `=`, `Cargo.lock` exact pin, unsafe-surface audit `mlua`/`piccolo`/`gc-arena`/`sptr`, `forbid(unsafe_code)` for `bitty-lua`/`bitty-plugin-host`                                                                             | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | pins PUC Lua 5.4.x/`mlua` 0.10.y or 0.11.y/`piccolo` 0.3.3 `=`, upgrade cadence quarterly+advisory 7/30 days/unmaintained, vendored Tier 1 matrix `x86_64-unknown-linux-gnu`/`apple-darwin`/`pc-windows-msvc`/BSD, headless smoke `bitty-lua`/`bitty-plugin-host`, Tier 1 CI matrix                                  | 2026-08-29 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | restricted stdlib `base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback` deny `io`/`os.execute`/`package.loadlib`/bytecode, unsafe-surface audit `cargo geiger`/`cargo vet`/`cargo audit`+fuzz hostile chunk truncation, RC-1/RC-2 `Fuel`/`total_memory()` 15+21 tests                                   | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) and [Isolation Resource RFC](../../specifications/isolation-resource-rfc.md) and ADR 0004, English-only, decision-register sync | 2026-08-29 |
+
+Closes OQ-030: this ADR closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+
 ## Appendix: Pin history
 
 | Date       | Lua                           | mlua                 | piccolo | gc-arena | sptr  | Notes                                                                                                                                             |
 | ---------- | ----------------------------- | -------------------- | ------- | -------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-08-27 | 5.4.7 or latest at acceptance | TBD 0.10.y or 0.11.y | 0.3.3   | 0.5.3    | 0.3.2 | Proposed draft from CTX-0040 `d67a65b`; `Cargo.lock` pins to be added by implementing task. Re-verify Lua patch and mlua latest before acceptance |
+
+<!-- markdownlint-enable MD013 -->
