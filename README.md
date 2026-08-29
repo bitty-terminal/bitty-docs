@@ -34,7 +34,7 @@ not claim that product code exists or that a proposed design has shipped.
 - [CLI Contract RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/cli-contract-rfc.md) — accepted top-level commands, dynamic `bitty x` namespace, action/output schemas, aliases, and exit codes 0-8 for OQ-017 (2026-08-28).
 - [Governance RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
 - [Website Delivery RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/website-delivery-rfc.md) — draft loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023.
-- [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — draft risk-to-P0-AC traceability, evidence taxonomy, and review gates for OQ-025.
+- [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
 - [Docs-first TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — documentation and initialization work before
   product implementation.
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —

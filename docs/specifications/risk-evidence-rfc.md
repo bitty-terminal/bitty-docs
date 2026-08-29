@@ -4,28 +4,21 @@ description: Defines the risk-to-P0-AC traceability, evidence taxonomy, artifact
 category: specifications
 audience: security-reviewer
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 21
 ---
 
 # Risk Evidence RFC
 
-> Status: **draft** (frontmatter `draft`) for
-> [OQ-025](../decisions/open-questions.md). This document proposes the
-> mechanism, traceability, and review gates that link each entry in the
-> [Security Risk Register](../security/risk-register.md) to its closing
-> evidence in the
-> [P0 Security Acceptance Criteria](../security/p0-acceptance-criteria.md)
-> without weakening any normative control. It does not describe implemented
+> Status: **accepted** on 2026-08-29 by the project initiator. This document defines the accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for closing each security risk without weakening P0 controls for
+> [OQ-025](../decisions/open-questions.md) at the design level; it closes [OQ-025](../decisions/open-questions.md). It does not describe implemented
 > behavior, does not authorize shipped, stable, normative, or
-> compatibility-guaranteed behavior, and does not close OQ-025. Experimental
+> compatibility-guaranteed behavior, and does not weaken any normative control. Experimental
 > implementation, test logs, fuzz corpora, or CI artifacts may exist as review
-> evidence but carry no compatibility promise and do not constitute acceptance.
-> Acceptance requires independent category-owner, docs-curator, and
-> security-reviewer evidence and a synchronized update of the open-question
-> register per its close rule. Lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> evidence but carry no compatibility promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and
+> security-auditor review (CTX-0078) with P0 sign-off on 2026-08-29; see [P0 Review Sign-off](#p0-review-sign-off) and the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Purpose and scope
 
@@ -97,7 +90,7 @@ normative control, the normative text wins and this RFC must be corrected.
 
 ## Terminology
 
-| Term                | Proposed meaning                                                                                                                                                                                                                                                                                                                           |
+| Term                | Accepted meaning                                                                                                                                                                                                                                                                                                                           |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Risk state          | One of `Open`, `Mitigated`, `Accepted` per register rules. `Mitigated` means the linked P0-AC criteria for the risk have passing evidence plus independent review; `Accepted` means an explicit, time-bounded CarryCtx decision with owner, rationale, and residual risk has been accepted for risks that cannot be fully mitigated at P0. |
 | P0-AC criterion     | A testable given/when/then statement from [P0 Security Acceptance Criteria](../security/p0-acceptance-criteria.md) with a stable ID, source control, linked risk(s), verification method, and pass threshold.                                                                                                                              |
@@ -106,7 +99,7 @@ normative control, the normative text wins and this RFC must be corrected.
 | Verification method | `unit`, `integration`, `adversarial` (fuzz, negative, malformed, oversized, timeout), `manual-audit` (independent reviewer evidence), and `ci-gate` (advisory/license/source/banned, lint, mode checks) as used in P0-AC conventions.                                                                                                      |
 | Pass threshold      | The minimum observable outcome that closes a criterion; anything less leaves linked risks Open, per P0-AC conventions.                                                                                                                                                                                                                     |
 
-## Proposed summary
+## Accepted summary
 
 1. Risk closure is evidence-driven and per-criterion: a risk moves toward
    `Mitigated` only when every P0-AC criterion that cites it records passing
@@ -130,9 +123,9 @@ normative control, the normative text wins and this RFC must be corrected.
    thresholds gate local `just check` and CI. This RFC provides the checklist
    that closes [OQ-025](../decisions/open-questions.md) at the design level.
 
-## Proposed risk-closure lifecycle
+## Accepted risk-closure lifecycle
 
-Status: **proposed contract**. Numbered for reference; none is implemented by
+Status: **accepted contract** on 2026-08-29. Numbered for reference; defines the accepted risk-closure model.
 this RFC alone.
 
 - **RS-1 States and who moves them.** The register's three states apply
@@ -328,19 +321,17 @@ If any item fails, the risk stays `Open` with a residual note that names the
 failing P0-AC and dimension. A follow-up task is created for the residual
 rather than silently accepting around it.
 
-## Proposed risk-register delta
+## Accepted risk-register delta
 
-Status: **proposed change to the register on acceptance of this RFC.** The
-register itself is not edited by this draft; the change described here applies
+Status: **accepted change to the register on acceptance of this RFC on 2026-08-29.** The
+register delta described here applies
 atomically with the status flip that closes
-[OQ-025](../decisions/open-questions.md) on acceptance. Until then the delta
-is a proposal; the register frontmatter stays `draft` only to the extent that
-this RFC proposes its closure model.
+[OQ-025](../decisions/open-questions.md) on acceptance. The delta is now the accepted contract; the register header status reflects the traceability and gates acceptance.
 
-| Register change                              | Proposed disposition                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Register change                              | Accepted disposition                                                                                                                                                                                                                                                                                                                                                                                                             |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Required mitigation / exit evidence` column | Each row keeps its one-line mitigation text as the short contract and gains a trailing citation of the closing P0-AC IDs from the traceability table above plus a link to the evidence-artifact location (for example `P0-AC-011/012/013 via bitty-plugin-host deny suite, bitty-lua measurement_lua.rs, audit bitty-lua-2026-xx`). The citation is added only when the artifact exists; adding it early is a documentation bug. |
-| `State` column                               | Stays `Open` in this draft. On acceptance of this RFC the column does not auto-flip; it flips per risk only when the Entry to Mitigated checklist for that risk has been satisfied and the reviewer evidence recorded per [Review gates](#review-gates-and-roles).                                                                                                                                                               |
+| `State` column                               | Stays `Open` in this accepted contract. On acceptance on 2026-08-29 the column does not auto-flip; it flips per risk only when the Entry to Mitigated checklist for that risk has been satisfied and the reviewer evidence recorded per [Review gates](#review-gates-and-roles).                                                                                                                                                 |
 | New `Evidence` annotation                    | Each row, after its mitigation cell, carries a parenthetical `Evidence: <P0-AC ids> / <artifact path or run URL> / <reviewer>` or `Evidence: — (residual: <failing dimension>)` while Open. The annotation is prose inside the cell, not a new column, to avoid churn of the normative table shape.                                                                                                                              |
 | `Status:` header                             | The banner line "Status: initial pre-implementation register." is replaced on acceptance of this RFC by "Status: traceability and evidence gates accepted via [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) on DATE; each row remains Open until its evidence plus audit is recorded." No risk moves without the per-risk checklist above.                                                                         |
 
@@ -397,12 +388,12 @@ Crate presence (`bitty-plugin-host`, `bitty-lua`, `bitty-rich`, `bitty-ipc`,
 `bitty-agent`, `bitty-package`) does not constitute evidence until its harness
 is cited and green.
 
-## Verification plan (proposed staging of OQ-025 closure)
+## Verification plan (accepted staging of OQ-025 closure)
 
 Closure of [OQ-025](../decisions/open-questions.md) at the design level
 requires the lifecycle above to be exercisable on at least one risk without
-claiming that any risk is already Mitigated by this draft. The plan stages the
-later implementation evidence while keeping OQ-025 Open now:
+claiming that any risk is already Mitigated by design acceptance. The plan stages the
+later implementation evidence with OQ-025 closed at the design level:
 
 - **Stage 1 — design-accepted traceability.** This RFC accepted; the
   traceability matrix above, the evidence taxonomy, and the Entry to Mitigated
@@ -440,7 +431,7 @@ is not overridden by this RFC.
 
 ## Affected contracts
 
-Acceptance of this RFC would apply these same-change updates (no separate task
+Acceptance of this RFC on 2026-08-29 applies these same-change updates (no separate task
 needed; a follow-up PR must keep them synchronized):
 
 - [Open-question register](../decisions/open-questions.md): the OQ-025 row
@@ -461,7 +452,7 @@ needed; a follow-up PR must keep them synchronized):
   risk-evidence contract becomes `Accepted` and the normative-contracts table
   links the register and P0-AC to this RFC as their evidence companion.
 - [Specifications index](../specifications/README.md) and this file: this file
-  flips from `draft` to `accepted` with an acceptance date and initiator; the
+  flipped from `draft` to `accepted` on 2026-08-29 with acceptance date and initiator; the
   index reflects that flip without claiming implementation.
 - A manual-audit report committed under `docs/security/audits/` is referenced
   from the risk row when `manual-audit` evidence is required; the report
@@ -502,8 +493,8 @@ or to a follow-up scoped task:
 
 ## Acceptance criteria
 
-This RFC may move from `Draft` to `Accepted` and close
-[OQ-025](../decisions/open-questions.md) at the design level only after:
+This RFC is accepted on 2026-08-29 and closes
+[OQ-025](../decisions/open-questions.md) at the design level. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) close rule:
 
 1. Independent review by the category owner, a docs curator, and a security
    reviewer accepts the traceability matrix, the risk-closure lifecycle, the
@@ -518,7 +509,7 @@ This RFC may move from `Draft` to `Accepted` and close
    pointer to closure per the register close rule.
 3. No element weakens a normative P0 gate; any discovered conflict returns the
    conflicting clause to revision rather than downgrading the gate.
-4. The draft text in this file is updated to record acceptance date and
+4. The draft text in this file was updated to record acceptance date and
    initiator, frontmatter becomes `accepted`, and links from
    [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) and
    the [decision register](../decisions/index.md) reflect the accepted
@@ -527,24 +518,31 @@ This RFC may move from `Draft` to `Accepted` and close
    a separate, evidence-cited follow-up that satisfies the Entry to Mitigated
    checklist.
 
+Closes OQ-025: this RFC closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+
 ## P0 Review Sign-off
 
-> P0 review per CTX-0067 tracks acceptance of OQ-025 via this RFC. Frontmatter
-> remains `draft` until all reviewers record passing evidence and
-> [open-questions.md](../decisions/open-questions.md) is updated per its close
-> rule. This section is placeholder sign-off and does not close any open
-> question.
+> P0 review per CTX-0078 tracks acceptance of OQ-025 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-025.
 
-| Role                                  | Reviewer (placeholder) | Verdict | Evidence / scope                                                                                                                                                                                                                                                   | Date       |
-| ------------------------------------- | ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
-| security-auditor                      | `bitty-security`       | pending | R-001..R-022 traceability to P0-AC-001..034, register State rules, evidence taxonomy `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`, safe-mode invariance, no weakening of overview invariants 1..10                                                  | 2026-08-28 |
-| category-owner (security-and-quality) | `bitty-quality`        | pending | Risk-closure lifecycle RS-1..RS-7, entry checklist 1..8, traceability table, per-risk delta, verification staging                                                                                                                                                  | 2026-08-28 |
-| docs-curator                          | `bitty-curator`        | pending | Frontmatter `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`, links to [Risk register](../security/risk-register.md), [P0-AC](../security/p0-acceptance-criteria.md), [Threat model](../security/threat-model.md), English-only | 2026-08-28 |
+<!-- markdownlint-disable MD013 -->
 
-Until then, the register and P0-AC remain the normative contracts; crate
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                   | Date       |
+| ------------------------------------- | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-001..R-022 traceability to P0-AC-001..034, register State rules, evidence taxonomy `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`, safe-mode invariance, no weakening of overview invariants 1..10                                                                  | 2026-08-28 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | Risk-closure lifecycle RS-1..RS-7, entry checklist 1..8, traceability table, per-risk delta, verification staging, no P0 gate weakening                                                                                                                                            | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | Traceability R-001..R-022 to P0-AC, normative controls, evidence taxonomy artifact storage CarryCtx linkage, stage deadline vs deferral, safe-mode invariance                                                                                                                      | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Risk register](../security/risk-register.md), [P0-AC](../security/p0-acceptance-criteria.md), [Threat model](../security/threat-model.md), English-only | 2026-08-29 |
+
+<!-- markdownlint-enable MD013 -->
+
+<!-- markdownlint-disable MD013 -->
+
+As of 2026-08-29, the register and P0-AC remain the normative contracts with the traceability and evidence gates now accepted; crate
 presence alone (including any headless measurement harness in `bitty`) does not
 imply that a risk is mitigated, per
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md).
+
+<!-- markdownlint-enable MD013 -->
 
 ## References
 
