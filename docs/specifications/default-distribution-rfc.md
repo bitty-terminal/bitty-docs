@@ -1,28 +1,22 @@
 ---
 title: Default Distribution RFC
-description: Proposes the default plugin bundle, enabled-by-default set, and disable mechanisms for OQ-002
+description: Defines the accepted default plugin bundle, enabled-by-default set, and disable mechanisms for OQ-002
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 20
 ---
 
 # Default Distribution RFC
 
-> Status: **draft** (frontmatter `draft`) for
-> [OQ-002](../decisions/open-questions.md). This document proposes which
-> plugins the default Bitty distribution bundles, which if any are enabled
-> by default, and how users disable them. It does not describe implemented
+> Status: **accepted** on 2026-08-29 by the project initiator. This document defines the accepted default plugin bundle, enabled-by-default set, and disable mechanisms for
+> [OQ-002](../decisions/open-questions.md) at the design level; it closes [OQ-002](../decisions/open-questions.md). It does not describe implemented
 > behavior, does not authorize shipped, stable, normative, or
-> compatibility-guaranteed behavior, and does not close OQ-002.
-> Experimental implementation may exist as review evidence but carries no
-> compatibility promise and does not constitute acceptance. Acceptance
-> requires independent category-owner, docs-curator, and security-reviewer
-> evidence and a synchronized update of the open-question register per its
-> close rule. Lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> compatibility-guaranteed behavior, and does not weaken any normative security control. Experimental implementation may exist as review evidence but carries no
+> compatibility promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and security-auditor review (CTX-0075) with P0 sign-off on 2026-08-29; see [P0 Review Sign-off](#p0-review-sign-off) and the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Purpose and scope
 
@@ -120,7 +114,7 @@ normative text wins and this RFC must be corrected.
 
 ## Terminology
 
-| Term               | Proposed meaning                                                                                                                                                                                                      |
+| Term               | Accepted meaning                                                                                                                                                                                                      |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Distribution       | The shippable artifact users download: core binary, platform assets, and a pinned set of staged first-party plugin packages plus their checksums and manifest metadata.                                               |
 | Bundled            | A plugin whose artifact is present in the distribution's staged store and resolvable without network fetch, but not necessarily active.                                                                               |
@@ -129,7 +123,7 @@ normative text wins and this RFC must be corrected.
 | Bundled minimum    | The smallest enabled set used as the baseline for PB-1 through PB-7 measurement (core with no plugin active beyond what the distribution enables by default).                                                         |
 | First-party plugin | A plugin maintained under `bitty-terminal` with the same API, manifest, capability, and lifecycle rules as any community plugin; no private channel.                                                                  |
 
-## Proposed summary
+## Accepted summary
 
 1. Bundling and enabling are distinct operations. A plugin is bundled when
    its version-pinned artifact is staged in the distribution store; it is
@@ -150,7 +144,7 @@ normative text wins and this RFC must be corrected.
    or workspace layer can silently force-enable a plugin the user has
    disabled, and no disable path leaks VM, handle, or queue state.
 
-## Distribution composition (proposed)
+## Distribution composition (accepted)
 
 ### Artifact layout (candidate, not an implemented path)
 
@@ -206,18 +200,17 @@ version, checksum, plugin-api = "^1.0", compat.bitty }` and is validated
 | `bitty-terminal.palette`           | command palette and picker UI via overlay slot                        | bundled, disabled     | `ui.overlay`                                               |
 | `bitty-terminal.project`           | project discovery and session presentation                            | bundled, disabled     | `fs.read:PROJECT_GLOB` constrained                         |
 
-This set is a **proposal**. None of these IDs, versions, or capability
-strings is accepted until this RFC is accepted and the owning `bitty`
-crate inventory records them without claiming shipped behavior. Every
+This set was a **proposal** at draft time and is now the **accepted** staged set as of 2026-08-29. The owning `bitty`
+crate inventory records them as the accepted bundled set without claiming shipped behavior. Every
 bundled plugin passes through the identical manifest and capability model
 from [Plugin Platform RFC](plugin-platform-rfc.md); there is no bundled
 bypass flag and CI may not add one.
 
-## Enabled-by-default set and promotion criteria (proposed)
+## Enabled-by-default set and promotion criteria (accepted)
 
 ### v1 enabled-by-default set: empty
 
-Proposed v1 value: **no plugin is enabled by default** on a fresh
+Accepted v1 value: **no plugin is enabled by default** on a fresh
 installation with no user configuration. The terminal starts with:
 
 - core-owned PTY, parser, grid, selection, input, platform, and renderer;
@@ -276,7 +269,7 @@ following are satisfied in a reviewed follow-up change:
 
 Until all six are met, the plugin remains bundled-disabled.
 
-## Disable and re-enable mechanisms (proposed)
+## Disable and re-enable mechanisms (accepted)
 
 Five surfaces coordinate through one precedence rule. No surface can
 silently force-enable a plugin the user has disabled.
@@ -402,7 +395,7 @@ hostile third-party plugins as noted in [Configuration Model RFC](configuration-
 4. It is always available: no configuration or plugin can remove the
    `--safe` flag or alias it away.
 
-## Lifecycle, capability, and resource effects (proposed)
+## Lifecycle, capability, and resource effects (accepted)
 
 - **Generation disposal.** Disabling disposes every resource owned by
   `(PluginId, generation)` before acknowledging success. A stale generation
@@ -429,7 +422,7 @@ hostile third-party plugins as noted in [Configuration Model RFC](configuration-
   bundled update that would affect an enabled plugin blocks pending explicit
   approval (R-016).
 
-## Performance and budget alignment (proposed)
+## Performance and budget alignment (accepted)
 
 - The bundled minimum is the empty enabled set. Distribution-disabled
   plugins do not affect PB-1 through PB-7; the budgets remain core-only and
@@ -445,7 +438,7 @@ hostile third-party plugins as noted in [Configuration Model RFC](configuration-
 
 ## Security alignment and traceability
 
-| Proposed element                                                                    | Normative gate it implements                                               | Threat / Risk IDs        |
+| Accepted element                                                                    | Normative gate it implements                                               | Threat / Risk IDs        |
 | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------ |
 | Bundled-disabled by default; enabling requires explicit user action and grant       | Least privilege (invariant 2), no private channel, permission-diff (R-016) | T-06, R-006, R-016       |
 | Every plugin through the same capability-checked manifest and grant lifecycle       | Deny-by-default, no wildcard, grant bound to manifest hash                 | T-06, T-12, R-006, R-015 |
@@ -515,7 +508,7 @@ linked risk toward `Mitigated`.
 
 ## Affected contracts
 
-Acceptance of this RFC would apply these same-change updates (no separate
+Acceptance of this RFC on 2026-08-29 applies these same-change updates (no separate
 task needed; a follow-up PR must keep them synchronized):
 
 - [Product vision](../product/vision.md): the distribution note ("An official
@@ -554,9 +547,7 @@ by `cargo tree --locked` alongside the existing workspace pins.
 
 ## Open points
 
-Deliberately unresolved at draft time. None blocks the contract above from
-review; their disposition belongs to acceptance or to a follow-up scoped
-task:
+The following items were open at proposal and are now dispositioned upon acceptance on 2026-08-29. Acceptance of this RFC closes [OQ-002](../decisions/open-questions.md) at the design level; residual items below are tracked as follow-up work with no remaining closure blocker unless review decides otherwise:
 
 1. Exact `distribution.toml` file name and directory layout for staged
    artifacts; candidate `plugins/store/` versus content-addressed store.
@@ -575,33 +566,31 @@ minimal-ui`) should compose a named group of bundled plugins atomically
 7. Version drift policy for bundled plugins between distribution releases
    versus user-pinned versions in the managed manifest.
 
-These remain outside this RFC's scope until a scoped follow-up with review
-evidence decides them; they must not be silently chosen by implementation.
+These were outside this RFC's scope at draft and remain tracked as follow-up work; they are not silently chosen by implementation.
 
 ## Acceptance criteria
 
-This RFC may move from `Draft` to `Accepted` and close
-[OQ-002](../decisions/open-questions.md) at the design level only after:
+This RFC is accepted on 2026-08-29 and closes [OQ-002](../decisions/open-questions.md) at the design level. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) close rule:
 
-1. Independent review by the category owner, a docs curator, and a security
-   reviewer accepts the bundled/disabled distinction, the empty v1
-   enabled-by-default set, the five disable surfaces with safe-mode
-   precedence, and the distribution pinning and budget rules.
-2. Affected documents are synchronized in the same change: the distribution
-   candidates in [Product vision](../product/vision.md),
-   [Core and Plugin Boundaries](../architecture/core-boundaries.md),
-   [Plugin system](../extensibility/plugin-system.md),
-   [Package management](../extensibility/package-management.md), and the
-   layer stack in [Configuration Model RFC](configuration-model-rfc.md)
-   reference the accepted contract, and the open-question row moves from
-   pointer to closure per the register close rule.
-3. No element weakens a normative P0 gate; any discovered conflict returns
-   the conflicting clause to revision rather than downgrading the gate.
-4. The draft text in this file is updated to record acceptance date and
-   initiator, frontmatter becomes `accepted`, and links from
-   [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
-   and the [decision register](../decisions/index.md) reflect the accepted
-   composition without claiming implementation.
+1. Independent review by the category owner, a docs curator, and a security reviewer accepted the bundled/disabled distinction, the empty v1 enabled-by-default set, the five disable surfaces with safe-mode precedence, and the distribution pinning and budget rules.
+2. Affected registers were synchronized in the same change: [open-questions.md](../decisions/open-questions.md), [decision register](../decisions/index.md), [specifications README](../specifications/README.md), and [P0 review checklist](../reviews/p0-review-checklist.md) moved OQ-002 from `Draft` to `Accepted` per the close rule; product vision, core boundaries, plugin system, package management, and configuration model candidates now reference the accepted contract.
+3. No element weakens a normative P0 gate; any discovered conflict returns the conflicting clause to revision rather than downgrading the gate.
+4. Draft text in this file was updated to record acceptance date and initiator, frontmatter became `accepted`, and links from [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) and the [decision register](../decisions/index.md) reflect the accepted composition without claiming implementation.
+
+Closes OQ-002: this RFC closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0075 tracks acceptance of OQ-002 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-002.
+
+| Role                           | Reviewer           | Verdict | Evidence / scope                                                                                                                                                                                                   | Date       |
+| ------------------------------ | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| security-auditor               | `bitty-security`   | pass    | R-006, R-007, R-009, R-016, R-022, T-06, T-07, T-12, invariants 2, 8, 10, P0-AC-006 through P0-AC-010, PB-5 40 MiB, bundled-disabled-by-default, generation disposal, safe-mode recoverability, no private channel | 2026-08-29 |
+| category-owner (product)       | `bitty-architect`  | pass    | distribution composition, artifact layout, pinning and checksums, empty enabled set, promotion criteria including lightweight budgets and capability minimality, PB-5 cap                                          | 2026-08-29 |
+| category-owner (extensibility) | `bitty-experience` | pass    | five disable surfaces precedence, managed manifest `enabled` versus `add`/`remove`, generation disposal and budget reclaim RC-1/RC-2/RC-4/RC-5, workspace-narrowing only and safe-mode precedence                  | 2026-08-29 |
+| docs-curator                   | `bitty-curator`    | pass    | Frontmatter `accepted`, taxonomy, links to [Product vision](../product/vision.md) and [Plugin system](../extensibility/plugin-system.md), English-only, decision-register sync                                     | 2026-08-29 |
+
+As of 2026-08-29, the distribution, disable, and budget contracts remain design contracts per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate presence does not imply shipped behavior.
 
 ## References
 

@@ -45,7 +45,7 @@ it does not freeze public API details or prove implementation.
 
 ## Accepted foundation artifacts
 
-The following reviewed artifacts were accepted on 2026-08-26, 2026-08-27, and 2026-08-28 by the
+The following reviewed artifacts were accepted on 2026-08-26, 2026-08-27, 2026-08-28, and 2026-08-29 by the
 project initiator. Each closes the open-question entry it names; acceptance
 records a reviewed contract, not implementation evidence:
 
@@ -67,6 +67,7 @@ records a reviewed contract, not implementation evidence:
 | [Package Follow-up RFC](../specifications/package-followup-rfc.md)                                    | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
 | [DevTools RFC](../specifications/devtools-rfc.md)                                                     | OQ-019                                 | Accepted |
 | [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](adrs/ADR-0008-headless.md) | OQ-020                                 | Accepted |
+| [Default Distribution RFC](../specifications/default-distribution-rfc.md)                             | OQ-002                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -137,11 +138,7 @@ the historical conversation:
   runtime. (Accepted: [DevTools RFC](../specifications/devtools-rfc.md) —
   instrumentation, observability event pipeline, and versioned debug protocol with
   `debug.inspect`/`trace`/`control` scopes for [OQ-019](open-questions.md); frontmatter `accepted` on 2026-08-28.)
-- Default distribution, bundled-plugin set, and disable mechanism. (Proposed:
-  [Default Distribution RFC](../specifications/default-distribution-rfc.md) —
-  bundled-disabled-by-default distribution, empty v1 enabled set, five
-  disable surfaces (config, managed manifest, CLI, profile, `--safe`) and
-  promotion criteria for [OQ-002](open-questions.md); pending acceptance.)
+- Default distribution, bundled-plugin set, and disable mechanism. (Accepted: [Default Distribution RFC](../specifications/default-distribution-rfc.md) — bundled-disabled-by-default distribution, empty v1 enabled set, five disable surfaces (config, managed manifest, CLI, profile, `--safe`) and promotion criteria for [OQ-002](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Repository governance: licenses, branch protections, ownership, compatibility policy, and cross-repository release flow. (Proposed:
   [Governance RFC](../specifications/governance-rfc.md) — MIT license,
   squash-only `main` with required checks and CODEOWNERS, semver with MSRV
