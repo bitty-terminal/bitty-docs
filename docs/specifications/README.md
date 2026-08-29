@@ -35,6 +35,12 @@ document still apply:
 | [Website Delivery RFC](website-delivery-rfc.md)               | OQ-023                                 | Accepted |
 | [Risk Evidence RFC](risk-evidence-rfc.md)                     | OQ-025                                 | Accepted |
 
+The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
+
+| Draft                                 | Targets                    | Status |
+| ------------------------------------- | -------------------------- | ------ |
+| [AI Architecture](ai-architecture.md) | post-1.0, OQ-018 contracts | Draft  |
+
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
 applied only together with an update of all inbound links.
