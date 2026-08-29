@@ -36,6 +36,7 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [Website Delivery RFC](website-delivery-rfc.md)                        | OQ-023                                      | Accepted |
 | [Risk Evidence RFC](risk-evidence-rfc.md)                              | OQ-025                                      | Accepted |
 | [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md) | OQ-011, OQ-012, OQ-013 (provider follow-up) | Draft    |
+| [Workspace Compositor Specification](workspace-compositor.md)          | —                                           | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 
