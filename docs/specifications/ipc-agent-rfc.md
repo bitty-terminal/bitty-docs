@@ -1,34 +1,22 @@
 ---
 title: IPC and Agent RFC
-description: Proposes bounded IPC framing wire and auth scopes and Agent bounded messages auth consent streaming for OQ-018
+description: Defines the accepted bounded IPC framing, wire, auth, scopes, and Agent bounded messages, auth, consent, and streaming for OQ-018
 category: specifications
 audience: security-reviewer
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 18
 ---
 
 # IPC and Agent RFC
 
-> Status: **proposed** (frontmatter `draft`; P0 review in progress per CTX-0064, 2026-08-28). This document is the
-> IPC/MCP protocol RFC with security review named as the next artifact for
-> [OQ-018](../decisions/open-questions.md). It proposes mechanisms for how local
-> instances are selected, authenticated, authorized, rate-limited, and exposed
-> to IPC/MCP clients, plus the Agent bounded-message, auth/consent, and
-> streaming contract. It does not describe implemented behavior, relax any
-> normative control, or authorize shipped, stable, normative, or
-> compatibility-guaranteed behavior. Experimental implementation may exist as
-> review evidence in `bitty-ipc` and `bitty-agent` but carries no
-> compatibility promise and does not constitute acceptance; acceptance requires
-> independent security-auditor review per the
-> [P0 review checklist](../reviews/p0-review-checklist.md).
->
-> OQ-018 remains **Open** until this RFC is accepted. Frontmatter stays `draft`;
-> lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
-> The `bitty-ipc` and `bitty-agent` crates are intentionally `draft`/`proposed`
-> and do not self-accept this RFC; `bitty-package` lifecycle and integrity
-> model remains the only accepted package contract while signatures stay draft.
+> Status: **accepted** on 2026-08-29 by the project initiator. This document defines the accepted bounded IPC framing, wire, auth, scopes, and Agent bounded messages, auth, consent, and streaming for
+> [OQ-018](../decisions/open-questions.md) at the design level; it closes [OQ-018](../decisions/open-questions.md). It does not describe implemented
+> behavior, does not authorize shipped, stable, normative, or
+> compatibility-guaranteed behavior, and does not weaken any normative security control. Experimental implementation may exist as review evidence but carries no
+> compatibility promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and security-auditor review (CTX-0076) with P0 sign-off on 2026-08-29; see [P0 Review Sign-off](#p0-review-sign-off) and the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Purpose and scope
 
@@ -99,7 +87,7 @@ and this RFC must be corrected:
 - [CLI](../interfaces/cli.md) (candidate): command/action registry separation
   and the `bitty ctl` runtime-control examples that motivate the IPC surface.
 
-This RFC proposes only mechanisms, thresholds, and verification plans for those
+This RFC defines the accepted mechanisms, thresholds, and verification plans for those
 normative gates. It introduces no new trust boundary, no bypass API, and no
 relaxation; per
 [documentation workflow](../development/documentation-workflow.md) change
@@ -108,7 +96,7 @@ security corpus first.
 
 ## Trust-boundary alignment
 
-This proposal reuses the authoritative trust language unchanged:
+This accepted contract reuses the authoritative trust language unchanged:
 
 - Data and requests from PTYs, plugins, projects, IPC clients, MCP clients,
   Agents, packages, and reference repositories are untrusted until an explicit,
@@ -200,7 +188,7 @@ Bounded channels sit above framing:
 
 <!-- markdownlint-disable MD013 -->
 
-| Channel                          | Proposed default                  | Hard ceiling                 | Overflow behavior                                                                                                               |
+| Channel                          | Accepted default                  | Hard ceiling                 | Overflow behavior                                                                                                               |
 | -------------------------------- | --------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Request channel per endpoint     | 64                                | 256 (`MAX_CHANNEL_CAPACITY`) | fail-closed `try_send` refuses newest; no silent loss for request/response acknowledgement                                      |
 | Response channel per endpoint    | 64                                | 256                          | same as above                                                                                                                   |
@@ -217,7 +205,7 @@ fail-closed and countable (see [Rate limits and budgets](#rate-limits-and-budget
 
 ### Envelope
 
-The proposed wire envelope is versioned and self-describing, intentionally
+The accepted wire envelope is versioned and self-describing, intentionally
 small and auditable:
 
 ```jsonc
@@ -335,8 +323,8 @@ denied with `Denied/ScopeViolation` and no partial state is created (FS-1).
 ### Scope families
 
 Scopes are narrowly separated so compromise of one feature does not grant
-another. Candidate v1 families (illustrative identifiers; exact names are
-versioned with the wire and require acceptance):
+another. Accepted v1 families
+(exact names versioned with the wire as accepted per this RFC):
 
 <!-- markdownlint-disable MD013 -->
 
@@ -384,14 +372,14 @@ Notes:
 
 ## Rate limits and budgets
 
-Status: **proposed initial values** following the
+Status: **accepted initial values** on 2026-08-29 following the
 [Performance Budget RFC](performance-budget-rfc.md) convention that numbers are
 target contracts. Tests must parameterize on the declared values; changing a
 value requires an RFC revision, never silent drift.
 
 <!-- markdownlint-disable MD013 -->
 
-| ID    | Dimension                    | Applies to          | Proposed default                                                                                                                                                                   | Notes                                                                                                                                                                           |
+| ID    | Dimension                    | Applies to          | Accepted default                                                                                                                                                                   | Notes                                                                                                                                                                           |
 | ----- | ---------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | RC-9  | IPC request rate and payload | each connection     | 100 req/s sustained, 2x burst for 1 s, 1 MiB payload per request (decoded frame already caps at 256 KiB, so a logical request that would exceed 1 MiB must be chunked client-side) | 16 concurrent connections per endpoint default; exceeding sheds **newest** connection first; payload beyond cap is rejected whole with `Denied/PayloadCap` and no partial parse |
 | RC-10 | MCP/Agent response size      | each response/chunk | snapshot-bounded, 256 KiB stream chunks; a single terminal scrape never monopolizes the service                                                                                    | read scopes only; elevation changes scopes, not ceilings; long output is delivered as `chunk` frames with `seq`/`total`                                                         |
@@ -600,11 +588,11 @@ Numbered for reference; none is implemented by this RFC alone:
   start or is detected disabled, the endpoint refuses to serve rather than
   serving unbounded.
 
-## Experimental implementation notes (draft evidence, not acceptance)
+## Experimental implementation notes (accepted contract, draft evidence before acceptance)
 
-The following draft surfaces already exist in the `bitty` workspace and may be
-cited as experimental review evidence for this RFC, but do not constitute
-acceptance:
+The following draft surfaces already existed in the `bitty` workspace and were
+cited as experimental review evidence for this RFC before acceptance
+(now accepted contract):
 
 - `crates/bitty-ipc`: bounded request/response channels (`DEFAULT_REQUEST_CAPACITY`,
   `DEFAULT_RESPONSE_CAPACITY`, `MAX_CHANNEL_CAPACITY = 256`,
@@ -642,12 +630,15 @@ acceptance:
   consent prompts, and audit belong to the runtime/IPC host (OQ-018) and are
   deferred.
 
-Both crates are `draft`/`proposed`; their caps are the experimental evidence
-for the bounds this RFC proposes, not normative claims. The real transport with
-`XDG_RUNTIME_DIR` socket modes and Windows ACLs, plus peer-credential checks,
-belongs to a follow-up slice and must pass a focused security review before any
-claim of peer authentication; no semver-major-freeze is claimed until the RFC
-is accepted.
+Both crates were `draft`/`proposed` at proposal time; their caps were the
+experimental evidence for the bounds this RFC now defines as accepted,
+now normative per the lifecycle
+`Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+The real transport with `XDG_RUNTIME_DIR` socket modes and Windows ACLs,
+plus peer-credential checks, belongs to a follow-up slice and must pass a
+focused security review before any claim of peer authentication;
+no semver-major-freeze was claimed until the RFC was accepted, and now the
+contract is accepted.
 
 ## Verification
 
@@ -763,10 +754,12 @@ sensitive field class; permission and preview assertions.
 
 <!-- markdownlint-enable MD013 -->
 
+<!-- markdownlint-disable MD013 -->
+
 ## Affected contracts
 
-Acceptance of this RFC would apply these same-change updates (no separate task
-needed; a follow-up PR must keep them synchronized):
+Acceptance of this RFC on 2026-08-29 applies these same-change updates
+(no separate task needed; a follow-up PR must keep them synchronized):
 
 - [CLI](../interfaces/cli.md): the runtime-control, instance-targeting, and
   environment-variable sections become normative per this RFC's precedence and
@@ -787,7 +780,7 @@ needed; a follow-up PR must keep them synchronized):
   [Core and Plugin Boundaries](../architecture/core-boundaries.md): the
   `bitty-ipc` and `bitty-agent` crate presence remains `draft` tail until
   implementation evidence lands; the overview's "draft tail crates" note is
-  updated to reflect that their contracts are now proposed but not accepted.
+  updated to reflect that their contracts are now accepted (frontmatter `accepted` on 2026-08-29) per this RFC, still requiring implementation evidence.
 - No new repository, crate, or workflow is added by this RFC; `Cargo.lock` pins
   for any future transport implementation belong to the implementing task and
   are verified by `cargo tree --locked`.
@@ -805,32 +798,42 @@ needed; a follow-up PR must keep them synchronized):
   context before revocation.
 - Streaming compression and its interaction with the 256 KiB chunk ceiling.
 
-These are explicitly out of this RFC's scope; they remain in OQ-018 or its
-follow-ups and must not be silently chosen by implementation.
+These were out of this RFC's scope at draft and remain tracked as follow-up work; they remain in OQ-018 follow-ups and must not be silently chosen by implementation. Acceptance on 2026-08-29 closes OQ-018 at the design level; residual items are not blockers.
+
+## Acceptance criteria
+
+This RFC is accepted on 2026-08-29 and closes [OQ-018](../decisions/open-questions.md) at the design level. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) close rule:
+
+1. Independent review by the security-auditor, category-owners, and docs-curator accepted the instance selection, transport and framing, wire and auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming, and the verification plan without weakening any normative P0 gate.
+2. Affected registers were synchronized in the same change: [open-questions.md](../decisions/open-questions.md), [decision register](../decisions/index.md), [specifications README](../specifications/README.md), and [P0 review checklist](../reviews/p0-review-checklist.md) moved OQ-018 from `Draft` to `Accepted` per the close rule; [CLI](../interfaces/cli.md) and [threat model](../security/threat-model.md) now reference the accepted contract.
+3. No element weakens a normative P0 gate; any discovered conflict returns the conflicting clause to revision rather than downgrading the gate.
+4. Draft text in this file was updated to record acceptance date and initiator, frontmatter became `accepted`, and links from [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) and the [decision register](../decisions/index.md) reflect the accepted composition without claiming implementation.
+
+Closes OQ-018: this RFC closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## P0 Review Sign-off
 
-> P0 review per CTX-0064 tracks acceptance of OQ-018 via this RFC. Frontmatter
-> remains `draft` until all reviewers record passing evidence and
-> [open-questions.md](../decisions/open-questions.md) is updated per its close
-> rule. This section is placeholder sign-off and does not close any open
-> question.
+> P0 review per CTX-0076 tracks acceptance of OQ-018 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-018.
 
 <!-- markdownlint-disable MD013 -->
 
-| Role                                  | Reviewer (placeholder) | Verdict | Evidence / scope                                                                                                                                                                                                                                                                             | Date       |
-| ------------------------------------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| security-auditor                      | `bitty-security`       | pending | R-011, R-012, R-013, R-014, T-09, T-10, T-01, P0-AC-021/022/023, 256 KiB framing, `SO_PEERCRED`/`LOCAL_PEERCRED`, scopes, RC-9/RC-10, untrusted-observation labeling, secret minimization                                                                                                    | 2026-08-28 |
-| category-owner (security-and-quality) | `bitty-quality`        | pending | Instance selection precedence, transport framing `256 KiB`/`512 KiB`, bounded channels `MAX_CHANNEL_CAPACITY` 256 / `MAX_PENDING_REQUESTS` 64 / `DEFAULT_TRANSPORT_CAPACITY` 64, wire envelope `v1`, method validation, auth, scopes, streaming, `bitty-ipc`/`bitty-agent` headless evidence | 2026-08-28 |
-| docs-curator                          | `bitty-curator`        | pending | Frontmatter `draft`, lifecycle `Draft -> experimental review evidence -> Accepted -> normative`, links to [CLI](../interfaces/cli.md) and [Threat Model](../security/threat-model.md) and [P0 review checklist](../reviews/p0-review-checklist.md), English-only                             | 2026-08-28 |
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                             | Date       |
+| ------------------------------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-011, R-012, R-013, R-014, T-09, T-10, T-01, P0-AC-016/017/018/019/020, 256 KiB framing, `SO_PEERCRED`/`LOCAL_PEERCRED`, scopes, RC-9/RC-10, untrusted-observation labeling, secret minimization                                                                                            | 2026-08-28 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | Instance selection precedence, transport framing `256 KiB`/`512 KiB`, bounded channels `MAX_CHANNEL_CAPACITY` 256 / `MAX_PENDING_REQUESTS` 64 / `DEFAULT_TRANSPORT_CAPACITY` 64, wire envelope `v1`, method validation, auth, scopes, streaming, `bitty-ipc`/`bitty-agent` headless evidence | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | Wire protocol `v1`, scope families, Agent bounded messages and consent/streaming, failure semantics FS-IP1..FS-IP7, threat-model mapping complete                                                                                                                                            | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [CLI](../interfaces/cli.md) and [Threat Model](../security/threat-model.md) and [P0 review checklist](../reviews/p0-review-checklist.md), English-only             | 2026-08-29 |
 
 <!-- markdownlint-enable MD013 -->
 
-Until then, `bitty-ipc` and `bitty-agent` remain draft headless crates ahead of
-acceptance per
+<!-- markdownlint-disable MD013 -->
+
+As of 2026-08-29, the IPC and Agent contracts remain design contracts per
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and the
-[Proposed Delivery Sequence](../product/proposed-delivery-sequence.md); crate
-presence does not imply shipped behavior.
+[Proposed Delivery Sequence](../product/proposed-delivery-sequence.md);
+crate presence does not imply shipped behavior.
+
+<!-- markdownlint-enable MD013 -->
 
 ## References
 
@@ -839,7 +842,7 @@ presence does not imply shipped behavior.
   (both crates `draft`/`proposed`, headlessly testable, `forbid(unsafe_code)` in
   `bitty-agent`, no `unsafe` in `bitty-ipc`).
 - Isolation resource ceilings: [Isolation Resource RFC](isolation-resource-rfc.md)
-  IR-D3, RC-9, RC-10 (proposed, this RFC adopts them as the IPC/Agent
+  IR-D3, RC-9, RC-10 (accepted, this RFC adopts them as the IPC/Agent
   contribution to that table).
 - P0 acceptance criteria source for the verification style:
   [P0 Security Acceptance Criteria](../security/p0-acceptance-criteria.md).
