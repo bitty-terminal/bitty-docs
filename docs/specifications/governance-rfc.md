@@ -1,29 +1,25 @@
 ---
 title: Governance RFC
-description: Proposes licenses, branch protections, ownership rules, compatibility policy, and cross-repository release flow for OQ-024
+description: Defines the accepted licenses, branch protections, ownership rules, compatibility policy, and cross-repository release flow for OQ-024
 category: specifications
 audience: maintainer
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 21
 ---
 
 # Governance RFC
 
-> Status: **draft** (frontmatter `draft`) for
-> [OQ-024](../decisions/open-questions.md). This document proposes the
-> repository-governance contract: licenses, branch protections, ownership
+> Status: **accepted** on 2026-08-29 by the project initiator. This document defines the accepted repository-governance contract: licenses, branch protections, ownership
 > rules, compatibility policy, and cross-repository release flow for the
-> seven formal repositories under `github.com/bitty-terminal`. It does not
+> seven formal repositories under `github.com/bitty-terminal` at the design level; it closes [OQ-024](../decisions/open-questions.md). It does not
 > describe implemented governance beyond the branch protections already
 > visible on `main`, does not authorize published releases, and does not
-> close OQ-024. Experimental repository state may exist as review evidence
-> but carries no stability promise and does not constitute acceptance.
-> Acceptance requires independent category-owner, docs-curator, and
-> security-reviewer evidence and a synchronized update of the open-question
-> register per its close rule. Lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> weaken any normative security control. Experimental repository state may exist as review evidence
+> but carries no stability promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and
+> security-auditor review (CTX-0077) with P0 sign-off on 2026-08-29; see [P0 Review Sign-off](#p0-review-sign-off) and the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Purpose and scope
 
@@ -110,7 +106,7 @@ and this RFC must be corrected.
 
 ## Terminology
 
-| Term                  | Proposed meaning                                                                                                                                                                     |
+| Term                  | Accepted meaning                                                                                                                                                                     |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Formal repository     | One of the seven repositories under `github.com/bitty-terminal`: `bitty`, `bitty-docs`, `bitty-website`, `bitty-devtools`, `bitty-mcp`, `bitty-plugin-sdk`, `bitty-plugin-template`. |
 | Grouping directory    | A local path that only groups repositories, never a Git repository itself: the umbrella root and `bitty-plugins/` grouping.                                                          |
@@ -120,7 +116,7 @@ and this RFC must be corrected.
 | Release train         | The coordinated sequencing of releases across the seven repositories and future first-party plugins that keeps cross-repository changes atomic in evidence.                          |
 | Pin                   | An exact committed version or revision (tag, `Cargo.lock` entry, `bun.lock` entry, action SHA) that makes a build reproducible.                                                      |
 
-## Proposed summary
+## Accepted summary
 
 1. **Single license.** Every formal repository carries MIT
    (`SPDX-License-Identifier: MIT`) as its sole license in v1. The file
@@ -150,11 +146,11 @@ and this RFC must be corrected.
    publish, and consumed by `bitty-website` only from a pinned
    `bitty-docs` revision.
 
-## Licenses (proposed)
+## Licenses (accepted)
 
 ### Governing choice
 
-Proposed v1 license for every formal repository:
+Accepted v1 license for every formal repository:
 **MIT** (`https://opensource.org/licenses/MIT`).
 
 Rationale:
@@ -202,11 +198,11 @@ Rationale:
 | `GPL-2.0` / `AGPL` for service    | Incompatible with the ADR 0004 copyleft prohibition on shipped binaries and with intended embedding in user machines.                                          |
 | Per-crate `LICENSE-APACHE` file   | Correct for the dual form but implies a dual project license the project does not adopt in v1; a single `LICENSE` keeps the initial train auditable.           |
 
-## Branch protections (proposed)
+## Branch protections (accepted)
 
-### `main` settings on GitHub (proposed, already visible as the current state)
+### `main` settings on GitHub (accepted, already visible as the current state)
 
-The following table is the proposed normative set. The
+The following table is the accepted normative set. The
 [Repository map](../project/repository-map.md) records that all seven
 public remotes are already pushed with `main` protected as squash-only
 with required checks; this RFC makes that observation a governed
@@ -214,7 +210,7 @@ contract and records the full flag set:
 
 <!-- markdownlint-disable MD013 -->
 
-| Setting                                  | Proposed value                                                                                                                                                                                                                                                         |
+| Setting                                  | Accepted value                                                                                                                                                                                                                                                         |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Default branch                           | `main`                                                                                                                                                                                                                                                                 |
 | Allow merge commits                      | `false`                                                                                                                                                                                                                                                                |
@@ -234,7 +230,7 @@ contract and records the full flag set:
 
 The check name is the GitHub `job.name` that GitHub requires on `main`:
 
-| Local directory                       | Proposed required `main` status checks           | Workflow file(s) that produce them                    |
+| Local directory                       | Accepted required `main` status checks           | Workflow file(s) that produce them                    |
 | ------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
 | `bitty`                               | `Quality gates`                                  | `bitty/.github/workflows/ci.yml`                      |
 | `bitty-docs`                          | `Docs quality`                                   | `bitty-docs/.github/workflows/ci.yml`                 |
@@ -249,7 +245,7 @@ protection setting and the workflow `name` / `job.name` in the same PR;
 the old name remains valid until the new name is the required one
 (forward-compatible rename per deprecation policy).
 
-### Branch and worktree naming (proposed, already in force via `AGENTS.md`)
+### Branch and worktree naming (accepted, already in force via `AGENTS.md`)
 
 Task branches use `ctx-XXXX/<type>-<short-slug>` where `XXXX` is the
 owning CarryCtx task number, `<type>` is one of `feat`, `fix`, `chore`,
@@ -281,11 +277,11 @@ mode and must not become the delivery path after it.
   1.7.12) is required before pushing any workflow-affecting change per
   the toolchain policy.
 
-## Ownership rules (proposed)
+## Ownership rules (accepted)
 
 ### Organization and team layout
 
-| Principals                   | Proposed ownership                                                                                                                                                                                                                                                                                |
+| Principals                   | Accepted ownership                                                                                                                                                                                                                                                                                |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GitHub organization          | `bitty-terminal` — formal repositories belong here; forks exist outside the organization.                                                                                                                                                                                                         |
 | Organization owners          | Project initiators who administer organization settings, team creation, and branch protection; not per-PR approvers by default.                                                                                                                                                                   |
@@ -299,12 +295,12 @@ a second organization owner approval.
 
 ### CODEOWNERS
 
-Every formal repository ships a `.github/CODEOWNERS` file. Proposed v1
+Every formal repository ships a `.github/CODEOWNERS` file. Accepted v1
 rules:
 
 - Default owner per repository:
 
-| Repository              | Proposed default CODEOWNERS entry                                                                                                                           |
+| Repository              | Accepted default CODEOWNERS entry                                                                                                                           |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bitty`                 | `* @bitty-terminal/bitty-core`                                                                                                                              |
 | `bitty-docs`            | `* @bitty-terminal/bitty-docs-maintainers` with `docs/security/* @bitty-terminal/bitty-core @bitty-terminal/bitty-docs-maintainers` for the security corpus |
@@ -329,7 +325,7 @@ rules:
 
 ### Decision ownership
 
-| Decision class                         | Proposed owner and sign-off                                                                                                                                                                                        |
+| Decision class                         | Accepted owner and sign-off                                                                                                                                                                                        |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Architecture direction (ADR)           | Category owner of the owning `category` plus docs-curator; security-auditor when a trust boundary, capability, resource limit, package, IPC/MCP, or sensitive-data path is involved.                               |
 | Specification or RFC                   | Same three-reviewer set as ADR, plus the owning implementation repository's evidence when the RFC claims an accepted contract.                                                                                     |
@@ -341,7 +337,7 @@ the PR discussion, and the effective `required status checks` at merge
 time. Approvals are durable (visible in GitHub) and not replaced by an
 offline note.
 
-## Compatibility policy (proposed)
+## Compatibility policy (accepted)
 
 ### Versioning
 
@@ -429,7 +425,7 @@ from the Git tag annotation. Website presentation consumes only a pinned
 `bitty-docs` revision, so the matrix is never presented as floating
 latest without a revision.
 
-## Cross-repository release flow (proposed)
+## Cross-repository release flow (accepted)
 
 ### Repo graph and independence
 
@@ -470,7 +466,7 @@ repositories; they never carry a release tag.
 
    Cross-repository changes should link to each other. The trailer
    fields `Docs-PR`, `Code-PR`, and associated ADR or RFC numbers are the
-   shared fields proposed in the [Repository map](../project/repository-map.md)
+   shared fields accepted in the [Repository map](../project/repository-map.md) per this RFC
    and adopted here.
 
 3. The implementing task pins exact versions in exactly one place per
@@ -558,7 +554,7 @@ silent retag.
 
 ## Security alignment and traceability
 
-| Proposed element                                                                                        | Normative gate it implements                                           | Threat / Risk IDs                                                  |
+| Accepted element                                                                                        | Normative gate it implements                                           | Threat / Risk IDs                                                  |
 | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | Single MIT license with `cargo deny` allowlist and banned-copyleft rule                                 | Supply-chain license posture, advisory/source/banned checks            | R-019, R-015                                                       |
 | `main` protected as squash-only with required status checks matching CI job names                       | Read-only CI parity, no unchecked direct merge into a trusted branch   | T-12, R-015                                                        |
@@ -642,7 +638,7 @@ move the linked risk toward `Mitigated`.
 
 ## Affected contracts
 
-Acceptance of this RFC would apply these same-change updates (no
+Acceptance of this RFC on 2026-08-29 applies these same-change updates (no
 separate task needed; a follow-up PR must keep them synchronized):
 
 - [Repository map](../project/repository-map.md): the pending-decisions
@@ -655,7 +651,7 @@ checks` table and the current-initialization-state table gain the
 - [Decision register](../decisions/index.md): DIR-006 through DIR-012
   gain a link to this RFC as the accepted ownership and release policy;
   the candidate-queue entry for repository governance is marked
-  Proposed with pending acceptance.
+  Accepted on 2026-08-29 per this RFC.
 - [Technology strategy](../project/technology-strategy.md): the
   candidate dependency-governance, bootstrap toolchain, and release
   profile bullets link to this RFC for license, branch protection, and
@@ -715,8 +711,8 @@ implementation.
 
 ## Acceptance criteria
 
-This RFC may move from `Draft` to `Accepted` and close
-[OQ-024](../decisions/open-questions.md) at the design level only after:
+This RFC is accepted on 2026-08-29 and closes
+[OQ-024](../decisions/open-questions.md) at the design level. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) close rule:
 
 1. Independent review by the category owner, a docs curator, and a
    security reviewer accepts the license, branch protection,
@@ -738,6 +734,23 @@ This RFC may move from `Draft` to `Accepted` and close
 5. Verification items 1 through 4 in the plan above are shown green
    on a staged two-repository example (for example `bitty-docs` plus
    `bitty`) with exact check names and protection output captured.
+
+Closes OQ-024: this RFC closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0077 tracks acceptance of OQ-024 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-024.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                           | Date       |
+| ------------------------------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-015, R-019, R-022, T-12, P0-AC-033 family, MIT license allowlist, supply-chain lane, dependency governance, distribution integrity, branch protection provenance, CodeQL `javascript`+`actions`                                                                                                                          | 2026-08-28 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | License MIT file placement `LICENSE` SPDX, branch protection squash-only strict CODEOWNERS conversation-resolution, compatibility policy semver MSRV 1.85 Tier 1 deprecation >=1 minor, release train `Docs-PR`/`Code-PR` trailers pinned website consumption                                                              | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | Branch protection table `Required main status checks` per repository, ownership rules org teams CODEOWNERS paths, cross-repository train dependency-ordered merges atomic-evidence `gitleaks`/`cargo deny` gates                                                                                                           | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Repository map](../project/repository-map.md) and [P0 review checklist](../reviews/p0-review-checklist.md) and [website content contract](../project/website-content-contract.md), English-only | 2026-08-29 |
+
+<!-- markdownlint-enable MD013 -->
 
 ## References
 
