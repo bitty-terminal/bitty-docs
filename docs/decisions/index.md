@@ -68,6 +68,7 @@ records a reviewed contract, not implementation evidence:
 | [DevTools RFC](../specifications/devtools-rfc.md)                                                     | OQ-019                                 | Accepted |
 | [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](adrs/ADR-0008-headless.md) | OQ-020                                 | Accepted |
 | [Default Distribution RFC](../specifications/default-distribution-rfc.md)                             | OQ-002                                 | Accepted |
+| [IPC and Agent RFC](../specifications/ipc-agent-rfc.md)                                               | OQ-018                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -119,7 +120,7 @@ the historical conversation:
   review.)
 - Headless daemon, detach/reattach, and remote UI architecture. (Accepted: [ADR 0008](adrs/ADR-0008-headless.md) — deferred to post-v1.0, headless-runtime/daemon/remote taxonomy, session-grained detach/reattach, bounded persistence, contained failure, and trust-boundary analysis gate for [OQ-020](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Isolation resource ceilings and failure semantics. (Accepted: [Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — accepted 2026-08-28 for OQ-014, `Accepted` with frontmatter `accepted`; isolation domains IR-D1..D3, resource ceilings RC-1..RC-10 (three-level queue PerSub 64 / PerPlugin 1024 events/256 KiB / Global 8192 events/2 MiB hard-gated, RC-1 10^7/50 ms/8 ms, RC-2 32 MiB), failure semantics FS-1..FS-9, and adversarial AT-IR-001..015; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17/21 headless `measurement.rs`, 15 headless `measurement_lua.rs` @ `d67a65b`, worktree `ctx-0040/feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as reviewed evidence; lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-28) -> normative`.)
-- Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Proposed: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); pending security review.)
+- Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Accepted: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit.
   (Proposed: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua
   5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and audit
