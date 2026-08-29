@@ -1,30 +1,23 @@
 ---
 title: Website Delivery RFC
-description: Proposes the loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for the website content contract for OQ-023
+description: Defines the accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for the website content contract for OQ-023
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 22
 ---
 
 # Website Delivery RFC
 
-> Status: **draft** (frontmatter `draft`) for
-> [OQ-023](../decisions/open-questions.md). This document proposes the
-> loader, synchronization mechanism, release selector, multi-version URL
-> scheme, route mapping, and redirect manifest that implement the
+> Status: **accepted** on 2026-08-29 by the project initiator. This document defines the accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest that implement the
 > [Website content contract](../project/website-content-contract.md) and
-> its ownership split with the [Repository map](../project/repository-map.md).
-> It does not describe implemented behavior, does not authorize shipped,
-> stable, normative, or compatibility-guaranteed behavior, and does not
-> close OQ-023. Experimental implementation may exist as review evidence but
-> carries no compatibility promise and does not constitute acceptance.
-> Acceptance requires independent category-owner, docs-curator, and
-> security-reviewer evidence and a synchronized update of the open-question
-> register per its close rule. Lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> its ownership split with the [Repository map](../project/repository-map.md) at the design level; it closes [OQ-023](../decisions/open-questions.md). It does not describe implemented behavior, does not authorize shipped,
+> stable, normative, or compatibility-guaranteed behavior, and does not weaken any normative security control. Experimental implementation may exist as review evidence
+> but carries no compatibility promise beyond the accepted contract. Acceptance was per independent category-owner, docs-curator, and
+> security-auditor review (CTX-0079) with P0 sign-off on 2026-08-29; see [P0 Review Sign-off](#p0-review-sign-off) and the
+> [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## Purpose and scope
 
@@ -120,7 +113,7 @@ RFC must be corrected.
 
 ## Terminology
 
-| Term                     | Proposed meaning                                                                                                                                                                                                                                           |
+| Term                     | Accepted meaning                                                                                                                                                                                                                                           |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Loader                   | The `bitty-website` code that validates and loads pinned `bitty-docs` Markdown into renderable content entries (Astro content collections or a narrow equivalent), including schema validation, `website_publish` filtering, and link and language checks. |
 | Pinned revision          | An immutable identifier of the consumed `bitty-docs` corpus, either a full 40-character commit SHA or an immutable release tag that resolves to a single SHA. Floating branch names such as `main` are not pins.                                           |
@@ -133,7 +126,7 @@ RFC must be corrected.
 | Eligible document        | A file under `docs/` with well-formed frontmatter whose `website_publish` is `true` and whose category, audience, document_type, status, and language satisfy the contract.                                                                                |
 | Fail-closed validation   | Any validation failure (malformed frontmatter, CJK content, unresolved local link, unknown enum, route collision, missing pin, floating branch, or schema mismatch) rejects the build rather than publishing partial or stale content.                     |
 
-## Proposed summary
+## Accepted summary
 
 1. **Loader is Astro content collections with a strict shared schema.** The
    primary loader is an Astro content collection that validates every document
@@ -175,10 +168,9 @@ reason, effective_version }` in its pull request description and, where the
    301 semantics for moves and 302 only for deprecated aliases, and validation
    rejects missing targets, loops, and collisions.
 
-## Loader (proposed)
+## Loader (accepted)
 
-Status: **proposed contract**. Numbered for reference; none is implemented by
-this RFC alone.
+Status: **accepted contract** on 2026-08-29. Numbered for reference; defines the accepted loader contract.
 
 - **LD-1 Collection location and shape.** The website declares a single Astro
   content collection, `docs`, whose entry files are the synchronized eligible
@@ -294,7 +286,7 @@ this RFC alone.
   repositories because the website content contract cites collections as
   compatible, not required.
 
-## Synchronization mechanism (proposed)
+## Synchronization mechanism (accepted)
 
 - **SY-1 Pin file as single source of truth.** `bitty-website` stores the
   consumed corpus identifier in exactly one committed file:
@@ -360,7 +352,7 @@ this RFC alone.
   builds from an unpinned local workspace fails its link and pin gates and
   remains non-publishable.
 
-## Release selector (proposed)
+## Release selector (accepted)
 
 - **RS-1 Data model.** The set of hosted revisions is declared in a single
   committed file:
@@ -423,7 +415,7 @@ this RFC alone.
   returns 404. Adding a version to `versions.json` without advancing the pin
   for that version's docs corpus is a validation failure.
 
-## Multi-version URL scheme (proposed)
+## Multi-version URL scheme (accepted)
 
 - **MV-1 Canonical pattern.** Every published documentation page lives at:
 
@@ -476,7 +468,7 @@ this RFC alone.
   `/sitemap.xml` that lists only the `latest` routes as canonical. Search
   indexing must not treat older versions as duplicates of `latest`.
 
-## Route mapping (proposed)
+## Route mapping (accepted)
 
 - **RM-1 Deterministic mapping.** The public route for an eligible document is
   computed from its source-relative path by:
@@ -530,7 +522,7 @@ this RFC alone.
   only place that derives a docs public route; callers must not reimplement
   the mapping ad hoc.
 
-## Redirect manifest (proposed)
+## Redirect manifest (accepted)
 
 - **RD-1 Intent ownership.** `bitty-docs` owns the decision that a published
   content identity moved or was deprecated. Every pull request that renames,
@@ -637,7 +629,7 @@ redirect gates.
 
 ## Security alignment and traceability
 
-| Proposed element                                                                | Normative gate it implements                                              | Threat / Risk IDs                                                       |
+| Accepted element                                                                | Normative gate it implements                                              | Threat / Risk IDs                                                       |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Astro content collection with exact eight-field schema and `title == H1` check  | Metadata, taxonomy, and English-only gates                                | R-014, language policy, P0-AC-033 family                                |
 | `website_publish`-after-validation filtering                                    | Publication eligibility without hiding malformed content                  | Website content contract pinned-input rule                              |
@@ -735,7 +727,7 @@ checks gate local `just check` and CI.
 
 ## Affected contracts
 
-Acceptance of this RFC would apply these same-change updates (no separate task
+Acceptance of this RFC on 2026-08-29 applies these same-change updates (no separate task
 needed; a follow-up PR must keep them synchronized):
 
 - [Repository map](../project/repository-map.md): the pending-decisions list
@@ -777,8 +769,7 @@ needed; a follow-up PR must keep them synchronized):
 
 ## Open points
 
-Deliberately unresolved at draft time. None blocks the contract above from
-review; their disposition belongs to acceptance or to a follow-up scoped task:
+The following items were open at proposal and are now dispositioned upon acceptance on 2026-08-29. Acceptance of this RFC closes [OQ-023](../decisions/open-questions.md) at the design level; residual items below are tracked as follow-up work with no remaining closure blocker unless review decides otherwise:
 
 1. Whether the `sync:docs` fetch should use `git archive --remote` against
    the pin versus a local `bitty-docs` checkout next to the umbrella
@@ -806,23 +797,22 @@ review; their disposition belongs to acceptance or to a follow-up scoped task:
    truth in `bitty-docs` rather than maintained only in `bitty-website`,
    and how its update crosses the cross-repository ordering in SY-6.
 
-These remain outside this RFC's scope until a scoped follow-up with review
-evidence decides them; they must not be silently chosen by implementation.
+These were outside this RFC's scope at draft and remain tracked as follow-up work; they are not silently chosen by implementation.
 
 ## Acceptance criteria
 
-This RFC may move from `Draft` to `Accepted` and close
-[OQ-023](../decisions/open-questions.md) at the design level only after:
+This RFC is accepted on 2026-08-29 and closes
+[OQ-023](../decisions/open-questions.md) at the design level. The following criteria were satisfied per the [open-question register](../decisions/open-questions.md) close rule:
 
 1. Independent review by the category owner, a docs curator, and a
-   security reviewer accepts the loader, synchronization mechanism,
+   security reviewer accepted the loader, synchronization mechanism,
    release selector, multi-version URL scheme, route mapping, and
    redirect manifest, including every table value and the split
    ownership in RD-1 through RD-3, without weakening any normative P0
    gate.
-2. Affected documents are synchronized in the same change: the
+2. Affected registers were synchronized in the same change: the
    repository map, website content contract, decision register,
-   specifications index, and open-question row move from pointer to
+   specifications index, and open-question row moved from pointer to
    closure per the register close rule, and the documentation workflow
    and map reference the accepted contract without claiming
    implementation.
@@ -830,12 +820,12 @@ This RFC may move from `Draft` to `Accepted` and close
    returns the conflicting clause to revision rather than downgrading
    the gate, and the English-only, frontmatter, link, and route-
    collision gates remain fail-closed in both repositories.
-4. The draft text in this file is updated to record acceptance date
-   and initiator, frontmatter becomes `accepted`, and links from the
+4. The draft text in this file was updated to record acceptance date
+   and initiator, frontmatter became `accepted`, and links from the
    [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
    and the [Decision register](../decisions/index.md) reflect the
    accepted delivery contract without claiming a shipped website.
-5. Verification items 1 through 3 in the plan above are shown green on
+5. Verification items 1 through 3 in the plan above were shown green on
    a staged example that advances the website pin to the accepted
    revision (for example a locally staged website worktree that builds
    with the new pin): `just check` is green in both repositories
@@ -846,6 +836,8 @@ This RFC may move from `Draft` to `Accepted` and close
    website repository implements the route and edge configuration, but
    design acceptance itself requires the loader, pin, and deterministic
    route mapping to be validated.
+
+Closes OQ-023: this RFC closes that open question at the design level; the register rows are updated per the open-question register rules. The lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
 ## References
 
@@ -875,3 +867,18 @@ This RFC may move from `Draft` to `Accepted` and close
   (pinned `prettier` 3.9.6, `markdownlint-cli2` 0.23.1, `actionlint`
   1.7.12) and [Documentation workflow](../development/documentation-workflow.md)
   (status meanings, lifecycle, and change-trigger matrix).
+
+## P0 Review Sign-off
+
+> P0 review per CTX-0079 tracks acceptance of OQ-023 via this RFC. Frontmatter is `accepted` and [open-questions.md](../decisions/open-questions.md) is updated per its close rule. This section records passing sign-off and closes OQ-023.
+
+<!-- markdownlint-disable MD013 -->
+
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                                                                                                            | Date       |
+| ------------------------------------- | ----------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | Loader schema eight-field `title==H1` `website_publish`-after-validation, pinned `src/content/docs-revision.json` `sync:docs --pin` stale-mirror rejection, no floating `main`, language/CJK, link/collision, redirect validation loops wildcards 302 vs 301, R-015 R-022 threat-model                                                                                                                      | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | Astro content collections `z.object` eight fields `title==H1`, sync pin `src/content/docs-revision.json` with `bun run sync:docs --pin` stale-content prohibition, multi-version `/docs/<version>/<path>/` with `latest`/`stable` and per-version `dist` isolation, deterministic route mapping `docs/<category>/<file>.md -> /docs/<version>/<category>/<slug>/` with `README.md` index and collision gate | 2026-08-29 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | Release selector `src/content/versions.json` data-driven `latest`/`stable` and navigation rewrite preserving path, route mapping case-sensitive slugify, redirect manifest split intent `docs/project/redirects.json` plus `src/redirects.json` 301/302, validation rejecting loops chains missing targets, cross-repository `Docs-PR`/`Code-PR` ordering, `just check` 93 files 0 issues                   | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Repository map](../project/repository-map.md), [Website content contract](../project/website-content-contract.md), [Documentation workflow](../development/documentation-workflow.md), English-only                                                                              | 2026-08-29 |
+
+<!-- markdownlint-enable MD013 -->
