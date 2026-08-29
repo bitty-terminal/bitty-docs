@@ -15,13 +15,18 @@ sidebar_order: 33
 
 Accepted on 2026-08-26 by the project initiator, closing open question
 [OQ-005](../open-questions.md). The accepted topology is the ten-crate
-graph below. As of 2026-08-27 the `bitty` workspace additionally contains
-`bitty-package` with lifecycle and integrity model accepted
+graph below. As of 2026-08-29 (`bitty` `be3bdb4`, 16 crates, soak ~808 tests)
+the `bitty` workspace additionally contains `bitty-package` with lifecycle and
+integrity model accepted
 ([Package Lifecycle RFC](../../specifications/package-lifecycle-rfc.md),
-OQ-021, 2026-08-27) and three draft spine crates (`bitty-rich`,
-`bitty-ipc`, `bitty-agent`) ahead of acceptance; they are not part of the
-accepted graph and remain governed by their proposed RFCs, while
-`bitty-package` real signature verification remains draft per crate docs.
+OQ-021, 2026-08-27), `bitty-lua` accepted
+([Lua Runtime RFC](../../specifications/lua-runtime-rfc.md), OQ-009, plus
+ADR-0005/0006/0007 OQ-030/031/032, 2026-08-29), and tail crates (`bitty-rich`
+OQ-008/015/016, `bitty-ipc`/`bitty-agent` OQ-018) `Implemented` (headless
+`Implemented` at `be3bdb4`) ahead of `Verified`; they remain governed by
+their RFCs with lifecycle
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`,
+while `bitty-package` real signature verification remains draft per crate docs.
 See the implementation note after the table.
 
 ## Context
@@ -62,20 +67,27 @@ resolver 3, `publish = false`) with the following member crates:
 | `bitty-app`         | Binary entry point; argument handling, startup, safe-mode selection                      | `bitty-runtime`, `bitty-platform`                                                                              |
 | `bitty-core`        | Bootstrap seed library retained for migration; to be retired                             | none                                                                                                           |
 
-Implementation note (2026-08-27): the workspace resolves to fifteen
-members (`bitty-core` plus fourteen active crates) as pinned in
-`bitty/Cargo.toml` and `Cargo.lock`. `bitty-package` implements the tail of
-the candidate build-order spine (`Proposed Delivery Sequence`) with lifecycle
-and integrity model accepted
+Implementation note (2026-08-29 `be3bdb4`): the workspace resolves to sixteen
+members (`bitty-core` plus fifteen active crates: `vt`, `pty`, `platform`,
+`config`, `package`, `lua`, `term-state`, `ui`, `render`, `plugin-host`,
+`rich`, `ipc`, `agent`, `runtime`, `app`) as pinned in `bitty/Cargo.toml` and
+`Cargo.lock`. `bitty-package` implements the tail of the candidate build-order
+spine (`Proposed Delivery Sequence`) with lifecycle and integrity model accepted
 ([Package Lifecycle RFC](../../specifications/package-lifecycle-rfc.md),
-OQ-021, 2026-08-27) and `bitty-rich`, `bitty-ipc`, `bitty-agent` as draft,
-headless, `forbid(unsafe_code)` libraries. `bitty-package` real signature
-verification, registry, and key-directory contracts remain draft per crate docs
-and OQ-022/OQ-026 through OQ-029; `bitty-rich` the rich-content interfaces
-(OQ-008/OQ-015/OQ-016), `bitty-ipc` the IPC/MCP boundary (OQ-018), and
-`bitty-agent` the Agent core (OQ-018/OQ-019) remain proposed. They are not
-wired into `bitty-runtime` hot paths and do not expand the accepted topology;
-a future revision of this ADR or a successor ADR will decide final placement.
+OQ-021, 2026-08-27), `bitty-lua` (`piccolo` 0.3.3) accepted (OQ-009/030-032,
+2026-08-29), and `bitty-rich`, `bitty-ipc`, `bitty-agent` as `Implemented`
+(headless `Implemented` at `be3bdb4`, soak ~808 tests, `forbid(unsafe_code)`).
+`bitty-package` real signature verification, registry, and key-directory
+contracts remain draft per crate docs and OQ-022/OQ-026 through OQ-029;
+`bitty-rich` the rich-content interfaces (OQ-008/015/016, now `Accepted` via
+Rich Presentation RFC 2026-08-28, `Implemented` not yet `Verified`),
+`bitty-ipc` the IPC/MCP boundary (OQ-018, `Accepted` 2026-08-29, `Implemented`
+not yet `Verified`), and `bitty-agent` the Agent core (OQ-018/OQ-019,
+`Accepted`/`Implemented` not yet `Verified`) are `Implemented` headless.
+They are not yet wired into `Verified` hot paths and do not expand the
+`Verified` topology until the risk evidence matrix is satisfied; a future
+revision of this ADR or a successor ADR will decide final placement per
+lifecycle `Specified -> Accepted -> Implemented -> Verified`.
 
 Dependency rules:
 
@@ -108,15 +120,18 @@ its contents migrate into `bitty-vt`, `bitty-term-state`, and `bitty-pty` as
 the first implementation milestones land, after which `bitty-core` is retired.
 The migration order itself is implementation work and not decided here.
 
-As of 2026-08-27 the workspace is spine-complete in crate presence:
-`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
-`bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
-`bitty-runtime`, `bitty-package`, `bitty-rich`, `bitty-ipc`,
-`bitty-agent`, plus `bitty-app` and the retained `bitty-core` seed. Presence
-does not imply acceptance of the draft tail crates except `bitty-package`
-whose lifecycle and integrity model is accepted (OQ-021, 2026-08-27) with
-signatures still draft; the remaining three stay proposed implementations
-tracked by their RFCs.
+As of 2026-08-29 the workspace is spine-complete in crate presence (16
+crates `be3bdb4`): `bitty-vt`, `bitty-term-state`, `bitty-pty`,
+`bitty-platform`, `bitty-config`, `bitty-render`, `bitty-ui`,
+`bitty-plugin-host`, `bitty-runtime`, `bitty-package`, `bitty-lua`,
+`bitty-rich`, `bitty-ipc`, `bitty-agent`, plus `bitty-app` and the retained
+`bitty-core` seed. Presence is `Implemented` (soak ~808 headless tests) but not
+yet `Verified`; lifecycle and integrity model is `Accepted` for `bitty-package`
+(OQ-021, 2026-08-27) and `bitty-lua` (OQ-009/030-032, 2026-08-29) with signatures
+still draft; the tail three (`bitty-rich`, `bitty-ipc`, `bitty-agent`) are
+`Implemented` (headless) `Accepted` via Rich Presentation RFC (OQ-008/015/016)
+and IPC/Agent RFC (OQ-018) but remain `Implemented` not yet `Verified` per risk
+evidence matrix pending.
 
 ### MSRV
 

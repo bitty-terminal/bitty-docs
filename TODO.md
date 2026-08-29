@@ -1,9 +1,14 @@
-# Documentation-first TODO
+# Pre-alpha / M1 Hardening TODO
 
-This list sequences project-definition work before product implementation. It
-does not authorize product code. Canonical unresolved choices live in the
-[open-question register](docs/decisions/open-questions.md); this file groups the
-work into delivery stages.
+This list sequences project-definition and hardening work at the **Pre-alpha /
+M1 Hardening** stage (2026-08-29, `bitty` `be3bdb4`, 16 crates, 32 OQs
+Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented` but not yet
+`Verified`). Canonical choices live in the
+[open-question register](docs/decisions/open-questions.md) (OQ-001..032 all
+`Accepted` per CTX-0083); lifecycle is
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
+This file groups the work into delivery stages and records reconciliation at
+Phase A.
 
 ## Documentation foundation
 
@@ -33,35 +38,42 @@ work into delivery stages.
 - [ ] Perform a final cross-repository documentation review after all initial
       repositories have their first commits and stable links.
 
-## Required before product implementation
+## Required before product implementation — now Accepted (M1 Hardening)
 
-- [ ] Review and accept measurable product/performance budgets (OQ-001;
-      draft: specifications/performance-budget-rfc.md).
-- [ ] Review and accept platform support tiers and first compatibility
-      milestone (OQ-003/OQ-004; drafts: ADR-0002,
-      specifications/compatibility-milestone-rfc.md).
-- [ ] Review and accept core topology and dependency ADRs (OQ-005/OQ-006;
-      drafts: ADR-0003, ADR-0004).
-- [ ] Review and accept the terminal state/action invariant RFC (OQ-007;
-      draft: specifications/terminal-state-rfc.md).
-- [ ] Security-auditor review of the P0 acceptance criteria conversion
-      (draft: security/p0-acceptance-criteria.md, 34 criteria).
-- [ ] Decide the first compatibility milestone and platform support/CI policy
-      (OQ-003, OQ-004).
-- [ ] Record ADRs for the core topology, Rust toolchain/MSRV, and adopted
-      dependencies (OQ-005, OQ-006).
-- [ ] Specify terminal state/action invariants and the Plugin API v1 boundary
-      (OQ-007, OQ-011, OQ-013).
-- [ ] Specify the Lua runtime, capability/manifest model, configuration model,
-      and isolation/resource mechanisms (OQ-009 through OQ-014).
-- [ ] Convert every normative P0 security control into testable acceptance
-      criteria; retain all risks as open until cited evidence satisfies them.
-- [ ] Specify package integrity, validation, transactional activation, rollback,
-      and recovery before enabling third-party installation (OQ-021, OQ-022).
-- [ ] Obtain security review for any IPC, MCP, DevTools, rich transport, image,
-      or headless interface before implementation begins.
+- [x] Review and accept measurable product/performance budgets (OQ-001;
+      accepted: specifications/performance-budget-rfc.md, 2026-08-28).
+- [x] Review and accept platform support tiers and first compatibility
+      milestone (OQ-003/OQ-004; accepted: ADR-0002, 2026-08-28,
+      specifications/compatibility-milestone-rfc.md, M1).
+- [x] Review and accept core topology and dependency ADRs (OQ-005/OQ-006;
+      accepted: ADR-0003, 2026-08-27, ADR-0004, 2026-08-27; 16 crates
+      `be3bdb4`).
+- [x] Review and accept the terminal state/action invariant RFC (OQ-007;
+      accepted: specifications/terminal-state-rfc.md, 2026-08-28).
+- [x] Security-auditor review of the P0 acceptance criteria conversion
+      (accepted: security/p0-acceptance-criteria.md, 34 criteria, normative
+      2026-08-26).
+- [x] Decide the first compatibility milestone and platform support/CI policy
+      (OQ-003, OQ-004; accepted M1 per ADR-0002).
+- [x] Record ADRs for the core topology, Rust toolchain/MSRV, and adopted
+      dependencies (OQ-005, OQ-006; ADR-0003/MSRV 1.85/1.97.1, ADR-0004).
+- [x] Specify terminal state/action invariants and the Plugin API v1 boundary
+      (OQ-007, OQ-011, OQ-013; accepted 2026-08-27/28).
+- [x] Specify the Lua runtime, capability/manifest model, configuration model,
+      and isolation/resource mechanisms (OQ-009 through OQ-014; all accepted
+      2026-08-27/28, plus OQ-030..032 ADR-0005/0006/0007, 2026-08-29).
+- [x] Convert every normative P0 security control into testable acceptance
+      criteria; retain all risks as open until cited evidence satisfies them
+      (Risk Evidence RFC OQ-025 accepted 2026-08-29, matrix pending).
+- [x] Specify package integrity, validation, transactional activation, rollback,
+      and recovery before enabling third-party installation (OQ-021, OQ-022;
+      accepted: package-lifecycle-rfc.md, package-followup-rfc.md 2026-08-28).
+- [x] Obtain security review for any IPC, MCP, DevTools, rich transport, image,
+      or headless interface before implementation begins (IPC Agent RFC
+      OQ-018, Rich RFC OQ-008/015/016, DevTools OQ-019, Headless ADR 0008
+      OQ-020 all accepted 2026-08-28/29).
 
-## Initialization allowed in the current phase
+## Initialization allowed in the current phase — M1 Hardening
 
 - [x] Implement the ADR 0001 Core bootstrap with Rust 2024, resolver 3, the two
       non-publishable dependency-free packages, pinned stable tooling, `just`,
@@ -69,30 +81,53 @@ work into delivery stages.
 - [x] Implement the ADR 0001 Astro/Bun static website shell and Workers Static
       Assets deployment configuration; keep the docs consumer, adapter, loader,
       theme, search, and routes out of that scaffold.
+- [x] Implement accepted 16-crate workspace (ADR 0003, `bitty` `be3bdb4`):
+      `vt`, `pty`, `platform`, `config`, `package`, `lua` (`piccolo` 0.3.3),
+      `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`, `agent`,
+      `runtime`, `app`, `core`; `publish = true` for 9 leaves, soak ~808
+      headless tests (`Implemented`, not yet `Verified`).
 - [ ] Restore full Astro language-server diagnostics with TypeScript 7 after
       upstream support satisfies FIND-0001 acceptance criteria.
-- [ ] Add formatting, linting, documentation-link, and security-policy checks to
-      CI without introducing product behavior.
-- [ ] Define release, compatibility, branch-protection, ownership, and docs-site
-      publishing policies (OQ-023, OQ-024).
-- [ ] Establish linked GitHub Issue and pull request conventions once the first
-      commit makes branch/worktree delivery available.
+- [x] Add formatting, linting, documentation-link, and security-policy checks to
+      CI without introducing product behavior (`just check` 93 files 0 issues,
+      `actionlint` 1.7.12, `act -n` DRYRUN success).
+- [x] Define release, compatibility, branch-protection, ownership, and docs-site
+      publishing policies (OQ-023 Website Delivery RFC, OQ-024 Governance RFC
+      both accepted 2026-08-29).
+- [x] Establish linked GitHub Issue and pull request conventions once the first
+      commit makes branch/worktree delivery available (labels `feat,area:xxx`
+      and milestone `v0.0.1` per AGENTS.md).
 - [x] Initialize per-repository CarryCtx state, rules, and personas with scopes
       matching repository ownership.
-- [ ] After a repository has its first commit, use isolated worktrees for
-      parallel implementation tasks unless a task explicitly documents otherwise.
+- [x] After a repository has its first commit, use isolated worktrees for
+      parallel implementation tasks unless a task explicitly documents otherwise
+      (`.worktrees/ctx-XXXX-...` per ADR 0003).
 
-## Deferred until decisions authorize implementation
+## Deferred until Verified — Implemented but not yet Verified (M1 Hardening)
 
-- [ ] Build the terminal core and renderer.
-- [ ] Build configuration and plugin runtimes.
-- [ ] Build rich-content, CLI/IPC, DevTools, MCP, or headless services.
-- [ ] Build package distribution and registry workflows.
-- [ ] Publish first-party plugins, SDK examples, or compatibility releases.
+- [x] Build the terminal core and renderer (`Implemented` at `be3bdb4`: `vt`
+      parser `vte` 0.15, `term-state` grid/damage/image-store, `render`
+      `wgpu` 25.0 `crossfont` 0.9, `pty` `portable-pty` 0.9, `platform`
+      `winit` 0.30, `ui` layout, `runtime` orchestration; pending `Verified`).
+- [x] Build configuration and plugin runtimes (`Implemented`: `config`
+      `ConfigPlan`, `lua` `piccolo` 0.3.3 per ADR 0005/0006/0007,
+      `plugin-host` capability/event queue; pending `Verified` and P0-AC).
+- [x] Build rich-content, CLI/IPC, DevTools, MCP, or headless services
+      (`Implemented`: `rich` ImageStore/scene, `ipc` framing/scopes/auth
+      `be3bdb4`, `agent` bounded messages, `cli` contract, `devtools`
+      instrumentation; pending `Verified`, headless deferred per ADR 0008).
+- [x] Build package distribution and registry workflows (`Implemented`:
+      `package` resolver side-by-side deterministic, lifecycle/integrity
+      accepted OQ-021/022/026-029; signatures draft, pending `Verified`).
+- [ ] Publish first-party plugins, SDK examples, or compatibility releases
+      (still deferred: `Compatible`/`Release-ready` requires `Verified` plus
+      semver and compatibility matrix).
 - [ ] Add installation, getting-started, daily-use, troubleshooting, and factual
-      reference pages only after verified product behavior exists.
+      reference pages only after verified product behavior exists
+      (`Verified` gate per risk-evidence RFC).
 - [ ] Decide internationalization ownership, locale structure, translation
-      synchronization, and multilingual routing before adding localized files.
+      synchronization, and multilingual routing before adding localized files
+      (English-only remains normative).
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

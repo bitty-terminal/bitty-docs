@@ -1,6 +1,6 @@
 ---
 title: Architecture Overview
-description: Describes the candidate Bitty architecture, its invariants, data flows, logical components, execution domains, and long-term evolution.
+description: Describes the Bitty architecture at Pre-alpha / M1 Hardening (16 crates be3bdb4, 32 OQs Accepted, soak ~808 tests Implemented but not yet Verified), its invariants, data flows, logical components, execution domains, and long-term evolution.
 category: architecture
 audience: contributor
 document_type: overview
@@ -13,21 +13,25 @@ sidebar_order: 20
 
 ## Status and scope
 
-This document describes Bitty's candidate target architecture, not stable
-product behavior. The `bitty` workspace is now spine-complete in crate
-presence (`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`,
-`bitty-config`, `bitty-render`, `bitty-ui`, `bitty-plugin-host`,
-`bitty-runtime`, `bitty-package` (lifecycle and integrity model accepted,
-OQ-021, 2026-08-27; signatures still draft), plus draft `bitty-rich`,
-`bitty-ipc`, `bitty-agent` ahead of acceptance, plus `bitty-app` and the
-retained `bitty-core` seed) as defined in
+This document describes Bitty's target architecture at **Pre-alpha / M1
+Hardening** (2026-08-29, `bitty` `be3bdb4`), not yet stable product behavior.
+The `bitty` workspace is now spine-complete in crate presence (16 crates:
+`bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-platform`, `bitty-config`,
+`bitty-render`, `bitty-ui`, `bitty-plugin-host`, `bitty-runtime`,
+`bitty-package` (lifecycle and integrity model accepted, OQ-021, 2026-08-27;
+signatures still draft), `bitty-lua`, `bitty-rich`, `bitty-ipc`, `bitty-agent`,
+plus `bitty-app` and the retained `bitty-core` seed; soak ~808 headless tests
+`Implemented` but not yet `Verified`) as defined in
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and pinned
-in `bitty/Cargo.toml`. Component names remain architecture vocabulary: apart
-from the Rust core, primary Lua configuration and plugins, cross-platform
-goal, plugin-oriented product direction, and the accepted package lifecycle
-model, the layers and data flows on this page remain candidates requiring RFC
-or ADR acceptance, and the remaining draft tail crates do not imply shipped
-behavior.
+in `bitty/Cargo.toml`. Component names remain architecture vocabulary: the Rust
+core, primary Lua configuration and plugins, cross-platform goal,
+plugin-oriented product direction, and the accepted package lifecycle model are
+`Accepted`; most layers and data flows below are `Accepted` via RFCs
+(OQ-001..032 all `Accepted`) with lifecycle
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+per the [risk evidence RFC](../specifications/risk-evidence-rfc.md), but tail
+crates remain `Implemented` not yet `Verified` and do not imply shipped or
+compatibility-guaranteed behavior.
 
 ## Overall model
 
@@ -196,11 +200,13 @@ dependency direction, independent testing value, and compilation cost. It
 should not turn every source module into a crate. The adopted workspace
 decomposition and dependency edges are fixed in
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
-`bitty-package` lifecycle and integrity model is accepted (OQ-021, 2026-08-27)
-and three additional draft crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`)
-implement the tail of the
+`bitty-package` lifecycle and integrity model is `Accepted` (OQ-021,
+2026-08-27), `bitty-lua` `Accepted` (OQ-009/030-032, 2026-08-29), and the tail
+crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/`bitty-agent` OQ-018) are
+`Implemented` at `be3bdb4` (soak ~808 headless tests) but not yet `Verified`,
+implementing the tail of the
 [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) as
-proposed, headless libraries without expanding the accepted topology.
+headless libraries without expanding the accepted topology until `Verified`.
 
 ## Candidate execution-domain model
 

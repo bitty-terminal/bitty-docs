@@ -1,6 +1,6 @@
 ---
 title: P0 Review Checklist
-description: Draft coordination checklist for P0 review of remaining RFCs and ADRs before acceptance
+description: Coordination checklist for P0 review at Pre-alpha / M1 Hardening (16 crates be3bdb4, 32 OQs Accepted, soak ~808 tests Implemented but not yet Verified)
 category: decisions
 audience: maintainer
 document_type: register
@@ -11,19 +11,26 @@ sidebar_order: 30
 
 # P0 Review Checklist
 
-> Status: **draft** (frontmatter `draft`). This document coordinates independent
-> P0 review for the remaining proposed RFCs and ADRs. It does not describe
-> implemented behavior, does not close any open question, and does not authorize
-> shipped, stable, normative, or compatibility-guaranteed behavior. Each row
-> remains `Proposed`/`Draft` until its reviewers record passing evidence and the
-> [open-question register](../decisions/open-questions.md) is updated per its
-> close rule. Lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
+> Status: **Pre-alpha / M1 Hardening** (frontmatter `draft`; content reflects
+> `Accepted` as of 2026-08-29). This document coordinated independent P0 review
+> for the RFCs and ADRs now `Accepted` (32 OQs: OQ-001..032, 14 RFCs/ADRs in
+> Primary queue, plus Governance OQ-024, Website OQ-023, Risk Evidence OQ-025).
+> As of Phase A (2026-08-29, `bitty` `be3bdb4`, 16 crates, soak ~808 headless
+> tests) IPC/rich/resolver are `Implemented` (headless `Implemented`) but not
+> yet `Verified`; risk evidence matrix remains `pending` per
+> [risk evidence RFC](../specifications/risk-evidence-rfc.md). Lifecycle is
+> `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+> (was `Draft -> experimental review evidence -> Accepted -> normative`).
 
-## Purpose
+## Purpose (Phase A reconciliation 2026-08-29)
 
-Drive the P0 acceptance path for the eleven RFCs and ADRs that remain after the
-Lua Runtime RFC (OQ-009) was accepted on 2026-08-27. As of 2026-08-28 all pending
-drafts are P0-ready and coordinated under CTX-0048 in the `bitty` project:
+Drive the P0 acceptance path for the RFCs and ADRs that were `Draft` after the
+Lua Runtime RFC (OQ-009) was accepted on 2026-08-27 and are now all `Accepted`
+at M1 Hardening (16 crates `be3bdb4`, soak ~808 tests `Implemented` but not yet
+`Verified`). As of 2026-08-28 all pending drafts were P0-ready and coordinated
+under CTX-0048 in the `bitty` project; as of 2026-08-29 (CTX-0083) all 32 OQs
+are `Accepted` and the focus shifts to `Implemented -> Verified` per the
+[risk evidence RFC](../specifications/risk-evidence-rfc.md):
 
 - **OQ-002** — Default Distribution (bundled-disabled-by-default, empty enabled set, five disable surfaces)
 - **OQ-008 / OQ-015 / OQ-016** — Rich presentation (images, `RichBlock`/`Scene`/`SemanticZone`, structured transports)
@@ -37,13 +44,15 @@ drafts are P0-ready and coordinated under CTX-0048 in the `bitty` project:
 - **OQ-031** — `os.getenv` exposure and `bitty` module policy (ADR 0006)
 - **OQ-032** — Async/`Send` boundary, GC tuning, Config VM budgets, reload and module cache (ADR 0007)
 
-All eleven are `Draft`/`Proposed` with frontmatter `draft` and require the three
-independent reviewers in §2. Additional Open items that are not RFC-gated
-(OQ-023 website content contract, OQ-024 repository governance, OQ-025 risk
-evidence) remain tracked in the [open-question register](../decisions/open-questions.md)
-and the [decision register](../decisions/index.md) but are listed in §7 for
-visibility. This file is the CTX-0048 coordination single source; it stays
-`draft` until the batch is accepted per the close rule.
+All eleven were `Draft`/`Proposed` with frontmatter `draft` and required the
+three independent reviewers in §2. Additional Open items that were not
+RFC-gated (OQ-023 website content contract, OQ-024 repository governance,
+OQ-025 risk evidence) are now `Accepted` (2026-08-29) and tracked in the
+[open-question register](../decisions/open-questions.md) and the
+[decision register](../decisions/index.md) but were listed in §7 for
+visibility. This file was the CTX-0048 coordination single source; at Phase A
+(CTX-0085, 2026-08-29, `be3bdb4`) it records the `Accepted` state and the
+pending `Implemented -> Verified` gate (soak ~808 tests, risk matrix pending).
 
 ## Review owners and gates
 
@@ -57,8 +66,9 @@ sensitive-data path requires three independent reviews:
 - **docs-curator** — taxonomy, frontmatter, terminology, links, provenance, navigation, and English-only gates
 
 All reviews record evidence in CarryCtx. No self-acceptance; crate presence
-(`bitty-plugin-host`, `bitty-lua`, `bitty-rich`, `bitty-ipc`, `bitty-agent`)
-does not constitute acceptance.
+(`bitty-plugin-host`, `bitty-lua`, `bitty-rich`, `bitty-ipc`, `bitty-agent`,
+16 crates `be3bdb4`) alone did not constitute acceptance before 2026-08-29;
+`Implemented` (soak ~808) still requires `Verified` per risk evidence RFC.
 
 ## Acceptance criteria for every row
 
@@ -147,16 +157,17 @@ the [specifications](../specifications/README.md) or [ADR index](../decisions/ad
 and the [open-question register](../decisions/open-questions.md) per the
 documentation map close rule, and record the CarryCtx decision and checkpoint.
 
-## Visibility: other Open drafts not in this P0 batch
+## Visibility: other Open drafts not in this P0 batch (Phase A 2026-08-29)
 
-These items are Open but are **not** RFC-gated drafts in the eleven-item P0
-batch above. They remain tracked in the registers and require independent
-review and evidence before closure, but they do not block the CTX-0048 review
-wave:
+These items were `Open` but are **not** RFC-gated drafts in the eleven-item P0
+batch above. They remain tracked in the registers and required independent
+review and evidence before closure (now `Accepted`), and did not block the
+CTX-0048 review wave. Phase A reconciliation (CTX-0085, `be3bdb4`):
 
-- No RFC-gated Open item remains as of 2026-08-29 — all RFCs including Website Delivery (OQ-023), Governance (OQ-024), and Risk Evidence (OQ-025) are `Accepted` with frontmatter `accepted`. No `Proposed` material remains — all RFCs and ADRs are `Accepted` as tracked in the [ADR index](../decisions/adrs/README.md).
+- No RFC-gated Open item remains as of 2026-08-29 — all RFCs including Website Delivery (OQ-023), Governance (OQ-024), and Risk Evidence (OQ-025) are `Accepted` with frontmatter `accepted`. No `Proposed` material remains — all RFCs and ADRs are `Accepted` (32 OQs, OQ-001..032) as tracked in the [ADR index](../decisions/adrs/README.md).
+- `Implemented` but not yet `Verified`: IPC/rich/resolver and tail crates at `be3bdb4` (16 crates, soak ~808 headless tests) are `Implemented` (headless `Implemented`) per repository-map and architecture overview, but remain `Open` in [risk register](../security/risk-register.md) until the evidence matrix in [risk evidence RFC](../specifications/risk-evidence-rfc.md) (RS-1..RS-7) is satisfied. Lifecycle is `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
 
-All P0 RFCs/ADRs plus Governance, Risk Evidence, and Website Delivery RFCs above are reviewed with fourteen accepted and zero pending review; no RFC-gated visibility item remains. Closing any remaining ADR requires the same three-reviewer evidence and atomic register updates.
+All P0 RFCs/ADRs plus Governance, Risk Evidence, and Website Delivery RFCs above are reviewed with fourteen accepted and zero pending review; no RFC-gated visibility item remains. The pending gate is `Implemented -> Verified` with risk evidence matrix `pending`. Closing any remaining ADR requires the same three-reviewer evidence and atomic register updates.
 
 ## References
 

@@ -1,17 +1,24 @@
 # bitty-docs
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
-terminal project. The project is currently in a **documentation-first,
-pre-implementation phase**: these documents describe intent, accepted working
-directions, normative requirements, candidates, and open questions. They do
-not claim that product code exists or that a proposed design has shipped.
+terminal project. The project is currently in **Pre-alpha / M1 Hardening**
+(2026-08-29, `bitty` `be3bdb4`): these documents describe intent, accepted
+working directions (32 OQs Accepted: OQ-001..032), normative requirements, and
+the implementation lifecycle
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
+The `bitty` workspace is now 16 crates (`vt`, `pty`, `platform`, `config`,
+`package`, `lua`, `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`,
+`agent`, `runtime`, `app`, `core`) with IPC/rich/resolver implemented (headless
+tests soak ~808) but not yet independently verified; `Verified` requires
+security-auditor and P0-AC evidence per the
+[risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md).
 
 ## Start here
 
 - [Documentation map](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/README.md) — topic-oriented navigation and authority
   rules.
-- [User guide](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/user-guide/README.md) — an honest pre-implementation plan
-  for future user tasks, without invented commands.
+- [User guide](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/user-guide/README.md) — an honest Pre-alpha / M1 Hardening plan
+  for future user tasks, without invented commands before verification.
 - [Development](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/README.md) — contributor entry point and
   delivery expectations.
 - [Reference](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/reference/README.md) — planned factual interface reference,
@@ -35,8 +42,8 @@ not claim that product code exists or that a proposed design has shipped.
 - [Governance RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
 - [Website Delivery RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
 - [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
-- [Docs-first TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — documentation and initialization work before
-  product implementation.
+- [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha / M1 Hardening status
+  reconciliation and remaining hardening work (see `TODO.md` 2026-08-29).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
   traceability from the 20-turn historical design conversation to canonical
   documents.
@@ -52,24 +59,33 @@ controls audience, type, status, publication eligibility, and navigation order;
 it never turns a proposal into implementation evidence. See the normative
 [documentation workflow](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md).
 
-No website content consumer exists yet. A future independent `bitty-website`
+The `bitty-website` consumer now has an accepted loader (Website Delivery RFC
+OQ-023, 2026-08-29) and Governance RFC (OQ-024, 2026-08-29) with pinned
+`bitty-docs` revision consumption (`sync:docs --pin`). A future independent
 integration must consume only eligible documents from an immutable pinned
-`bitty-docs` revision and must present canonical content without copying
-specifications. The ownership, validation, link, redirect, and cross-repository
-rules live in the
+revision and must present canonical content without copying specifications.
+The ownership, validation, link, redirect, and cross-repository rules live in
+the
 [website content contract](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/website-content-contract.md).
 
 ## Status and authority
 
-Each document should distinguish among these states:
+Each document should distinguish among these lifecycle states
+(`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`):
 
 - **Normative requirement**: a constraint future implementations must satisfy.
 - **Accepted working direction**: current intent, still subject to an ADR or RFC
-  where the mechanism or compatibility contract is not settled.
+  where the mechanism or compatibility contract is not settled; all 32 OQs
+  (OQ-001..032) are `Accepted` as of 2026-08-29.
 - **Candidate**: a proposal retained for evaluation, not a decision.
-- **Open**: an unresolved question or risk.
-- **Implemented**: requires evidence from a product repository and must not be
-  inferred from design prose.
+- **Open**: an unresolved question or risk; risk evidence matrix remains
+  `pending` (implemented but not yet verified per
+  [risk register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/security/risk-register.md)).
+- **Implemented**: requires evidence from a product repository (`bitty`
+  `be3bdb4` 16 crates; IPC/rich/resolver implemented but not yet verified) and
+  must not be inferred from design prose.
+- **Verified / Compatible / Release-ready**: requires independent review and
+  P0-AC evidence before compatibility or release claims.
 
 When statements conflict, normative security documents take precedence over
 historical source notes. Accepted direction and decision status live in the
@@ -91,7 +107,8 @@ decision, open-question, and source records together. See the workspace
 `AGENTS.md` and this repository's `AGENTS.md` before working.
 
 The normal delivery lifecycle is Issue, CarryCtx task, branch/worktree, commit,
-pull request, independent review plus CI, merge, and final task checkpoint. The
-current unborn repository uses a strictly scoped shared-checkout exception until
-the first commit. Documentation synchronization is part of the definition of
-done for every affected product or governance change.
+pull request, independent review plus CI, merge, and final task checkpoint.
+Documentation synchronization is part of the definition of done for every
+affected product or governance change. Current stage is **Pre-alpha / M1
+Hardening** (2026-08-29, `bitty` `be3bdb4`, 16 crates, soak ~808 headless tests;
+IPC/rich/resolver `Implemented` but not yet `Verified`).
