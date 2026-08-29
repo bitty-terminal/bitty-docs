@@ -49,28 +49,29 @@ The following reviewed artifacts were accepted on 2026-08-26, 2026-08-27, 2026-0
 project initiator. Each closes the open-question entry it names; acceptance
 records a reviewed contract, not implementation evidence:
 
-| Artifact                                                                        | Closes                                 | Status   |
-| ------------------------------------------------------------------------------- | -------------------------------------- | -------- |
-| [Performance Budget RFC](../specifications/performance-budget-rfc.md)           | OQ-001                                 | Accepted |
-| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)    | OQ-003                                 | Accepted |
-| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md) | OQ-004                                 | Accepted |
-| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)  | OQ-005                                 | Accepted |
-| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)    | OQ-006                                 | Accepted |
-| [Terminal State RFC](../specifications/terminal-state-rfc.md)                   | OQ-007                                 | Accepted |
-| [Configuration Model RFC](../specifications/configuration-model-rfc.md)         | OQ-010                                 | Accepted |
-| [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013                 | Accepted |
-| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)             | OQ-021                                 | Accepted |
-| [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                         | OQ-009                                 | Accepted |
-| [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016                 | Accepted |
-| [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)           | OQ-014                                 | Accepted |
-| [CLI Contract RFC](../specifications/cli-contract-rfc.md)                       | OQ-017                                 | Accepted |
-| [Package Follow-up RFC](../specifications/package-followup-rfc.md)              | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
-| [DevTools RFC](../specifications/devtools-rfc.md)                               | OQ-019                                 | Accepted |
-| [Default Distribution RFC](../specifications/default-distribution-rfc.md)       | OQ-002                                 | Accepted |
-| [IPC and Agent RFC](../specifications/ipc-agent-rfc.md)                         | OQ-018                                 | Accepted |
-| [Governance RFC](../specifications/governance-rfc.md)                           | OQ-024                                 | Accepted |
-| [Website Delivery RFC](../specifications/website-delivery-rfc.md)               | OQ-023                                 | Accepted |
-| [Risk Evidence RFC](../specifications/risk-evidence-rfc.md)                     | OQ-025                                 | Accepted |
+| Artifact                                                                                                                | Closes                                 | Status   |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | -------- |
+| [Performance Budget RFC](../specifications/performance-budget-rfc.md)                                                   | OQ-001                                 | Accepted |
+| [ADR 0002 - Platform Support Tiers](adrs/ADR-0002-platform-support-tiers.md)                                            | OQ-003                                 | Accepted |
+| [Compatibility Milestone RFC](../specifications/compatibility-milestone-rfc.md)                                         | OQ-004                                 | Accepted |
+| [ADR 0003 - Core Workspace Topology](adrs/ADR-0003-core-workspace-topology.md)                                          | OQ-005                                 | Accepted |
+| [ADR 0004 - Upstream Dependency Set](adrs/ADR-0004-upstream-dependencies.md)                                            | OQ-006                                 | Accepted |
+| [Terminal State RFC](../specifications/terminal-state-rfc.md)                                                           | OQ-007                                 | Accepted |
+| [Configuration Model RFC](../specifications/configuration-model-rfc.md)                                                 | OQ-010                                 | Accepted |
+| [Plugin Platform RFC](../specifications/plugin-platform-rfc.md)                                                         | OQ-011, OQ-012, OQ-013                 | Accepted |
+| [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md)                                                     | OQ-021                                 | Accepted |
+| [Lua Runtime RFC](../specifications/lua-runtime-rfc.md)                                                                 | OQ-009                                 | Accepted |
+| [Rich Presentation RFC](../specifications/rich-presentation-rfc.md)                                                     | OQ-008, OQ-015, OQ-016                 | Accepted |
+| [Isolation Resource RFC](../specifications/isolation-resource-rfc.md)                                                   | OQ-014                                 | Accepted |
+| [CLI Contract RFC](../specifications/cli-contract-rfc.md)                                                               | OQ-017                                 | Accepted |
+| [Package Follow-up RFC](../specifications/package-followup-rfc.md)                                                      | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
+| [DevTools RFC](../specifications/devtools-rfc.md)                                                                       | OQ-019                                 | Accepted |
+| [Default Distribution RFC](../specifications/default-distribution-rfc.md)                                               | OQ-002                                 | Accepted |
+| [IPC and Agent RFC](../specifications/ipc-agent-rfc.md)                                                                 | OQ-018                                 | Accepted |
+| [Governance RFC](../specifications/governance-rfc.md)                                                                   | OQ-024                                 | Accepted |
+| [Website Delivery RFC](../specifications/website-delivery-rfc.md)                                                       | OQ-023                                 | Accepted |
+| [Risk Evidence RFC](../specifications/risk-evidence-rfc.md)                                                             | OQ-025                                 | Accepted |
+| [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](adrs/ADR-0005-lua-pins-and-stdlib.md) | OQ-030                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -123,10 +124,7 @@ the historical conversation:
 - Headless daemon, detach/reattach, and remote UI architecture. (Accepted: [ADR 0008](adrs/ADR-0008-headless.md) — deferred to post-v1.0, headless-runtime/daemon/remote taxonomy, session-grained detach/reattach, bounded persistence, contained failure, and trust-boundary analysis gate for [OQ-020](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Isolation resource ceilings and failure semantics. (Accepted: [Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — accepted 2026-08-28 for OQ-014, `Accepted` with frontmatter `accepted`; isolation domains IR-D1..D3, resource ceilings RC-1..RC-10 (three-level queue PerSub 64 / PerPlugin 1024 events/256 KiB / Global 8192 events/2 MiB hard-gated, RC-1 10^7/50 ms/8 ms, RC-2 32 MiB), failure semantics FS-1..FS-9, and adversarial AT-IR-001..015; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17/21 headless `measurement.rs`, 15 headless `measurement_lua.rs` @ `d67a65b`, worktree `ctx-0040/feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as reviewed evidence; lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-28) -> normative`.)
 - Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Accepted: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); frontmatter `accepted` on 2026-08-29.)
-- Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit.
-  (Proposed: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua
-  5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and audit
-  gates for [OQ-030](open-questions.md); pending acceptance.)
+- Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit. (Accepted: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and unsafe-surface audit gates for [OQ-030](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - os.getenv exposure, desensitization, and bitty module policy.
   (Proposed: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial,
   desensitized bitty.env.get with capability-gated allowlist, audit logging,
