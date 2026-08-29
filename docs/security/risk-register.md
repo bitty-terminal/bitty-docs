@@ -20,8 +20,9 @@ because evidence is `Implemented` (IPC/rich/resolver at `be3bdb4`) but not yet
 A risk may move to `Mitigated` only when the linked control has focused tests,
 fuzz corpora, and an independent security-auditor review record with P0-AC
 traceability; `Accepted` requires an explicit, time-bounded CarryCtx decision
-with owner and rationale. Risk evidence matrix is `pending` until
-`Verified`.
+with owner and rationale. Risk evidence matrix: [evidence-matrix.md](evidence-matrix.md)
+(Phase E draft, all rows `Open` until `Verified`; lifecycle
+`Open -> Mitigated -> Accepted` per risk evidence RFC).
 
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim
@@ -67,6 +68,9 @@ that the risk can be ignored until then.
   (`Implemented` without `Verified` is still `Open` per risk evidence RFC).
 - Reassess likelihood after fuzzing, incident reports, dependency advisories, or
   ecosystem growth; do not lower severity merely because code is incomplete.
-- Evidence matrix `pending`: no risk moves to `Mitigated` until the per-risk
-  checklist in [risk evidence RFC](../specifications/risk-evidence-rfc.md)
-  RS-1..RS-7 is satisfied and CarryCtx linkage is recorded.
+- Evidence matrix: [evidence-matrix.md](evidence-matrix.md) Phase E draft covers
+  R-001..R-022 vs P0-AC-001..034 with implementation, test, CI, adversarial and
+  audit columns; no risk moves to `Mitigated` until the per-risk checklist in
+  [risk evidence RFC](../specifications/risk-evidence-rfc.md) RS-1..RS-7 is
+  satisfied, `just check` plus `act -n` are green, and CarryCtx linkage is
+  recorded.
