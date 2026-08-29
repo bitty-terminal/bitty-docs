@@ -48,6 +48,11 @@ progress, recovery points to checkpoints, and ownership changes to handoffs.
 Before the first commit, shared-checkout work with disjoint scopes is the only
 allowed exception; do not invent a branch, commit, or PR that cannot yet exist.
 
+### Issue hygiene (labels and milestones)
+
+- Every GitHub Issue must have appropriate `labels` (e.g., `feat`, `fix`, `docs`, `chore`, `P0`, `area:pty` etc.) and `milestone` (e.g., `v0.0.1`, `v0.1.0`, `v1.0`) when applicable. Write issues with clear title, description, acceptance criteria, and link to CarryCtx task and related RFC/OQ.
+- Use `gh issue create --label "feat,area:runtime" --milestone "v0.0.1"` and `gh issue edit` to add labels/milestones.
+
 ### Local gates before push (mandatory)
 
 - Before pushing any branch: run repository justfile gates locally and ensure 0 issues: `just check` (fmt-check + markdownlint + links + metadata + language + agents + hygiene + actionlint) and ensure 0 issues. No cargo gate — local `just check` is the merge gate for this docs-only repository. All must pass. Never push with known local failures.
