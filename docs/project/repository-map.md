@@ -14,25 +14,29 @@ sidebar_order: 91
 ## Topology principles
 
 Bitty has accepted an organization-level polyrepo. ADR 0001 accepts a minimal
-Core Cargo workspace for initialization; the expanded crate graph remains a
-candidate:
+Core Cargo workspace for initialization; the expanded crate graph is now
+**Pre-alpha / M1 Hardening** at 16 crates (`be3bdb4`) with lifecycle
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+(see Status below):
 
 - The top-level `bitty-terminal/` directory is a local umbrella workspace, not
   a Git repository.
 - Product repositories are independent. Run Git and CarryCtx commands inside
   the target child repository.
-- The `bitty/` workspace is spine-complete (fifteen members in
-  `bitty/Cargo.toml` as of 2026-08-27): `bitty-vt`, `bitty-term-state`,
+- The `bitty/` workspace is spine-complete (sixteen members in
+  `bitty/Cargo.toml` as of 2026-08-29 `be3bdb4`): `bitty-vt`, `bitty-term-state`,
   `bitty-pty`, `bitty-platform`, `bitty-config`, `bitty-render`, `bitty-ui`,
-  `bitty-plugin-host`, `bitty-runtime`, `bitty-package`, `bitty-rich`,
-  `bitty-ipc`, `bitty-agent`, plus `bitty-app` and the retained `bitty-core`
-  seed. The accepted ten-crate topology is fixed in
+  `bitty-plugin-host`, `bitty-runtime`, `bitty-package`, `bitty-lua`,
+  `bitty-rich`, `bitty-ipc`, `bitty-agent`, plus `bitty-app` and the retained
+  `bitty-core` seed. The accepted ten-crate topology is fixed in
   [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
   `bitty-package` lifecycle and integrity model is accepted
   ([Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md), OQ-021,
   2026-08-27) with real signature verification remaining draft per crate docs,
-  and the remaining three tail crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`)
-  are draft implementations ahead of acceptance.
+  and the tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/`bitty-agent`
+  OQ-018, `bitty-lua` OQ-009/030-032) are `Implemented` (headless tests ~808)
+  but not yet `Verified`; `Website Delivery` (OQ-023) and `Governance` (OQ-024)
+  are `Accepted` 2026-08-29.
 - `bitty-plugins/` is only a local grouping directory, not a Git repository.
   Each child directory will be an independent plugin repository.
 - Documentation belongs to `bitty-docs`. A future website consumer must use
@@ -93,16 +97,16 @@ omission.
 
 ## Repository responsibilities
 
-| Repository or directory | Planned responsibility                                                                 | Status                                                                                                                                                                                                                                                                                                                         |
-| ----------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `bitty`                 | Rust runtime and application                                                           | Spine-complete workspace (fifteen members) accepted in ADR 0003 for ten crates plus `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) with signatures still draft and three draft tail crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`) ahead of acceptance; Plugin API/debug protocol still `Proposed` |
-| `bitty-docs`            | Vision, requirements, architecture, ADRs, RFCs, roadmap, and research                  | Accepted authoritative documentation repository                                                                                                                                                                                                                                                                                |
-| `bitty-website`         | Astro static shell and future presentation consumer of canonical `bitty-docs` Markdown | Astro, Bun, and Workers Static Assets bootstrap accepted; no docs consumer exists; loader, synchronization, version selection, routes, and theme remain open                                                                                                                                                                   |
-| `bitty-devtools`        | Human debugging client                                                                 | Repository created; debug-protocol model is a candidate                                                                                                                                                                                                                                                                        |
-| `bitty-mcp`             | Agent and MCP adapter                                                                  | Repository created; internal-protocol boundary is a candidate                                                                                                                                                                                                                                                                  |
-| `bitty-plugin-sdk`      | Lua helpers, LuaLS types, mock host, and test tools                                    | Independent repository accepted; exact responsibilities are candidates                                                                                                                                                                                                                                                         |
-| `bitty-plugin-template` | Plugin scaffold, CI, and manifest examples                                             | Independent repository accepted; format is a candidate                                                                                                                                                                                                                                                                         |
-| Each plugin repository  | One optional user experience or integration                                            | Independent-repository model accepted; public API constraints are candidates                                                                                                                                                                                                                                                   |
+| Repository or directory | Planned responsibility                                                                 | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty`                 | Rust runtime and application                                                           | Spine-complete workspace (sixteen members) accepted in ADR 0003 for ten crates plus `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032) and tail crates `bitty-rich` (OQ-008/015/016), `bitty-ipc`/`bitty-agent` (OQ-018) `Implemented` at `be3bdb4` (soak ~808 headless tests) but not yet `Verified`; signatures still draft; Plugin API `Accepted` via Plugin Platform RFC; debug protocol `Accepted` via DevTools RFC |
+| `bitty-docs`            | Vision, requirements, architecture, ADRs, RFCs, roadmap, and research                  | Accepted authoritative documentation repository                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `bitty-website`         | Astro static shell and future presentation consumer of canonical `bitty-docs` Markdown | Astro, Bun, and Workers Static Assets bootstrap accepted; loader, synchronization, version selection, routes, and redirect manifest `Accepted` via Website Delivery RFC (OQ-023, 2026-08-29); theme/search remain open                                                                                                                                                                                                                                                          |
+| `bitty-devtools`        | Human debugging client                                                                 | Repository created; debug-protocol model is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `bitty-mcp`             | Agent and MCP adapter                                                                  | Repository created; internal-protocol boundary is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `bitty-plugin-sdk`      | Lua helpers, LuaLS types, mock host, and test tools                                    | Independent repository accepted; exact responsibilities are candidates                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `bitty-plugin-template` | Plugin scaffold, CI, and manifest examples                                             | Independent repository accepted; format is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Each plugin repository  | One optional user experience or integration                                            | Independent-repository model accepted; public API constraints are candidates                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## Accepted repository bootstrap baseline
 
@@ -128,32 +132,40 @@ and tool versions plus lockfiles are fixed and verified by later
 repository-scoped implementation tasks. See the
 [repository bootstrap guide](../development/repository-bootstrap.md).
 
-## Workspace structure (accepted plus draft)
+## Workspace structure (Pre-alpha / M1 Hardening, 16 crates `be3bdb4`)
 
-The workspace is spine-complete as of 2026-08-27. The accepted topology is
+The workspace is spine-complete as of 2026-08-29 (`be3bdb4`). The accepted
+topology is
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the
-structure below is what `bitty/Cargo.toml` currently resolves to. Presence does
-not imply acceptance of the draft tail crates except `bitty-package` whose
-lifecycle and integrity model is accepted (OQ-021, 2026-08-27) with signatures
-still draft:
+structure below is what `bitty/Cargo.toml` currently resolves to. Presence is
+`Implemented` (soak ~808 headless tests) but only `Verified` after P0-AC
+evidence; lifecycle is
+`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+per the
+[risk evidence RFC](../specifications/risk-evidence-rfc.md). Presence does
+not imply `Verified`: `bitty-package` lifecycle and integrity model is
+`Accepted` (OQ-021, 2026-08-27) with signatures still draft, `bitty-lua`
+accepted (OQ-009/030-032, 2026-08-29), and `bitty-rich`/`bitty-ipc`/`bitty-agent`
+are `Implemented` (headless `Implemented`, not yet `Verified`):
 
 ```text
 bitty/
-├── Cargo.toml            # fifteen members, edition 2024, resolver 3, rust-version 1.85
+├── Cargo.toml            # sixteen members, edition 2024, resolver 3, rust-version 1.85
 ├── Cargo.lock
 ├── rust-toolchain.toml   # channel 1.97.1, components rustfmt+clippy
 ├── justfile
 ├── crates/
-│   ├── bitty-agent/       # draft: bounded Agent messages/side queue (std-only)
+│   ├── bitty-agent/       # Implemented: bounded Agent messages/side queue (std-only)
 │   ├── bitty-app/         # binary: runtime+platform composition root
 │   ├── bitty-config/      # typed ConfigPlan, validation, migration (std-only)
 │   ├── bitty-core/        # seed to be retired
-│   ├── bitty-ipc/         # draft: bounded framing/channels/stdio stub (std-only)
+│   ├── bitty-ipc/         # Implemented: bounded framing/channels/stdio stub (std-only)
+│   ├── bitty-lua/         # Implemented: piccolo 0.3.3 deterministic VM budgets RC-1/RC-2
 │   ├── bitty-package/     # lifecycle/integrity accepted (OQ-021, 2026-08-27); signatures draft (std-only)
 │   ├── bitty-platform/    # winit 0.30, raw-window-handle =0.6.2
 │   ├── bitty-plugin-host/ # registry/capability/lifecycle (+ bitty-package edge)
 │   ├── bitty-pty/         # portable-pty 0.9 wrapper
-│   ├── bitty-rich/        # draft: rich presentation helpers (vt+term-state)
+│   ├── bitty-rich/        # Implemented: rich presentation helpers (vt+term-state)
 │   ├── bitty-vt/          # vte 0.15 parser -> TerminalAction
 │   ├── bitty-term-state/  # Terminal Truth + damage + image store
 │   ├── bitty-render/      # wgpu 25.0, crossfont 0.9, snapshot-only
@@ -204,20 +216,22 @@ conflict with the candidate use of TOML for plugin metadata.
 ## Documentation and website publishing relationship
 
 ```text
-bitty-docs validated canonical Markdown
+bitty-docs validated canonical Markdown (16 crates, 32 OQs Accepted)
                  |
-                 | future pinned consumption
-                 | mechanism remains open
+                 | pinned consumption via Website Delivery RFC OQ-023
+                 | (sync:docs --pin, src/content/docs-revision.json)
                  v
-bitty-website presentation and publishing
+bitty-website presentation and publishing (loader accepted)
 ```
 
 The accepted boundary makes `bitty-docs` the canonical content owner and
-`bitty-website` its future presentation consumer. No website content consumer
-exists yet. ADR 0001 accepts only an Astro static shell, Bun, and Cloudflare
-Workers Static Assets deployment. The loader, synchronization, version
-selection, public-route mapping, redirects, theme, search, and whether to use
-Starlight remain open website-repository decisions.
+`bitty-website` its presentation consumer with an accepted loader
+([Website Delivery RFC](../specifications/website-delivery-rfc.md), OQ-023,
+2026-08-29, `Governance RFC` OQ-024 for branch protections and release train).
+ADR 0001 accepts the Astro static shell, Bun, and Cloudflare Workers Static
+Assets deployment. Public-route mapping and redirects are accepted per OQ-023;
+theme, search, and whether to use Starlight remain open website-repository
+decisions.
 
 Cross-repository architecture changes cannot be committed atomically, so code
 and documentation pull requests should link to each other. Before implementation
@@ -238,21 +252,25 @@ database exists. Therefore:
 - The non-Git `bitty-plugins/` grouping directory cannot be a CarryCtx project
   root.
 
-## Pending decisions
+## Pending decisions (M1 Hardening)
 
 - Creation order for later official plugin repositories; seven repositories are
-  already public with protected `main` branches, while licenses remain
-  undecided.
-- Final wiring for `bitty-package` (lifecycle accepted, signatures draft) and
-  the three draft tail crates (`bitty-rich`, `bitty-ipc`, `bitty-agent`) and
-  successor topology ADR, plus release profiles, license, package publication,
-  and release automation beyond the bootstrap and ADR 0003.
-- The concrete synchronization and versioning approach from docs to the website.
+  already public with protected `main` branches; licenses accepted as MIT per
+  Governance RFC OQ-024 (2026-08-29).
+- Verification of `bitty-package` (lifecycle accepted, signatures draft) and
+  the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/
+  `bitty-agent` OQ-018, `bitty-lua` OQ-009/030-032 at `be3bdb4` soak ~808
+  headless tests) from `Implemented` to `Verified` per risk evidence RFC
+  OQ-025 (evidence matrix pending), plus successor topology ADR when needed,
+  release profiles, package publication, and release automation beyond ADR 0003.
+- The concrete theme/search approach for the website (loader, sync pin,
+  version selection, routes, redirects accepted per OQ-023).
 - Whether `bitty-devtools` and `bitty-mcp` begin implementation before the
-  Core milestone.
+  Core milestone (debug protocol accepted per DevTools RFC OQ-019).
 - The first set of official plugin repositories and their ownership.
 - The cross-repository release train, compatibility matrix, and change
-  announcement process.
+  announcement process (train accepted per Governance RFC OQ-024,
+  `Docs-PR`/`Code-PR` ordering).
 - When a plugin registry becomes necessary; Git repositories are sufficient by
   default for the first phase.
 
