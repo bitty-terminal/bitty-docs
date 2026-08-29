@@ -13,27 +13,29 @@ sidebar_order: 10
 
 The following standalone specifications are accepted. Acceptance records a
 reviewed contract; it does not prove implementation, and evidence rules in each
-document still apply:
+document still apply. Draft work is listed separately; Draft does not authorize
+shipped, stable, or compatibility-guaranteed behavior:
 
-| Specification                                                 | Closes                                 | Status   |
-| ------------------------------------------------------------- | -------------------------------------- | -------- |
-| [Performance Budget RFC](performance-budget-rfc.md)           | OQ-001                                 | Accepted |
-| [Compatibility Milestone RFC](compatibility-milestone-rfc.md) | OQ-004                                 | Accepted |
-| [Terminal State RFC](terminal-state-rfc.md)                   | OQ-007                                 | Accepted |
-| [Configuration Model RFC](configuration-model-rfc.md)         | OQ-010                                 | Accepted |
-| [Plugin Platform RFC](plugin-platform-rfc.md)                 | OQ-011, OQ-012, OQ-013                 | Accepted |
-| [Package Lifecycle RFC](package-lifecycle-rfc.md)             | OQ-021                                 | Accepted |
-| [Lua Runtime RFC](lua-runtime-rfc.md)                         | OQ-009                                 | Accepted |
-| [Rich Presentation RFC](rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016                 | Accepted |
-| [Isolation Resource RFC](isolation-resource-rfc.md)           | OQ-014                                 | Accepted |
-| [CLI Contract RFC](cli-contract-rfc.md)                       | OQ-017                                 | Accepted |
-| [Package Follow-up RFC](package-followup-rfc.md)              | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
-| [DevTools RFC](devtools-rfc.md)                               | OQ-019                                 | Accepted |
-| [Default Distribution RFC](default-distribution-rfc.md)       | OQ-002                                 | Accepted |
-| [IPC and Agent RFC](ipc-agent-rfc.md)                         | OQ-018                                 | Accepted |
-| [Governance RFC](governance-rfc.md)                           | OQ-024                                 | Accepted |
-| [Website Delivery RFC](website-delivery-rfc.md)               | OQ-023                                 | Accepted |
-| [Risk Evidence RFC](risk-evidence-rfc.md)                     | OQ-025                                 | Accepted |
+| Specification                                                          | Closes                                      | Status   |
+| ---------------------------------------------------------------------- | ------------------------------------------- | -------- |
+| [Performance Budget RFC](performance-budget-rfc.md)                    | OQ-001                                      | Accepted |
+| [Compatibility Milestone RFC](compatibility-milestone-rfc.md)          | OQ-004                                      | Accepted |
+| [Terminal State RFC](terminal-state-rfc.md)                            | OQ-007                                      | Accepted |
+| [Configuration Model RFC](configuration-model-rfc.md)                  | OQ-010                                      | Accepted |
+| [Plugin Platform RFC](plugin-platform-rfc.md)                          | OQ-011, OQ-012, OQ-013                      | Accepted |
+| [Package Lifecycle RFC](package-lifecycle-rfc.md)                      | OQ-021                                      | Accepted |
+| [Lua Runtime RFC](lua-runtime-rfc.md)                                  | OQ-009                                      | Accepted |
+| [Rich Presentation RFC](rich-presentation-rfc.md)                      | OQ-008, OQ-015, OQ-016                      | Accepted |
+| [Isolation Resource RFC](isolation-resource-rfc.md)                    | OQ-014                                      | Accepted |
+| [CLI Contract RFC](cli-contract-rfc.md)                                | OQ-017                                      | Accepted |
+| [Package Follow-up RFC](package-followup-rfc.md)                       | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029      | Accepted |
+| [DevTools RFC](devtools-rfc.md)                                        | OQ-019                                      | Accepted |
+| [Default Distribution RFC](default-distribution-rfc.md)                | OQ-002                                      | Accepted |
+| [IPC and Agent RFC](ipc-agent-rfc.md)                                  | OQ-018                                      | Accepted |
+| [Governance RFC](governance-rfc.md)                                    | OQ-024                                      | Accepted |
+| [Website Delivery RFC](website-delivery-rfc.md)                        | OQ-023                                      | Accepted |
+| [Risk Evidence RFC](risk-evidence-rfc.md)                              | OQ-025                                      | Accepted |
+| [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md) | OQ-011, OQ-012, OQ-013 (provider follow-up) | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 
