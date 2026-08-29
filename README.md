@@ -42,6 +42,7 @@ security-auditor and P0-AC evidence per the
 - [Governance RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
 - [Website Delivery RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
 - [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
+- [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
 - [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha / M1 Hardening status
   reconciliation and remaining hardening work (see `TODO.md` 2026-08-29).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
