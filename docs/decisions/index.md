@@ -72,6 +72,7 @@ records a reviewed contract, not implementation evidence:
 | [Website Delivery RFC](../specifications/website-delivery-rfc.md)                                                       | OQ-023                                 | Accepted |
 | [Risk Evidence RFC](../specifications/risk-evidence-rfc.md)                                                             | OQ-025                                 | Accepted |
 | [ADR 0005 - Lua Pins, Upgrade Cadence, Stdlib Allowlist and Unsafe-Surface Audit](adrs/ADR-0005-lua-pins-and-stdlib.md) | OQ-030                                 | Accepted |
+| [ADR 0006 - os.getenv Exposure and Bitty Module Policy](adrs/ADR-0006-os-env-policy.md)                                 | OQ-031                                 | Accepted |
 
 ## Normative pre-implementation contracts
 
@@ -125,10 +126,7 @@ the historical conversation:
 - Isolation resource ceilings and failure semantics. (Accepted: [Isolation Resource RFC](../specifications/isolation-resource-rfc.md) — accepted 2026-08-28 for OQ-014, `Accepted` with frontmatter `accepted`; isolation domains IR-D1..D3, resource ceilings RC-1..RC-10 (three-level queue PerSub 64 / PerPlugin 1024 events/256 KiB / Global 8192 events/2 MiB hard-gated, RC-1 10^7/50 ms/8 ms, RC-2 32 MiB), failure semantics FS-1..FS-9, and adversarial AT-IR-001..015; measurement evidence 2026-08-27 via bitty CTX-0037 PR #68 (17/21 headless `measurement.rs`, 15 headless `measurement_lua.rs` @ `d67a65b`, worktree `ctx-0040/feat-lua-vm-budgets`, gates `just check` + `cargo check --target x86_64-pc-windows-gnu` pass) as reviewed evidence; lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-28) -> normative`.)
 - Local instance selection, IPC/MCP transport, framing, scopes, and Agent bounded messages. (Accepted: [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — bounded 256 KiB framing, versioned wire, peer-credential auth, scope families, rate limits RC-9/RC-10, Agent bounded messages, consent and streaming for [OQ-018](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Lua pins, upgrade cadence, stdlib allowlist and unsafe-surface audit. (Accepted: [ADR 0005](adrs/ADR-0005-lua-pins-and-stdlib.md) — exact Lua 5.4.x, mlua, piccolo 0.3.3 pins, vendored verification, allowlist, and unsafe-surface audit gates for [OQ-030](open-questions.md); frontmatter `accepted` on 2026-08-29.)
-- os.getenv exposure, desensitization, and bitty module policy.
-  (Proposed: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial,
-  desensitized bitty.env.get with capability-gated allowlist, audit logging,
-  and migration for [OQ-031](open-questions.md); pending acceptance.)
+- os.getenv exposure, desensitization, and bitty module policy. (Accepted: [ADR 0006](adrs/ADR-0006-os-env-policy.md) — os.getenv denial, desensitized bitty.env.get with capability-gated allowlist, audit logging, and migration for [OQ-031](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Async/Send boundary, GC tuning, Config VM budget charging, and
   reload/module-cache interaction. (Proposed:
   [ADR 0007](adrs/ADR-0007-async-gc.md) — `Send`/`Sync` boundary (mlua vs
