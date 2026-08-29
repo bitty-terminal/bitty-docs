@@ -37,6 +37,7 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [Risk Evidence RFC](risk-evidence-rfc.md)                              | OQ-025                                      | Accepted |
 | [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md) | OQ-011, OQ-012, OQ-013 (provider follow-up) | Draft    |
 | [Workspace Compositor Specification](workspace-compositor.md)          | —                                           | Draft    |
+| [Status System Specification](status-system.md)                        | —                                           | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 
@@ -48,10 +49,10 @@ Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
 applied only together with an update of all inbound links.
 
-Review note (2026-08-29): the Configuration Model RFC targeting OQ-010,
+Review note (2026-08-30): the Configuration Model RFC targeting OQ-010,
 the Plugin Platform RFC targeting OQ-011/OQ-012/OQ-013, the Package Lifecycle RFC
 targeting OQ-021, the Lua Runtime RFC targeting OQ-009, the Rich Presentation RFC targeting OQ-008/OQ-015/OQ-016, the Isolation Resource RFC targeting OQ-014, the CLI Contract RFC targeting OQ-017, the Package Follow-up RFC targeting OQ-022, OQ-026, OQ-027, OQ-028, OQ-029, the DevTools RFC targeting OQ-019, the Default Distribution RFC targeting OQ-002, the IPC and Agent RFC targeting OQ-018, the Governance RFC targeting OQ-024, the Website Delivery RFC targeting OQ-023, and the Risk Evidence RFC targeting OQ-025 are `Accepted` with
-frontmatter `accepted` since 2026-08-29; no remaining `Draft` specification remains as of 2026-08-29. Further `Proposed` material is limited to ADR 0005 (OQ-030), ADR 0006 (OQ-031), and ADR 0007 (OQ-032) as tracked in the [ADR index](../decisions/adrs/README.md) and requires independent category-owner, docs-curator, and security-reviewer evidence before acceptance; crate presence of
+frontmatter `accepted` since 2026-08-29; four additional `Draft` specifications exist as of 2026-08-30: [Status System Specification](status-system.md) (`Draft`), [AI Architecture](ai-architecture.md) (`Draft`), [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md) (`Draft`), and [Workspace Compositor Specification](workspace-compositor.md) (`Draft`). Further `Proposed` material is limited to ADR 0005 (OQ-030), ADR 0006 (OQ-031), and ADR 0007 (OQ-032) as tracked in the [ADR index](../decisions/adrs/README.md) and requires independent category-owner, docs-curator, and security-reviewer evidence before acceptance; crate presence of
 `bitty-config`, `bitty-plugin-host`, `bitty-rich`, `bitty-ipc`, and
 `bitty-agent` does not self-accept any draft beyond the accepted IPC and Agent RFC, and `bitty-package` lifecycle and
 integrity model is accepted while real signature verification remains draft per
