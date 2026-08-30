@@ -112,7 +112,7 @@ Status: **proposed contract**.
 | `diagnostics` | Bounded diagnostics from `bitty-lua`, `bitty-config`, and host (`syntax`, `validation`)    | `inspect`              | context budget and trace preview                                 |
 | `terminal`    | Bounded terminal snapshot or semantic-zone-scoped scrape, flagged `is_untrusted_surface`   | `untrusted` / redacted | agent observation via [IPC and Agent RFC](ipc-agent-rfc.md) path |
 
-No other provider exists in v1. Adding a provider requires a reviewed amendment to this RFC; plugins may not register providers.
+No other provider exists in v1. Adding a provider requires a reviewed amendment to this RFC; plugins may not implicitly register or replace host-owned providers. A future plugin may provide a versioned, capability-checked service consumed by `CodeContextProvider`, but that service does not register or replace the provider.
 
 ### Stable Id hierarchy
 
@@ -175,6 +175,236 @@ Streaming delivers incremental agent output into the presentation model without 
 - **RS-5 Chunking and attribution.** Chunks obey RC-10 (`256 KiB` decoded bytes, `seq`/`total`/`final`). Each streamed logical turn is decomposed into these chunks; reordering or loss is detectable via `seq`. Budget accounting attributes every chunk to its `(AgentId, StreamHandle, generation)`.
 - **RS-6 No hot-path execution.** Rich streaming never runs inside the parser, render, or input hot paths synchronously. It is a cold-path composition that posts damage, preserving P0-AC-015 and invariant 4.
 
+## Candidate runtime contracts
+
+Status: **candidate, non-normative, post-v1.0**. The following contracts
+organize possible future Agent Runtime work. They are design candidates, not
+implementation claims, API commitments, or new authority. They must not be
+read as closing an open question, creating a daemon, or changing the accepted
+IPC, plugin, isolation, CLI, or security contracts above. Any adopted version
+must receive its own review and verification evidence.
+
+### Progressive discovery
+
+The candidate `DiscoveryProvider` gives the Agent a bounded index before it
+loads content. A conceptual shape is `list()`, `describe(id)`, `resolve(id)`,
+and `load(id, fragment)`, with every result bounded, attributed, and filtered
+by policy before it reaches a model. The same pattern may serve a
+`ToolCatalog`, `SkillCatalog`, `ContextCatalog`, `MemoryCatalog`,
+`DocumentationCatalog`, and MCP catalog:
+
+```text
+discover -> describe -> explicitly resolve -> load a bounded fragment
+```
+
+Discovery must not execute a plugin, project instruction, script, or package.
+It may enumerate declared metadata, but activation and privileged reads remain
+host-mediated. A candidate `SkillProvider` could expose user, project,
+plugin-provided, or remote skills as metadata first, then load `SKILL.md` and
+selected `references/`, `templates/`, `examples/`, or `assets/` on demand.
+Generated or self-improving skills are not a core behavior; a future plugin
+would need separate `skill.propose` and `skill.write` consent.
+
+### Context planes and memory temperature
+
+The existing `ContextProvider` candidate set can be classified into three
+separate planes:
+
+| Plane               | Candidate contents                                                                       | Owner distinction                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Environment Context | terminal, workspace, git, diagnostics, and execution-target observations                 | `ContextProvider`; current bounded state                                   |
+| Knowledge Context   | skills, project instructions, `AGENTS.md`, documentation, and declared provider metadata | `SkillProvider`/instruction or documentation providers; selected knowledge |
+| Temporal Context    | current working memory, conversation history, and prior-session search                   | `MemoryProvider` and history provider; time-indexed state                  |
+
+`ContextProvider` is not `MemoryProvider`, and neither is `SkillProvider`.
+Their records, consent, freshness, redaction, and storage policies remain
+distinct even when a `ContextEngine` assembles them for one turn. A candidate
+memory model separates small, curated **hot memory** from **cold history**:
+hot memory is explicitly approved, bounded, and stable for a session; complete
+conversation history remains searchable in a durable store and is retrieved
+only when requested by the task and permitted by policy. History search is not
+an excuse to inject an unbounded transcript.
+
+### Frozen sessions and instruction epochs
+
+At session creation, a future `AgentSessionSnapshot` may freeze the selected
+`model`, `execution_profile`, instruction sources and hashes, approved memory,
+skill metadata, and workspace context. A session generation consumes that
+snapshot rather than silently rebuilding its system prefix after every write.
+Changes to memory, configuration, skills, or project instructions would take
+effect at a later generation by default. A candidate `InstructionEpoch`
+identifies the instruction snapshot used by each turn, including source hashes,
+so replay, audit, debugging, and evaluation can establish what rules were
+visible at that time. Explicit invalidation may begin a new generation, but
+must not mutate an already-started turn.
+
+This preserves prompt-cache stability observed in the Hermes snapshot while
+remaining subordinate to host policy, consent revocation, and emergency
+shutdown. A security revocation is not deferred merely to preserve a cache.
+
+### Context engine and recovery
+
+The candidate `ContextEngine` owns model-context lifecycle rather than durable
+conversation storage. Its conceptual operations are `observe_usage`,
+`should_compact`, `compact`, and `recover`. Compaction is not deletion: it may
+produce a bounded summary and identifier-preserving digest while retaining
+paths, revisions, error strings, user messages, and a `RecoveryPointer` into
+the historical store. The pointer is a retrieval reference, not permission to
+read history.
+
+```text
+durable conversation store -> ContextEngine -> active model context
+                                      \-> RecoveryPointer -> bounded retrieval
+```
+
+Candidate engines may include summarization, provider-native compaction,
+lossless retrieval, RAG, or a CarryCtx adapter. Storage and active context
+must remain separate so a compaction strategy cannot rewrite the source of
+record, and a storage failure cannot produce unbounded model input. Provider
+native features are selected only after capability negotiation and host
+policy checks.
+
+### Fresh child sessions and AgentTree
+
+Delegation may create a fresh child `AgentSession` with only an explicit goal,
+bounded context, selected project instructions, and a separately scoped
+workspace or terminal. The child trajectory does not enter the parent
+conversation implicitly; a bounded result summary is the explicit handoff.
+The candidate invariant is:
+
+```text
+ChildAuthority ⊆ ParentAuthority
+ChildAuthority = ParentAuthority ∩ RequestedAuthority - DelegationForbidden
+```
+
+Child sessions must not inherit authority merely because the parent has it.
+For example, memory writes, outbound messaging, scheduling, clarification,
+or further delegation may be forbidden by the child profile even when the
+parent can request them. Every child still receives server-side scope checks,
+bounded resources, independent cancellation, and the accepted isolation
+failure semantics.
+
+An `AgentTree` candidate attributes `AgentSession`, `parent_id`, `root_id`,
+generation, role, state, capabilities, workspace, terminal IDs, turns,
+actions, tool calls, and background processes. This supports a panel or CLI
+tree without making presentation authoritative. Attribution answers which
+agent and turn initiated an action; it does not grant that agent authority.
+
+### Execution profiles, targets, and provider negotiation
+
+An `ExecutionProfile` may select model roles such as `planner`, `executor`,
+`reviewer`, `summarizer`, `router`, `vision`, or `approval-reviewer`, rather
+than assuming one model per Agent. Routing may consider quality, cost,
+latency, context length, availability, privacy, and local/remote policy.
+
+Providers would advertise a typed `ModelCapabilities` descriptor, for example
+streaming, tool calls, reasoning state, native compaction, programmatic tools,
+subagents, and vision. The host selects a provider-native path when its
+capabilities and policy permit it, otherwise a reviewed host/plugin fallback,
+and otherwise returns unsupported. Model names must not be security or feature
+switches.
+
+An `ExecutionTarget` may eventually unify local, SSH, container, and sandbox
+backends behind one target identity shared by Terminal, Agent, file, Git, and
+process surfaces. The target does not grant access: filesystem, network,
+process, environment, credential, CPU, memory, disk, process-count, wall-time,
+PTY, and device dimensions remain separately bounded. SSH credentials and
+scope tokens follow the existing child-environment and P0-AC-023 rules. This
+is a target abstraction, not a headless-daemon or remote-UI commitment; the
+post-v1.0 deferral and trust-boundary gate in [ADR 0008](../decisions/adrs/ADR-0008-headless.md)
+remain authoritative.
+
+### Tool Bus programmatic calls and availability
+
+The Tool Bus may expose bounded programmatic calls from an isolated
+`AgentWorkspace` or helper process. A small program could call several tools
+through IPC and return an aggregate, reducing transcript expansion, but the
+program receives no unrestricted filesystem or network authority. Each call
+still traverses the host Tool Bus, schema validation, authenticated IPC,
+capability and consent checks, quotas, and untrusted-observation labeling.
+
+The candidate model-visible tool set is an intersection, not a registry dump:
+
+```text
+Registered
+∩ EnvironmentAvailable
+∩ CapabilityGranted
+∩ ExecutionProfileAllows
+∩ AgentLevelAllows
+```
+
+Availability is session/target-specific and may be false when a declared
+backend or binary is absent. Capability and availability remain separate
+facts. Programmatic calls cannot add tools, enlarge a scope, or turn a failed
+availability check into a provider hint. Regex or command-pattern detection
+may provide risk signals, but never replaces structured capability, scope,
+consent, policy, and resource enforcement.
+
+### Changes, outcomes, and restore boundaries
+
+Agent file mutations may be represented by a candidate `ChangeSet` containing
+an ID, Agent and turn attribution, base revision, bounded file changes, and
+review/apply/checkpoint state. A host-owned **Change Journal** may provide the
+source of record, with Git as an adapter rather than a required persistence
+model. Applying a ChangeSet remains a distinct, consented operation.
+
+Workspace state and conversation state are separate restore domains. A future
+interface may offer `Restore Workspace`, `Restore Conversation`, or `Restore
+Both`; an ambiguous single `Undo` must not silently roll back both. User edits
+and external changes require conflict detection and attribution.
+
+`ExecutionOutcome` should treat `Succeeded`, `Failed`, `Cancelled`, and
+`Unknown` as distinct. A lost response after a side effect is `Unknown`, not
+failure. A `ToolSpec` may declare read-only, idempotent-write, external-side-
+effect, or irreversible-side-effect class, together with an idempotency key
+and retry policy. Read-only work may retry safely; idempotent work retries
+only with a stable key; uncertain or irreversible work requires status
+reconciliation or user direction and is never silently retried.
+
+### Hook authority and observation labeling
+
+Future Agent-runtime lifecycle hooks may cover session, turn, instruction,
+context, model, tool, approval, child-session, workspace, compaction, and MCP
+events. These are outside Plugin API v1 and must not be exposed to plugins or
+Lua without a separate reviewed Plugin Platform amendment. Plugin API v1
+retains exactly the accepted four interception points:
+`intercept.command-dispatch`, `intercept.terminal-spawn`, `intercept.paste`,
+and `intercept.open-url`. Their authority must be explicit and ordered:
+
+| Tier         | Effect                                                          |
+| ------------ | --------------------------------------------------------------- |
+| Observation  | observe only; cannot affect execution                           |
+| Advisory     | provide a suggestion to Agent or policy                         |
+| Interception | veto or constrain one action; cannot grant authority            |
+| Host Policy  | authoritative capability, scope, consent, and resource decision |
+
+This invariant is non-negotiable for any future hook surface: a plugin or Lua
+hook may veto, but cannot grant `network.connect`, widen a target, or bypass
+the Capability Engine. Terminal output, tool results, plugin data, and other
+attacker-controlled content remain `is_untrusted_surface` observations. No
+provider, hook, or context concatenator may upgrade an observation into an
+instruction or policy channel, including text such as “ignore previous
+instructions”.
+
+### Code context and verification services
+
+A candidate `CodeContextProvider` would expose semantic repository context
+such as symbols, references, imports, diagnostics, changed files, and a
+repository map instead of reading every source file. Its implementation may
+use a compiler, LSP, tree-sitter, language service, analyzer, or a future
+versioned capability-checked plugin service consumed by the provider. The
+`CodeContextProvider` itself remains host-owned: a plugin cannot implicitly
+register or replace it. The AI layer should consume one bounded, attributed
+contract. It remains read-only by default and does not make source text
+trusted.
+
+A candidate `ai.verifier` service could expose project-defined checks and
+bounded results, such as format, lint, test, or type-check commands. The
+project or plugin defines policy; the host still authorizes execution and
+applies target and isolation limits. A verification result is evidence, not an
+automatic approval or permission grant. Neither service claims implementation
+in Bitty today.
+
 ## Tool Bus
 
 Status: **proposed contract**.
@@ -196,7 +426,7 @@ Status: **proposed contract**. Privacy is a property, not a mode flag.
 - **PP-1 Minimization.** Context assembly defaults to the smallest zone-scoped, budget-bound set that satisfies the declared tool schemas. Full file, full repository, or full scrollback access requires explicit elevation and an audit record. Ambient collection is denied.
 - **PP-2 Typed redaction.** Every record, trace, snapshot, and diagnostic that may carry secrets carries typed `SecretField` markers (API keys, clipboard, environment, raw input). Redaction applies before queuing, not after, and is verified by negative tests that seeded secrets never appear in default `inspect` or unlabeled `trace` outputs (P0-AC-026 parity).
 - **PP-3 Consent ledger.** All privacy-relevant grants — provider network use, API-key use, context provider elevation, tool use, and `workspace`/`all` levels — record `who, agent_id, scope or tool, Stable Id set, granted_at, expires_at, granted_by` and are visible via `bitty ctl inspect consent` (candidate). Grants are per-client, per-instance, bounded in time, and revokable immediately with auditable receipt.
-- **PP-4 No on-disk persistence without consent.** Unredacted agent turns, tool results, and context snapshots that received elevation are not written to disk by the host without explicit `debug.trace` or workspace-write consent. When they are written, storage is user-only (mode `0600`) and the write path is previewable before export, matching the trace-minimization and export-preview rules already accepted.
+- **PP-4 No on-disk persistence without consent.** Agent turns, tool results, and context snapshots that received elevation are not recorded to disk by the host without explicit `debug.trace` or workspace-write consent. Consent authorizes recording only subject to mandatory typed sensitive-field redaction under P0-AC-026; it never permits unredacted traces. Storage is user-only (mode `0600`) and the redacted write path is previewable before export, matching the trace-minimization and export-preview rules already accepted. Raw export requires a separate future policy and cannot weaken P0-AC-026.
 - **PP-5 Child and environment isolation.** No provider credential, elevated scope, durable token, or unredacted context is ever written to child process environments, `BITTY_*` variables, discovery files, or CLI output without an explicit scope and redaction check. A child process spawned inside a terminal may receive at most a short-lived, current-terminal scope token over a dedicated fd, never via environment (R-012, P0-AC-023 parity).
 - **PP-6 Revocation semantics.** Revoking any grant detaches affected handlers at the next dispatch boundary, cancels in-flight streams at the next chunk boundary, disposes ephemeral `AgentWorkspace` state that was reached only via that grant, and records an auditable `Revoked` event. Re-grant requires a fresh prompt; history overflow never silently re-enables a revoked scope.
 
@@ -305,3 +535,5 @@ Acceptance will require:
 
 - Bitty topic evidence this RFC extends: [Product vision](../product/vision.md), [Architecture Overview](../architecture/overview.md), [Core and Plugin Boundaries](../architecture/core-boundaries.md), [Plugin System](../extensibility/plugin-system.md), [Rich Content](../interfaces/rich-content.md), [CLI](../interfaces/cli.md), [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md), [Technology Strategy](../project/technology-strategy.md).
 - Prior RFCs this RFC composes with: [IPC and Agent RFC](ipc-agent-rfc.md), [Rich Presentation RFC](rich-presentation-rfc.md), [Plugin Platform RFC](plugin-platform-rfc.md), [Isolation Resource RFC](isolation-resource-rfc.md), [Configuration Model RFC](configuration-model-rfc.md), [CLI Contract RFC](cli-contract-rfc.md), [DevTools RFC](devtools-rfc.md).
+- Related deferred direction: [ADR 0008](../decisions/adrs/ADR-0008-headless.md) keeps headless daemon and remote UI work post-v1.0; [Reference Project Register](../project/reference-projects.md) defines how local snapshots are used as untrusted research evidence. The panel vision is not yet present on this branch, so no link is asserted here.
+- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority.
