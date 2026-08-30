@@ -24,6 +24,7 @@ per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
 | Document                                                            | Purpose                                                                                                                                                     |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Product vision](product/vision.md)                                 | Product intent, principles, scope, and success criteria.                                                                                                    |
+| [Panel Extensibility Vision](product/panel-vision.md)               | Draft vision for Panel as a programmable terminal workspace container; candidate direction only.                                                            |
 | [Proposed Delivery Sequence](product/proposed-delivery-sequence.md) | Draft record of candidate build order, deferral list, version ladder, and daemon staging from historical advisor input; not a roadmap.                      |
 | [Release Ladder](product/release-ladder.md)                         | Pre-alpha / M1 Hardening mapping of the v0.1-v1.0 maturity ladder to the 16-crate workspace and `Implemented`/`Verified` lifecycle (2026-08-29, `be3bdb4`). |
 
