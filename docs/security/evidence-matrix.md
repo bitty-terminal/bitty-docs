@@ -113,8 +113,8 @@ Per [risk evidence RFC](../specifications/risk-evidence-rfc.md) RS-1..RS-7:
   commit `be3bdb4` plus this branch head.
 - `just check` 95 files `0 issues` (`fmt-check` Prettier 3.9.6, `markdownlint-cli2`
   0.23.1, `links`, `metadata`, `language`, `agents`, `hygiene`, `actionlint`
-  1.7.12) and `act -n` DRYRUN for `.github/workflows/ci.yml` and
-  `.github/workflows/codeql.yml` green locally before commit per
+  1.7.12) and `act -n` DRYRUN for `.github/workflows/ci.yml` green locally
+  before commit per
   `AGENTS.md` local gates; dirty state left for review with `git status --short`
   showing `evidence-matrix.md` + `risk-register.md`.
 - Fuzz corpora retained under `fuzz/corpora/` or per-crate `corpus/` when

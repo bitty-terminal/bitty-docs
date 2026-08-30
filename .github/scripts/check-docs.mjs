@@ -706,7 +706,16 @@ async function checkHygiene() {
     }
 
     const fullPath = resolve(ROOT, path);
-    const stats = await lstat(fullPath);
+    let stats;
+    try {
+      stats = await lstat(fullPath);
+    } catch (error) {
+      if (error?.code === "ENOENT") {
+        // A deleted tracked file is valid while a branch is being reviewed.
+        continue;
+      }
+      throw error;
+    }
     if (stats.isSymbolicLink()) {
       let target;
       try {

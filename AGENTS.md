@@ -56,8 +56,8 @@ allowed exception; do not invent a branch, commit, or PR that cannot yet exist.
 
 ### Local gates before push (mandatory)
 
-- Before pushing any branch: run repository justfile gates locally and ensure 0 issues: `just check` (fmt-check + markdownlint + links + metadata + language + agents + hygiene + actionlint) and validate GitHub workflows with `act -n` (or `act --dry-run`) for `.github/workflows/ci.yml` and `.github/workflows/codeql.yml`. All must pass. `act` only checks workflow syntax, not runtime, so `just check` must still pass locally; do not rely on `act` alone. Never push with known local failures. No cargo gate — local `just check` is the merge gate for this docs-only repository.
-- Also run `actionlint -color` and `act -n` explicitly when workflows change; install `act` if missing (`which act` else note absence) but do not skip `just check`.
+- Before pushing any branch: run the repository justfile gates locally and ensure 0 issues: `just check` (fmt-check + markdownlint + links + metadata + language + agents + hygiene + actionlint) and validate `.github/workflows/ci.yml` with `act -n` (or `act --dry-run`). All must pass. `act` only checks workflow syntax, not runtime, so `just check` must still pass locally; do not rely on `act` alone. Never push with known local failures. No cargo or CodeQL gate is required for this Markdown-only repository; local `just check` and the Docs quality workflow are the merge gates.
+- Also run `actionlint -color` and `act -n -W .github/workflows/ci.yml` explicitly when the Docs workflow changes; install `act` if missing (`which act` else note absence) but do not skip `just check`. CodeQL is intentionally not configured for this documentation-only repository.
 - Verify no `TODO/FIXME` and frontmatter/links valid for docs.
 
 ### Remote monitoring and merge (bitty-docs)

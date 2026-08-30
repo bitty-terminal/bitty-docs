@@ -85,7 +85,7 @@ sidebar_order: 21
 
 - `just check` 93->94 files 0 issues (`fmt-check` + `markdownlint` + `links` +
   `metadata` + `language` + `agents` + `hygiene` + `actionlint`), `act -n`
-  DRYRUN success for `ci.yml` and `codeql.yml`.
+  DRYRUN success for the Docs quality `ci.yml` workflow.
 - `cargo check --workspace --all-targets --locked` and
   `cargo check --target x86_64-pc-windows-gnu` pass at `be3bdb4`.
 - `cargo test --workspace --all-targets --locked` soak ~808 headless tests pass
