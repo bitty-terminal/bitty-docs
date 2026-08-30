@@ -767,10 +767,8 @@ Closes OQ-024: this RFC closes that open question at the design level; the regis
 - Current workspace evidence: [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
   (spine-complete crate presence as of 2026-08-27, not acceptance).
 - Product and license provenance: `LICENSE` (MIT), `CHANGELOG.md`
-  (Keep a Changelog, Semantic Versioning), `SECURITY.md` (GitHub
-  Security Advisory), `.github/workflows/ci.yml` (`Docs quality`),
-  `.github/workflows/codeql.yml` (`Analyze` with `javascript` plus
-  `actions`).
+  (Keep a Changelog, Semantic Versioning), `SECURITY.md` (GitHub Security
+  Advisory), and `.github/workflows/ci.yml` (`Docs quality`).
 - Related RFCs: [Default Distribution RFC](default-distribution-rfc.md)
   for OQ-002, [Package Lifecycle RFC](package-lifecycle-rfc.md) for
   OQ-021, [Package Follow-up RFC](package-followup-rfc.md) for

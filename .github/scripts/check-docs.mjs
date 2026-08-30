@@ -207,9 +207,9 @@ function stripFencedCode(source) {
 }
 
 function stripNonLinkSyntax(source) {
-  return stripFencedCode(source) // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
-    .replace(/<!--[\s\S]*?-->/g, "") // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
-    .replace(/(`+)[\s\S]*?\1/g, ""); // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
+  return stripFencedCode(source)
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/(`+)[\s\S]*?\1/g, "");
 }
 
 function extractInlineDestinations(text) {
@@ -316,8 +316,8 @@ function decodePart(value, file, line) {
 }
 
 function slugifyHeading(heading) {
-  return heading // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
-    .replace(/!?(\[[^\]]*\])\([^)]*\)/g, "$1") // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
+  return heading
+    .replace(/!?(\[[^\]]*\])\([^)]*\)/g, "$1")
     .replace(/<[^>]*>/g, "")
     .replace(/[`*_~]/g, "")
     .replace(/\\([\\`*_[\]{}()#+\-.!])/g, "$1")
@@ -332,9 +332,8 @@ async function markdownAnchors(file) {
     return anchorCache.get(file);
   }
 
-  // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
   const source = stripFencedCode(await readFile(file, "utf8")).replace(
-    /<!--[\s\S]*?-->/g, // codeql[js/incomplete-multi-character-sanitization] lgtm[js/incomplete-multi-character-sanitization] - false positive: markdown link/anchor validation, not HTML sanitization (browser injection); input is trusted repo markdown
+    /<!--[\s\S]*?-->/g,
     "",
   );
   const anchors = new Set();
@@ -706,7 +705,16 @@ async function checkHygiene() {
     }
 
     const fullPath = resolve(ROOT, path);
-    const stats = await lstat(fullPath);
+    let stats;
+    try {
+      stats = await lstat(fullPath);
+    } catch (error) {
+      if (error?.code === "ENOENT") {
+        // A deleted tracked file is valid while a branch is being reviewed.
+        continue;
+      }
+      throw error;
+    }
     if (stats.isSymbolicLink()) {
       let target;
       try {
