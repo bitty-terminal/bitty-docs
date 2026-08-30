@@ -31,17 +31,19 @@ constraints and validation.
 
 ## Current snapshots
 
-| Project | Local directory          | Commit                                     | Primary research topics                                                                            |
-| ------- | ------------------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Ghostty | `tmp/references/ghostty` | `8867c37c55b578b9eb4cfaba41cb9023e557176d` | Core/frontend boundaries, VT, fonts, rendering, protocols, security, and Agent documentation       |
-| Neovim  | `tmp/references/neovim`  | `a1de07418b89f1b30f9ca088306b2c1615f928c3` | Command/Event/API, Lua configuration and plugins, UI protocol, and ecosystem boundaries            |
-| kitty   | `tmp/references/kitty`   | `087b8c35c455e1fa21a727916efdaf59ebdd0168` | GPU performance, glyph cache, Kitty Graphics/keyboard, and protocol limits                         |
-| WezTerm | `tmp/references/wezterm` | `f93d90350075d3e42566e0557ca36e82ffdcbec1` | Rust/Lua, terminal/mux/GUI layers, cross-platform support, image protocols, and software rendering |
+| Project      | Local directory               | Commit                                     | Registration date | Primary research topics                                                                                                                           |
+| ------------ | ----------------------------- | ------------------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ghostty      | `tmp/references/ghostty`      | `8867c37c55b578b9eb4cfaba41cb9023e557176d` | 2026-08-25        | Core/frontend boundaries, VT, fonts, rendering, protocols, security, and Agent documentation                                                      |
+| Neovim       | `tmp/references/neovim`       | `a1de07418b89f1b30f9ca088306b2c1615f928c3` | 2026-08-25        | Command/Event/API, Lua configuration and plugins, UI protocol, and ecosystem boundaries                                                           |
+| kitty        | `tmp/references/kitty`        | `087b8c35c455e1fa21a727916efdaf59ebdd0168` | 2026-08-25        | GPU performance, glyph cache, Kitty Graphics/keyboard, and protocol limits                                                                        |
+| WezTerm      | `tmp/references/wezterm`      | `f93d90350075d3e42566e0557ca36e82ffdcbec1` | 2026-08-25        | Rust/Lua, terminal/mux/GUI layers, cross-platform support, image protocols, and software rendering                                                |
+| Hermes Agent | `tmp/references/hermes-agent` | `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` | 2026-08-30        | Agent core, progressive skills, memory/context lifecycle, delegation, capability boundaries, execution environments, toolsets, approvals, and ACP |
 
-The registration date is 2026-08-25. The clones have shallow history, and each
-commit provides an exact reference for current observations. Updating a clone
-requires updating this table or pinning the old commit in the relevant research
-document.
+The `2026-08-25` registration date applies only to the original four snapshots;
+registration metadata is recorded per entry above. The clones have shallow
+history, and each commit provides an exact reference for current observations.
+Updating a clone requires updating this table or pinning the old commit in the
+relevant research document.
 
 ## Research questions
 
@@ -286,6 +288,117 @@ That draft is a future-document reference rather than a repository link until
 it has been accepted and merged. This register does not establish dependencies,
 compatibility, or product commitments; those require Bitty-specific security
 review, measurements, and an accepted RFC or ADR.
+
+### Hermes Agent
+
+Hermes Agent is recorded as a source snapshot only. Its upstream README calls
+it a self-improving agent with one core shared across CLI, gateway, TUI, desktop,
+and ACP surfaces, while its development guide describes a narrow core with
+capabilities at the edges. These observations are research evidence, not a
+Bitty dependency, product commitment, or acceptance of Hermes behavior.
+
+- **License evidence:** the snapshot's root `LICENSE` is the MIT License,
+  copyright 2025 Nous Research. The README also links the same file from its
+  license section. The MIT License permits review, citation, copying,
+  modification, and redistribution subject to its notice conditions. Bitty
+  governance does not authorize copying or vendoring this code into Bitty
+  without an independently reviewed decision and the required notices.
+- **Progressive skill disclosure:** `agent/skill_commands.py` and
+  `tools/skills_tool.py` expose skill discovery and loading as separate
+  operations, while `cli.py` documents slash-command expansion as a user
+  message rather than a system-prompt mutation. Research question: can Bitty
+  use one bounded discovery contract for tools, skills, documentation, context,
+  and memory without eager-loading untrusted content?
+- **Hot/cold memory:** `agent/memory_provider.py` defines provider lifecycle
+  hooks, and `agent/memory_manager.py` separates static prompt blocks,
+  per-turn prefetch, end-of-turn sync, and session-boundary extraction. The
+  README identifies persistent memory and SQLite/FTS5 session search as
+  separate facilities. Research question: which small curated memory belongs
+  in a session snapshot, and which history remains cold and searchable?
+- **Context engine and frozen snapshots:** `agent/context_engine.py`
+  distinguishes `select_context`, `compress`, and `on_turn_complete`; its
+  selection result is request-only rather than persisted transcript state.
+  `acp_adapter/server.py` freezes the tool snapshot after the first user turn
+  to preserve prompt-cache stability. Research question: should Bitty define
+  an explicit generation-bound `AgentSessionSnapshot` for model, instructions,
+  memory, skills metadata, and execution profile, with changes deferred to the
+  next generation?
+- **Compaction and recovery:** the `ContextEngine.compress` contract permits
+  summarization or other engines, while the repository's session search keeps
+  historical material recoverable. Research question: should Bitty require a
+  recovery pointer and preserve identifiers, paths, revisions, diagnostics,
+  and error strings when active context is compacted?
+- **Subagent isolation and attribution:** `tools/delegate_tool.py` builds a
+  focused child prompt from an explicit goal and bounded context, and
+  `get_subagent_attribution` plus the delegation records preserve parent/child
+  lineage. Research question: which stable session, turn, action, tool-call,
+  checkpoint, and execution-target identifiers must Bitty expose to attribute
+  child work and background processes without importing the parent's full
+  conversation?
+- **Capability attenuation:** `tools/delegate_tool.py` uses role-specific
+  blocked toolsets, maximum spawn depth, concurrency limits, and optional
+  worktree isolation. A delegated child must not gain authority unavailable to
+  its parent. Research question: should Bitty make
+  `child_capabilities = parent_capabilities intersection requested_capabilities
+minus forbidden_delegated_capabilities` an explicit invariant, including
+  limits on memory writes, messaging, scheduling, and further delegation?
+- **Execution environments:** `tools/environments/base.py` defines a common
+  spawn-per-call backend contract; the README lists local, Docker, SSH,
+  Singularity, Modal, Daytona, and Vercel Sandbox backends. Research question:
+  should an `ExecutionTarget` unify terminal, agent, files, processes, and git
+  while independently constraining filesystem, network, process, environment,
+  credentials, CPU, memory, disk, PTY, devices, and wall time?
+- **Toolsets and availability:** `toolsets.py` resolves composed toolsets and
+  registry additions; the README and `tools/registry.py` distinguish enabled
+  toolsets, prerequisites, and runtime availability. Research question: should
+  Bitty expose a tool only when registration, environment availability,
+  capability, execution profile, and agent-level policy all agree, rather than
+  treating registration as reachability?
+- **Approvals and self-improvement boundaries:** `tools/approval.py` keeps
+  approval identity in context-local session/turn/tool-call state and freezes
+  YOLO mode at import time; `tools/write_approval.py` stages writes when
+  approval is required. The README describes agent-curated memory and skill
+  creation, but the research note recommends proposal and review gates for
+  `memory.write`, `skill.write`, and instruction changes. Research question:
+  should Bitty permit observation and proposal by default while requiring
+  separate, auditable consent for durable memory, skills, instructions,
+  network, and irreversible actions? Regex command detection must remain a risk
+  signal, not the security boundary.
+- **ACP and multi-entry core:** `acp_adapter/entry.py` is a stdio ACP entry
+  point, and `acp_adapter/server.py` implements new/load/resume/fork/cancel
+  session operations while reusing the agent and tool machinery. The README
+  also documents CLI, gateway, TUI, desktop, and batch surfaces. Research
+  question: can Bitty keep one session/harness core with thin Panel, CLI, IPC,
+  remote, and ACP adapters, with adapter-specific state translated into a
+  bounded event and attribution model?
+
+The linked [AI Architecture](../specifications/ai-architecture.md) is a draft
+proposal, not shipped behavior. It is safe to defer these questions there or in
+follow-up RFCs; this register introduces no dependency, provider, protocol,
+execution backend, or product commitment.
+
+## Mainstream harness research leads
+
+The following are official, unpinned, non-normative leads for comparative
+research. They are not local snapshots, compatibility targets, or Bitty
+dependencies. Re-check each upstream project before relying on a behavior.
+
+| Harness      | Official research lead                            | Questions to investigate                                                                                            |
+| ------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Claude Code  | <https://code.claude.com/docs/en/hooks>           | Hook lifecycle, instruction loading, permissions, subagents, worktrees, and filesystem/network sandbox separation   |
+| OpenAI Codex | <https://developers.openai.com/codex/app-server/> | Conversation/event/approval protocol, interrupts, sandboxing, tool execution, SDK and App Server boundaries         |
+| Gemini CLI   | <https://github.com/google-gemini/gemini-cli>     | Hooks, extensions, policy, checkpoints, headless operation, model routing, and independent subagent context         |
+| OpenCode     | <https://opencode.ai/docs/>                       | Client/server separation, `(action, resource, effect)` permissions, child sessions, compaction, and durable history |
+| Goose        | <https://block.github.io/goose/>                  | MCP-first extensions, ACP interoperability, recipes versus skills, subagents, and Code Mode                         |
+| Aider        | <https://aider.chat/docs/repomap.html>            | Structural repository maps, architect/editor model roles, verification loops, and Git-backed undo                   |
+| OpenHands    | <https://docs.openhands.dev/sdk/arch/overview>    | Agent Server, local/remote Docker sandboxes, workspace abstraction, and resource isolation                          |
+| Cline        | <https://docs.cline.bot/features/checkpoints>     | Path-scoped rules, shadow Git checkpoints, and independent workspace/task rollback                                  |
+
+Warp is retained only as an external, unpinned research lead:
+<https://docs.warp.dev/>. There is no local `tmp/references/warp` directory in
+this workspace, so no Warp revision is recorded or inferred. Its observations
+must not be treated as reproducible local evidence until a separately scoped
+snapshot is reviewed and pinned.
 
 ## Usage rules
 
