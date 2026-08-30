@@ -43,6 +43,30 @@ status moves out of draft via independent review.
 
 ## Horizon model and authority
 
+The candidate horizons and sequencing topics below are noncanonical assessment
+topics: they are unaccepted, are not product commitments, are not implementation
+claims, and are not entries in the OQ register.
+
+### Strategy sequence
+
+The current maturity label remains **Pre-alpha / M1 Hardening**. Headless test
+soak and crate or contract presence are evidence for hardening work, not proof
+of a released or independently verified terminal product. Once the applicable
+design and security gates are satisfied, the roadmap should shift emphasis from
+architecture-first to dogfooding-first. The candidate build sequence is:
+
+1. Terminal Truth: PTY, VT parser, and terminal state.
+2. Real renderer, font handling, keyboard input, and IME.
+3. A usable terminal exercised with shells, nvim, and tmux.
+4. View, Layout, and generic Panel composition, including focus and routing.
+5. Plugin API dogfood using first-party plugins through the public boundary.
+6. Rich presentation, IPC, Agent, optional browser integration, and the wider
+   ecosystem.
+
+This sequence is a planning priority, not a release commitment. It does not
+supersede the release ladder, accepted RFCs, ADR 0008's post-v1.0 headless
+daemon deferral, or any security evidence gate.
+
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](../product/release-ladder.md) stage
