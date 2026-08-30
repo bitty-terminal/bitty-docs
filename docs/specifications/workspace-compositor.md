@@ -33,6 +33,9 @@ and defines the draft contracts for:
   `Workspace`s, each `Workspace` owns one `LayoutTree` whose leaves are `View`s,
   each `View` may host at most one `Terminal` via `TerminalId`, with the
   invariant `ViewId` is not `TerminalId`;
+- **Panel direction** — Panel is a candidate workspace-managed application
+  container that generalizes View content; it is not a native OS `Window` or a
+  PTY, and its lifecycle, Panel Runtime, and Event Bus remain future-RFC work;
 - **Workspace as tiling compositor** — a `Workspace` is the tiling compositor
   inside a `Window`, directly mirroring the Hyprland import where a Hyprland
   workspace tiles windows and a Bitty `Workspace` tiles `View`s inside one
@@ -100,6 +103,38 @@ does not move a requirement between owners and does not create a bypass.
 | `Rich`           | Rich presentation content hosted by a `View` via the `RichBlock` and scene contracts.                                                      |
 | `Browser`        | Embedded browser surface hosted by a `View` under a dedicated capability.                                                                  |
 | `LayoutProvider` | Plugin-supplied layout algorithm that computes split geometry for a `Workspace` without owning decoration or input.                        |
+
+## Candidate Panel model
+
+Panel is a candidate workspace-managed application container that generalizes
+the content hosted by a `View`. A Panel is neither the native OS `Window`
+owned by `bitty-platform` nor a PTY. A terminal panel may use a `TerminalId`
+and PTY as backing content, but a Panel may also host non-terminal application
+content. The existing `Window -> Workspace -> LayoutTree -> View` hierarchy,
+distinct `ViewId` and `TerminalId` identities, H/V layout primitives, and
+Core-owned decoration remain the draft compositor contract.
+
+This is a candidate concept only. A future Panel RFC must decide whether Panel
+is a typed View content binding, a replacement for LayoutTree leaves, or an
+additional identity that composes with View. It must also define capability
+mapping, focus and input routing, persistence, resource budgets, failure
+containment, and cross-process behavior. Until that RFC is reviewed, this
+specification makes no lifecycle or runtime implementation claim.
+
+The native OS `Window` remains owned by `bitty-platform`; Panel must not expose
+its handle. PTY ownership remains with terminal runtime/state. Layout geometry,
+validation, and decoration remain Core-owned, and a Panel or provider must not
+set `gaps_in`, `gaps_out`, `border`, or `radius`. A Panel Runtime and an
+inter-Panel Event Bus are candidate future components, not contracts defined
+here. Their lifecycle, event taxonomy, bounds, and host/plugin boundary belong
+to that future RFC, informed by the future Panel Extensibility Vision document
+(CTX-0094, pending review) and accepted [IPC and Agent RFC](ipc-agent-rfc.md).
+
+Hyprland is a read-only philosophy reference for workspace tiling. Its
+compositor windows are not Bitty Panels: Bitty `Window` means the native OS
+window, while a candidate Panel is an application container inside the Bitty
+workspace. Bitty does not copy Hyprland source, configuration syntax, or wire
+format.
 
 ## Hyprland workspace tiling philosophy import
 
@@ -472,6 +507,12 @@ no bypass of the existing P0 gates.
 
 - Exact `LayoutProvider` trait spelling and error taxonomy beyond the
   illustrative sketch above.
+- Whether Panel becomes typed `View` content, replaces `View` as a `LayoutTree`
+  leaf, or composes as a separate identity; no `PanelId` is introduced here.
+- Panel lifecycle ownership and the boundaries, capabilities, budgets, and
+  failure semantics of a future Panel Runtime.
+- Event Bus topic, payload, subscription, ordering, and cross-process semantics;
+  accepted IPC framing and scopes remain the security baseline.
 - Final `Workspace` limit defaults such as maximum `Workspace`s per `Window` and
   `View`s per `Workspace` after UX review.
 - Whether `Browser` `View`s require an additional per-`Window` process budget

@@ -335,6 +335,32 @@ Verified at 8e6c8a9` (the slice itself remains `Implemented` not yet
   product surface, and fancy window chrome. Listing them here does not admit
   them as scope.
 
+### Later-5: Post-v1.0 Panel ecosystem and distributions
+
+- **Candidate direction:** the future Panel Extensibility Vision document
+  (CTX-0094, pending review) proposes Panel as a workspace-managed application
+  container generalizing `View` content. Panel is not the native OS `Window` and
+  is not a PTY. The
+  [Workspace Compositor](../specifications/workspace-compositor.md) remains
+  `Draft`; its H/V `LayoutTree`, Core decoration, validation, and security
+  boundaries are not accepted or changed by this roadmap.
+- **Candidate scope:** after v1.0, a future Panel RFC may define Panel
+  providers, a Panel Runtime, and an inter-Panel Event Bus, followed by
+  capability-checked providers for terminal, files, Git, Markdown, logs,
+  browser, or AI workflows. The accepted [IPC and Agent RFC](../specifications/ipc-agent-rfc.md)
+  supplies the bounded, authenticated, scoped IPC baseline; it does not define
+  Panel lifecycle or implementation.
+- **Distribution candidates:** `bitty-minimal`, `bitty-dev`, `bitty-cloud`,
+  and `bitty-social` may become explicit post-v1.0 presets over the accepted
+  [Default Distribution RFC](../specifications/default-distribution-rfc.md).
+  Presets remain optional bundles, preserve safe-mode and disable precedence,
+  and do not imply enabled-by-default plugins.
+- **Horizon and evidence:** no date, release promise, or website publication is
+  implied. Admission requires a reviewed Panel RFC or ADR, independent
+  security and architecture review, bounded lifecycle and Event Bus evidence,
+  and distribution verification under the existing risk and compatibility
+  gates.
+
 ## Dependencies, owners, and confidence
 
 | Horizon             | Owner (accountable)                                                                                               | Reviewers required before status moves                                             | Dependencies                                                                              | Confidence                                                 |
@@ -344,6 +370,7 @@ Verified at 8e6c8a9` (the slice itself remains `Implemented` not yet
 | Later `v0.8`/`v0.9` | `extensibility` plus `architecture` plus `security-auditor`                                                       | Independent review per owning RFC and the Risk Evidence RFC                        | Now plus Next; ladder spine order taken as candidate                                      | Low — maturity label, behavior still draft                 |
 | Later `v1.0`        | Project initiator plus `security-auditor`                                                                         | All `P0` rows Verified plus `Compatible` plus Governance RFC release train         | Entire ladder up to `v0.9`                                                                | Low — not claimable until every `P0` row is Verified       |
 | Post-v1.0           | Future daemon and remote ADR owners                                                                               | ADR 0008 trust-boundary gate plus threat-model co-ownership                        | IPC plus isolation plus layered scopes, explicitly deferred                               | Informational — not in horizon scope                       |
+| Post-v1.0 Panel     | Future Panel RFC and distribution owners                                                                          | Panel RFC/ADR plus security, architecture, and distribution review                 | Workspace Compositor Draft, Panel Vision, IPC RFC, Default Distribution RFC               | Low — candidate direction only                             |
 
 No horizon has a date. CarryCtx tasks remain the execution record; this
 document is sequencing only.
