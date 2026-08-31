@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-08-31",
+  "implementation": {
+    "repository": "https://github.com/bitty-terminal/bitty",
+    "revision": "7a4ee41eb4f18b003c3ec73620897795179c3412",
+    "short": "7a4ee41",
+    "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
+    "baseline_short": "de134ec",
+    "previous_revision": "be3bdb42311bd48f045bb3aad3e0a8620bcdfc7e",
+    "previous_short": "be3bdb4",
+    "crates": 16
+  },
+  "maturity": {
+    "label": "Pre-alpha / M1 Hardening",
+    "date": "2026-08-29",
+    "oqs_accepted": 32,
+    "lifecycle": "Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready"
+  },
+  "risks": [
+    { "id": "R-001", "state": "Open", "stage": "P0" },
+    { "id": "R-002", "state": "Open", "stage": "P0" },
+    { "id": "R-003", "state": "Open", "stage": "P0" },
+    {
+      "id": "R-004",
+      "state": "Open",
+      "stage": "P0",
+      "evidence": {
+        "revision": "7a4ee41",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md",
+        "audit_task": "CTX-0097",
+        "audit_date": "2026-08-31",
+        "residual": [
+          "platform clipboard backends (arboard X11/Wayland/macOS/Windows)",
+          "real-window UX",
+          "8192-byte bound scope (post-acquisition, not strict peak)"
+        ]
+      }
+    },
+    { "id": "R-005", "state": "Open", "stage": "P0" },
+    { "id": "R-006", "state": "Open", "stage": "P0" },
+    { "id": "R-007", "state": "Open", "stage": "P0" },
+    { "id": "R-008", "state": "Open", "stage": "P0" },
+    { "id": "R-009", "state": "Open", "stage": "P0" },
+    { "id": "R-010", "state": "Open", "stage": "P1" },
+    { "id": "R-011", "state": "Open", "stage": "P0" },
+    { "id": "R-012", "state": "Open", "stage": "P0" },
+    { "id": "R-013", "state": "Open", "stage": "P0" },
+    { "id": "R-014", "state": "Open", "stage": "P1" },
+    { "id": "R-015", "state": "Open", "stage": "P0" },
+    { "id": "R-016", "state": "Open", "stage": "P1" },
+    { "id": "R-017", "state": "Open", "stage": "P0" },
+    { "id": "R-018", "state": "Open", "stage": "P0" },
+    { "id": "R-019", "state": "Open", "stage": "P0" },
+    { "id": "R-020", "state": "Open", "stage": "P0" },
+    { "id": "R-021", "state": "Open", "stage": "P0" },
+    { "id": "R-022", "state": "Open", "stage": "P0" }
+  ],
+  "audits": [
+    {
+      "risk": "R-004",
+      "path": "docs/security/audits/clipboard-2026-09.md",
+      "revision": "7a4ee41",
+      "date": "2026-08-31",
+      "verdict": "Open",
+      "task": "CTX-0097"
+    }
+  ],
+  "sync_provenance": {
+    "carryctx_task": "CTX-0113",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/120",
+    "previous_task": "CTX-0112",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/122",
+    "audit_task": "CTX-0097",
+    "synchronized_at": "2026-08-31",
+    "synchronized_by": "docs-curator",
+    "synchronized_revision": "7a4ee41",
+    "previous_revision": "be3bdb4",
+    "baseline_revision": "de134ec"
+  },
+  "ownership": {
+    "owner": "docs-curator + security-auditor",
+    "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation.",
+    "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
+  },
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. All 22 risks remain Open at M1 Hardening; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
+}

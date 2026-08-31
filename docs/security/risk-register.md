@@ -27,6 +27,9 @@ with owner and rationale. Risk evidence matrix: [evidence-matrix.md](evidence-ma
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) and remains **Open** with residual platform-backend,
 real-window UX, and `8192`-byte bound-scope limits (see matrix row).
+Canonical snapshot: [`project-state.json`](../project/project-state.json)
+(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`) validated by `bun .github/scripts/check-state.mjs`.
 
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim

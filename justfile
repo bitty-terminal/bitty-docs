@@ -38,6 +38,10 @@ agents:
 hygiene:
     bun .github/scripts/check-docs.mjs hygiene
 
+# Validate the machine-readable project state snapshot and its canonical summaries.
+state:
+    bun .github/scripts/check-state.mjs
+
 # Validate GitHub Actions syntax using the locally installed actionlint.
 actionlint:
     @installed="$(actionlint --version | head -n 1)"; test "$installed" = "{{actionlint_version}}" || { echo "actionlint {{actionlint_version}} required; found $installed" >&2; exit 1; }
@@ -80,4 +84,5 @@ check:
     just language
     just agents
     just hygiene
+    just state
     just actionlint

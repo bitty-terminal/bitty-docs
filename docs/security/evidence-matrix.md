@@ -24,6 +24,9 @@ Evidence matrix Phase E draft covers P0 and P1 rows for R-001..R-022.
 `R-004` was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) per
 `bitty` [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) and remains **Open** (see R-004 row).
+Canonical snapshot: [`project-state.json`](../project/project-state.json)
+(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`) validated by `bun .github/scripts/check-state.mjs`.
 
 This matrix is the Phase E companion to the
 [risk register](risk-register.md) and the

@@ -268,6 +268,15 @@ truth:
 A risk row may cite multiple artifacts; the citation must make clear which
 artifact satisfies which criterion, not merely that "tests exist."
 
+Project state snapshot `docs/project/project-state.json` (CTX-0113) is a
+repository-local machine-readable companion that records the single
+synchronized implementation revision, snapshot date, maturity, per-risk state,
+and audit references. It is validated deterministically by
+`bun .github/scripts/check-state.mjs` (`just state`, CI) without duplicating
+test counts unless generated, and it does not replace the register, this RFC,
+CarryCtx decisions, or security-auditor review. Risk state remains `Open`
+until the checklist above and auditor sign-off are satisfied.
+
 ### Entry to Mitigated checklist
 
 A risk may move to `Mitigated` only when all of the following hold for the
