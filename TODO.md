@@ -210,6 +210,23 @@ check` 0). `bitty` `a8735d0` closes PTY reply loop (`Runtime::write_replies`
 Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       lifecycle `Draft -> Experimental Implementation -> Accepted` recorded.
 
+## Workspace Compositor — Accepted spec (CTX-0118, no experimental implementation)
+
+- [x] Draft Workspace Compositor Specification
+      ([Workspace Compositor Specification](docs/specifications/workspace-compositor.md),
+      draft, Hyprland-inspired tiling H/V `LayoutTree`, View types
+      `Terminal`/`Rich`/`Browser`, Core-owned `gaps_in`/`gaps_out`/`border`/`radius`,
+      `LayoutProvider` `dwindle`/`master`/`grid`, drag/resize/move/scratchpad)
+      reconciled with ADR 0003, Terminal State, TerminalRegistry/View,
+      Input/Pointer, Text/Rendering, and security corpus; spec was `Draft` until
+      CTX-0118 acceptance.
+- [x] Independent architecture/security review and acceptance decision
+      for the workspace compositor draft (CTX-0118, 2026-08-31, independent
+      docs-reviewer, `just check` + `actionlint` + `act -n` +
+      `bun .github/scripts/check-state.mjs` pass, no load-bearing defects) —
+      spec now `Accepted` (no experimental implementation yet, not
+      `Verified`/`Compatible`); lifecycle `Draft -> Accepted` recorded.
+
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
 
 - [x] Dogfood public Plugin API via accepted v1 bundled-disabled set

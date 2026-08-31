@@ -105,8 +105,8 @@ for crates):
   where the mechanism or compatibility contract is not settled; all 32 OQs
   (OQ-001..032) are `Accepted` as of 2026-08-29.
 - **Candidate** / **Draft**: a proposal retained for evaluation, not a decision;
-  6 `Draft` specs remain (Workspace Compositor/Status/Input/Text vs AI Arch
-  plus Plugin Reuse — see `docs/specifications/README.md` prioritization).
+  5 `Draft` specs remain (Status/Input/Text vs AI Arch plus Plugin Reuse — see
+  `docs/specifications/README.md` prioritization).
 - **Experimental Implementation**: code exists at `c0aadd2`/`7e3104d`/`a8735d0`
   as reviewable evidence (one window/PTY/view, `winit`/`wgpu`, bounded reply
   loop, dogfood plugins) but not yet `Accepted`/`Verified`; do not cite as
