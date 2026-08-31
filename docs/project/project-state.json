@@ -3,8 +3,8 @@
   "snapshot_date": "2026-08-31",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "7a4ee41eb4f18b003c3ec73620897795179c3412",
-    "short": "7a4ee41",
+    "revision": "d4d75e92f3ba38f5e984aff017f57388e6adb63b",
+    "short": "d4d75e9",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
     "previous_revision": "be3bdb42311bd48f045bb3aad3e0a8620bcdfc7e",
@@ -18,9 +18,21 @@
     "lifecycle": "Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready"
   },
   "risks": [
-    { "id": "R-001", "state": "Open", "stage": "P0" },
-    { "id": "R-002", "state": "Open", "stage": "P0" },
-    { "id": "R-003", "state": "Open", "stage": "P0" },
+    {
+      "id": "R-001",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-002",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-003",
+      "state": "Open",
+      "stage": "P0"
+    },
     {
       "id": "R-004",
       "state": "Open",
@@ -38,24 +50,141 @@
         ]
       }
     },
-    { "id": "R-005", "state": "Open", "stage": "P0" },
-    { "id": "R-006", "state": "Open", "stage": "P0" },
-    { "id": "R-007", "state": "Open", "stage": "P0" },
-    { "id": "R-008", "state": "Open", "stage": "P0" },
-    { "id": "R-009", "state": "Open", "stage": "P0" },
-    { "id": "R-010", "state": "Open", "stage": "P1" },
-    { "id": "R-011", "state": "Open", "stage": "P0" },
-    { "id": "R-012", "state": "Open", "stage": "P0" },
-    { "id": "R-013", "state": "Open", "stage": "P0" },
-    { "id": "R-014", "state": "Open", "stage": "P1" },
-    { "id": "R-015", "state": "Open", "stage": "P0" },
-    { "id": "R-016", "state": "Open", "stage": "P1" },
-    { "id": "R-017", "state": "Open", "stage": "P0" },
-    { "id": "R-018", "state": "Open", "stage": "P0" },
-    { "id": "R-019", "state": "Open", "stage": "P0" },
-    { "id": "R-020", "state": "Open", "stage": "P0" },
-    { "id": "R-021", "state": "Open", "stage": "P0" },
-    { "id": "R-022", "state": "Open", "stage": "P0" }
+    {
+      "id": "R-005",
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "5bdcdbd",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty/pull/144",
+        "audit_task": "CTX-0092",
+        "audit_date": "2026-08-31",
+        "issue": "137",
+        "pr": "144",
+        "commit": "5bdcdbd98e9910d36e5790ddf68041950bdcc06b",
+        "residual": [
+          "real-window UX activation-gesture pending full integration",
+          "file URL requires distinct FileUrlActivation capability gate"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+      }
+    },
+    {
+      "id": "R-006",
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "0afc94d",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty/pull/145",
+        "audit_task": "CTX-0092",
+        "audit_date": "2026-08-31",
+        "issue": "138",
+        "pr": "145",
+        "commit": "0afc94dd49a0b9df2d4cf8a0249153b468cd81b5",
+        "residual": [
+          "capability grant UX and revocation flow hardening pending",
+          "official-plugin parity suite to be extended under CTX follow-up"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+      }
+    },
+    {
+      "id": "R-007",
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "d4d75e9",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty/pull/146",
+        "audit_task": "CTX-0092",
+        "audit_date": "2026-08-31",
+        "issue": "139",
+        "pr": "146",
+        "commit": "d4d75e92f3ba38f5e984aff017f57388e6adb63b",
+        "residual": [
+          "reclaim invariant PB-3 15% after GC ten-cycle observably fires, long-horizon soak pending",
+          "queue-budget DropOldest attribution verified, headless measurement only"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+      }
+    },
+    {
+      "id": "R-008",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-009",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-010",
+      "state": "Open",
+      "stage": "P1"
+    },
+    {
+      "id": "R-011",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-012",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-013",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-014",
+      "state": "Open",
+      "stage": "P1"
+    },
+    {
+      "id": "R-015",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-016",
+      "state": "Open",
+      "stage": "P1"
+    },
+    {
+      "id": "R-017",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-018",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-019",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-020",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-021",
+      "state": "Open",
+      "stage": "P0"
+    },
+    {
+      "id": "R-022",
+      "state": "Open",
+      "stage": "P0"
+    }
   ],
   "audits": [
     {
@@ -65,18 +194,45 @@
       "date": "2026-08-31",
       "verdict": "Open",
       "task": "CTX-0097"
+    },
+    {
+      "risk": "R-005",
+      "path": "pull/144",
+      "revision": "5bdcdbd",
+      "date": "2026-08-31",
+      "verdict": "Mitigated",
+      "task": "CTX-0092",
+      "issue": "137"
+    },
+    {
+      "risk": "R-006",
+      "path": "pull/145",
+      "revision": "0afc94d",
+      "date": "2026-08-31",
+      "verdict": "Mitigated",
+      "task": "CTX-0092",
+      "issue": "138"
+    },
+    {
+      "risk": "R-007",
+      "path": "pull/146",
+      "revision": "d4d75e9",
+      "date": "2026-08-31",
+      "verdict": "Mitigated",
+      "task": "CTX-0092",
+      "issue": "139"
     }
   ],
   "sync_provenance": {
-    "carryctx_task": "CTX-0113",
-    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/120",
-    "previous_task": "CTX-0112",
-    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/122",
-    "audit_task": "CTX-0097",
+    "carryctx_task": "CTX-0114",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/121",
+    "previous_task": "CTX-0113",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/120",
+    "audit_task": "CTX-0092",
     "synchronized_at": "2026-08-31",
-    "synchronized_by": "docs-curator",
-    "synchronized_revision": "7a4ee41",
-    "previous_revision": "be3bdb4",
+    "synchronized_by": "docs-curator + security-auditor",
+    "synchronized_revision": "d4d75e9",
+    "previous_revision": "7a4ee41",
     "baseline_revision": "de134ec"
   },
   "ownership": {
@@ -84,5 +240,5 @@
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. All 22 risks remain Open at M1 Hardening; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At M1 Hardening per CTX-0114, R-005/R-006/R-007 are Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
 }

@@ -8,13 +8,17 @@ Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented` but not yet
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) with `23` `suspicious_paste` + `13` `paste` unit + `4`
 remediation (baseline `19`) and remains `Open` with residual platform-backend,
-real-window UX, and `8192`-byte bound-scope limits). Canonical choices live in the
+real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
+`Mitigated` at `bitty` `d4d75e9` baseline `de134ec` previous `be3bdb4`
+(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) per RS-1..RS-7, overall not
+`Verified`/`Compatible`/`Release-ready`). Canonical choices live in the
 [open-question register](docs/decisions/open-questions.md) (OQ-001..032 all
 `Accepted` per CTX-0083); lifecycle is
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`) validated by `bun .github/scripts/check-state.mjs`.
+(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
+`bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
 Phase A.
 

@@ -121,30 +121,60 @@ function validateSnapshot(data) {
         );
       }
     }
+    // R-005/006/007 are Mitigated at d4d75e9 per CTX-0114 with RS-1..RS-7 evidence;
+    // all other risks remain Open at M1 Hardening.
+    const mitigatedExpected = new Set(["R-005", "R-006", "R-007"]);
     for (const risk of data.risks) {
       if (!["Open", "Mitigated", "Accepted"].includes(risk.state)) {
         failures.push(`${risk.id} has invalid state ${risk.state}`);
       }
-      if (risk.state !== "Open") {
-        failures.push(
-          `${risk.id} must remain Open at M1 Hardening (no auto-accept)`,
-        );
+      if (mitigatedExpected.has(risk.id)) {
+        if (risk.state !== "Mitigated") {
+          failures.push(`${risk.id} must be Mitigated at d4d75e9 per CTX-0114`);
+        }
+        if (!risk.evidence || !risk.evidence.revision) {
+          failures.push(`${risk.id} Mitigated requires evidence.revision`);
+        }
+      } else {
+        if (risk.state !== "Open") {
+          failures.push(
+            `${risk.id} must remain Open at M1 Hardening (no auto-accept)`,
+          );
+        }
       }
       if (!["P0", "P1"].includes(risk.stage)) {
         failures.push(`${risk.id} has invalid stage`);
       }
     }
+    // Validate per-risk evidence for Mitigated set
+    const r005 = data.risks.find((r) => r.id === "R-005");
+    if (r005 && r005.state === "Mitigated") {
+      if (r005.evidence?.revision !== "5bdcdbd")
+        failures.push("R-005 evidence.revision must be 5bdcdbd");
+      if (r005.evidence?.baseline !== "de134ec")
+        failures.push("R-005 evidence.baseline must be de134ec");
+    }
+    const r006 = data.risks.find((r) => r.id === "R-006");
+    if (r006 && r006.state === "Mitigated") {
+      if (r006.evidence?.revision !== "0afc94d")
+        failures.push("R-006 evidence.revision must be 0afc94d");
+    }
+    const r007 = data.risks.find((r) => r.id === "R-007");
+    if (r007 && r007.state === "Mitigated") {
+      if (r007.evidence?.revision !== "d4d75e9")
+        failures.push("R-007 evidence.revision must be d4d75e9");
+    }
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "7a4ee41") {
-    failures.push("sync_provenance.synchronized_revision must be 7a4ee41");
+  if (!provenance || provenance.synchronized_revision !== "d4d75e9") {
+    failures.push("sync_provenance.synchronized_revision must be d4d75e9");
   }
-  if (!provenance || provenance.carryctx_task !== "CTX-0113") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0113");
+  if (!provenance || provenance.carryctx_task !== "CTX-0114") {
+    failures.push("sync_provenance.carryctx_task must be CTX-0114");
   }
-  if (!provenance || !provenance.github_issue?.includes("120")) {
-    failures.push("sync_provenance.github_issue must reference 120");
+  if (!provenance || !provenance.github_issue?.includes("121")) {
+    failures.push("sync_provenance.github_issue must reference 121");
   }
 
   const ownership = data.ownership;
@@ -282,7 +312,7 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("7a4ee41") ||
+      !summary.includes("d4d75e9") ||
       !summary.includes("Pre-alpha / M1 Hardening")
     ) {
       console.error("self-test: generated summary missing expected tokens");
