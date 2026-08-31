@@ -227,6 +227,11 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       spec now `Accepted` (no experimental implementation yet, not
       `Verified`/`Compatible`); lifecycle `Draft -> Accepted` recorded.
 
+## Panel Runtime and Event Bus — Draft research pre-study (CTX-0119, P2)
+
+- [x] Survey Panel Runtime/Event Bus ([Pre-Study](docs/specifications/panel-runtime-pre-study.md), `Draft` no impl, CTX-0119 depends CTX-0118): lifecycle `PanelId` vs `ViewId`/`TerminalId` with generation, command `owner.name:command`, overlay `4+1`, focus MRU no Lua hot path, bus `owner.name:topic` `8 KiB`/`32`/`64`/`1024`/`8192` `DropOldest`, isolation `panel.*`; reconciled with `6f30c2f`/`c3a2928`; bounded PR-1..PR-12, typed errors, exclusions deferred; `sidebar_order 27`, indexes updated.
+- [ ] Independent docs-reviewer review; research until future Panel RFC.
+
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
 
 - [x] Dogfood public Plugin API via accepted v1 bundled-disabled set
