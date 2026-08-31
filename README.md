@@ -18,6 +18,10 @@ security-auditor and P0-AC evidence per the
 `R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
 remediation, baseline `19`) remains `Open` with residual platform-backend,
 real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`.
+Canonical snapshot:
+[`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json)
+(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`) validated by `bun .github/scripts/check-state.mjs`.
 
 ## Start here
 

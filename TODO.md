@@ -12,6 +12,9 @@ real-window UX, and `8192`-byte bound-scope limits). Canonical choices live in t
 [open-question register](docs/decisions/open-questions.md) (OQ-001..032 all
 `Accepted` per CTX-0083); lifecycle is
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
+Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
+(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`) validated by `bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
 Phase A.
 

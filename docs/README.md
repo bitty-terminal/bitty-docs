@@ -23,6 +23,9 @@ with residual platform-backend, real-window UX, and `8192`-byte bound-scope limi
 Lifecycle is
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
+Canonical snapshot: [`project-state.json`](project/project-state.json)
+(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`) validated by `bun .github/scripts/check-state.mjs`.
 
 ## Product
 

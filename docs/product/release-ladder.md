@@ -23,7 +23,10 @@ sidebar_order: 21
   [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
   (2026-08-31, CTX-0097) and remains `Open` with residual platform-backend,
   real-window UX, and `8192`-byte bound-scope limits; overall maturity remains
-  `Pre-alpha`.
+  `Pre-alpha`. Canonical snapshot:
+  [`docs/project/project-state.json`](../project/project-state.json)
+  (synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+  `Open`) validated by `bun .github/scripts/check-state.mjs`.
 - Lifecycle: `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
   per the [Risk Evidence RFC](../specifications/risk-evidence-rfc.md). All
   RFCs/ADRs are `Accepted` and `Implemented` (headless `Implemented` at

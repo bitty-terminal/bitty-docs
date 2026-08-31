@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-08-31",
+  "implementation": {
+    "repository": "https://github.com/bitty-terminal/bitty",
+    "revision": "7a4ee41eb4f18b003c3ec73620897795179c3412",
+    "short": "7a4ee41",
+    "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
+    "baseline_short": "de134ec",
+    "previous_revision": "be3bdb42311bd48f045bb3aad3e0a8620bcdfc7e",
+    "previous_short": "be3bdb4",
+    "crates": 16
+  },
+  "maturity": {
+    "label": "Pre-alpha / M1 Hardening",
+    "date": "2026-08-29",
+    "oqs_accepted": 32,
+    "lifecycle": "Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready"
+  },
+  "risks": [
+    { "id": "R-001", "state": "Open", "stage": "P0" },
+    { "id": "R-004", "state": "Mitigated", "stage": "P0" }
+  ],
+  "audits": [],
+  "sync_provenance": {
+    "carryctx_task": "CTX-0113",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/120",
+    "synchronized_revision": "7a4ee41"
+  },
+  "ownership": {
+    "owner": "docs-curator + security-auditor",
+    "update_protocol": "Update only via CarryCtx",
+    "source_of_truth": "canonical machine-readable"
+  },
+  "notes": "Missing auto-accept warning"
+}

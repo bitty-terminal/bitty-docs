@@ -46,6 +46,9 @@ jobs:
       - name: Check repository hygiene
         run: bun .github/scripts/check-docs.mjs hygiene
 
+      - name: Check project state snapshot
+        run: bun .github/scripts/check-state.mjs
+
       - name: Lint GitHub Actions workflows
         uses: docker://rhysd/actionlint:1.7.12
         with:
