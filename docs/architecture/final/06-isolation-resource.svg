@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="220" viewBox="0 0 800 220" role="img" aria-labelledby="title desc">
+<title id="title">Placeholder: 06-isolation-resource.svg</title>
+<desc id="desc">Generated from d2/06-isolation-resource.d2 — do not hand-edit</desc>
+<!-- generated from d2/06-isolation-resource.d2 — do not hand-edit — run d2 --layout dagre docs/architecture/d2/06-isolation-resource.d2 docs/architecture/final/06-isolation-resource.svg for deterministic export -->
+<rect width="100%" height="100%" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="20" y="32" font-family="monospace" font-size="15" font-weight="bold" fill="#0f172a">Placeholder: 06-isolation-resource.svg</text>
+<text x="20" y="58" font-family="monospace" font-size="12" fill="#334155">L1 domains + L3 ceilings</text>
+<text x="20" y="80" font-family="monospace" font-size="11" fill="#64748b">Source: docs/architecture/d2/06-isolation-resource.d2</text>
+<text x="20" y="98" font-family="monospace" font-size="11" fill="#64748b">Sync: 7a4ee41 (glossary.yaml) — see docs/architecture/README.md</text>
+<text x="20" y="120" font-family="monospace" font-size="10" fill="#64748b">Generate: d2 --layout dagre docs/architecture/d2/06-isolation-resource.d2 docs/architecture/final/06-isolation-resource.svg</text>
+<text x="20" y="145" font-family="monospace" font-size="10" fill="#94a3b8">D2 primary for architecture graphs, Mermaid for flows; draw.io/Excalidraw refinement only.</text>
+<text x="20" y="165" font-family="monospace" font-size="10" fill="#94a3b8">SVG is final artifact; D2/Mermaid remain source of truth.</text>
+<text x="20" y="190" font-family="monospace" font-size="9" fill="#64748b">CTX-0115 — text-source-first pipeline — no Fabric.js</text>
+</svg>
