@@ -1,33 +1,36 @@
 ---
 title: Workspace Compositor Specification
-description: Draft Hyprland-inspired Workspace tiling compositor inside Window with LayoutTree H-V primitives View types Core gaps and border and LayoutProvider plugin algorithms
+description: Defines the accepted Hyprland-inspired Workspace tiling compositor inside Window with LayoutTree H-V primitives View types Core gaps and border and LayoutProvider plugin algorithms
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 25
 ---
 
 # Workspace Compositor Specification
 
-> Status: **draft** — Hyprland workspace tiling philosophy import for Bitty.
-> This document is a draft contract for the Instance, Window, Workspace, View,
-> Terminal identity hierarchy, the Workspace as tiling compositor, the
-> `LayoutTree` with H and V primitives, View types, Core-owned `gaps_in`,
-> `gaps_out`, `border`, `radius`, and the `LayoutProvider` plugin surface for
-> layout algorithms including dwindle, master, and grid, plus
+> Status: **accepted** on 2026-08-31 by independent docs-reviewer per
+> CTX-0118 — accepted Hyprland workspace tiling philosophy import for Bitty.
+> This document defines the accepted contract for the Instance, Window,
+> Workspace, View, Terminal identity hierarchy, the Workspace as tiling
+> compositor, the `LayoutTree` with H and V primitives, View types, Core-owned
+> `gaps_in`, `gaps_out`, `border`, `radius`, and the `LayoutProvider` plugin
+> surface for layout algorithms including dwindle, master, and grid, plus
 > drag, resize, move, and scratchpad interactions. It does not describe
 > implemented behavior, does not authorize shipped, stable, or
-> compatibility-guaranteed behavior, and does not weaken any normative security
-> control. Experimental implementation may exist as review evidence but carries
-> no compatibility promise beyond this draft. The lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`.
+> compatibility-guaranteed behavior beyond the accepted contract, and does not
+> weaken any normative security control. No experimental implementation exists
+> yet (none yet); any future experimental implementation may exist as review
+> evidence but carries no compatibility promise beyond the accepted contract.
+> The lifecycle is `Draft -> experimental review evidence -> Accepted ->
+normative`.
 
 ## Purpose and scope
 
 This specification imports the Hyprland workspace tiling philosophy into Bitty
-and defines the draft contracts for:
+and defines the accepted contracts for:
 
 - **Identity hierarchy** — `Instance` contains `Window`s, each `Window` owns
   `Workspace`s, each `Workspace` owns one `LayoutTree` whose leaves are `View`s,
@@ -458,8 +461,8 @@ Hyprland and Waybar are read-only philosophy references in this specification.
 
 ## Security review
 
-This draft creates no ambient file, network, or process capability for Lua and
-no bypass of the existing P0 gates.
+This specification creates no ambient file, network, or process capability for
+Lua and no bypass of the existing P0 gates.
 
 1. `LayoutProvider` requires `layout.provider` capability; `Browser` requires
    `browser.embed`; `Rich` requires `ui.rich`. No provider widens its own
@@ -476,7 +479,7 @@ no bypass of the existing P0 gates.
 1. **Metadata and link gates**: `just check` must pass with zero markdownlint,
    link, metadata, language, agents, and hygiene issues for this document and
    its index entry, and `act -n` must report workflow dry-run success.
-2. **Identity invariant tests** (draft acceptance gates):
+2. **Identity invariant tests** (acceptance gates):
    - `ViewId` and `TerminalId` are distinct types; a typed test asserts
      `ViewId(1) != TerminalId(1)` at the type level and that no API accepts one
      where the other is expected.
@@ -503,7 +506,7 @@ no bypass of the existing P0 gates.
      without a window or GPU, asserting rectangle equivalence and atomicity of
      cross-workspace moves.
 
-## Open items remaining under this draft
+## Open items remaining under this accepted specification
 
 - Exact `LayoutProvider` trait spelling and error taxonomy beyond the
   illustrative sketch above.
@@ -524,11 +527,12 @@ no bypass of the existing P0 gates.
 - Whether `LayoutProvider` selection participates in `ConfigPlan` live reload
   or requires a `Workspace` recreation.
 
-This draft does not close an open question on its own; it will track to the
-owning workspace-compositor question once that question is recorded in the
-[open-question register](../decisions/open-questions.md) or close directly as
-a standalone specification per the
-[documentation workflow](../development/documentation-workflow.md).
+This specification is accepted as a standalone contract per CTX-0118; it
+does not close an open question on its own beyond its standalone acceptance and
+does not claim `Verified` or `Compatible` status. Remaining open items above
+require follow-up RFCs or tasks per the
+[documentation workflow](../development/documentation-workflow.md) and
+[open-question register](../decisions/open-questions.md).
 
 ## References
 
