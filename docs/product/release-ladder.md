@@ -18,13 +18,19 @@ sidebar_order: 21
   This ladder maps the accepted product, architecture, and security contracts
   to the candidate `v0.1`-`v1.0` maturity ladder in
   [Proposed Delivery Sequence](proposed-delivery-sequence.md) without weakening
-  normative security controls.
+  normative security controls. `R-004` clipboard evidence was re-audited at
+  `bitty` `7a4ee41` (baseline `de134ec`) per
+  [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
+  (2026-08-31, CTX-0097) and remains `Open` with residual platform-backend,
+  real-window UX, and `8192`-byte bound-scope limits; overall maturity remains
+  `Pre-alpha`.
 - Lifecycle: `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
   per the [Risk Evidence RFC](../specifications/risk-evidence-rfc.md). All
   RFCs/ADRs are `Accepted` and `Implemented` (headless `Implemented` at
   `be3bdb4`) but remain `Implemented` not yet `Verified` until the evidence
   matrix (RS-1..RS-7, `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`)
-  is satisfied. No risk moves from `Open` while the matrix is `pending`.
+  is satisfied. No risk moves from `Open` while the matrix is `pending`; `R-004`
+  explicitly remains `Open` at `7a4ee41` (not `Mitigated`/`Verified`).
 - Authority: the ladder is a planning companion to the maturity ladder; it does
   not authorize publication or compatibility. Closing any open question still
   requires its RFC/ADR with independent review per the
@@ -32,7 +38,8 @@ sidebar_order: 21
 - Companion evidence: `bitty/docs/product/release-ladder.md` (draft,
   `be3bdb4`) records the crate publish order and `cargo publish --dry-run`
   verification for the workspace. This document mirrors that intent for
-  `bitty-docs` navigation.
+  `bitty-docs` navigation. For `R-004`, the companion evidence is at `7a4ee41`
+  (baseline `de134ec`, audit above) and remains `Open`.
 
 ## Implementation state at M1 Hardening (be3bdb4)
 
@@ -57,6 +64,10 @@ sidebar_order: 21
   `resolver` (single-version convergence, source-class provenance H-A/H-B/H-C,
   yank/prerelease `yanked (locked)` OQ-022/026-029) at `be3bdb4` with soak
   ~808 headless tests; risk register remains `Open` with matrix `pending`.
+  `R-004` clipboard (`23` `suspicious_paste` + `13` `paste` unit + `4` remediation at
+  `7a4ee41`, baseline `19` at `de134ec`) is `Implemented` but explicitly `Open`
+  per the 2026-08-31 audit (residual platform backends, real-window UX,
+  `8192`-byte post-acquisition bound).
 - **Governance and Website**: Website Delivery RFC (OQ-023) loader with
   eight-field schema, pinned `src/content/docs-revision.json`, multi-version
   `/docs/<version>/<path>/` and redirect manifest; Governance RFC (OQ-024) MIT

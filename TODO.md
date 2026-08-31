@@ -3,7 +3,12 @@
 This list sequences project-definition and hardening work at the **Pre-alpha /
 M1 Hardening** stage (2026-08-29, `bitty` `be3bdb4`, 16 crates, 32 OQs
 Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented` but not yet
-`Verified`). Canonical choices live in the
+`Verified`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
+`de134ec` per
+[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
+(2026-08-31, CTX-0097) with `23` `suspicious_paste` + `13` `paste` unit + `4`
+remediation (baseline `19`) and remains `Open` with residual platform-backend,
+real-window UX, and `8192`-byte bound-scope limits). Canonical choices live in the
 [open-question register](docs/decisions/open-questions.md) (OQ-001..032 all
 `Accepted` per CTX-0083); lifecycle is
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
