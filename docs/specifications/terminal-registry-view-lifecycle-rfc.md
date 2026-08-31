@@ -1,51 +1,55 @@
 ---
 title: TerminalRegistry and View Lifecycle Contract
-description: Candidate contract for TerminalRegistry ownership of TerminalId vs ViewId separation, RuntimeId PersistentId generation, view attachment detachment focus layout visibility persistence reattachment vs recreation bounded resources and failure semantics with explicit multi-window daemon exclusions
+description: Defines the accepted TerminalRegistry and View lifecycle contract for TerminalId vs ViewId separation, RuntimeId vs PersistentId generation, attachment detachment focus layout visibility persistence reattachment vs recreation bounded resources and failure semantics with explicit multi-window daemon exclusions
 category: specifications
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 26
 ---
 
 # TerminalRegistry and View Lifecycle Contract
 
-> Status: **draft** spec plus **Experimental Implementation** at
-> `bitty` `c0aadd2`/`a8735d0` — candidate lifecycle contract for review with
-> experimental code evidence (not `Accepted`/`Verified`). This document proposes
-> the TerminalRegistry and View lifecycle contract referenced by OQ-005 (core
-> workspace topology, ADR 0003) and OQ-007 (terminal state) but does not close
-> either question, does not promote any candidate predecessor to accepted, and
-> does not claim shipped, stable, or compatibility-guaranteed behavior beyond
-> experimental `c0aadd2`/`a8735d0`. Experimental code at `c0aadd2` (CTX-0095
-> PR #148, one registry per process, view-rect + DPI cell metrics -> PTY
-> `SIGWINCH`/ConPTY, debounce `64`, full damage) plus `a8735d0` (CTX-0098 PR #151,
-> `Runtime::write_replies` bounded `4`KiB relay) is `Implemented` (experimental)
-> not `Verified` — it provides reviewable evidence for the draft spec. Accepted
-> behavior remains the existing [Terminal State RFC](terminal-state-rfc.md),
+> Status: **accepted** on 2026-08-31 by independent docs-reviewer per
+> CTX-0117 plus **Experimental Implementation** at `bitty` `c0aadd2`/`a8735d0`
+> — accepted lifecycle contract with experimental code evidence (not
+> `Verified`/`Compatible`). This document defines the accepted
+> TerminalRegistry and View lifecycle contract referenced by OQ-005 (core
+> workspace topology, ADR 0003) and OQ-007 (terminal state); it refines those
+> accepted topologies with explicit identity, generation, attachment, focus,
+> layout, visibility, persistence, reattachment, bounded resources, and failure
+> semantics, and does not claim shipped, stable, or compatibility-guaranteed
+> behavior beyond the accepted contract and experimental `c0aadd2`/`a8735d0`.
+> Experimental code at `c0aadd2` (CTX-0095 PR #148, one registry per process,
+> view-rect + DPI cell metrics -> PTY `SIGWINCH`/ConPTY, debounce `64`, full
+> damage) plus `a8735d0` (CTX-0098 PR #151, `Runtime::write_replies` bounded
+> `4`KiB relay) is `Implemented` (experimental) not `Verified` — it provides
+> reviewable evidence for the accepted spec. Accepted behavior remains the
+> existing [Terminal State RFC](terminal-state-rfc.md),
 > [ADR 0003 Core Workspace Topology](../decisions/adrs/ADR-0003-core-workspace-topology.md),
 > [Compatibility Milestone RFC](compatibility-milestone-rfc.md),
 > [Platform tiers ADR](../decisions/adrs/ADR-0002-platform-support-tiers.md),
 > [Architecture Overview](../architecture/overview.md),
 > [Core and Plugin Boundaries](../architecture/core-boundaries.md), and
-> clipboard audit at `bitty` `7a4ee41` (CTX-0097). Candidate sections below are
-> explicitly marked **Candidate** and carry no compatibility promise until a
-> reviewed acceptance decision records them. The lifecycle for this document
-> is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
-> (spec) and `Draft -> experimental review evidence -> Accepted -> normative`
-> (document); experimental code is distinct from `Draft` and `Verified`.
+> clipboard audit at `bitty` `7a4ee41` (CTX-0097). The lifecycle for this
+> document is `Draft -> Experimental Implementation -> Accepted -> Verified
+-> Compatible` (spec) and `Draft -> experimental review evidence ->
+Accepted -> normative` (document); `Accepted` is recorded per CTX-0117
+> independent architecture/security review (2026-08-31) with no load-bearing
+> defects, and experimental code remains distinct from `Accepted` and
+> `Verified`.
 
 ## Purpose and scope
 
 The single-window vertical slice proves one terminal behind one view. Bitty
 must then scale that proof to one window hosting many terminals and views
 without conflating identities, leaking PTY handles, or making resize, focus, or
-persistence ambiguous. This RFC defines the candidate boundary between the
+persistence ambiguous. This RFC defines the accepted boundary between the
 registry that owns terminal lifecycle, the view that owns observation and
 interaction, and the workspace that owns layout and visibility.
 
-In scope (all candidate unless stated otherwise):
+In scope:
 
 - strict `TerminalId != ViewId` with `RuntimeId` versus `PersistentId` and
   per-registry generation;
@@ -64,27 +68,27 @@ exact glyph hit-testing math, and registry or package-transport mechanics whose
 contracts already reference this lifecycle as an ownership source.
 
 Normative sources this RFC must not weaken are listed in
-[Normative sources this specification must not weaken](#normative-sources-this-specification-must-not-weaken).
-Where this draft selects a threshold it refines those sources; it does not move
-a requirement between owners and does not create a bypass.
+[Normative sources this specification does not weaken](#normative-sources-this-specification-does-not-weaken).
+Where this specification selects a threshold it refines those sources; it does
+not move a requirement between owners and does not create a bypass.
 
-## Candidate vs accepted status
+## Relationship to accepted sources
 
-| Area                | Accepted fact (cite)                                                                                                                                                                                                    | Candidate in this draft                                                                                                                         |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Topology            | 16-crate DAG, `Terminal -> Snapshot` only, MSRV 1.85 per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) (OQ-005)                                                                                     | Placement of `TerminalRegistry` in `bitty-runtime` versus `bitty-ui` and exact trait spelling remain candidate                                  |
-| Terminal invariants | `Action` is sole write into state, 8 invariants, `generation` damage, deterministic replay per [Terminal State RFC](terminal-state-rfc.md) (OQ-007)                                                                     | Which reflow algorithm is pinned when a view resizes a terminal, and how registry generation pins replay remains candidate                      |
-| View identity       | `ViewId` distinct from `TerminalId`, at most one view per `TerminalId`, move preserves `TerminalId` per [Workspace Compositor](workspace-compositor.md) (draft)                                                         | `RuntimeId` and `PersistentId` separation, per-registry generation, and reattachment versus recreation rules are candidate                      |
-| Input               | M1 mouse modes, focus, bracketed paste per [Compatibility Milestone RFC](compatibility-milestone-rfc.md); bounded encoding, Kitty opt-in, shift override per [Input and Pointer Contract](input-pointer-rfc.md) (draft) | Which view owns focus and mouse capture when a terminal is detached, and how Kitty negotiation follows the terminal not the view, are candidate |
-| Text                | `cell.width` 1-or-2 plus trailing spacer, `Snapshot + Damage -> DrawList` seam per [Text and Rendering RFC](text-rendering-rfc.md) (draft)                                                                              | DPI-aware cell metrics that drive view-to-PTY resize and atlas ownership per view remain candidate                                              |
-| Slice scope         | One process, one window, one workspace, one terminal end-to-end path per [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md) (CTX-0109 draft)                                       | Generalization to one window with N terminals and views under one registry without multi-window or daemon remains candidate                     |
+| Area                | Accepted fact (cite)                                                                                                                                                                                                    | Accepted by this specification                                                                                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Topology            | 16-crate DAG, `Terminal -> Snapshot` only, MSRV 1.85 per [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) (OQ-005)                                                                                     | Placement of `TerminalRegistry` in `bitty-runtime` versus `bitty-ui` and exact trait spelling remain illustrative (see open items)                                              |
+| Terminal invariants | `Action` is sole write into state, 8 invariants, `generation` damage, deterministic replay per [Terminal State RFC](terminal-state-rfc.md) (OQ-007)                                                                     | Registry generation pinning is accepted by this specification; which reflow algorithm is pinned remains the one chosen by the accepted text-rendering decision (see open items) |
+| View identity       | `ViewId` distinct from `TerminalId`, at most one view per `TerminalId`, move preserves `TerminalId` per [Workspace Compositor](workspace-compositor.md) (draft)                                                         | `RuntimeId` and `PersistentId` separation, per-registry generation, and reattachment versus recreation rules are accepted by this specification                                 |
+| Input               | M1 mouse modes, focus, bracketed paste per [Compatibility Milestone RFC](compatibility-milestone-rfc.md); bounded encoding, Kitty opt-in, shift override per [Input and Pointer Contract](input-pointer-rfc.md) (draft) | Which view owns focus and mouse capture when a terminal is detached, and how Kitty negotiation follows the terminal not the view, are accepted by this specification            |
+| Text                | `cell.width` 1-or-2 plus trailing spacer, `Snapshot + Damage -> DrawList` seam per [Text and Rendering RFC](text-rendering-rfc.md) (draft)                                                                              | DPI-aware cell metrics that drive view-to-PTY resize and atlas ownership per view are accepted by this specification                                                            |
+| Slice scope         | One process, one window, one workspace, one terminal end-to-end path per [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md) (CTX-0109 draft)                                       | Generalization to one window with N terminals and views under one registry without multi-window or daemon is accepted by this specification                                     |
 
-Any row whose right column is still candidate must not be cited as normative
-until its acceptance decision is registered. `HeadlessRasterizer` and
+Any row whose right column was candidate in the draft is now accepted by this
+specification per CTX-0117 (2026-08-31). `HeadlessRasterizer` and
 `char_cell_width` approximation remain non-user-ready evidence per the
-text-rendering draft until accepted.
+text-rendering draft until that draft is accepted.
 
-## Normative sources this specification must not weaken
+## Normative sources this specification does not weaken
 
 - [ADR 0003 Core Workspace Topology](../decisions/adrs/ADR-0003-core-workspace-topology.md) (OQ-005): one-way DAG; `bitty-vt`, `bitty-term-state`, `bitty-pty` never depend on UI, platform, plugin-host, config, runtime, or app; `bitty-render` reads only snapshots.
 - [Terminal State RFC](terminal-state-rfc.md) (OQ-007): parser to `Action` to state is the only write path; 8 grid and mode invariants; damage `generation`; bounded reply buffer; deterministic replay and state hash.
@@ -100,12 +104,13 @@ text-rendering draft until accepted.
 - [Workspace Compositor Specification](workspace-compositor.md) (draft, candidate): `Instance -> Window -> Workspace -> LayoutTree -> View` hierarchy, `ViewId != TerminalId`, H and V primitives, Core-owned `gaps_in`, `gaps_out`, `border`, `radius`, `LayoutProvider` as plugin.
 - [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md) (T-01, T-04, T-06, T-07, T-13), [Risk Register](../security/risk-register.md) (R-004, R-006, R-007, R-008), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md) (P0-AC-001..034): bounded inputs, no hot-path plugin execution, separate terminal and plugin security domains, authenticated privileged interfaces.
 
-Where this draft selects a threshold or mechanism it refines those sources; it
-does not move a requirement between owners and does not create a bypass.
+Where this specification selects a threshold or mechanism it refines those
+sources; it does not move a requirement between owners and does not create a
+bypass.
 
 ## Terminology
 
-| Term               | Candidate meaning                                                                                                                                                                                                                |
+| Term               | Meaning                                                                                                                                                                                                                          |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `TerminalRegistry` | Core-owned table that creates, tracks, and disposes `Terminal` instances and their PTY handles inside one `Instance`. Exactly one registry per process in this contract; per-window registries are excluded.                     |
 | `Terminal`         | Emulator instance owning PTY master, grid, cursor, modes, scrollback, damage generation, reply buffer, charset and tab state, and image store references. Addressed by `TerminalId`, `RuntimeId`, and optionally `PersistentId`. |
@@ -120,7 +125,7 @@ does not move a requirement between owners and does not create a bypass.
 | `Reattachment`     | Moving the same `TerminalId` and `RuntimeId` to a different `ViewId` without losing grid, scrollback, or PTY.                                                                                                                    |
 | `Recreation`       | Allocating a fresh `TerminalId` and `RuntimeId` after the previous terminal exited or was explicitly closed.                                                                                                                     |
 
-## Principles (candidate)
+## Principles
 
 1. Identity hygiene is load-bearing. `TerminalId`, `ViewId`, `RuntimeId`, and `PersistentId` are pairwise incompatible newtypes; no integer alias, no `as u64` bridge, no cross-type comparison.
 2. Ownership is single and explicit. The registry owns `Terminal` lifecycle and PTY descriptors; the workspace owns `View` lifecycle and layout; a terminal is attached to at most one view at a time.
@@ -130,7 +135,7 @@ does not move a requirement between owners and does not create a bypass.
 6. Every allocation is bounded before it happens. Counts, byte sizes, and string lengths are validated against `ConfigPlan` and fail with a typed error, never with unbounded growth or panic.
 7. Failure is fail-closed and typed. A failed create, attach, resize, or reattachment returns an explicit error, emits a diagnostic, and leaves the previous valid state intact.
 
-## Identity: TerminalId versus ViewId, RuntimeId, PersistentId, generation (candidate)
+## Identity: TerminalId versus ViewId, RuntimeId, PersistentId, generation
 
 ### Strict separation
 
@@ -167,7 +172,7 @@ Rules:
 | `ViewId`       | `Workspace` via `LayoutTree` | Workspace                           | Only after leaf removal with generation bump                                         |
 | `Generation`   | Registry and Workspace       | Respective owner                    | Monotonic, never reused                                                              |
 
-## TerminalRegistry lifecycle (candidate)
+## TerminalRegistry lifecycle
 
 ### Creation
 
@@ -188,7 +193,7 @@ Rules:
 
 ### Bounded resources
 
-| Resource                    | Candidate ceiling                                                      | Validation point             | Failure                                          |
+| Resource                    | Ceiling                                                                | Validation point             | Failure                                          |
 | --------------------------- | ---------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------ |
 | Live terminals per registry | `max_terminals` in `[1, 64]`, default `16`                             | `registry.create`            | `TooManyTerminals`                               |
 | Views per workspace         | `max_views_per_workspace` in `[1, 32]`, default `16`                   | `workspace.create_view`      | `TooManyViews`                                   |
@@ -199,13 +204,15 @@ Rules:
 | Scrollback                  | `max_scrollback_lines * columns * cell_bytes` bounded via `ConfigPlan` | Terminal creation and reflow | Truncate oldest, never unbounded growth          |
 | Snapshot queue per terminal | At most one pending snapshot plus damage coalescing                    | Render tick                  | Coalesce damage, never queue unbounded snapshots |
 
-All ceilings are validated in `ConfigPlan`; out-of-range values fail validation with a source-attributed diagnostic. No ceiling is silently clamped.
+All ceilings are validated in `ConfigPlan`; out-of-range values fail
+validation with a source-attributed diagnostic. No ceiling is silently
+clamped.
 
-## View lifecycle: attachment, detachment, focus, layout, visibility, persistence (candidate)
+## View lifecycle: attachment, detachment, focus, layout, visibility, persistence
 
 ### Attachment and detachment
 
-| Operation                                        | Candidate behavior                                                                                                                                                                                                                                                                                                                        |
+| Operation                                        | Behavior                                                                                                                                                                                                                                                                                                                                  |
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `attach(view_id, terminal_id)`                   | Binds `ViewId` to `TerminalId`. Requires `ViewId` exists and is not already attached, `TerminalId` exists and is not already attached elsewhere, and neither handle is stale. On success the view rectangle is measured, cell metrics are applied, and the terminal is resized via the resize path below. Emits cold-path `ViewAttached`. |
 | `detach(view_id)`                                | Unbinds the view from its terminal, preserving both `ViewId` and `TerminalId`. The detached terminal retains its PTY, grid, scrollback, and `RuntimeId` but has no interactive view until reattached. The view becomes `Empty` and renders as a placeholder. Emits `ViewDetached`.                                                        |
@@ -239,7 +246,7 @@ Layout is owned by the [Workspace Compositor](workspace-compositor.md) and its `
 
 ### Visibility
 
-| Visibility state   | Candidate meaning                                                      | Render and input effect                                                                                |
+| Visibility state   | Meaning                                                                | Render and input effect                                                                                |
 | ------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Visible            | View rectangle in the active workspace with non-zero area              | Snapshot is rendered; view participates in hit testing and may hold focus                              |
 | Inactive workspace | View belongs to a workspace that is not the active one for its window  | Retains `ViewId`, attachment, and terminal; no render cost; not hit-testable; cannot hold window focus |
@@ -257,7 +264,7 @@ Rules:
 
 Persistence distinguishes three scopes:
 
-| Scope      | What persists                                                               | Candidate mechanism                                                                                                              |
+| Scope      | What persists                                                               | Mechanism                                                                                                                        |
 | ---------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | Session    | `ViewId`, `LayoutTree`, attachment map, focus MRU, workspace set per window | `ConfigPlan` workspace snapshot, bounded and validated; no PTY handles persisted                                                 |
 | Scrollback | Grid and scrollback contents for terminals with `PersistentId`              | Rehydrated as grid snapshot at next creation, capped by `max_scrollback_lines`; PTY history before rehydration is not fabricated |
@@ -269,17 +276,17 @@ Rules:
 2. Rehydration on next launch creates a fresh `TerminalId` and `RuntimeId` with the same `PersistentId`. The rehydrated terminal starts with the persisted scrollback as immutable history and a fresh empty visible grid. Replayed PTY output from the previous session is not synthesized.
 3. `PersistentId` reuse within one live registry requires the previous terminal with that id to be fully disposed. Attempting to create a second live terminal with the same `PersistentId` returns `PersistentIdInUse`.
 
-## Resize routing: view rectangle to PTY geometry (candidate)
+## Resize routing: view rectangle to PTY geometry
 
 Reconciled with the [Text and Rendering RFC](text-rendering-rfc.md) and [Terminal State RFC](terminal-state-rfc.md):
 
 1. The workspace produces a `LogicalRect` per attached view in logical pixels. The registry converts it to `(cols, rows)` using the DPI-aware cell metrics `cell_width` and `cell_height` from the text contract. Calculation is `cols = floor(rect.width / cell_width)`, `rows = floor(rect.height / cell_height)`, clamped to `[1, 1024]` each and then to configured `max_cols` and `max_rows`. Division by zero is impossible because `cell_width` and `cell_height` are validated positive integers at startup.
 2. The computed `(cols, rows)` is the only size forwarded to `bitty-pty` as `SIGWINCH` on Unix and `ConPTY` resize on Windows. The PTY size is never taken from window size directly and never bypasses the view rectangle.
 3. Resize is synchronous at the registry and debounced at the presentation edge: at most one resize per presentation tick per terminal; intermediate rectangles inside the same tick are coalesced to the latest rect. A resize storm beyond `64` queued rects per tick drops the oldest with a `resize_coalesced` counter.
-4. Every committed resize increments the terminal damage generation with full-grid damage plus affected scrollback reflow range, per the terminal-state damage model. The reflow algorithm is singular for this contract and is the one pinned by whichever text-rendering decision accepts it; this draft does not introduce a second reflow branch.
+4. Every committed resize increments the terminal damage generation with full-grid damage plus affected scrollback reflow range, per the terminal-state damage model. The reflow algorithm is singular for this contract and is the one pinned by whichever text-rendering decision accepts it; this specification does not introduce a second reflow branch.
 5. Cursor integrity and geometry invariants from the terminal state RFC are revalidated after the resize before any snapshot is published. Violation is a bug that returns `ResizeInvariantViolation` and leaves the previous size committed.
 
-## Alternate-screen and mouse-capture ownership (candidate)
+## Alternate-screen and mouse-capture ownership
 
 Reconciled with the [Input and Pointer Contract](input-pointer-rfc.md) and [Terminal State RFC](terminal-state-rfc.md):
 
@@ -288,16 +295,16 @@ Reconciled with the [Input and Pointer Contract](input-pointer-rfc.md) and [Term
 3. Shift override is unconditional: holding Shift on a mouse press, drag, or release bypasses capture for that event and routes it to the selection path for the hit-tested view, per the input draft. The registry does not arbitrate Shift; the router does, then notifies the registry of the selection outcome only as presentation state.
 4. On alternate-screen exit all queued but not yet encoded captured events are re-evaluated as uncaptured before encoding. Already encoded bytes remain in the PTY buffer; they are not recalled.
 
-## Shared observation policy (candidate)
+## Shared observation policy
 
 1. Mutable attachment is exclusive: at most one `View` is attached to a given `TerminalId` at any time, enforced by the registry. This preserves the single-owner hot path and the damage-generation ordering.
 2. Shared observation is read-only and runs through the snapshot path only. A second view may present the same terminal's `Snapshot + Damage` when an explicit `observe` capability is granted, but it holds no encoder handle to that terminal and its input always routes to its own attached terminal or is dropped.
-3. The slice in the [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md) uses neither shared attachment nor shared observation. One view observes one terminal via its attachment. Shared read-only observation is a future extension that requires its own capability, budget, and isolation review and is not authorized by this draft.
+3. The slice in the [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md) uses neither shared attachment nor shared observation. One view observes one terminal via its attachment. Shared read-only observation is a future extension that requires its own capability, budget, and isolation review and is not authorized by this specification.
 4. Plugins observe committed effects through the bounded cold-path event queue only. No plugin reads grid internals, holds a `TerminalId` handle without a capability, or bypasses the snapshot.
 
-## Reattachment versus recreation (candidate)
+## Reattachment versus recreation
 
-| Situation                                            | Candidate required behavior                                                                                                                                                                                                                                      | Preserved                                                                                  | New                                               |
+| Situation                                            | Required behavior                                                                                                                                                                                                                                                | Preserved                                                                                  | New                                               |
 | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------- |
 | `detach(view)`                                       | View becomes empty, terminal stays live with same `TerminalId` and `RuntimeId`, no PTY close                                                                                                                                                                     | `TerminalId`, `RuntimeId`, grid, scrollback, modes, cursor, reply buffer, generation       | Nothing                                           |
 | `attach(view, terminal)` where terminal was detached | Rebind same `TerminalId` to new view, re-measure rectangle, resize PTY, preserve history                                                                                                                                                                         | Same `TerminalId` and `RuntimeId`                                                          | New `ViewId` binding, possibly new geometry       |
@@ -312,7 +319,7 @@ Rules:
 2. `PersistentId` never causes a live `RuntimeId` to be resurrected. The PTY process is always fresh.
 3. A stale `(TerminalId, generation)` handle that refers to a closed terminal returns `StaleHandle`; a call that supplies the current generation but the terminal has exited returns `TerminalExited`.
 
-## Failure semantics (candidate)
+## Failure semantics
 
 All operations return a typed `RegistryError` or `ViewError` and leave the previous valid state intact. No operation panics and no operation partially commits.
 
@@ -334,11 +341,14 @@ All operations return a typed `RegistryError` or `ViewError` and leave the previ
 
 Every error increments a bounded diagnostic counter `registry.errors.<variant>` and is available via the debug protocol. Error strings and counters are bounded and never echo unbounded PTY content.
 
-## Explicit exclusions (candidate, not authorized)
+## Explicit exclusions (not authorized)
 
-The following remain explicitly out of scope for this contract and are not authorized as shipped, stable, or compatibility-guaranteed behavior by this draft. Each requires its own RFC or ADR with independent architecture, security, and performance review before it can be claimed.
+The following remain explicitly out of scope for this contract and are not
+authorized as shipped, stable, or compatibility-guaranteed behavior by this
+accepted specification. Each requires its own RFC or ADR with independent
+architecture, security, and performance review before it can be claimed.
 
-| Excluded                                               | Why deferred                                                                                                                                                    | What this draft does instead                                                                                                |
+| Excluded                                               | Why deferred                                                                                                                                                    | What this specification does instead                                                                                        |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Multi-window                                           | Window is the native OS object owned by `bitty-platform`; orchestrating many windows adds focus, DPI, and platform lifetime questions not owned by the registry | One `Instance` owns one `Window` for the vertical slice; one registry per process; one window per registry in this contract |
 | Daemon `bittyd` and session persistence across reboots | OQ-020 deferred daemon post-v1.0 per [ADR 0008](../decisions/adrs/ADR-0008-headless.md); daemon trust boundary and lifecycle not reviewed here                  | Process-scoped registry only; persistence is scrollback rehydration via `PersistentId`, not daemon attach                   |
@@ -347,11 +357,14 @@ The following remain explicitly out of scope for this contract and are not autho
 | Global menu or system tray as registry owner           | Not part of the terminal lifecycle                                                                                                                              | Owned elsewhere if proposed                                                                                                 |
 | Live migration of a PTY between processes              | Requires daemon and cross-process fd transfer                                                                                                                   | Move is between views in the same window only                                                                               |
 
-Claiming any excluded behavior by citing this draft is a documentation hygiene violation. Cross-document references must preserve the deferred status.
+Claiming any excluded behavior by citing this specification is a
+documentation hygiene violation. Cross-document references must preserve the
+deferred status.
 
-## Security review (candidate)
+## Security review
 
-This draft creates no ambient file, network, or process capability for Lua and no bypass of existing P0 gates.
+This specification creates no ambient file, network, or process capability
+for Lua and no bypass of existing P0 gates.
 
 1. PTY file descriptors, GPU objects, and window handles remain with `bitty-pty`, `bitty-render`, and `bitty-platform`; no view, `LayoutTree`, or registry caller receives them.
 2. `PersistentId` is caller-supplied via `ConfigPlan` and validated; PTY output never sets or mutates it. This prevents a remote shell from claiming a persistent identity via an escape sequence.
@@ -359,10 +372,10 @@ This draft creates no ambient file, network, or process capability for Lua and n
 4. Bounded resources are validated before allocation; exceeding a ceiling returns a typed error and never grows heap without bound, preserving invariant 7.
 5. The separate terminal and plugin security domains from the core boundaries are preserved. A terminal requesting a resource via an escape sequence and a plugin requesting the same resource via a host API traverse different policies and produce distinct audit events.
 
-## Verification (candidate, none is shipped behavior)
+## Verification
 
 1. **Metadata and link gates**: `just check` must pass with zero markdownlint, link, metadata, language, agents, and hygiene issues for this document and its index entries, and `act -n -W .github/workflows/ci.yml` must report workflow dry-run success.
-2. **Identity invariant tests** (candidate acceptance gates):
+2. **Identity invariant tests** (acceptance gates):
    - `TerminalId`, `ViewId`, `RuntimeId`, `PersistentId`, and `Generation` are distinct types; no API accepts one where another is expected; stale generation is rejected with `StaleHandle`.
    - Creating and destroying a terminal retires its `TerminalId` without reuse in the same generation; creating and destroying a view retires its `ViewId` similarly; a terminal moved between views preserves `TerminalId` and `RuntimeId` and changes only `ViewId`.
 3. **Registry tests**:
@@ -379,7 +392,7 @@ This draft creates no ambient file, network, or process capability for Lua and n
    - Detached terminal survives with same ids; reattached terminal retains history; exited terminal reports `TerminalExited`; `close` retires the id and a subsequent create with the same `PersistentId` rehydrates scrollback but allocates fresh `TerminalId` and `RuntimeId`.
 8. **Headless composition tests**: workspace view rectangles, registry lifecycle, focus, and resize routing each have headless tests without a window or GPU, asserting rectangle equivalence and atomicity.
 
-## Open items remaining under this draft
+## Open items remaining under this accepted specification
 
 - Exact `TerminalRegistry` trait spelling, error taxonomy, and crate placement beyond the illustrative sketches above.
 - Whether `PersistentId` participates in `ConfigPlan` live reload or requires registry recreation, and whether rehydrated scrollback is limited to the configured `max_scrollback_lines` or a narrower bound.
@@ -391,11 +404,11 @@ This draft creates no ambient file, network, or process capability for Lua and n
 - Whether `LayoutProvider` selection and workspace persistence interact with `PersistentId` or remain orthogonal.
 - How `bitty --safe` ephemeral registry limits interact with a user `ConfigPlan` that declares `PersistentId` entries.
 
-This draft does not close an open question on its own; it will track to the
-owning registry and view lifecycle question once recorded in the
-[open-question register](../decisions/open-questions.md) or close directly as
-a standalone specification per the
-[documentation workflow](../development/documentation-workflow.md).
+This specification refines OQ-005 and OQ-007 at the lifecycle level per
+CTX-0117; it does not open a new OQ and does not claim `Verified` or
+`Compatible` status. Remaining open items above require follow-up RFCs or
+tasks per the [documentation workflow](../development/documentation-workflow.md)
+and [open-question register](../decisions/open-questions.md).
 
 ## References
 
