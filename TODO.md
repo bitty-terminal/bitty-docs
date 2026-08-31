@@ -158,5 +158,24 @@ Phase A.
       plan before opening any implementation slice task; CTX-0110/0111 block on
       this decision, not on drafting.
 
+## Candidate registry and view lifecycle — documentation-only (CTX-0110 draft)
+
+- [x] Draft TerminalRegistry and View lifecycle contract
+      ([TerminalRegistry and View Lifecycle Contract](docs/specifications/terminal-registry-view-lifecycle-rfc.md),
+      CTX-0110, draft, depends on CTX-0109, reconciles with ADR 0003, Terminal
+      State, Workspace Compositor, Input/Pointer, Text/Rendering, and Vertical
+      Slice): `TerminalId` vs `ViewId` strict separation, `RuntimeId` vs
+      `PersistentId`, registry creation/disposal, generation, view attachment
+      and detachment, focus, layout, visibility, persistence, reattachment vs
+      recreation, bounded resources, failure semantics, and explicit exclusions
+      for multi-window, daemon, remote UI, and Panel Runtime/Event Bus; no
+      implementation claims, no code authorized until independent
+      architecture/security review and `just check` + `actionlint` + `act -n`
+      pass.
+- [ ] Obtain independent architecture/security review and acceptance decision
+      for the registry and view lifecycle draft before opening any
+      implementation task that would create or wire a registry; candidate
+      remains draft until that review records `Accepted`.
+
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.
