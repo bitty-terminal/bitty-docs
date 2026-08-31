@@ -495,6 +495,13 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
   `Verified` requires independent `security-auditor` and P0-AC evidence. The
   update belongs in a dedicated CarryCtx task for that slice, not as a
   side edit to this horizon.
+- The first real single-window slice is gated by the
+  [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md)
+  (CTX-0109, draft, depends on CTX-0107/0108; one process/window/workspace/terminal,
+  cursor/scrollback/resize/selection/copy-paste, PB-1..PB-7, Tier 1/2, explicit
+  exclusions). Until its independent review passes, no implementation slice may
+  claim `v0.1` progress; CTX-0111 owns the follow-up synchronization of this
+  horizon and [`TODO.md`](../../TODO.md).
 - Keep every link in this document local and repository-portable; no local
   filesystem link appears in the root `README.md` or in any `AGENTS.md`.
   Validate with `just links` and `just metadata` before any PR.
@@ -521,3 +528,4 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
 - [Website Delivery RFC](../specifications/website-delivery-rfc.md) — pinned `src/content/docs-revision.json` and `/docs/<version>/<path>/` for website publication; this roadmap is not published via that path while `website_publish: false`.
 - [Documentation workflow](../development/documentation-workflow.md) — flat frontmatter schema, `title` equals H1, English-only, and lifecycle rules.
 - [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](../decisions/adrs/ADR-0008-headless.md) — post-v1.0 deferral for `bittyd` and remote UI ([OQ-020](../decisions/open-questions.md)).
+- [Single-Window Vertical Slice Acceptance Plan](../product/vertical-slice-acceptance.md) — candidate acceptance contract for the first real one-window terminal slice (CTX-0109, draft, depends on CTX-0107/0108; PB-1..PB-7, Tier 1/2, explicit exclusions; no code authorized until review gates).
