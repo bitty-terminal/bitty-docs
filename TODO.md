@@ -141,5 +141,22 @@ Phase A.
       synchronization, and multilingual routing before adding localized files
       (English-only remains normative).
 
+## Candidate vertical slice acceptance — documentation-only (CTX-0109 draft)
+
+- [x] Draft single-window vertical slice acceptance plan
+      ([Single-Window Vertical Slice Acceptance Plan](docs/product/vertical-slice-acceptance.md),
+      CTX-0109, draft, depends on CTX-0107 Input/Pointer and CTX-0108
+      Text/Rendering): one process/window/workspace/terminal, end-to-end
+      `shell -> PTY -> VT -> state -> text/atlas -> GPU/window -> input -> PTY`,
+      cursor/scrollback/resize-to-PTY/selection/copy-paste/shell/nvim+tmux smoke,
+      visible/headless consistency with replay/diagnostics, Tier 1/2 per ADR-0002,
+      PB-1..PB-7, explicit exclusions (Panel/Browser/Agent/marketplace/daemon);
+      reconciled with 32 OQs `Accepted` and P0 gates, no code authorized until
+      independent architecture/security/performance review and
+      `just check` + `actionlint` + `act -n` pass.
+- [ ] Obtain independent review and acceptance decision for the vertical slice
+      plan before opening any implementation slice task; CTX-0110/0111 block on
+      this decision, not on drafting.
+
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.
