@@ -3,19 +3,19 @@
   "snapshot_date": "2026-08-31",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "d4d75e92f3ba38f5e984aff017f57388e6adb63b",
-    "short": "d4d75e9",
+    "revision": "a8735d0aafb91351aa8e215cdab191dbd3742458",
+    "short": "a8735d0",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "be3bdb42311bd48f045bb3aad3e0a8620bcdfc7e",
-    "previous_short": "be3bdb4",
+    "previous_revision": "7e3104dfffc728e7e99f9aa8bfd3a2f56ee30ef9",
+    "previous_short": "7e3104d",
     "crates": 16
   },
   "maturity": {
     "label": "Pre-alpha / M1 Hardening",
     "date": "2026-08-29",
     "oqs_accepted": 32,
-    "lifecycle": "Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready"
+    "lifecycle": "Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready"
   },
   "risks": [
     {
@@ -223,22 +223,55 @@
       "issue": "139"
     }
   ],
+  "experimental_implementations": [
+    {
+      "id": "vertical-slice",
+      "revision": "c0aadd2",
+      "full": "c0aadd275f284fd0b9535a3e138bd5dd09a28ffb",
+      "task": "CTX-0095",
+      "pr": "148",
+      "description": "Real single-window vertical slice: one process/window/PTY/parser/state/view, winit 0.30 + wgpu 25.0, bounded PTY reply buffer, Kitty 7727, mouse SGR, focus, bracketed paste, IME overlay",
+      "lifecycle": "Experimental Implementation",
+      "verified": false
+    },
+    {
+      "id": "plugin-dogfood",
+      "revision": "7e3104d",
+      "full": "7e3104dfffc728e7e99f9aa8bfd3a2f56ee30ef9",
+      "task": "CTX-0096",
+      "pr": "149",
+      "description": "Dogfood public Plugin API with five bundled-disabled first-party plugins (shell-integration, tabs, statusline, palette, project) via bundled.rs, bounded DropOldest queues",
+      "lifecycle": "Experimental Implementation",
+      "verified": false
+    },
+    {
+      "id": "pty-reply-fix",
+      "revision": "a8735d0",
+      "full": "a8735d0aafb91351aa8e215cdab191dbd3742458",
+      "task": "CTX-0098",
+      "pr": "151",
+      "description": "Close PTY reply loop (Runtime::write_replies bounded 4 KiB PtyWriter) and Kitty progressive params colon-subparam collapse",
+      "lifecycle": "Experimental Implementation",
+      "verified": false
+    }
+  ],
   "sync_provenance": {
-    "carryctx_task": "CTX-0114",
-    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/121",
-    "previous_task": "CTX-0113",
-    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/120",
+    "carryctx_task": "CTX-0116",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/135",
+    "previous_task": "CTX-0114",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/121",
     "audit_task": "CTX-0092",
     "synchronized_at": "2026-08-31",
-    "synchronized_by": "docs-curator + security-auditor",
-    "synchronized_revision": "d4d75e9",
-    "previous_revision": "7a4ee41",
-    "baseline_revision": "de134ec"
+    "synchronized_by": "docs-curator",
+    "synchronized_revision": "a8735d0",
+    "previous_revision": "7e3104d",
+    "baseline_revision": "de134ec",
+    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0"
   },
   "ownership": {
     "owner": "docs-curator + security-auditor",
-    "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation.",
+    "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At M1 Hardening per CTX-0114, R-005/R-006/R-007 are Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At M1 Hardening per CTX-0116, R-005/R-006/R-007 are Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit. Experimental Implementations c0aadd2 (vertical slice), 7e3104d (plugin dogfood), a8735d0 (PTY reply + Kitty) are Implemented (experimental) not Verified/Compatible/Release-ready per Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible ladder. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
 }

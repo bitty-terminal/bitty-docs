@@ -1,24 +1,30 @@
 # Pre-alpha / M1 Hardening TODO
 
 This list sequences project-definition and hardening work at the **Pre-alpha /
-M1 Hardening** stage (2026-08-29, `bitty` `be3bdb4`, 16 crates, 32 OQs
-Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented` but not yet
-`Verified`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
-`de134ec` per
+M1 Hardening** stage (2026-08-29, `bitty` `a8735d0`, 16 crates, 32 OQs
+Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented`
+(experimental) at `a8735d0` but not yet `Verified`; experimental vertical
+slice `c0aadd2` (CTX-0095) + plugin dogfood `7e3104d` (CTX-0096) + PTY reply
+fix `a8735d0` (CTX-0098) are `Experimental Implementation` (implemented,
+reviewable, not `Verified`/`Compatible`); `R-004` clipboard re-audited at
+`bitty` `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) with `23` `suspicious_paste` + `13` `paste` unit + `4`
 remediation (baseline `19`) and remains `Open` with residual platform-backend,
 real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
-`Mitigated` at `bitty` `d4d75e9` baseline `de134ec` previous `be3bdb4`
+`Mitigated` at `bitty` `d4d75e9` baseline `de134ec` previous `7e3104d`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) per RS-1..RS-7, overall not
-`Verified`/`Compatible`/`Release-ready`). Canonical choices live in the
-[open-question register](docs/decisions/open-questions.md) (OQ-001..032 all
-`Accepted` per CTX-0083); lifecycle is
-`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
+`Verified`/`Compatible`/`Release-ready`. `be3bdb4` remains the M1 Hardening
+baseline; chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0` is experimental.
+Canonical choices live in the [open-question register](docs/decisions/open-questions.md)
+(OQ-001..032 all `Accepted` per CTX-0083); lifecycle is
+`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
+(spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+(crate maturity); experimental code is review evidence, not acceptance.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
-`bun .github/scripts/check-state.mjs`.
+(synchronized `a8735d0`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
+`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
 Phase A.
 
@@ -141,7 +147,7 @@ Phase A.
       synchronization, and multilingual routing before adding localized files
       (English-only remains normative).
 
-## Candidate vertical slice acceptance — documentation-only (CTX-0109 draft)
+## Candidate vertical slice acceptance — Draft spec + Experimental Implementation (CTX-0109 draft, CTX-0095/0098 Implemented)
 
 - [x] Draft single-window vertical slice acceptance plan
       ([Single-Window Vertical Slice Acceptance Plan](docs/product/vertical-slice-acceptance.md),
@@ -151,14 +157,31 @@ Phase A.
       cursor/scrollback/resize-to-PTY/selection/copy-paste/shell/nvim+tmux smoke,
       visible/headless consistency with replay/diagnostics, Tier 1/2 per ADR-0002,
       PB-1..PB-7, explicit exclusions (Panel/Browser/Agent/marketplace/daemon);
-      reconciled with 32 OQs `Accepted` and P0 gates, no code authorized until
-      independent architecture/security/performance review and
-      `just check` + `actionlint` + `act -n` pass.
+      reconciled with 32 OQs `Accepted` and P0 gates; spec remains `Draft`,
+      not `Accepted`/`Verified`.
+- [x] Experimental Implementation for vertical slice (CTX-0095 `c0aadd2`
+      and CTX-0098 `a8735d0`, both `Implemented` not `Verified`):
+      `bitty` `c0aadd2` implements real single-window slice (one process, one
+      `winit` 0.30 window, one PTY `portable-pty` 0.9/ConPTY, one `vte` 0.15
+      parser, one `term-state`, one view via `crossfont` 0.9/`wgpu` 25.0,
+      `AnyRasterizer`, Kitty `7727` opt-in, mouse SGR `1000`/`1002`/`1003`/`1006`
+      with Shift override, focus `1004`, bracketed paste `2004`, IME preedit
+      overlay, wheel pixel accumulation, DPI scale, bounded `64`B/`32`B/`8`KiB;
+      PR #148 `c0aadd2` `+1045 -87` 12 files, `cargo clippy -D warnings` 0,
+      `cargo check --target x86_64-pc-windows-gnu` 0, `cargo test` 0, `just
+check` 0). `bitty` `a8735d0` closes PTY reply loop (`Runtime::write_replies`
+      bounded `4`KiB `PtyWriter::write_all` + `flush`, headless queues for
+      `take_replies`, fail-closed) and Kitty progressive colon-subparams
+      (`7727:1:2:5 -> 19` mask `0x1F`) per PR #151 (+408, `pty_reply` tests).
+      Both are experimental review evidence; `Verified` requires independent
+      architecture/security/performance review and `just check` + `actionlint` +
+      `act -n` on the implementing revision; `Accepted` requires spec review
+      per lifecycle `Draft -> Experimental Implementation -> Accepted -> Verified`.
 - [ ] Obtain independent review and acceptance decision for the vertical slice
-      plan before opening any implementation slice task; CTX-0110/0111 block on
-      this decision, not on drafting.
+      plan and its experimental evidence before claiming `Accepted` or
+      `Verified`; CTX-0110/0111/0116 block on this decision, not on drafting.
 
-## Candidate registry and view lifecycle — documentation-only (CTX-0110 draft)
+## Candidate registry and view lifecycle — Draft spec + Experimental Implementation (CTX-0110 draft, c0aadd2/a8735d0)
 
 - [x] Draft TerminalRegistry and View lifecycle contract
       ([TerminalRegistry and View Lifecycle Contract](docs/specifications/terminal-registry-view-lifecycle-rfc.md),
@@ -168,14 +191,39 @@ Phase A.
       `PersistentId`, registry creation/disposal, generation, view attachment
       and detachment, focus, layout, visibility, persistence, reattachment vs
       recreation, bounded resources, failure semantics, and explicit exclusions
-      for multi-window, daemon, remote UI, and Panel Runtime/Event Bus; no
-      implementation claims, no code authorized until independent
-      architecture/security review and `just check` + `actionlint` + `act -n`
-      pass.
+      for multi-window, daemon, remote UI, and Panel Runtime/Event Bus; spec
+      remains `Draft` until independent review records `Accepted`.
+- [x] Experimental Implementation for registry/view routing (part of `c0aadd2`
+      and refined at `a8735d0`, `Implemented` not `Verified`): view rectangle
+      plus DPI-aware cell metrics `floor(rect / cell)` -> PTY `SIGWINCH`/ConPTY
+      resize, debounce `64` rects/tick, full-grid damage + generation, cursor
+      integrity revalidation, `Runtime::write_replies` bounded reply path owned
+      by registry; one registry per process per `c0aadd2`. Implementation is
+      experimental evidence only; `Accepted`/`Verified` require independent
+      architecture/security review per `Draft -> Experimental Implementation`
+      lifecycle.
 - [ ] Obtain independent architecture/security review and acceptance decision
-      for the registry and view lifecycle draft before opening any
-      implementation task that would create or wire a registry; candidate
-      remains draft until that review records `Accepted`.
+      for the registry and view lifecycle draft plus its experimental evidence
+      before claiming `Accepted` or `Verified`; candidate remains `Draft` spec
+      with experimental code until that review records `Accepted`.
+
+## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
+
+- [x] Dogfood public Plugin API via accepted v1 bundled-disabled set
+      (`bitty` `7e3104d`, CTX-0096, PR #149): five first-party plugins
+      `shell-integration`, `tabs`, `statusline`, `palette`, `project` via
+      `crates/bitty-plugin-host/src/bundled.rs` catalog, manifest/capability/
+      lifecycle parity to `xuepoo.*` third-party, default-disabled
+      (`EffectiveConfig` empty == core only), `bitty --safe` rejects
+      `bitty-terminal.*`, bounded cold-path `DropOldest` PerSub `64` / PerPlugin
+      `1024`/`256`KiB / Global `8192`/`2`MiB, `7+7` dogfood tests
+      (`bundled_dogfood.rs` + `bundled_dogfood_runtime.rs`), `just check` 0,
+      `cargo check --target x86_64-pc-windows-gnu` 0, headless deterministic.
+      `Implemented` (experimental) not `Verified`/`Compatible`; splits/search
+      and Panel Runtime/Browser/Agent/marketplace/daemon/remote UI remain
+      explicitly not implemented.
+- [ ] Verify dogfood does not bypass capability or budget gates; `Verified`
+      requires per-risk RS-1..RS-7 and independent review.
 
 ## Documentation synchronization — CTX-0111 sync (2026-08-31)
 
@@ -190,9 +238,32 @@ Phase A.
       documentation-only, `docs/product/vision.md` and
       `docs/roadmap/now-next-later.md` checked for stale `6 drafts` counts
       or lifecycle wording — no stale counts found).
-- [ ] Obtain independent docs review for CTX-0111 sync before closing the
-      synchronization task; next sync will add links to every subsequent
-      `bitty` implementation and review milestone as they land.
+- [x] Independent docs review for CTX-0111 sync recorded; closed per PR #134.
+
+## Documentation synchronization — CTX-0116 sync (2026-08-31)
+
+- [x] Reconcile post-vertical-slice implementation state (CTX-0116, depends on
+      CTX-0111, `bitty` `c0aadd2` vertical slice + `7e3104d` plugin dogfood +
+      `a8735d0` PTY reply fix, all `Implemented` (experimental) not `Verified`):
+      update `docs/project/project-state.json` to `a8735d0` (chain
+      `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`, baseline `de134ec` previous
+      `7e3104d`, `R-004` `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` `Mitigated`
+      at `d4d75e9`, experimental `c0aadd2`/`7e3104d`/`a8735d0` not `Verified`,
+      lifecycle `Draft -> Experimental Implementation -> Accepted -> Verified
+-> Compatible`); update `TODO.md` to mark CTX-0095/0096/0098 completed as
+      experimental, keep spec `Draft` vs code `Experimental Implementation`
+      distinct; update `docs/roadmap/now-next-later.md`, `docs/README.md`,
+      `README.md`, `docs/product/vertical-slice-acceptance.md`,
+      `docs/specifications/input-pointer-rfc.md`,
+      `docs/specifications/text-rendering-rfc.md`,
+      `docs/specifications/terminal-registry-view-lifecycle-rfc.md` with
+      implementation evidence links and correct `Draft`/`Experimental`
+      wording; update `docs/specifications/README.md` prioritization for 7
+      `Draft`s (Workspace Compositor/Status/Input/Text/Registry vs AI Arch);
+      English only, flat frontmatter, `just check` + `actionlint` + `act -n` +
+      `bun .github/scripts/check-state.mjs` pass, `git diff --check` 0.
+- [ ] Obtain independent docs-curator + security-auditor review for CTX-0116
+      sync before closing; `Verified`/`Compatible` remain gated on RS-1..RS-7.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

@@ -70,23 +70,30 @@ daemon deferral, or any security evidence gate.
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](../product/release-ladder.md) stage
-  **Pre-alpha / M1 Hardening** at `bitty` `be3bdb4` (`16 crates`, `32 OQs`
-  `Accepted` per CTX-0083, soak `~808` headless tests) mapped to the candidate
-  `v0.1` through `v1.0` maturity ladder. The ladder does not weaken any
-  normative control in the [Security overview](../security/overview.md) or
+  **Pre-alpha / M1 Hardening** at `bitty` `a8735d0` (`16 crates`, `32 OQs`
+  `Accepted` per CTX-0083, soak `~808` headless tests plus experimental
+  `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
+  baseline `de134ec` previous `7e3104d`) mapped to the candidate `v0.1` through
+  `v1.0` maturity ladder. The ladder does not weaken any normative control in
+  the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
   `bitty` `7a4ee41` (baseline `de134ec`) per
   [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-  (CTX-0097, 2026-08-31) and remains `Open` (see `Next` `R-004`); overall maturity remains `Pre-alpha`.
-- **Lifecycle:** `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-  per the [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) RS-1
+  (CTX-0097, 2026-08-31) and remains `Open` (see `Next` `R-004`); `R-005`/`R-006`/`R-007`
+  remain `Mitigated` at `d4d75e9`; experimental `c0aadd2`/`7e3104d`/`a8735d0`
+  are `Implemented` not `Verified`; overall maturity remains `Pre-alpha`.
+- **Lifecycle:** `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
+  (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+  (crate) per the [Risk Evidence RFC](../specifications/risk-evidence-rfc.md) RS-1
   through RS-7. All RFCs and ADRs that underpin the risks below are `Accepted`
-  and `Implemented` (headless `Implemented` at `be3bdb4`) but remain
-  `Implemented` not yet `Verified` until the matrix (RS-1..RS-7,
-  `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`) is satisfied.
-  No risk moves from `Open` while the matrix is pending except where this
-  document records `Verified` closure with cited auditor evidence. `R-004` is
-  explicitly not `Verified` or `Mitigated`; the 2026-08-31 audit keeps it `Open`.
+  and `Implemented` (headless `Implemented` at `be3bdb4`, experimental `Implemented`
+  at `a8735d0` via `c0aadd2`/`7e3104d`/`a8735d0`) but remain `Implemented` not yet
+  `Verified` until the matrix (RS-1..RS-7, `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`)
+  is satisfied. Experimental implementation is reviewable evidence, not `Verified`
+  closure. No risk moves from `Open` while the matrix is pending except where
+  this document records `Verified`/`Mitigated` closure with cited auditor
+  evidence. `R-004` is explicitly not `Verified` or `Mitigated`; the 2026-08-31
+  audit keeps it `Open`; experimental slice does not change risk state.
 - **Candidate spine:** [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
   candidate build-order spine `PTY -> VT -> Grid -> Font -> GPU -> Correct
 Terminal -> Config -> Command/Event -> Plugin Runtime -> Plugin Manager ->
@@ -117,18 +124,26 @@ Evidence RFC. `Verified` in this roadmap does not imply `Compatible` or
 This repository is `bitty-docs` only. Product-code claims are limited to what
 `bitty` `main` already contains (`8c41f1e` for VT and `8e6c8a9` for rich, both
 merged after `be3bdb4`, `7a4ee41`/`de134ec` for clipboard `R-004` which
-remains `Open` per the 2026-08-31 audit, and `d4d75e9`/`de134ec`/`be3bdb4` for
-`R-005`/`R-006`/`R-007` at `5bdcdbd`/`0afc94d`/`d4d75e9` which are `Mitigated`). This document does not claim any
-additional `bitty` implementation beyond those commits and does not describe
-future `bitty` code as already implemented, `Verified`,
-`Compatible`, or `Release-ready`; `R-004` remains `Open`, `R-005`/`R-006`/`R-007` are `Mitigated` (not `Verified`).
+remains `Open` per the 2026-08-31 audit, `d4d75e9`/`de134ec`/`7e3104d` for
+`R-005`/`R-006`/`R-007` at `5bdcdbd`/`0afc94d`/`d4d75e9` which are `Mitigated`,
+and `c0aadd2`/`7e3104d`/`a8735d0` chain for experimental slice/dogfood/PTY fix
+which are `Implemented` (experimental) not `Verified`). This document does not
+claim any additional `bitty` implementation beyond those commits and does not
+describe future `bitty` code as already implemented, `Verified`, `Compatible`,
+or `Release-ready`; `R-004` remains `Open`, `R-005`/`R-006`/`R-007` are
+`Mitigated` (not `Verified`), experimental `c0aadd2`/`7e3104d`/`a8735d0` are not
+`Accepted`/`Verified`.
 
 ## Now — Verified and Mitigated hardening with attributable evidence
 
 Confidence: **high** for the five items below because each has a merged `bitty`
 commit with independent security-auditor and docs-curator review, full matrix
-evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`). Horizon: **current maturity slice** already on
-`bitty` `main` (`d4d75e9` head, `be3bdb4` baseline `de134ec`); docs planning reflects it, it does not promise beyond it, overall product not `Verified`/`Compatible`/`Release-ready`.
+evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`).
+Experimental slice `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
+not counted here. Horizon: **current maturity slice** already on `bitty` `main`
+(`a8735d0` head, `de134ec` baseline `7e3104d` previous, `be3bdb4` M1 baseline);
+docs planning reflects it, it does not promise beyond it, overall product not
+`Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
 ### Now-1: R-001 Bounded VT parser — Verified
 
@@ -236,11 +251,15 @@ evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitig
   [Release Ladder](../product/release-ladder.md) and do not downgrade any
   normative control in the security corpus. The headless `Implemented` soak at
   `be3bdb4` (`~808` tests, `cargo test --workspace --all-targets --locked`
-  `904` tests including non-headless at `904` in the matrix trunk) is cited as
-  the baseline that the two Verified plus three Mitigated commits extend; only the matrix row plus
-  auditor review moves a risk.
+  `904` tests including non-headless at `904` in the matrix trunk) plus
+  experimental `c0aadd2`/`7e3104d`/`a8735d0` are cited as the baseline that the
+  two Verified plus three Mitigated commits extend; experimental code is
+  review evidence, not `Verified`; only the matrix row plus auditor review
+  moves a risk.
 - This roadmap records those bitty commits as evidence; it does not claim any
-  bitty code beyond `8c41f1e`, `8e6c8a9`, `5bdcdbd`, `0afc94d`, `d4d75e9` is implemented, and overall product remains not `Verified`/`Compatible`/`Release-ready`.
+  bitty code beyond `8c41f1e`, `8e6c8a9`, `5bdcdbd`, `0afc94d`, `d4d75e9` plus
+  experimental `c0aadd2`/`7e3104d`/`a8735d0` is implemented (experimental not
+  `Verified`), and overall product remains not `Verified`/`Compatible`/`Release-ready`.
 
 ## Next — Candidate plugin and IPC hardening
 

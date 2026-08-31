@@ -11,29 +11,32 @@ sidebar_order: 34
 
 # Security Evidence Matrix
 
-Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `be3bdb4`, 16 crates,
-32 OQs `Accepted`, soak ~808 headless tests, `cargo test` 904 tests).
-`R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
+Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `a8735d0`, 16 crates,
+32 OQs `Accepted`, soak ~808 headless tests plus experimental `c0aadd2`/`7e3104d`/`a8735d0`,
+`cargo test` 904 tests). `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`
-previous `be3bdb4`) per RS-1..RS-7 and independent review; `R-004` remains
+previous `7e3104d`) per RS-1..RS-7 and independent review; `R-004` remains
 `Open` at `7a4ee41` (audit 2026-08-31); all other rows remain `Open` because
 implementation is `Implemented` at `be3bdb4` (`ipc`, `rich`, `resolver` and tail
-crates headless) but not yet `Verified` per
-[risk evidence RFC](../specifications/risk-evidence-rfc.md) RS-1..RS-7. Lifecycle
-is `Open -> Mitigated -> Accepted` (risk state) and
+crates headless) plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
+not yet `Verified` per [risk evidence RFC](../specifications/risk-evidence-rfc.md)
+RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
+(spec) and `Open -> Mitigated -> Accepted` (risk) and
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-(crate maturity); no risk moves to `Mitigated` without passing the full
-Entry-to-Mitigated checklist plus independent security-auditor review.
-Evidence matrix Phase E draft covers P0 and P1 rows for R-001..R-022.
-`R-004` was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) per
-`bitty` [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
+(crate); no risk moves to `Mitigated` without passing the full
+Entry-to-Mitigated checklist plus independent security-auditor review; experimental
+implementation does not imply `Verified`. Evidence matrix Phase E draft covers P0
+and P1 rows for R-001..R-022. `R-004` was re-audited at `bitty` `7a4ee41`
+(baseline `de134ec`) per `bitty`
+[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) and remains **Open** (see R-004 row); `R-005` at
 `5bdcdbd` PR #144, `R-006` at `0afc94d` PR #145, `R-007` at `d4d75e9` PR #146 are
-**Mitigated** (see R-005/006/007 rows).
-Canonical snapshot: [`project-state.json`](../project/project-state.json)
-(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
-`bun .github/scripts/check-state.mjs`.
+**Mitigated** (see R-005/006/007 rows); experimental `c0aadd2`/`7e3104d`/`a8735d0`
+are `Implemented` not `Verified`. Canonical snapshot:
+[`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
+`2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004` `Open`,
+`R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
+`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
 This matrix is the Phase E companion to the
 [risk register](risk-register.md) and the

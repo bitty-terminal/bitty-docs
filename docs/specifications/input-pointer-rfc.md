@@ -11,16 +11,26 @@ sidebar_order: 18
 
 # Input and Pointer Contract
 
-> Status: **draft** — candidate contract for review. This document proposes
+> Status: **draft** spec plus **Experimental Implementation** at
+> `bitty` `c0aadd2` + `a8735d0` — candidate contract for review with
+> experimental code evidence (not `Accepted`/`Verified`). This document proposes
 > the Input and Pointer contract referenced by
 > [OQ-004](../decisions/open-questions.md) (compatibility milestone) and
 > [OQ-007](../decisions/open-questions.md) (terminal state) but does not close
-> either question and does not claim implemented behavior. Accepted behavior
-> remains the existing [Terminal State RFC](terminal-state-rfc.md),
+> either question; accepted behavior remains the existing
+> [Terminal State RFC](terminal-state-rfc.md),
 > [Compatibility Milestone RFC](compatibility-milestone-rfc.md),
 > [Platform tiers ADR](../decisions/adrs/ADR-0002-platform-support-tiers.md),
 > [Plugin Platform RFC](plugin-platform-rfc.md), clipboard audit at
-> `bitty` `7a4ee41` (CTX-0097), and [Performance Budget RFC](performance-budget-rfc.md).
+> `bitty` `7a4ee41` (CTX-0097), and
+> [Performance Budget RFC](performance-budget-rfc.md). Experimental code
+> at `c0aadd2` (CTX-0095 PR #148, Kitty `7727` opt-in, mouse
+> `1000`/`1002`/`1003`/`1006` SGR + Shift override, focus `1004`, bracketed
+> paste `2004`, IME overlay, wheel accumulation) plus `a8735d0` (CTX-0098 PR #151,
+> `Runtime::write_replies` bounded `4`KiB, Kitty progressive `7727:1:2:5 -> 19`)
+> is `Implemented` (experimental) not `Verified`/`Compatible` — it provides
+> reviewable evidence for the draft spec but does not imply acceptance.
+> Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified`.
 > Candidate sections below are explicitly marked **Candidate** and carry no
 > compatibility promise until a reviewed acceptance decision records them.
 
@@ -589,11 +599,16 @@ contract.
 This RFC does not close OQ-004 or OQ-007; those remain **Accepted** via their
 own RFCs. It is registered as a **Draft** in
 [Specifications](../specifications/README.md) and linked from the
-[Decision Register](../decisions/index.md) candidate queue. Future acceptance
-would update those indexes, the open-question register only via a registered
-decision, and the machine-readable
-[`project-state.json`](../project/project-state.json) only after
-implementation evidence and auditor sign-off.
+[Decision Register](../decisions/index.md) candidate queue; experimental
+implementation exists at `bitty` `c0aadd2` + `a8735d0` (CTX-0095/0098,
+`Implemented` experimental not `Verified`) as review evidence per CTX-0116.
+Future acceptance would update those indexes, the open-question register only
+via a registered decision, and the machine-readable
+[`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
+chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`, lifecycle
+`Draft -> Experimental Implementation -> Accepted -> Verified`) only after
+implementation evidence and auditor sign-off. `Draft` vs `Experimental`
+vs `Accepted` vs `Verified` remain distinct per `project-state.json`.
 
 ## References
 
