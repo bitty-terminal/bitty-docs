@@ -16,16 +16,20 @@ is **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `be3bdb4` 16 crates,
 32 OQs `Accepted`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
 `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) and remains `Open`): it records what the project intends,
+(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
+`d4d75e9` baseline `de134ec` previous `be3bdb4` (`5bdcdbd`/`0afc94d`/`d4d75e9`,
+Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7, overall not
+`Verified`/`Compatible`/`Release-ready`): it records what the project intends,
 what it requires, what it is considering, what is `Implemented` (headless soak
-~808 tests) but not yet `Verified`, and what remains `Open` (including `R-004`
-with residual platform-backend, real-window UX, and `8192`-byte bound-scope limits).
-Lifecycle is
+~808 tests) but not yet `Verified`, and what remains `Open`/`Mitigated`
+(including `R-004` with residual platform-backend, real-window UX, and
+`8192`-byte bound-scope limits). Lifecycle is
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
 Canonical snapshot: [`project-state.json`](project/project-state.json)
-(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`) validated by `bun .github/scripts/check-state.mjs`.
+(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
+`bun .github/scripts/check-state.mjs`.
 
 ## Product
 
@@ -73,11 +77,11 @@ Canonical snapshot: [`project-state.json`](project/project-state.json)
 
 ## Security
 
-| Document                                   | Authority                                                                                                                 |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| [Security overview](security/overview.md)  | Normative security contract and capability taxonomy (Pre-alpha / M1 Hardening, `Implemented` not yet `Verified`).         |
-| [Threat model](security/threat-model.md)   | Normative trust boundaries, threats, and required controls (M1 Hardening).                                                |
-| [Risk register](security/risk-register.md) | Security risks and evidence-based closure criteria (all `Open` until `Verified`, matrix `pending` per Risk Evidence RFC). |
+| Document                                   | Authority                                                                                                                                                                                                 |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Security overview](security/overview.md)  | Normative security contract and capability taxonomy (Pre-alpha / M1 Hardening, `Implemented` not yet `Verified`).                                                                                         |
+| [Threat model](security/threat-model.md)   | Normative trust boundaries, threats, and required controls (M1 Hardening).                                                                                                                                |
+| [Risk register](security/risk-register.md) | Security risks and evidence-based closure criteria (`R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004` `Open` at `7a4ee41`, others `Open` until `Verified`, matrix Phase E per Risk Evidence RFC). |
 
 Security controls are not optional candidates merely because their exact
 mechanisms or thresholds still need an RFC. The security corpus takes
@@ -122,7 +126,7 @@ Use the following lifecycle labels consistently
 | Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed at M1 Hardening.                            |
 
 At M1 Hardening (2026-08-29, `be3bdb4`), some product behavior is `Implemented`
-(`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified` requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) with `23` `suspicious_paste` + `13` `paste` unit + `4` remediation tests and remains `Open` (not `Mitigated`/`Verified`) due to residual platform-backend, real-window UX, and `8192`-byte bound-scope limits.
+(`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified` requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) with `23` `suspicious_paste` + `13` `paste` unit + `4` remediation tests and remains `Open` (not `Mitigated`/`Verified`) due to residual platform-backend, real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007` at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7, overall product remains not `Verified`/`Compatible`/`Release-ready`.
 
 ## Language, metadata, and publication
 

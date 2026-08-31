@@ -22,18 +22,24 @@ sidebar_order: 21
   `bitty` `7a4ee41` (baseline `de134ec`) per
   [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
   (2026-08-31, CTX-0097) and remains `Open` with residual platform-backend,
-  real-window UX, and `8192`-byte bound-scope limits; overall maturity remains
-  `Pre-alpha`. Canonical snapshot:
+  real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
+  at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139,
+  baseline `de134ec` previous `be3bdb4`) are `Mitigated` per RS-1..RS-7, overall
+  maturity remains `Pre-alpha` (not `Verified`/`Compatible`/`Release-ready`).
+  Canonical snapshot:
   [`docs/project/project-state.json`](../project/project-state.json)
-  (synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-  `Open`) validated by `bun .github/scripts/check-state.mjs`.
+  (synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+  `Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
+  `bun .github/scripts/check-state.mjs`.
 - Lifecycle: `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
   per the [Risk Evidence RFC](../specifications/risk-evidence-rfc.md). All
   RFCs/ADRs are `Accepted` and `Implemented` (headless `Implemented` at
   `be3bdb4`) but remain `Implemented` not yet `Verified` until the evidence
   matrix (RS-1..RS-7, `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`)
-  is satisfied. No risk moves from `Open` while the matrix is `pending`; `R-004`
-  explicitly remains `Open` at `7a4ee41` (not `Mitigated`/`Verified`).
+  is satisfied. No risk moves from `Open` while the matrix is `pending` except
+  `R-005`/`R-006`/`R-007` moved `Open -> Mitigated` at `d4d75e9` per
+  PR #144/#145/#146; `R-004` explicitly remains `Open` at `7a4ee41` (not
+  `Mitigated`/`Verified`). Overall product remains not `Verified`/`Compatible`.
 - Authority: the ladder is a planning companion to the maturity ladder; it does
   not authorize publication or compatibility. Closing any open question still
   requires its RFC/ADR with independent review per the
@@ -42,7 +48,10 @@ sidebar_order: 21
   `be3bdb4`) records the crate publish order and `cargo publish --dry-run`
   verification for the workspace. This document mirrors that intent for
   `bitty-docs` navigation. For `R-004`, the companion evidence is at `7a4ee41`
-  (baseline `de134ec`, audit above) and remains `Open`.
+  (baseline `de134ec`, audit above) and remains `Open`; for `R-005`/`R-006`/`R-007`,
+  companion evidence is at `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues
+  #137/#138/#139) per `project-state.json` and remains `Mitigated` (not
+  `Verified`).
 
 ## Implementation state at M1 Hardening (be3bdb4)
 
@@ -66,11 +75,14 @@ sidebar_order: 21
   `ipc` (bounded framing 256 KiB, wire v1, peer-credential auth, scopes OQ-018),
   `resolver` (single-version convergence, source-class provenance H-A/H-B/H-C,
   yank/prerelease `yanked (locked)` OQ-022/026-029) at `be3bdb4` with soak
-  ~808 headless tests; risk register remains `Open` with matrix `pending`.
-  `R-004` clipboard (`23` `suspicious_paste` + `13` `paste` unit + `4` remediation at
+  ~808 headless tests; risk register remains `Open` for 19 risks, `R-005`/`R-006`/`R-007`
+  `Mitigated` at `d4d75e9`, matrix `Mitigated` for those three. `R-004` clipboard
+  (`23` `suspicious_paste` + `13` `paste` unit + `4` remediation at
   `7a4ee41`, baseline `19` at `de134ec`) is `Implemented` but explicitly `Open`
   per the 2026-08-31 audit (residual platform backends, real-window UX,
-  `8192`-byte post-acquisition bound).
+  `8192`-byte post-acquisition bound); `R-005` hyperlink (`5bdcdbd`),
+  `R-006` capability (`0afc94d`), `R-007` VM budgets (`d4d75e9`) are `Mitigated`
+  with residual UX/grant/budget soak gaps per independent review.
 - **Governance and Website**: Website Delivery RFC (OQ-023) loader with
   eight-field schema, pinned `src/content/docs-revision.json`, multi-version
   `/docs/<version>/<path>/` and redirect manifest; Governance RFC (OQ-024) MIT

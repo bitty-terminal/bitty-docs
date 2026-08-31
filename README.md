@@ -5,7 +5,10 @@ terminal project. The project is currently in **Pre-alpha / M1 Hardening**
 (2026-08-29, `bitty` `be3bdb4`; `R-004` clipboard re-audited at `bitty`
 `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) and remains `Open`): these documents describe intent,
+(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
+`d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139, baseline
+`de134ec`, previous `be3bdb4`) are `Mitigated` per RS-1..RS-7, overall not
+`Verified`/`Compatible`/`Release-ready`): these documents describe intent,
 accepted working directions (32 OQs Accepted: OQ-001..032), normative
 requirements, and the implementation lifecycle
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
@@ -17,11 +20,14 @@ security-auditor and P0-AC evidence per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md).
 `R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
 remediation, baseline `19`) remains `Open` with residual platform-backend,
-real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`.
-Canonical snapshot:
+real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`;
+`R-005` at `5bdcdbd`, `R-006` at `0afc94d`, `R-007` at `d4d75e9` are `Mitigated` with
+residual UX and grant/budget soak gaps per independent review (see evidence
+matrix). Canonical snapshot:
 [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json)
-(synchronized `7a4ee41`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`) validated by `bun .github/scripts/check-state.mjs`.
+(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
+`bun .github/scripts/check-state.mjs`.
 
 ## Start here
 
@@ -124,4 +130,7 @@ affected product or governance change. Current stage is **Pre-alpha / M1
 Hardening** (2026-08-29, `bitty` `be3bdb4`, 16 crates, soak ~808 headless tests;
 IPC/rich/resolver `Implemented` but not yet `Verified`; `R-004` remains `Open`
 at `bitty` `7a4ee41` baseline `de134ec` per 2026-08-31 clipboard audit with
-residual platform-backend, real-window UX, and `8192`-byte bound-scope limits).
+residual platform-backend, real-window UX, and `8192`-byte bound-scope limits;
+`R-005`/`R-006`/`R-007` `Mitigated` at `bitty` `d4d75e9` baseline `de134ec`
+previous `be3bdb4` (Issues #137/#138/#139) per RS-1..RS-7; overall product not
+`Verified`/`Compatible`/`Release-ready`).
