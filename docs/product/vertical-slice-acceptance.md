@@ -401,6 +401,14 @@ address the owning RFC's acceptance gates.
   [Roadmap: Now / Next / Later](../roadmap/now-next-later.md) horizon and
   [`TODO.md`](../../TODO.md) sequencing; that reconciliation belongs to
   CTX-0111, not to a side edit here, and is recorded as a follow-up dependency.
+- Cross-repo implementation link (CTX-0111, 2026-08-31, informational):
+  `bitty` `CTX-0095` `Implement real single-window terminal vertical slice` is
+  `in_progress` in the `bitty` repository as the corresponding implementation
+  slice for this acceptance plan. This link is informational only; it does not
+  claim `Implemented`, `Verified`, `Compatible`, or `Release-ready` status for
+  this draft, does not close any OQ, and does not authorize bypass of the
+  review gates above. Candidate vs accepted vs implemented remains distinct
+  until independent review and evidence are recorded.
 
 ## Verification and evidence (candidate)
 

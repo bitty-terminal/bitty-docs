@@ -501,7 +501,12 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
   cursor/scrollback/resize/selection/copy-paste, PB-1..PB-7, Tier 1/2, explicit
   exclusions). Until its independent review passes, no implementation slice may
   claim `v0.1` progress; CTX-0111 owns the follow-up synchronization of this
-  horizon and [`TODO.md`](../../TODO.md).
+  horizon and [`TODO.md`](../../TODO.md). Cross-repo informational link
+  (CTX-0111, 2026-08-31): `bitty` `CTX-0095`
+  `Implement real single-window terminal vertical slice` is `in_progress` in
+  the `bitty` repository; this roadmap does not claim implementation,
+  verification, or compatibility — candidate status remains until independent
+  review and evidence.
 - Keep every link in this document local and repository-portable; no local
   filesystem link appears in the root `README.md` or in any `AGENTS.md`.
   Validate with `just links` and `just metadata` before any PR.

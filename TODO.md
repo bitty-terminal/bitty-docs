@@ -177,5 +177,22 @@ Phase A.
       implementation task that would create or wire a registry; candidate
       remains draft until that review records `Accepted`.
 
+## Documentation synchronization — CTX-0111 sync (2026-08-31)
+
+- [x] Synchronize docs with vertical-slice decisions and evidence (CTX-0111,
+      depends on CTX-0109, informational cross-repo link to `bitty` `CTX-0095`
+      `Implement real single-window terminal vertical slice` `in_progress` in
+      `bitty` repo as of 2026-08-31; no implementation, verification, or
+      compatibility claims added; docs remain `Draft` candidate until
+      independent review; `just check` + `actionlint` + `act -n` pass required;
+      `docs/specifications/README.md` verified at 7 `Draft` specifications,
+      `TODO.md` Pre-alpha sections for CTX-0107/0108/0109/0110 remain
+      documentation-only, `docs/product/vision.md` and
+      `docs/roadmap/now-next-later.md` checked for stale `6 drafts` counts
+      or lifecycle wording — no stale counts found).
+- [ ] Obtain independent docs review for CTX-0111 sync before closing the
+      synchronization task; next sync will add links to every subsequent
+      `bitty` implementation and review milestone as they land.
+
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.
