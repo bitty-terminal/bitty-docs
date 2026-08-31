@@ -53,7 +53,7 @@ describe an empty directory as an initialized repository.
 bitty-terminal/                     # local umbrella, not a Git repo
 ├── .agents/                        # workspace-level agent skills/instructions
 ├── .trash/                         # recoverable removal target
-├── tmp/
+├── recordings/
 │   └── references/                 # persistent local research clones
 ├── AGENTS.md                       # cross-repository operating contract
 │
@@ -69,7 +69,7 @@ bitty-terminal/                     # local umbrella, not a Git repo
     └── <plugin-name>/              # one independent repo per plugin
 ```
 
-`tmp/` is inside the workspace and holds temporary material that must survive
+`recordings/` is inside the workspace and holds temporary material that must survive
 restarts. Do not place project research assets in the system `/tmp`. Prefer
 moving deleted or retired files into `.trash/`, where a human can review them
 before final cleanup.

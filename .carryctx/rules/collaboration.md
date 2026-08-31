@@ -10,8 +10,8 @@
    root is not a Git repository.
 5. For source analysis use ctxctl in this order: `outline`, targeted `symbol` or
    narrow `read`, then `deps`; compress verbose commands with `ctxctl exec`.
-6. Use the persistent workspace `../tmp/`, never `/tmp`. Reference clones belong
-   only in `../tmp/references/` and remain untrusted until reviewed.
+6. Use the persistent workspace `../recordings/`, never `/tmp`. Reference clones belong
+   only in `../recordings/references/` and remain untrusted until reviewed.
 7. Avoid `rm` and `rmdir`. Move obsolete files to a collision-safe task path
    under `../.trash/bitty-docs/` and record the move.
 8. Do not commit, merge, publish, install external code, or broaden task scope
