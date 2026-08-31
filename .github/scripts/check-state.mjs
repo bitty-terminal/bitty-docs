@@ -123,6 +123,8 @@ function validateSnapshot(data) {
     }
     // R-005/006/007 are Mitigated at d4d75e9 per CTX-0114 with RS-1..RS-7 evidence;
     // all other risks remain Open at M1 Hardening.
+    // Experimental implementations c0aadd2, 7e3104d, a8735d0 are Implemented,
+    // not Verified — they do not change risk state.
     const mitigatedExpected = new Set(["R-005", "R-006", "R-007"]);
     for (const risk of data.risks) {
       if (!["Open", "Mitigated", "Accepted"].includes(risk.state)) {
@@ -167,14 +169,16 @@ function validateSnapshot(data) {
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "d4d75e9") {
-    failures.push("sync_provenance.synchronized_revision must be d4d75e9");
+  if (!provenance || provenance.synchronized_revision !== "a8735d0") {
+    failures.push("sync_provenance.synchronized_revision must be a8735d0");
   }
-  if (!provenance || provenance.carryctx_task !== "CTX-0114") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0114");
+  if (!provenance || provenance.carryctx_task !== "CTX-0116") {
+    failures.push("sync_provenance.carryctx_task must be CTX-0116");
   }
-  if (!provenance || !provenance.github_issue?.includes("121")) {
-    failures.push("sync_provenance.github_issue must reference 121");
+  if (!provenance || !provenance.github_issue?.includes("bitty-docs/issues")) {
+    failures.push(
+      "sync_provenance.github_issue must reference bitty-docs/issues",
+    );
   }
 
   const ownership = data.ownership;
@@ -312,7 +316,7 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("d4d75e9") ||
+      !summary.includes("a8735d0") ||
       !summary.includes("Pre-alpha / M1 Hardening")
     ) {
       console.error("self-test: generated summary missing expected tokens");

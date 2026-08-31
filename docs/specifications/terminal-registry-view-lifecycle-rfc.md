@@ -11,13 +11,19 @@ sidebar_order: 26
 
 # TerminalRegistry and View Lifecycle Contract
 
-> Status: **draft** — candidate lifecycle contract for review. This document
-> proposes the TerminalRegistry and View lifecycle contract referenced by
-> OQ-005 (core workspace topology, ADR 0003) and OQ-007 (terminal state) but
-> does not close either question, does not promote any candidate predecessor
-> to accepted, and does not claim implemented, shipped, stable, or
-> compatibility-guaranteed behavior. Accepted behavior remains the existing
-> [Terminal State RFC](terminal-state-rfc.md),
+> Status: **draft** spec plus **Experimental Implementation** at
+> `bitty` `c0aadd2`/`a8735d0` — candidate lifecycle contract for review with
+> experimental code evidence (not `Accepted`/`Verified`). This document proposes
+> the TerminalRegistry and View lifecycle contract referenced by OQ-005 (core
+> workspace topology, ADR 0003) and OQ-007 (terminal state) but does not close
+> either question, does not promote any candidate predecessor to accepted, and
+> does not claim shipped, stable, or compatibility-guaranteed behavior beyond
+> experimental `c0aadd2`/`a8735d0`. Experimental code at `c0aadd2` (CTX-0095
+> PR #148, one registry per process, view-rect + DPI cell metrics -> PTY
+> `SIGWINCH`/ConPTY, debounce `64`, full damage) plus `a8735d0` (CTX-0098 PR #151,
+> `Runtime::write_replies` bounded `4`KiB relay) is `Implemented` (experimental)
+> not `Verified` — it provides reviewable evidence for the draft spec. Accepted
+> behavior remains the existing [Terminal State RFC](terminal-state-rfc.md),
 > [ADR 0003 Core Workspace Topology](../decisions/adrs/ADR-0003-core-workspace-topology.md),
 > [Compatibility Milestone RFC](compatibility-milestone-rfc.md),
 > [Platform tiers ADR](../decisions/adrs/ADR-0002-platform-support-tiers.md),
@@ -26,7 +32,9 @@ sidebar_order: 26
 > clipboard audit at `bitty` `7a4ee41` (CTX-0097). Candidate sections below are
 > explicitly marked **Candidate** and carry no compatibility promise until a
 > reviewed acceptance decision records them. The lifecycle for this document
-> is `Draft -> experimental review evidence -> Accepted -> normative`.
+> is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
+> (spec) and `Draft -> experimental review evidence -> Accepted -> normative`
+> (document); experimental code is distinct from `Draft` and `Verified`.
 
 ## Purpose and scope
 

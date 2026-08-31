@@ -11,14 +11,17 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `be3bdb4`, 16 crates,
-32 OQs `Accepted`, soak ~808 headless tests). `R-005`/`R-006`/`R-007` are
-`Mitigated` at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec` previous `be3bdb4`) per RS-1..RS-7, `R-004`
-remains `Open` at `7a4ee41` (audit 2026-08-31), all others remain `Open`
-because evidence is `Implemented` (IPC/rich/resolver at `be3bdb4`) but not yet
-`Verified` per the
+Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `a8735d0`, 16 crates,
+32 OQs `Accepted`, soak ~808 headless tests plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
+`R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
+(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec` previous `7e3104d`)
+per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), all others
+remain `Open` because evidence is `Implemented` (IPC/rich/resolver at `be3bdb4`,
+experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](../specifications/risk-evidence-rfc.md): lifecycle is
-`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
+`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
+(spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+(crate). Experimental code is review evidence, not `Verified`.
 A risk may move to `Mitigated` only when the linked control has focused tests,
 fuzz corpora, and an independent security-auditor review record with P0-AC
 traceability; `Accepted` requires an explicit, time-bounded CarryCtx decision
@@ -31,10 +34,12 @@ RFC). `R-004` was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) per
 real-window UX, and `8192`-byte bound-scope limits (see matrix row); `R-005`
 at `5bdcdbd`, `R-006` at `0afc94d`, `R-007` at `d4d75e9` are **Mitigated** with
 residual UX/grant/budget soak gaps (see matrix rows).
-Canonical snapshot: [`project-state.json`](../project/project-state.json)
-(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
-`bun .github/scripts/check-state.mjs`.
+Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
+(experimental) not `Verified`/`Compatible`. Canonical snapshot:
+[`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
+`2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004` `Open`,
+`R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
+`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim

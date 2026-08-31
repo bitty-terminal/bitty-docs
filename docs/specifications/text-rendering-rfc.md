@@ -11,17 +11,25 @@ sidebar_order: 14
 
 # Text and Rendering RFC
 
-> Status: **draft** — candidate text and rendering contract for CTX-0108. This
-> document defines a candidate segmentation, width, bidi, font-fallback,
-> shaping, atlas, DPI, and IME-overlay contract and reconciles it with accepted
-> Terminal State, Rich Presentation, Platform, Performance, and security
-> contracts. It does not describe shipped behavior, does not authorize
-> stable, normative, or compatibility-guaranteed interfaces, and does not weaken
-> any normative P0 control. The lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`. Candidate
-> prose is explicitly marked; accepted facts are cited separately. No OQ is
-> closed by this draft; closing any OQ requires a registered decision per the
-> [open-question register](../decisions/open-questions.md).
+> Status: **draft** spec plus **Experimental Implementation** at
+> `bitty` `c0aadd2` via `HeadlessRasterizer` — candidate text and rendering
+> contract for CTX-0108 with experimental code evidence (not
+> `Accepted`/`Verified`). This document defines a candidate segmentation,
+> width, bidi, font-fallback, shaping, atlas, DPI, and IME-overlay contract
+> and reconciles it with accepted Terminal State, Rich Presentation,
+> Platform, Performance, and security contracts. Experimental code at
+> `c0aadd2` (CTX-0095 PR #148, `HeadlessRasterizer` deterministic fake +
+> `char_cell_width` approximation, not user-ready typography) is `Implemented`
+> (experimental) not `Verified`; it provides reviewable evidence but does not
+> describe shipped user-facing typography, does not authorize stable normative
+> or compatibility-guaranteed interfaces, and does not weaken any normative
+> P0 control. The lifecycle is
+> `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
+> (spec) and `Draft -> experimental review evidence -> Accepted -> normative`
+> (document). Candidate prose is explicitly marked; accepted facts are cited
+> separately; experimental code is distinct from `Draft` and `Verified`.
+> No OQ is closed by this draft; closing any OQ requires a registered
+> decision per the [open-question register](../decisions/open-questions.md).
 
 ## Purpose and scope
 

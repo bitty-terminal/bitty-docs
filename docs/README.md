@@ -12,35 +12,39 @@ sidebar_order: 1
 # Documentation map
 
 This index is the entry point for Bitty's canonical design corpus. The corpus
-is **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `be3bdb4` 16 crates,
+is **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `a8735d0` 16 crates,
 32 OQs `Accepted`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
 `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
-`d4d75e9` baseline `de134ec` previous `be3bdb4` (`5bdcdbd`/`0afc94d`/`d4d75e9`,
-Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7, overall not
-`Verified`/`Compatible`/`Release-ready`): it records what the project intends,
-what it requires, what it is considering, what is `Implemented` (headless soak
-~808 tests) but not yet `Verified`, and what remains `Open`/`Mitigated`
-(including `R-004` with residual platform-backend, real-window UX, and
-`8192`-byte bound-scope limits). Lifecycle is
-`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
+`d4d75e9` baseline `de134ec` previous `7e3104d` (`5bdcdbd`/`0afc94d`/`d4d75e9`,
+Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7; experimental
+implementations `c0aadd2` (vertical slice, CTX-0095) + `7e3104d` (dogfood,
+CTX-0096) + `a8735d0` (PTY fix, CTX-0098) are `Implemented` (experimental) not
+`Verified`/`Compatible`/`Release-ready`, overall not `Verified`): it records
+what the project intends, what it requires, what it is considering, what is
+`Implemented` (headless soak ~808 tests plus experimental single-window slice)
+but not yet `Verified`, and what remains `Open`/`Mitigated` (including `R-004`
+with residual platform-backend, real-window UX, and `8192`-byte bound-scope
+limits) and `Experimental Implementation` (reviewable code at `a8735d0`). Lifecycle is
+`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
+(spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+(crate) per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
 Canonical snapshot: [`project-state.json`](project/project-state.json)
-(synchronized `d4d75e9`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`) validated by
-`bun .github/scripts/check-state.mjs`.
+(synchronized `a8735d0`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+`Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
+`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
 ## Product
 
-| Document                                                                                               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [Product vision](product/vision.md)                                                                    | Product intent, principles, scope, and success criteria.                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| [Panel Extensibility Vision](product/panel-vision.md)                                                  | Draft vision for Panel as a programmable terminal workspace container; candidate direction only.                                                                                                                                                                                                                                                                                                                                                                                     |
-| [Proposed Delivery Sequence](product/proposed-delivery-sequence.md)                                    | Draft record of candidate build order, deferral list, version ladder, and daemon staging from historical advisor input; not a roadmap.                                                                                                                                                                                                                                                                                                                                               |
-| [Release Ladder](product/release-ladder.md)                                                            | Pre-alpha / M1 Hardening mapping of the v0.1-v1.0 maturity ladder to the 16-crate workspace and `Implemented`/`Verified` lifecycle (2026-08-29, `be3bdb4`).                                                                                                                                                                                                                                                                                                                          |
-| [Single-Window Vertical Slice Acceptance Plan](product/vertical-slice-acceptance.md)                   | Draft candidate acceptance contract for the first real single-window terminal vertical slice: one process/window/workspace/terminal, end-to-end PTY/VT/state/render/input path, platform and PB-1..PB-7 expectations, and explicit exclusions (draft, CTX-0109, depends on CTX-0107/0108).                                                                                                                                                                                           |
-| [TerminalRegistry and View Lifecycle Contract](specifications/terminal-registry-view-lifecycle-rfc.md) | Draft candidate lifecycle contract for TerminalRegistry ownership of TerminalId vs ViewId separation, RuntimeId/PersistentId, generation, view attachment/detachment, focus, layout, visibility, persistence, reattachment vs recreation, bounded resources, and failure semantics with explicit multi-window and daemon exclusions (draft, CTX-0110, depends on CTX-0109, reconciles with Terminal State, Workspace Compositor, Input/Pointer, Text/Rendering, and Vertical Slice). |
+| Document                                                                                               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Product vision](product/vision.md)                                                                    | Product intent, principles, scope, and success criteria.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| [Panel Extensibility Vision](product/panel-vision.md)                                                  | Draft vision for Panel as a programmable terminal workspace container; candidate direction only.                                                                                                                                                                                                                                                                                                                                                                                              |
+| [Proposed Delivery Sequence](product/proposed-delivery-sequence.md)                                    | Draft record of candidate build order, deferral list, version ladder, and daemon staging from historical advisor input; not a roadmap.                                                                                                                                                                                                                                                                                                                                                        |
+| [Release Ladder](product/release-ladder.md)                                                            | Pre-alpha / M1 Hardening mapping of the v0.1-v1.0 maturity ladder to the 16-crate workspace and `Implemented`/`Verified` lifecycle (2026-08-29, `be3bdb4`).                                                                                                                                                                                                                                                                                                                                   |
+| [Single-Window Vertical Slice Acceptance Plan](product/vertical-slice-acceptance.md)                   | Draft spec (CTX-0109) plus Experimental Implementation (CTX-0095 `c0aadd2` + CTX-0098 `a8735d0`, `Implemented` not `Verified`, PR #148/#151, bounded PTY reply loop, Kitty 7727 colon params): one process/window/workspace/terminal, end-to-end PTY/VT/state/render/input path, platform and PB-1..PB-7 expectations, and explicit exclusions; spec remains `Draft` until accepted.                                                                                                          |
+| [TerminalRegistry and View Lifecycle Contract](specifications/terminal-registry-view-lifecycle-rfc.md) | Draft spec (CTX-0110) plus Experimental Implementation (part of `c0aadd2`/`a8735d0`, `Implemented` not `Verified`, view-rect + DPI -> PTY resize, bounded `write_replies`): ownership of TerminalId vs ViewId separation, RuntimeId/PersistentId, generation, view attachment/detachment, focus, layout, visibility, persistence, reattachment vs recreation, bounded resources, and failure semantics with explicit multi-window and daemon exclusions; spec remains `Draft` until accepted. |
 
 ## User and contributor documentation
 
@@ -116,19 +120,30 @@ precedence over source summaries and non-security design suggestions.
 ## Interpretation rules
 
 Use the following lifecycle labels consistently
-(`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`):
+(`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
+spec, `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
+crate):
 
-| Label                                 | Meaning                                                                                                                                                                  |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Normative requirement                 | A future implementation gate. Mechanism details may remain open.                                                                                                         |
-| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. All 32 OQs (OQ-001..032) are `Accepted` as of 2026-08-29.                                   |
-| Candidate                             | A proposal to investigate, compare, or prototype.                                                                                                                        |
-| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`).                                                         |
-| Implemented                           | Demonstrated by code, tests, or release evidence in the owning repository (`bitty` `be3bdb4`, 16 crates, soak ~808 headless tests `Implemented` but not yet `Verified`). |
-| Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed at M1 Hardening.                            |
+| Label                                 | Meaning                                                                                                                                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Normative requirement                 | A future implementation gate. Mechanism details may remain open.                                                                                                                                                         |
+| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. All 32 OQs (OQ-001..032) are `Accepted` as of 2026-08-29.                                                                                   |
+| Candidate / Draft                     | A proposal to investigate, compare, or prototype. Spec remains `Draft` until reviewed `Accepted`; 7 `Draft` specs exist (see `specifications/README.md` prioritization).                                                 |
+| Experimental Implementation           | Code exists at `c0aadd2`/`7e3104d`/`a8735d0` (`Implemented` experimental, not `Verified`): single-window slice, PTY reply loop, dogfood plugins — reviewable evidence distinct from `Draft` (no code) and `Accepted`.    |
+| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated` at `d4d75e9`.              |
+| Implemented                           | Demonstrated by code, tests, or release evidence in the owning repository (`bitty` `a8735d0`, 16 crates, soak ~808 headless tests plus experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` but not yet `Verified`). |
+| Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed at M1 Hardening; experimental code does not imply `Verified`.                               |
 
-At M1 Hardening (2026-08-29, `be3bdb4`), some product behavior is `Implemented`
-(`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified` requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) with `23` `suspicious_paste` + `13` `paste` unit + `4` remediation tests and remains `Open` (not `Mitigated`/`Verified`) due to residual platform-backend, real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007` at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7, overall product remains not `Verified`/`Compatible`/`Release-ready`.
+At M1 Hardening (2026-08-29, `a8735d0`, baseline `de134ec` previous `7e3104d`),
+some product behavior is `Implemented` (`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package` plus experimental
+`c0aadd2`/`7e3104d`/`a8735d0`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified`
+requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41`
+(baseline `de134ec`) with `23` `suspicious_paste` + `13` `paste` unit + `4`
+remediation tests and remains `Open` (not `Mitigated`/`Verified`) due to residual
+platform-backend, real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
+at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) are `Mitigated`
+per RS-1..RS-7; experimental implementations `c0aadd2`/`7e3104d`/`a8735d0` are `Implemented` not
+`Verified`/`Compatible`, overall product remains not `Verified`/`Compatible`/`Release-ready`.
 
 ## Language, metadata, and publication
 

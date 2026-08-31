@@ -11,20 +11,28 @@ sidebar_order: 23
 
 # Single-Window Vertical Slice Acceptance Plan
 
-> Status: **draft** — candidate acceptance contract for the first real
-> single-window terminal vertical slice. This document defines candidate
-> scope, end-to-end path, acceptance criteria, verification, platform and
-> performance expectations, and explicit exclusions for review. It does
-> **not** describe shipped, stable, or compatibility-guaranteed behavior,
-> does **not** authorize product code or slice implementation, and does **not**
-> close any open question. The lifecycle is
-> `Draft -> experimental review evidence -> Accepted -> normative`; only
-> `Accepted` or `normative` documents authorize shipped behavior.
-> Candidate sections below are explicitly marked **Candidate**. No OQ is closed
-> by this draft; closing any OQ requires a registered decision per the
-> [open-question register](../decisions/open-questions.md). Candidate slice
-> implementation must not begin until independent architecture, security, and
-> performance review is recorded and `just check`, `actionlint`, and
+> Status: **draft** spec plus **Experimental Implementation** evidence —
+> candidate acceptance contract for the first real single-window terminal
+> vertical slice. This document defines candidate scope, end-to-end path,
+> acceptance criteria, verification, platform and performance expectations,
+> and explicit exclusions for review. Spec status remains `Draft` (not
+> `Accepted`/`Verified`); experimental code at `bitty` `c0aadd2` (CTX-0095
+> PR #148, `+1045 -87` 12 files, `winit` 0.30/`wgpu` 25.0/`crossfont` 0.9)
+> plus `a8735d0` (CTX-0098 PR #151, bounded `write_replies` `4`KiB relay +
+> Kitty `7727` progressive colon params) is `Experimental Implementation`
+> (implemented, reviewable, not `Verified`/`Compatible`) — it does **not**
+> describe shipped, stable, or compatibility-guaranteed behavior and does
+> **not** close any open question. The lifecycle is
+> `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
+> (spec) and `Draft -> experimental review evidence -> Accepted -> normative`
+> (document); only `Accepted` or `normative` documents authorize shipped
+> behavior. Candidate sections below are explicitly marked **Candidate**;
+> experimental evidence is marked **Experimental Implementation**. No OQ is
+> closed by this draft; closing any OQ requires a registered decision per the
+> [open-question register](../decisions/open-questions.md). This spec's
+> experimental implementation was reviewed only as code evidence, not as
+> spec acceptance; `Accepted` still requires independent architecture,
+> security, and performance review and `just check`, `actionlint`, and
 > `act -n -W .github/workflows/ci.yml` pass on the same revision.
 
 ## Purpose and scope
@@ -401,14 +409,20 @@ address the owning RFC's acceptance gates.
   [Roadmap: Now / Next / Later](../roadmap/now-next-later.md) horizon and
   [`TODO.md`](../../TODO.md) sequencing; that reconciliation belongs to
   CTX-0111, not to a side edit here, and is recorded as a follow-up dependency.
-- Cross-repo implementation link (CTX-0111, 2026-08-31, informational):
-  `bitty` `CTX-0095` `Implement real single-window terminal vertical slice` is
-  `in_progress` in the `bitty` repository as the corresponding implementation
-  slice for this acceptance plan. This link is informational only; it does not
-  claim `Implemented`, `Verified`, `Compatible`, or `Release-ready` status for
-  this draft, does not close any OQ, and does not authorize bypass of the
-  review gates above. Candidate vs accepted vs implemented remains distinct
-  until independent review and evidence are recorded.
+- Cross-repo implementation link (CTX-0116, 2026-08-31, experimental):
+  `bitty` `CTX-0095` `c0aadd2` `feat(runtime): implement real single-window vertical slice`
+  (PR #148, `+1045 -87`) plus `CTX-0098` `a8735d0` `fix(runtime): close PTY reply loop and Kitty progressive params`
+  (PR #151, `+408`, `Runtime::write_replies` bounded `4`KiB, `pty_reply` tests, `7727:1:2:5 -> 19`)
+  are `Implemented` (experimental) — code exists as reviewable evidence at
+  `bitty` `c0aadd2`/`a8735d0` but remains not `Accepted`/`Verified`/`Compatible`.
+  `CTX-0096` `7e3104d` dogfood is separate experimental plugin evidence. This
+  link is informational only; it does not claim `Verified`, `Compatible`, or
+  `Release-ready` status for this draft, does not close any OQ, and does not
+  authorize bypass of the review gates above. Candidate vs experimental vs
+  accepted vs implemented vs verified remains distinct until independent review
+  and evidence are recorded per `Draft -> Experimental Implementation -> Accepted -> Verified`.
+- CTX-0116 reconciled this plan into [Roadmap: Now / Next / Later](../roadmap/now-next-later.md)
+  and [`TODO.md`](../../TODO.md) as experimental evidence; spec remains `Draft`.
 
 ## Verification and evidence (candidate)
 
@@ -540,9 +554,11 @@ as its accepted design constraint.
   flat frontmatter with no arrays or maps; repository hygiene via `just check`.
 - Canonical sync for the broader program remains
   [`docs/project/project-state.json`](../project/project-state.json)
-  validated by `bun .github/scripts/check-state.mjs`; when the implementing
-  `bitty` slice lands, add its revision as evidence there via a synchronized
-  state task (not via this slice doc alone).
+  validated by `bun .github/scripts/check-state.mjs` (synchronized `a8735d0`,
+  chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`, `R-004` `Open`, `R-005`/`R-006`/`R-007`
+  `Mitigated`, experimental not `Verified`); `c0aadd2`/`a8735d0` were added via
+  CTX-0116 synchronized state task (not via this slice doc alone); spec
+  lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified`.
 
 ## References
 
