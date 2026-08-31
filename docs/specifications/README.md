@@ -38,6 +38,7 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md) | OQ-011, OQ-012, OQ-013 (provider follow-up) | Draft    |
 | [Workspace Compositor Specification](workspace-compositor.md)          | —                                           | Draft    |
 | [Status System Specification](status-system.md)                        | —                                           | Draft    |
+| [Input and Pointer Contract](input-pointer-rfc.md)                     | —                                           | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence:
 

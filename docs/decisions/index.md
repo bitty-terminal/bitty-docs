@@ -140,6 +140,7 @@ the historical conversation:
   risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and
   review gates for closing risks without weakening controls for
   [OQ-025](open-questions.md); frontmatter `accepted` on 2026-08-29.)
+- Input and pointer contract. (Draft: [Input and Pointer Contract](../specifications/input-pointer-rfc.md) — candidate keyboard, mouse, wheel, gesture, IME, selection, and PTY encoding contract with Shift override, pixel-scroll accumulation, platform adapter ownership, and hot-path exclusion; reconciles with Terminal State, Platform, Plugin Platform, Clipboard R-004 at 7a4ee41, and Performance; frontmatter `draft` on 2026-08-31.)
 
 Each candidate is represented by an item in the
 [open-question register](open-questions.md). Acceptance requires an ADR, RFC,
