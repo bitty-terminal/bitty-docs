@@ -181,7 +181,7 @@ check` 0). `bitty` `a8735d0` closes PTY reply loop (`Runtime::write_replies`
       plan and its experimental evidence before claiming `Accepted` or
       `Verified`; CTX-0110/0111/0116 block on this decision, not on drafting.
 
-## Candidate registry and view lifecycle — Draft spec + Experimental Implementation (CTX-0110 draft, c0aadd2/a8735d0)
+## Candidate registry and view lifecycle — Accepted spec + Experimental Implementation (CTX-0110 draft, CTX-0117 accepted, c0aadd2/a8735d0)
 
 - [x] Draft TerminalRegistry and View lifecycle contract
       ([TerminalRegistry and View Lifecycle Contract](docs/specifications/terminal-registry-view-lifecycle-rfc.md),
@@ -192,20 +192,23 @@ check` 0). `bitty` `a8735d0` closes PTY reply loop (`Runtime::write_replies`
       and detachment, focus, layout, visibility, persistence, reattachment vs
       recreation, bounded resources, failure semantics, and explicit exclusions
       for multi-window, daemon, remote UI, and Panel Runtime/Event Bus; spec
-      remains `Draft` until independent review records `Accepted`.
+      was `Draft` until CTX-0117 acceptance.
 - [x] Experimental Implementation for registry/view routing (part of `c0aadd2`
       and refined at `a8735d0`, `Implemented` not `Verified`): view rectangle
       plus DPI-aware cell metrics `floor(rect / cell)` -> PTY `SIGWINCH`/ConPTY
       resize, debounce `64` rects/tick, full-grid damage + generation, cursor
       integrity revalidation, `Runtime::write_replies` bounded reply path owned
       by registry; one registry per process per `c0aadd2`. Implementation is
-      experimental evidence only; `Accepted`/`Verified` require independent
-      architecture/security review per `Draft -> Experimental Implementation`
-      lifecycle.
-- [ ] Obtain independent architecture/security review and acceptance decision
+      experimental evidence only; `Verified` requires independent
+      architecture/security review per `Draft -> Experimental Implementation
+-> Accepted -> Verified` lifecycle.
+- [x] Independent architecture/security review and acceptance decision
       for the registry and view lifecycle draft plus its experimental evidence
-      before claiming `Accepted` or `Verified`; candidate remains `Draft` spec
-      with experimental code until that review records `Accepted`.
+      (CTX-0117, 2026-08-31, independent docs-reviewer, `just check` +
+      `actionlint` + `act -n` + `bun .github/scripts/check-state.mjs` pass, no
+      load-bearing defects) — spec now `Accepted` plus `Experimental
+Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
+      lifecycle `Draft -> Experimental Implementation -> Accepted` recorded.
 
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
 
