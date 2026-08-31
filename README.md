@@ -2,9 +2,12 @@
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
 terminal project. The project is currently in **Pre-alpha / M1 Hardening**
-(2026-08-29, `bitty` `be3bdb4`): these documents describe intent, accepted
-working directions (32 OQs Accepted: OQ-001..032), normative requirements, and
-the implementation lifecycle
+(2026-08-29, `bitty` `be3bdb4`; `R-004` clipboard re-audited at `bitty`
+`7a4ee41` baseline `de134ec` per
+[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
+(2026-08-31, CTX-0097) and remains `Open`): these documents describe intent,
+accepted working directions (32 OQs Accepted: OQ-001..032), normative
+requirements, and the implementation lifecycle
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`.
 The `bitty` workspace is now 16 crates (`vt`, `pty`, `platform`, `config`,
 `package`, `lua`, `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`,
@@ -12,6 +15,9 @@ The `bitty` workspace is now 16 crates (`vt`, `pty`, `platform`, `config`,
 tests soak ~808) but not yet independently verified; `Verified` requires
 security-auditor and P0-AC evidence per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md).
+`R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
+remediation, baseline `19`) remains `Open` with residual platform-backend,
+real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`.
 
 ## Start here
 
@@ -112,4 +118,6 @@ pull request, independent review plus CI, merge, and final task checkpoint.
 Documentation synchronization is part of the definition of done for every
 affected product or governance change. Current stage is **Pre-alpha / M1
 Hardening** (2026-08-29, `bitty` `be3bdb4`, 16 crates, soak ~808 headless tests;
-IPC/rich/resolver `Implemented` but not yet `Verified`).
+IPC/rich/resolver `Implemented` but not yet `Verified`; `R-004` remains `Open`
+at `bitty` `7a4ee41` baseline `de134ec` per 2026-08-31 clipboard audit with
+residual platform-backend, real-window UX, and `8192`-byte bound-scope limits).
