@@ -232,6 +232,11 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [x] Survey Panel Runtime/Event Bus ([Pre-Study](docs/specifications/panel-runtime-pre-study.md), `Draft` no impl, CTX-0119 depends CTX-0118): lifecycle `PanelId` vs `ViewId`/`TerminalId` with generation, command `owner.name:command`, overlay `4+1`, focus MRU no Lua hot path, bus `owner.name:topic` `8 KiB`/`32`/`64`/`1024`/`8192` `DropOldest`, isolation `panel.*`; reconciled with `6f30c2f`/`c3a2928`; bounded PR-1..PR-12, typed errors, exclusions deferred; `sidebar_order 27`, indexes updated.
 - [ ] Independent docs-reviewer review; research until future Panel RFC.
 
+## Browser and Agent Panel Integration — Draft research pre-study (CTX-0120, P2)
+
+- [x] Survey Browser and Agent via Panel Runtime ([Pre-Study](docs/specifications/browser-agent-pre-study.md), `Draft` no impl, CTX-0120 depends CTX-0119): WebView via `View Browser` plus `Panel` host, MCP via Tool Bus `256 KiB` `8 KiB` `32` `64`/`1024`/`8192` `DropOldest`, Agent memory `32 KiB` `64`/`2 MiB` `32`/`64 KiB`, isolation `browser.*` `agent.*` `mcp.*` plus first-party matrix `5` bundled-disabled plus `browser` `agent` candidate-not-bundled; reconciled with Panel Runtime `9032d1e` / requested `05e8803` PR-1..PR-12 and Project plugin `bitty-terminal.project`; bounded BA-1..BA-12, typed failure, exclusions deferred; `sidebar_order 28`, indexes updated.
+- [ ] Independent docs-reviewer review; research until future Browser and Agent RFC.
+
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
 
 - [x] Dogfood public Plugin API via accepted v1 bundled-disabled set
