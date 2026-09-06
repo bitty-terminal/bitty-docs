@@ -15,9 +15,10 @@ This directory holds durable, reviewed findings from audits, investigations,
 compatibility work, and validation. CarryCtx progress remains the working
 record; only findings that need long-term project visibility belong here.
 
-| Finding                                                                                          | Status | Severity | Disposition                                    |
-| ------------------------------------------------------------------------------------------------ | ------ | -------- | ---------------------------------------------- |
-| [FIND-0001](FIND-0001-astro-typescript-7-check-compatibility.md) Astro and TypeScript 7 checking | Open   | Moderate | Retain TypeScript 7 and defer full diagnostics |
+| Finding                                                                                                       | Status | Severity | Disposition                                                                               |
+| ------------------------------------------------------------------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------------- |
+| [FIND-0001](FIND-0001-astro-typescript-7-check-compatibility.md) Astro and TypeScript 7 checking              | Open   | Moderate | Retain TypeScript 7 and defer full diagnostics                                            |
+| [FIND-0002](FIND-0002-comprehensive-code-review-ledger.md) Comprehensive code review defects and enhancements | Open   | High     | Record defects, track 14 open items under bitty CTX-0197..0210, 2 fixed in 0160/0158/0177 |
 
 ## Admission criteria
 

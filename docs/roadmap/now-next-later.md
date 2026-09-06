@@ -127,12 +127,19 @@ merged after `be3bdb4`, `7a4ee41`/`de134ec` for clipboard `R-004` which
 remains `Open` per the 2026-08-31 audit, `d4d75e9`/`de134ec`/`7e3104d` for
 `R-005`/`R-006`/`R-007` at `5bdcdbd`/`0afc94d`/`d4d75e9` which are `Mitigated`,
 and `c0aadd2`/`7e3104d`/`a8735d0` chain for experimental slice/dogfood/PTY fix
-which are `Implemented` (experimental) not `Verified`). This document does not
+which are `Implemented` (experimental) not `Verified`, plus the post-0189
+`bitty` origin `main` `7dbe4e2` chain (`b795f90` PR #328 verify harness,
+`8af138e` PR #330 Windows instance discovery, `144ee1c` PR #332 frame
+capture plus input synthesis, `7dbe4e2` PR #334 live profiling) which is
+`Implemented` not `Verified`, plus Amendment A1 (`bitty-docs` PR #145,
+`CTX-0124`, proposed design input for `CTX-0188`/`CTX-0189`, not accepted).
+This document does not
 claim any additional `bitty` implementation beyond those commits and does not
 describe future `bitty` code as already implemented, `Verified`, `Compatible`,
 or `Release-ready`; `R-004` remains `Open`, `R-005`/`R-006`/`R-007` are
 `Mitigated` (not `Verified`), experimental `c0aadd2`/`7e3104d`/`a8735d0` are not
-`Accepted`/`Verified`.
+`Accepted`/`Verified`, post-0189 `7dbe4e2` chain is not `Verified`, and
+Amendment A1 authorizes no implementation.
 
 ## Now — Verified and Mitigated hardening with attributable evidence
 
@@ -353,6 +360,12 @@ Verified at 8e6c8a9` (the slice itself remains `Implemented` not yet
   [P0-AC-021](../security/p0-acceptance-criteria.md#ipc-mcp-agents) through
   [P0-AC-026](../security/p0-acceptance-criteria.md#sensitive-data-handling) and remains
   `Open` at `be3bdb4` per the [Evidence Matrix R-011 through R-014](../security/evidence-matrix.md).
+  Post-0189 `Implemented`-only additions at `bitty` `7dbe4e2` (`b795f90` PR
+  #328 verify harness, `8af138e` PR #330 Windows discovery, `144ee1c` PR
+  #332 `synthesizeInput`/`captureFrame`, `7dbe4e2` PR #334 profiling
+  getters and streams; design input Amendment A1 `bitty-docs` PR #145
+  proposed not accepted) do not move `R-014`; `R-014` stays `Open` and
+  `R-022` stays `Open` with no new merged evidence.
 - **Dependencies:** Isolation budgets (R-007 Mitigated at `d4d75e9`), DevTools RFC scoping
   ([OQ-019](../decisions/open-questions.md) `Accepted` 2026-08-28), and the
   IPC and Agent RFC contract; candidate spine places IPC and Agent after
