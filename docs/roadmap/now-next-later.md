@@ -135,8 +135,9 @@ capture plus input synthesis, `7dbe4e2` PR #334 live profiling) which is
 `bitty` origin `main` `1fc6294` (`ec95c5c` PR #336 through `0cb244d` PR #364
 plus `0e65f85` PR #366, all `Implemented` not `Verified`; see the
 [FIND-0002 ledger](../findings/FIND-0002-comprehensive-code-review-ledger.md)),
-plus Amendment A1 (`bitty-docs` PR #145,
-`CTX-0124`, proposed design input for `CTX-0188`/`CTX-0189`, not accepted).
+plus Amendment A1 (`bitty-docs` PR #145, `CTX-0124` design, implemented in
+`bitty` `b795f90`/`144ee1c`/`7dbe4e2`, Implemented-only, acceptance open,
+not Accepted or Verified).
 This document does not
 claim any additional `bitty` implementation beyond those commits and does not
 describe future `bitty` code as already implemented, `Verified`, `Compatible`,
@@ -144,7 +145,8 @@ or `Release-ready`; `R-004` remains `Open`, `R-005`/`R-006`/`R-007` are
 `Mitigated` (not `Verified`), experimental `c0aadd2`/`7e3104d`/`a8735d0` are not
 `Accepted`/`Verified`, post-0189 `7dbe4e2` chain is not `Verified`, the
 FIND-0002 wave through `1fc6294` is not `Verified`, and
-Amendment A1 authorizes no implementation.
+Amendment A1 authorizes no additional implementation beyond the merged
+`b795f90`/`144ee1c`/`7dbe4e2` commits and moves no acceptance.
 
 ## Now — Verified and Mitigated hardening with attributable evidence
 
@@ -366,12 +368,15 @@ Verified at 8e6c8a9` (the slice itself remains `Implemented` not yet
   [P0-AC-026](../security/p0-acceptance-criteria.md#sensitive-data-handling) and remains
   `Open` at `be3bdb4` per the [Evidence Matrix R-011 through R-014](../security/evidence-matrix.md).
   Post-0189 `Implemented`-only additions at `bitty` `7dbe4e2` (`b795f90` PR
-  #328 verify harness, `8af138e` PR #330 Windows discovery, `144ee1c` PR
-  #332 `synthesizeInput`/`captureFrame`, `7dbe4e2` PR #334 profiling
-  getters and streams; design input Amendment A1 `bitty-docs` PR #145
-  proposed not accepted) plus the FIND-0002 remediation wave through `bitty`
+  #328 verify harness, `8af138e` PR #330 Windows named-pipe discovery,
+  `144ee1c` PR #332 `synthesizeInput`/`captureFrame`, `7dbe4e2` PR #334
+  profiling getters and streams; Amendment A1 `bitty-docs` PR #145 design
+  plus `bitty` CTX-0183/CTX-0188/CTX-0189 implementation, Implemented-only,
+  acceptance open) plus the FIND-0002 remediation wave through `bitty`
   `1fc6294` (`ec95c5c` PR #336 through `0cb244d` PR #364 plus `0e65f85` PR
-  #366 baseline regen, all `Implemented` not `Verified`; see the
+  #366 baseline regen plus `fd8a71a` PR #354 singular `recording/`
+  comparator fix plus `2f69725` PR #372 CI test-heavy timeouts 15m to 30m,
+  all `Implemented` not `Verified`; see the
   [FIND-0002 ledger](../findings/FIND-0002-comprehensive-code-review-ledger.md))
   do not move `R-014`; `R-014` stays `Open` and
   `R-022` stays `Open` (new `Implemented`-only prune/TOFU evidence, no
