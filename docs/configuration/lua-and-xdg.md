@@ -335,6 +335,48 @@ Open: whether the CLI appearance flag set grows (for example spacing or
 padding flags); the wizard prompt UX and starter-content evolution; and the
 exact tick-line format, which remains a diagnostic, not a stable interface.
 
+## Scrollbar overlay (Draft, pending `bitty` #405)
+
+Status: **Draft proposal, not shipped** (read-only from `bitty`
+`origin/carryctx/ctx-0181`, commit `f1caedf`, CTX-0181, closes `bitty` #281;
+NOT merged to `bitty` origin `main` as of `7048139`, verified read-only via
+`merge-base --is-ancestor`). This section documents the proposed contract
+only. It authorizes no implementation, changes no normative contract above,
+and weakens no security control. The status flips to shipped defaults only
+after #405 merges, under a follow-up sync task.
+
+Proposed modes (`scrollbar.mode`, default `"hidden"`):
+
+- `"hidden"` — never painted; zero pixels, zero geometry delta, so existing
+  layouts stay geometry-neutral.
+- `"always"` — overlay thumb painted whenever scrollback exists.
+- `"auto"` — thumb revealed on mouse proximity, hover, or drag only.
+
+Proposed geometry: the thumb is painted in the present layer, never into
+grid truth. Its geometry derives from scrollback length plus viewport
+offset; thumb width is logical pixels scaled by the live DPI factor (like
+`window.padding`), default `8`, range `1`–`32` (wider values fail closed).
+Engagement (proximity, hover, drag) reuses the existing mouse path, and
+drag scrolls through `View::scroll_by`. Hit-testing accounts for panel gaps
+(CTX-0177) and padding (CTX-0223); releases over the thumb skip hyperlink
+activation.
+
+Proposed config contract (candidate Lua surface):
+
+```lua
+-- Candidate schema (CTX-0181, unmerged).
+return {
+    scrollbar = { mode = "auto", width = 8 },
+}
+```
+
+The `scrollbar` table deep-merges while `scrollbar.mode` and
+`scrollbar.width` are scalar-replace with per-field source attribution
+(`cli`/`file`/`profile`/`default`); system policy may pin either field as
+non-overridable. Unknown modes and out-of-range widths fail closed (exit
+2), never warn-ignored. Open: exact proximity radius, hover timing, and
+whether a CLI flag set grows to cover `scrollbar.*`.
+
 ## Starters and distributions
 
 Status: **accepted direction.**

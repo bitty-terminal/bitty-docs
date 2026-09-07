@@ -1,8 +1,8 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
 This list sequences project-definition and hardening work at the **Pre-alpha /
-Engineering Milestones M1-M8** stage (2026-09-07, `bitty` `1835175` previous
-`e8a7b76` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
+Engineering Milestones M1-M8** stage (2026-09-08, `bitty` `7048139` previous
+`1835175` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
 experimental slice `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` not `Verified`;
 `R-004` re-audited at `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -18,11 +18,12 @@ Canonical choices live in the [open-question register](docs/decisions/open-quest
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate maturity); experimental code is review evidence, not acceptance.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `1835175`, `2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+(synchronized `7048139`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
-Phase A (CTX-0116) and the post-0223 reconciliation (CTX-0130).
+Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), and the
+semantic-terminal plus scrollbar sync (CTX-0131).
 
 ## Documentation foundation
 
@@ -254,17 +255,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Documentation synchronization — CTX-0111 sync (2026-08-31)
 
-- [x] Synchronize docs with vertical-slice decisions and evidence (CTX-0111,
-      depends on CTX-0109, informational cross-repo link to `bitty` `CTX-0095`
-      `Implement real single-window terminal vertical slice` `in_progress` in
-      `bitty` repo as of 2026-08-31; no implementation, verification, or
-      compatibility claims added; docs remain `Draft` candidate until
-      independent review; `just check` + `actionlint` + `act -n` pass required;
-      `docs/specifications/README.md` verified at 7 `Draft` specifications,
-      `TODO.md` Pre-alpha sections for CTX-0107/0108/0109/0110 remain
-      documentation-only, `docs/product/vision.md` and
-      `docs/roadmap/now-next-later.md` checked for stale `6 drafts` counts
-      or lifecycle wording — no stale counts found).
+- [x] Synchronize docs with vertical-slice decisions and evidence (CTX-0111, depends on CTX-0109, cross-repo link to `bitty` CTX-0095 `in_progress` as of 2026-08-31; no implementation/verification/compatibility claims; docs stay `Draft` candidate until independent review; `just check` + `actionlint` + `act -n` pass; specs index verified at 7 `Draft`s, CTX-0107/0108/0109/0110 sections documentation-only, no stale `6 drafts` counts).
 - [x] Independent docs review for CTX-0111 sync recorded; closed per PR #134.
 
 ## Documentation synchronization — CTX-0116 sync (2026-08-31)
@@ -295,6 +286,10 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 ## Documentation synchronization — CTX-0130 sync (2026-09-07)
 
 - [x] Reconcile post-0223 state (CTX-0130, `bitty` `1835175` previous `e8a7b76`, 18 crates, release `v0.0.19`): refresh `project-state.json` with verified-only subsystem rows, adopt M1-M8 milestone frame, retire the `a8735d0` baseline from headers, add Draft semantic-terminal RFC; no risk-state or normative changes.
+
+## Documentation synchronization — CTX-0131 sync (2026-09-08)
+
+- [x] Sync scrollbar config plus semantic-terminal P1-P5 plus snapshot refresh (CTX-0131, `bitty` `7048139` previous `1835175`, 18 crates, release `v0.0.19`): document `scrollbar.*` modes/geometry/config-contract as Draft pending `bitty` #405 (`f1caedf`, unmerged); flip semantic-terminal P1-P2 (`4ccb771` #390), P3 (`064486b` #392), P4-P5 (`ab1f7ab` #394) to Implemented-only with SHAs, P6 plus OQ-S1..S7 stay open; refresh `project-state.json` with the new-merges wave (sRGB `b4b4e30`, splitView D1 `77bd6c5`, repaint `5a535ee`, paste chord `88c0ead`, runtime split `61b655f`, chrome-keys `3384903`, DA per-pane `7048139`, ctl denials `99f5b1d`) and scrollbar-pending plus composer/hints/blocks subsystem rows; no risk-state or normative changes.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.
