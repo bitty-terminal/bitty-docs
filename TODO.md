@@ -1,32 +1,28 @@
-# Pre-alpha / M1 Hardening TODO
+# Pre-alpha / Engineering Milestones M1-M8 TODO
 
 This list sequences project-definition and hardening work at the **Pre-alpha /
-M1 Hardening** stage (2026-08-29, `bitty` `a8735d0`, 16 crates, 32 OQs
-Accepted, soak ~808 headless tests; IPC/rich/resolver `Implemented`
-(experimental) at `a8735d0` but not yet `Verified`; experimental vertical
-slice `c0aadd2` (CTX-0095) + plugin dogfood `7e3104d` (CTX-0096) + PTY reply
-fix `a8735d0` (CTX-0098) are `Experimental Implementation` (implemented,
-reviewable, not `Verified`/`Compatible`); `R-004` clipboard re-audited at
-`bitty` `7a4ee41` baseline `de134ec` per
+Engineering Milestones M1-M8** stage (2026-09-07, `bitty` `1835175` previous
+`e8a7b76` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
+experimental slice `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` not `Verified`;
+`R-004` re-audited at `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) with `23` `suspicious_paste` + `13` `paste` unit + `4`
-remediation (baseline `19`) and remains `Open` with residual platform-backend,
-real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
-`Mitigated` at `bitty` `d4d75e9` baseline `de134ec` previous `7e3104d`
-(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) per RS-1..RS-7, overall not
-`Verified`/`Compatible`/`Release-ready`. `be3bdb4` remains the M1 Hardening
-baseline; chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0` is experimental.
+(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` `Mitigated`
+at `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) per
+RS-1..RS-7, overall not `Verified`/`Compatible`/`Release-ready`). The M1-M8
+milestone frame and subsystem assessments live in the
+[roadmap](docs/roadmap/now-next-later.md) and
+[`docs/project/project-state.json`](docs/project/project-state.json).
 Canonical choices live in the [open-question register](docs/decisions/open-questions.md)
 (OQ-001..032 all `Accepted` per CTX-0083); lifecycle is
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate maturity); experimental code is review evidence, not acceptance.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `a8735d0`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+(synchronized `1835175`, `2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
-Phase A.
+Phase A (CTX-0116) and the post-0223 reconciliation (CTX-0130).
 
 ## Documentation foundation
 
@@ -64,7 +60,8 @@ Phase A.
       milestone (OQ-003/OQ-004; accepted: ADR-0002, 2026-08-28,
       specifications/compatibility-milestone-rfc.md, M1).
 - [x] Review and accept core topology and dependency ADRs (OQ-005/OQ-006;
-      accepted: ADR-0003, 2026-08-27, ADR-0004, 2026-08-27; 16 crates
+      accepted: ADR-0003, 2026-08-27, ADR-0004, 2026-08-27; 18 crates
+      `1835175`, verification crates `compat-lab`/`perf` added after
       `be3bdb4`).
 - [x] Review and accept the terminal state/action invariant RFC (OQ-007;
       accepted: specifications/terminal-state-rfc.md, 2026-08-28).
@@ -99,11 +96,11 @@ Phase A.
 - [x] Implement the ADR 0001 Astro/Bun static website shell and Workers Static
       Assets deployment configuration; keep the docs consumer, adapter, loader,
       theme, search, and routes out of that scaffold.
-- [x] Implement accepted 16-crate workspace (ADR 0003, `bitty` `be3bdb4`):
-      `vt`, `pty`, `platform`, `config`, `package`, `lua` (`piccolo` 0.3.3),
+- [x] Implement accepted 18-crate workspace (ADR 0003 topology as extended,
+      `bitty` `1835175`): `vt`, `pty`, `platform`, `config`, `package`, `lua` (`piccolo` 0.3.3),
       `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`, `agent`,
-      `runtime`, `app`, `core`; `publish = true` for 9 leaves, soak ~808
-      headless tests (`Implemented`, not yet `Verified`).
+      `runtime`, `app`, `core`, plus `compat-lab` and `perf`; `publish = true` for 9 leaves
+      (`Implemented`, not yet `Verified`).
 - [ ] Restore full Astro language-server diagnostics with TypeScript 7 after
       upstream support satisfies FIND-0001 acceptance criteria.
 - [x] Add formatting, linting, documentation-link, and security-policy checks to
@@ -294,6 +291,10 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       `bun .github/scripts/check-state.mjs` pass, `git diff --check` 0.
 - [ ] Obtain independent docs-curator + security-auditor review for CTX-0116
       sync before closing; `Verified`/`Compatible` remain gated on RS-1..RS-7.
+
+## Documentation synchronization — CTX-0130 sync (2026-09-07)
+
+- [x] Reconcile post-0223 state (CTX-0130, `bitty` `1835175` previous `e8a7b76`, 18 crates, release `v0.0.19`): refresh `project-state.json` with verified-only subsystem rows, adopt M1-M8 milestone frame, retire the `a8735d0` baseline from headers, add Draft semantic-terminal RFC; no risk-state or normative changes.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

@@ -43,6 +43,7 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [TerminalRegistry and View Lifecycle Contract](terminal-registry-view-lifecycle-rfc.md) | OQ-005, OQ-007 (lifecycle refinement)          | Accepted |
 | [Panel Runtime and Event Bus Pre-Study](panel-runtime-pre-study.md)                     | OQ-014 (panel platform follow-up, research)    | Draft    |
 | [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md)             | OQ-014 (browser and agent follow-up, research) | Draft    |
+| [Semantic Terminal RFC](semantic-terminal-rfc.md)                                       | — (interaction proposal, research)             | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence (`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`):
 
@@ -55,6 +56,7 @@ The following drafts are under review and do not authorize shipped, stable, norm
 | [Panel Runtime and Event Bus Pre-Study](panel-runtime-pre-study.md)         | panel lifecycle, bus, overlay, focus, isolation   | Draft  | none (research pre-study, no implementation, CTX-0119)                                      | P2 — panel platform prerequisite        |
 | [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md) | browser webview MCP agent memory isolation matrix | Draft  | none (research pre-study, no implementation, CTX-0120)                                      | P2 — browser and agent prerequisite     |
 | [AI Architecture](ai-architecture.md)                                       | post-1.0, OQ-018 contracts                        | Draft  | none                                                                                        | P2 — deferred post-1.0, lowest priority |
+| [Semantic Terminal RFC](semantic-terminal-rfc.md)                           | command blocks, folding, hint mode, composer      | Draft  | none (proposal only, CTX-0130)                                                              | P1 — post-slice interaction candidate   |
 
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is

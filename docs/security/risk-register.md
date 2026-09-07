@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / M1 Hardening (16 crates be3bdb4, 32 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (18 crates 1835175, 32 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,12 +11,12 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `a8735d0`, 16 crates,
-32 OQs `Accepted`, soak ~808 headless tests plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-07, `bitty` `1835175` previous `e8a7b76` baseline `de134ec`, 18 crates,
+32 OQs `Accepted`, compat-lab/perf hardening and UX wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
-(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec` previous `7e3104d`)
+(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), all others
-remain `Open` because evidence is `Implemented` (IPC/rich/resolver at `be3bdb4`,
+remain `Open` because evidence is `Implemented` (IPC/rich/resolver hardening,
 experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](../specifications/risk-evidence-rfc.md): lifecycle is
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
@@ -42,10 +42,10 @@ for the per-risk mapping). Every affected row below stays `Open`: the wave is
 required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
-`2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `1835175`,
+`2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim
@@ -95,12 +95,12 @@ AST-pipeline review for Scene-admission SCN-1..3; R-007 keeps
 fault-injection review for the fuel step slice. Tooling items
 (`CR-COMPAT-01`, `CR-APP-01`, `CR-UI-01`) carry no risk residual.
 
-## Review cadence (M1 Hardening)
+## Review cadence (engineering milestones)
 
 - Review this register when a trust boundary, protocol, capability, package
-  source, IPC method, or data-recording feature changes; at M1 hardening each
-  `Implemented` crate (`ipc`, `rich`, `resolver` at `be3bdb4`) must link soak
-  headless evidence (~808 tests) but stays `Open` until `Verified`, except
+  source, IPC method, or data-recording feature changes; each `Implemented`
+  crate (`ipc`, `rich`, `resolver` hardening through `1835175`) must link
+  headless evidence but stays `Open` until `Verified`, except
   `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9` per RS-1..RS-7.
   `R-004` links `7a4ee41` (`de134ec` baseline) `23`+`13`+`4` tests and the
   2026-08-31 clipboard audit, and remains `Open` due to residual platform-backend,

@@ -76,17 +76,51 @@ function validateSnapshot(data) {
     if (!/^[0-9a-f]{40}$/.test(impl.previous_revision ?? "")) {
       failures.push("implementation.previous_revision must be 40-char hex");
     }
-    if (typeof impl.crates !== "number" || impl.crates !== 16) {
-      failures.push("implementation.crates must be 16");
+    if (typeof impl.crates !== "number" || impl.crates !== 18) {
+      failures.push("implementation.crates must be 18");
+    }
+  }
+
+  const release = data.latest_release;
+  if (!release || typeof release !== "object") {
+    failures.push("latest_release is required");
+  } else {
+    if (!/^v\d+\.\d+\.\d+$/.test(release.tag ?? "")) {
+      failures.push("latest_release.tag must look like v0.0.19");
+    }
+    if (!/^[0-9a-f]{40}$/.test(release.commit ?? "")) {
+      failures.push("latest_release.commit must be 40-char hex");
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(release.date ?? "")) {
+      failures.push("latest_release.date must be YYYY-MM-DD");
+    }
+  }
+
+  const subsystems = data.subsystems;
+  if (!subsystems || typeof subsystems !== "object") {
+    failures.push("subsystems is required");
+  } else {
+    for (const [name, row] of Object.entries(subsystems)) {
+      if (!row || typeof row.assessment !== "string" || !row.assessment) {
+        failures.push(`subsystems.${name}.assessment must be non-empty`);
+      }
+      if (!row || typeof row.evidence !== "string" || !row.evidence) {
+        failures.push(`subsystems.${name}.evidence must be non-empty`);
+      }
     }
   }
 
   const maturity = data.maturity;
-  if (!maturity || maturity.label !== "Pre-alpha / M1 Hardening") {
-    failures.push('maturity.label must be "Pre-alpha / M1 Hardening"');
+  if (
+    !maturity ||
+    maturity.label !== "Pre-alpha / Engineering Milestones M1-M8"
+  ) {
+    failures.push(
+      'maturity.label must be "Pre-alpha / Engineering Milestones M1-M8"',
+    );
   }
-  if (maturity?.date !== "2026-08-29") {
-    failures.push('maturity.date must be "2026-08-29"');
+  if (maturity?.date !== "2026-09-07") {
+    failures.push('maturity.date must be "2026-09-07"');
   }
   if (maturity?.oqs_accepted !== 32) {
     failures.push("maturity.oqs_accepted must be 32");
@@ -122,7 +156,7 @@ function validateSnapshot(data) {
       }
     }
     // R-005/006/007 are Mitigated at d4d75e9 per CTX-0114 with RS-1..RS-7 evidence;
-    // all other risks remain Open at M1 Hardening.
+    // all other risks remain Open (no auto-accept on snapshot refresh).
     // Experimental implementations c0aadd2, 7e3104d, a8735d0 are Implemented,
     // not Verified — they do not change risk state.
     const mitigatedExpected = new Set(["R-005", "R-006", "R-007"]);
@@ -139,9 +173,7 @@ function validateSnapshot(data) {
         }
       } else {
         if (risk.state !== "Open") {
-          failures.push(
-            `${risk.id} must remain Open at M1 Hardening (no auto-accept)`,
-          );
+          failures.push(`${risk.id} must remain Open (no auto-accept)`);
         }
       }
       if (!["P0", "P1"].includes(risk.stage)) {
@@ -169,11 +201,11 @@ function validateSnapshot(data) {
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "a8735d0") {
-    failures.push("sync_provenance.synchronized_revision must be a8735d0");
+  if (!provenance || provenance.synchronized_revision !== "1835175") {
+    failures.push("sync_provenance.synchronized_revision must be 1835175");
   }
-  if (!provenance || provenance.carryctx_task !== "CTX-0116") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0116");
+  if (!provenance || provenance.carryctx_task !== "CTX-0130") {
+    failures.push("sync_provenance.carryctx_task must be CTX-0130");
   }
   if (!provenance || !provenance.github_issue?.includes("bitty-docs/issues")) {
     failures.push(
@@ -283,6 +315,9 @@ function generateSummary(data) {
     `Maturity: ${data.maturity.label} (${data.maturity.date}, ${data.maturity.oqs_accepted} OQs Accepted, ${data.implementation.crates} crates)`,
   );
   lines.push(
+    `Release: ${data.latest_release.tag} (${data.latest_release.date}, commit ${data.latest_release.short})`,
+  );
+  lines.push(
     `R-004: ${data.risks.find((r) => r.id === "R-004").state} at ${data.risks.find((r) => r.id === "R-004").evidence.revision} baseline ${data.risks.find((r) => r.id === "R-004").evidence.baseline} per ${data.risks.find((r) => r.id === "R-004").evidence.audit}`,
   );
   lines.push(
@@ -316,8 +351,9 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("a8735d0") ||
-      !summary.includes("Pre-alpha / M1 Hardening")
+      !summary.includes("1835175") ||
+      !summary.includes("Pre-alpha / Engineering Milestones M1-M8") ||
+      !summary.includes("v0.0.19")
     ) {
       console.error("self-test: generated summary missing expected tokens");
       process.exit(1);
