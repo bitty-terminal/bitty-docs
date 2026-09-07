@@ -1,6 +1,6 @@
 ---
 title: Semantic Terminal RFC
-description: Draft proposal for semantic command blocks, folding, Hint Mode, command composer, and cross-panel hint API
+description: Semantic command blocks, folding, Hint Mode, command composer status (P1-P5 Implemented-only, P6 proposal) plus cross-panel hint API
 category: specifications
 audience: contributor
 document_type: specification
@@ -11,11 +11,16 @@ sidebar_order: 29
 
 # Semantic Terminal RFC
 
-> Status: **Draft proposal** as of 2026-09-07 (CTX-0130). This document
-> proposes a direction only. It authorizes no implementation, closes no open
-> question, weakens no normative control, and moves no risk. Any slice below
-> needs its own accepted RFC or ADR plus independent review before code is
-> authorized.
+> Status: **Draft RFC with Implemented-only slices P1-P5** as of 2026-09-08
+> (CTX-0131). P1 (anchoring) plus P2 (fold MVP) are Implemented-only in
+> `bitty` CTX-0225 (PR #390, `4ccb771`); P3 (Hint Mode) in CTX-0226
+> (PR #392, `064486b`); P4 (composer) plus P5 (external editor) in CTX-0227
+> (PR #394, `ab1f7ab`) — each verified read-only as an ancestor of `bitty`
+> origin `main` at `7048139` via `merge-base --is-ancestor`. Implemented-only
+> evidence authorizes no further implementation, closes no open question
+> (OQ-S1..S7 stay open), weakens no normative control, moves no risk, and
+> implies nothing `Verified`/`Compatible`/`Release-ready`. P6 plus the
+> packaging sketch remain proposal-only.
 
 ## Problem
 
@@ -32,8 +37,13 @@ objects while keeping Terminal Truth byte-identical underneath.
 
 ## Baseline reality (not claims)
 
-The proposal builds on mechanisms that already exist in `bitty` origin `main`
-at `1835175`; none of them is changed by this draft:
+P1 through P5 below are Implemented-only in `bitty` origin `main` at
+`7048139` (each cited commit verified read-only as an ancestor of HEAD).
+They are experimental evidence only: not Accepted, not Verified, moving no
+risk and closing no open question.
+
+The slices build on mechanisms that exist in `bitty` origin `main`
+at `7048139`; none of them is changed by the remaining proposal (P6):
 
 - `CommandRegion` groups prompt, input, output, and exit code by OSC 133
   ordinal sequence only (`crates/bitty-rich/src/shell.rs`); row anchoring is
@@ -76,9 +86,20 @@ untouched.
 ## Proposal route
 
 The recommended order is P1 through P6. Each step is useful alone; no step
-requires the later ones.
+requires the later ones. As of CTX-0131, P1 through P5 are Implemented-only
+evidence in `bitty` origin `main` at `7048139` (see each section); P6 stays
+proposal-only.
 
-### P1: CommandBlock semantic anchoring
+### P1: CommandBlock semantic anchoring (Implemented-only)
+
+> Implemented-only in `bitty` CTX-0225 (PR #390, commit
+> `4ccb7717cd9f29a2ac39783c6f3d40020581b2b8`,
+> `crates/bitty-rich/src/blocks.rs`, ancestor of origin `main` `7048139`).
+> Shipped shape: `CommandId`, `SemanticRange`, `CommandState`
+> (`Running`/`Completed`/`Failed`/`Interrupted`), `CommandBlock` carrying id,
+> cwd, input range, output range, exit code, and state, plus query helpers
+> `blocks()`, `list_blocks()`, `block_by_id()`, and `block_count()`.
+> Implemented-only evidence, not Accepted or Verified.
 
 Propose a `CommandBlock` identity that survives resize, reflow, and scroll.
 The open design question is the anchor type: a stable scrollback line identity
@@ -92,7 +113,15 @@ CommandBlock { id, cwd, input range, output range, exit code, state }
 with states `Running`, `Completed`, `Failed`, and `Interrupted`. Until this is
 accepted, folding (P2) has nothing stable to point at, so P1 gates P2.
 
-### P2: Folding MVP
+### P2: Folding MVP (Implemented-only)
+
+> Implemented-only in `bitty` CTX-0225 (PR #390, commit
+> `4ccb7717cd9f29a2ac39783c6f3d40020581b2b8`,
+> `crates/bitty-rich/src/blocks.rs`, ancestor of origin `main` `7048139`).
+> Shipped shape: per-view `FoldState` plus `hidden_blocks()`,
+> `visible_blocks()`, and `is_output_kind()` over the P1 anchors; collapsed
+> output keeps its rows intact underneath. Implemented-only evidence, not
+> Accepted or Verified.
 
 Propose collapsing a completed `CommandBlock` output region into a one-line
 summary (line count plus exit status) while the underlying rows stay intact.
@@ -101,7 +130,19 @@ Copy, search, and agent reads operate on the unfolded truth. The MVP covers
 toggle one block, expand all, and collapse all; per-block pinning and duration
 or AI-summary annotations are explicitly deferred.
 
-### P3: Hint Mode
+### P3: Hint Mode (Implemented-only)
+
+> Implemented-only in `bitty` CTX-0226 (PR #392, commit
+> `064486b3aae9d217c55fcb5c520cf91abbcfb6bb`,
+> `crates/bitty-rich/src/hints.rs`, ancestor of origin `main` `7048139`).
+> Shipped shape: `HintKind`, `HintAnchor`, `HintAction`, `HintActions`,
+> `TargetId`, `HintScope`, `HintTarget`, `HintRegistry` with
+> `collect_command_targets()`, `collect_panel_targets()`, and
+> `collect_view_targets()`; `label_for_index()`, `HintLabel`,
+> `allocate_labels()`, and bounded `HintBatch`; `dispatch()` with
+> `DispatchOutcome`/`DispatchError`; `HintOperator` plus `HintChord`
+> (`Action(Target)` composition). Implemented-only evidence, not Accepted
+> or Verified.
 
 Propose a keyboard addressing layer in the spirit of flash-style navigation,
 named Hint Mode rather than jump mode because jumping is only one action.
@@ -119,7 +160,21 @@ compositor as a single presentation layer rather than hundreds of overlays.
 Final dispatch reuses the existing deterministic focus routing by resolving a
 target to a `ViewId`, `PanelId`, or `CommandId`.
 
-### P4: Command Composer
+### P4: Command Composer (Implemented-only)
+
+> Implemented-only in `bitty` CTX-0227 (PR #394, commit
+> `ab1f7abc8ec01416052117743740d824d6ebf0ea`,
+> `crates/bitty-rich/src/composer.rs` plus keymap wiring in
+> `crates/bitty-config/src/keymap.rs` and `crates/bitty-app/src/main.rs`,
+> ancestor of origin `main` `7048139`). Shipped shape: `CommandBuffer` with
+> `BufferError`, `ComposerSession`, `ComposerKey`, `ComposerChord`,
+> `ComposerKeys`, `OpenChord` with `validate_open_chord()`,
+> `ComposerKeyEvent` with `ComposerFeedOutcome`/`ComposerFeedError`;
+> `frame_submit()` sends the buffer as one bracketed paste plus a final
+> Enter; `normal_mode_passthrough()` keeps bytes flowing to the PTY
+> untouched outside the explicit composer mode; `should_auto_offer()`
+> keeps automatic offering conservative (fail open to raw terminal
+> behavior). Implemented-only evidence, not Accepted or Verified.
 
 Propose an opt-in multiline command buffer opened by an explicit key (never by
 hijacking Enter globally). Inside the composer, Enter inserts a newline and a
@@ -132,7 +187,15 @@ travel to the shell line editor as one bracketed paste followed by a final
 Enter, which keeps Unicode, multiline content, and paste safety intact without
 simulating individual keystrokes.
 
-### P5: External editor
+### P5: External editor (Implemented-only)
+
+> Implemented-only in `bitty` CTX-0227 (PR #394, commit
+> `ab1f7abc8ec01416052117743740d824d6ebf0ea`,
+> `crates/bitty-rich/src/composer.rs`, ancestor of origin `main` `7048139`).
+> Shipped shape: `resolve_editor()` over `$VISUAL`/`$EDITOR`,
+> `TempComposerFile` for the secure round trip with cleanup after the
+> editor exits, and `EditorError` for typed failure. Implemented-only
+> evidence, not Accepted or Verified.
 
 Propose opening the composer buffer in `$VISUAL` or `$EDITOR` through a secure
 temporary file that is removed after the editor exits, returning its content
@@ -140,7 +203,12 @@ to the composer. A later Panel-native variant could host the editor in a
 transient floating panel instead of covering the terminal; that variant is
 deferred until the Panel Runtime contract is accepted.
 
-### P6: Cross-panel Hint API
+### P6: Cross-panel Hint API (proposal-only)
+
+> Proposal-only as of `bitty` origin `main` `7048139` (CTX-0131): no merged
+> implementation exists. It stays last: it is only meaningful once P1
+> anchors and the P3 engine exist, and the Panel Runtime contract it would
+> build on is still a draft pre-study.
 
 Propose generalizing P3 so any provider (command blocks, panels, workspaces,
 rich content, future first-party plugins) registers hint targets of a declared
@@ -186,6 +254,9 @@ owners.
   [Risk Evidence RFC](risk-evidence-rfc.md); this draft grants nothing.
 
 ## Open questions
+
+All seven stay open as of CTX-0131 (`bitty` origin `main` `7048139`): the
+P1-P5 implementations above are evidence only and close none of them.
 
 - OQ-S1: What is the stable scrollback line identity for `CommandBlock`
   anchors, and who owns its allocation across resize and reflow?

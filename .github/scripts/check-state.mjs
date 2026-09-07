@@ -119,8 +119,8 @@ function validateSnapshot(data) {
       'maturity.label must be "Pre-alpha / Engineering Milestones M1-M8"',
     );
   }
-  if (maturity?.date !== "2026-09-07") {
-    failures.push('maturity.date must be "2026-09-07"');
+  if (maturity?.date !== "2026-09-08") {
+    failures.push('maturity.date must be "2026-09-08"');
   }
   if (maturity?.oqs_accepted !== 32) {
     failures.push("maturity.oqs_accepted must be 32");
@@ -201,11 +201,11 @@ function validateSnapshot(data) {
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "1835175") {
-    failures.push("sync_provenance.synchronized_revision must be 1835175");
+  if (!provenance || provenance.synchronized_revision !== "7048139") {
+    failures.push("sync_provenance.synchronized_revision must be 7048139");
   }
-  if (!provenance || provenance.carryctx_task !== "CTX-0130") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0130");
+  if (!provenance || provenance.carryctx_task !== "CTX-0131") {
+    failures.push("sync_provenance.carryctx_task must be CTX-0131");
   }
   if (!provenance || !provenance.github_issue?.includes("bitty-docs/issues")) {
     failures.push(
@@ -351,7 +351,7 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("1835175") ||
+      !summary.includes("7048139") ||
       !summary.includes("Pre-alpha / Engineering Milestones M1-M8") ||
       !summary.includes("v0.0.19")
     ) {

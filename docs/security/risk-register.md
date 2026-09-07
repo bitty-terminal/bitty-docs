@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (18 crates 1835175, 32 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (18 crates 7048139, 32 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,8 +11,8 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-07, `bitty` `1835175` previous `e8a7b76` baseline `de134ec`, 18 crates,
-32 OQs `Accepted`, compat-lab/perf hardening and UX wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-08, `bitty` `7048139` previous `1835175` baseline `de134ec`, 18 crates,
+32 OQs `Accepted`, compat-lab/perf hardening and UX wave plus semantic-terminal P1-P5 `Implemented`-only plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), all others
@@ -42,8 +42,8 @@ for the per-risk mapping). Every affected row below stays `Open`: the wave is
 required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `1835175`,
-`2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `7048139`,
+`2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 
