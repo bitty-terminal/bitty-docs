@@ -33,7 +33,13 @@ RFC). `R-004` was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) per
 (2026-08-31, CTX-0097) and remains **Open** with residual platform-backend,
 real-window UX, and `8192`-byte bound-scope limits (see matrix row); `R-005`
 at `5bdcdbd`, `R-006` at `0afc94d`, `R-007` at `d4d75e9` are **Mitigated** with
-residual UX/grant/budget soak gaps (see matrix rows).
+residual UX/grant/budget soak gaps (see matrix rows). FIND-0002 remediation
+wave (2026-09-07, `bitty` origin `main` `1fc6294`): all 14 open ledger items
+merged (`ec95c5c` PR #336 through `0cb244d` PR #364 plus `0e65f85` PR #366;
+see the [evidence-matrix wave table](evidence-matrix.md#find-0002-remediation-wave-implemented-only-2026-09-07)
+for the per-risk mapping). Every affected row below stays `Open`: the wave is
+`Implemented`-only evidence pending auditor review per RS-1..RS-7, and no
+required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
 [`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
@@ -73,6 +79,21 @@ that the risk can be ignored until then.
 | R-022 | Plugin package install executes attacker-controlled setup code                       | Critical | Medium     | P0    | No `postinstall` or install-time plugin execution; verify/store only; first execution after authorization                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Open      |
 
 <!-- markdownlint-enable MD013 -->
+
+## FIND-0002 remediation wave residuals (2026-09-07, Implemented-only)
+
+The wave closes the code defects; it does not close the risks. Residuals per
+affected row, all `Open` pending auditor review: R-001 keeps fuzz and
+boundary-matrix review for the cursor/tab bound plus combining buffer; R-002
+keeps decompression-bomb proof review for the headless surface cap; R-003
+keeps negative-loader review for the empty-roots rejection; R-004 keeps
+consent-matrix review for the OSC 52 read reply plus write decode; R-011
+keeps negative-auth review for the symlink attestation; R-015/R-022 keep
+tamper-suite review for the prune ceiling plus TOFU fail-closed; R-016 keeps
+capability-diff review for the manifest-time closed set; R-021 keeps
+AST-pipeline review for Scene-admission SCN-1..3; R-007 keeps
+fault-injection review for the fuel step slice. Tooling items
+(`CR-COMPAT-01`, `CR-APP-01`, `CR-UI-01`) carry no risk residual.
 
 ## Review cadence (M1 Hardening)
 
