@@ -248,6 +248,20 @@ A future rich-block inspector should expose, at minimum:
 This is an observability requirement for planning, not an implemented DevTools
 feature.
 
+## Implementation evidence (intake only)
+
+Status: **experimental review evidence.** `bitty` `1fc6294` (CTX-0214,
+PR #376, `crates/bitty-rich/src/kitty.rs`) merged an intake-only Kitty
+graphics milestone: chunked `m=` transmissions assemble their exact bytes,
+admission evicts the oldest entries first under a 320,000,000-byte
+(`320 * 1000 * 1000`, decimal) stored-plus-in-flight ledger with fail-closed
+rejections, the single-shot path keeps its historical truncation unchanged,
+and no decode, placement, animation, or renderer coupling is included. The
+full intake semantics, bounds, and deferred-rendering boundary are recorded in
+the [Rich Presentation RFC](../specifications/rich-presentation-rfc.md). This
+document otherwise remains a pre-implementation contract: nothing here becomes
+an implemented API by virtue of that milestone.
+
 ## Open questions
 
 - What is the first stable `RichBlock` and `SceneNode` contract?
