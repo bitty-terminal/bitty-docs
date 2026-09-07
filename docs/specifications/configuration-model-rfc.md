@@ -172,6 +172,55 @@ document and this RFC binds its semantics:
 5. Profile composition (`extends`) resolves single-parent chains with cycle
    detection; multiple inheritance remains an open item.
 
+## Shipped defaults snapshot
+
+Status: **shipped defaults** (read-only from `bitty` `origin/main`,
+`crates/bitty-config/src/types.rs`, `merge.rs`, `keymap.rs`, `theme.rs`,
+CTX-0153/CTX-0169/CTX-0177/CTX-0180/CTX-0185/CTX-0191). This section records
+shipped values as status; it instantiates the merge-class contract above
+without changing it. Normative precedence stays `CLI > file > profile >
+defaults` per [Lua and XDG configuration](../configuration/lua-and-xdg.md).
+
+| Field                                 | Shipped default                                                                                               | Merge class (settled) |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `font.family` / `size`                | `"JetBrainsMono Nerd Font"` / `12.0`                                                                          | scalar replace        |
+| `font.line_height` / `letter_spacing` | `1.2` / `1.0` (effective cell `9x19` from the legacy `8x16` base)                                             | scalar replace        |
+| `window.opacity` / `padding`          | `1.0` / `8`                                                                                                   | scalar replace        |
+| `terminal.scrollback`                 | `10000`                                                                                                       | scalar replace        |
+| `terminal.scroll_lines_per_notch`     | `3` (`1..=32`)                                                                                                | scalar replace        |
+| `terminal.scroll_pixels_per_notch`    | `16` (`1..=256`)                                                                                              | scalar replace        |
+| `selection.auto_copy`                 | `true` (copy-on-select; `false` keeps the highlight, copies only on chord)                                    | scalar replace        |
+| `layout.gaps_in` / `gaps_out`         | `0` / `0` cells (`0..=16`); edge-to-edge tiling                                                               | scalar replace        |
+| `appearance.theme`                    | unset means the `bitty-dark` preset (alias `dark`); unknown names fall back to it with a stderr warning       | scalar replace        |
+| `keymaps`                             | shipped Alt-as-Mod set (35 entries, context `global`); user entries replace by `context + chord`, else append | set-by-identifier     |
+| `plugins`                             | empty by default                                                                                              | set-by-identifier     |
+
+Absent `selection`/`layout` tables (or absent keys within them) mean "this
+layer says nothing" and inherit silently; present-but-partial `font`,
+`window`, and `terminal` tables fail closed rather than filling defaults,
+preserving attribution. Scalar-replace above matches the shipped
+`bitty-config` merge implementation exactly.
+
+The shipped keymap set is Alt-as-Mod (Super stays with the compositor):
+`alt+h/j/k/l` and `ctrl+alt+arrows` move focus; `alt+1..9` jumps to view id
+`1..=9`; `alt+u`/`alt+i` page up/down; `shift+alt+h/j/k/l` splits;
+`shift+ctrl+h/j/k/l` resizes; `alt+w` closes; `alt+z`/`alt+m`/`alt+f`
+toggles zoom; `ctrl+tab`/`ctrl+shift+tab` cycles focus;
+`ctrl+shift+c` copies (`copy_to_clipboard`, best-effort primary sync on
+Linux) and `ctrl+shift+v` pastes through the suspicious-paste inspection
+gate. Plain `Tab`, arrows, letters, and digits are deliberately unbound so
+they reach the shell; a bound chord is consumed by its action and never
+reaches the PTY. The only supported context is `global`; single-character
+keys require a modifier. The full vocabulary is `goto_split`, `new_split`,
+`resize_split` (each `<left|right|up|down>`), `close_view`,
+`toggle_zoom`, `focus_next`, `focus_prev`, `focus:<1..=256>`,
+`copy_to_clipboard`, `paste_from_clipboard`, `scroll_page_up`,
+`scroll_page_down`.
+
+Open: per-field reload classification (still deferred to the follow-up
+inventory); whether the CLI appearance flag set or the shipped keymap set
+grows; and middle-click paste acceptance, deferred under CTX-0158.
+
 ## Reload classification
 
 Status: **accepted framework**, with the per-field table deferred until an

@@ -216,6 +216,17 @@ and policy:
 Whether even these files are Lua, a restricted schema, or signed/trusted
 modules is an open security decision.
 
+Status: **shipped defaults** for the precedence order and the CLI/env
+override mechanics below (read-only from `bitty` `origin/main`,
+`crates/bitty-config/src/file.rs` and `crates/bitty-app/src/main.rs`,
+CTX-0169/CTX-0180). The settled order is `CLI > file > profile >
+defaults`: explicit CLI appearance flags win over the user file
+(`init.lua`), which wins over the named profile, which wins over core
+defaults. `BITTY_CONFIG` (explicit path) and `BITTY_PROFILE` (profile
+name) sit between CLI flags and probed files — CLI wins over env. A
+missing explicit `--config`/`BITTY_CONFIG` path, or a
+requested-but-missing profile, fails closed instead of falling back.
+
 ## Merge semantics
 
 Status: **candidate contract.**
@@ -237,7 +248,27 @@ developer tools can explain every effective value and conflict.
 
 ## Profiles
 
-Status: **candidate contract.**
+Status: **shipped defaults** for profile selection, naming, and layering
+(read-only from `bitty` `origin/main`,
+`crates/bitty-config/src/file.rs`, CTX-0169, issue #271);
+**candidate** for multi-parent `extends`.
+
+Shipped mechanics:
+
+- Named profiles live at `$XDG_CONFIG_HOME/bitty/profiles/<name>.lua`.
+- Selection is `--profile NAME`, else `BITTY_PROFILE`; a missing, empty, or
+  whitespace-only value means no profile.
+- Names allow `[A-Za-z0-9_-]` only (no paths, no extensions) and at most 64
+  bytes; anything else fails closed. System-wide `XDG_CONFIG_DIRS` is never
+  consulted for profiles.
+- The profile plan layers UNDER the user file (`init.lua` still wins) and
+  under CLI appearance flags (`CLI > file > profile > defaults`, settled in
+  [Layers and precedence](#layers-and-precedence)).
+- A requested-but-missing or invalid profile fails closed (exit 2); a bare
+  launch with no profile request keeps working.
+
+Candidate (unchanged): profile composition via single-parent `extends` chains
+with cycle detection; multiple inheritance remains open.
 
 Profiles compose focused changes rather than duplicate an entire config. A
 coding profile, for example, may extend a default profile, add development
@@ -259,6 +290,50 @@ return {
 
 A candidate launch form is `bitty --profile coding`; its placement in the CLI
 grammar remains open.
+
+The shipped launch form is `bitty --profile coding` (or `BITTY_PROFILE=coding`)
+as specified above; the grammar-ownership question is closed by that shipment
+and only multi-parent `extends` stays open.
+
+## Shipped CLI overrides, setup wizard, and logging defaults
+
+Status: **shipped defaults** (read-only from `bitty` `origin/main`,
+`crates/bitty-app/src/main.rs`, CTX-0149/CTX-0180/CTX-0190). These are
+reported here as shipped status; they change no normative contract above.
+
+- CLI appearance overrides (CTX-0180): `--theme NAME`, `--font-family NAME`,
+  `--font-size PTS`, and `--opacity FLOAT` apply to one launch. They form a
+  single `Cli` layer plan over the file and profile values; sibling fields
+  keep file values. `--font-size` and `--opacity` are parsed as raw text and
+  validated at merge time — invalid values fail closed (exit 2), never
+  warn-ignored.
+- Explicit config path: `--config PATH` wins verbatim; else `BITTY_CONFIG`;
+  else the XDG default is probed (`$XDG_CONFIG_HOME/bitty/init.lua`,
+  fallback `~/.config/bitty/init.lua`, then the `config.lua` alias).
+  `bitty config path|check|edit` locates, validates with per-key source
+  attribution (`cli/file/profile/default`), and opens the file in
+  `$VISUAL`/`$EDITOR` (`vi` fallback).
+- Setup wizard (CTX-0149, issue #243): `bitty init [--yes] [--force]` is the
+  opt-in first-run writer. `--yes` skips prompts and writes sane defaults
+  (a `theme = "dark"` starter with commented gaps, keymap, and selection
+  examples); `--force` overwrites an existing file after copying it to
+  `<file>.lua.bak` (overwriting any older backup). Without `--force`, an
+  existing file is an error, never a silent overwrite. A program literally
+  named `init` must be invoked as `bitty -- init ...`. `--yes`/`--force`
+  are init-only and ignored by normal startup.
+- Quiet logging (CTX-0190): the default stderr level is `Warn` — warnings,
+  errors, plus unconditional key user-facing lines (paste confirm/cancel,
+  startup summary); per-frame `bitty tick` stats sit at `Debug`/`Trace` and
+  stay silent by default. `-v`/`--verbose` (also `BITTY_VERBOSE=1`) selects
+  `Debug`; `--log-level error|warn|info|debug|trace|verbose` selects
+  directly (`verbose` maps to `Debug`). Precedence is `--log-level`, then
+  `--verbose`/`-v`/`BITTY_VERBOSE=1`, then `BITTY_LOG`, then `RUST_LOG`
+  (both accept bare levels and `RUST_LOG`-style filters, most verbose wins,
+  `BITTY_LOG` preferred), then the quiet default.
+
+Open: whether the CLI appearance flag set grows (for example spacing or
+padding flags); the wizard prompt UX and starter-content evolution; and the
+exact tick-line format, which remains a diagnostic, not a stable interface.
 
 ## Starters and distributions
 

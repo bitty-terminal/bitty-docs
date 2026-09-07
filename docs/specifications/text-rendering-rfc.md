@@ -383,6 +383,28 @@ Candidate contract — coverage-driven, deterministic, bounded:
    platform that has that face. Where a fallback family is absent, the resolver
    emits the tofu path rather than reordering the remaining chain.
 
+#### Shipped font and cursor defaults (implementation evidence, status only)
+
+Status: **shipped-default notes only** (read-only from `bitty`
+`origin/main`, `crates/bitty-config/src/types.rs`,
+`crates/bitty-vt/src/action.rs`, CTX-0157/CTX-0163). They record what the
+implementation ships today; they change no candidate rule above and do not
+promote this RFC beyond `draft`.
+
+- Primary face defaults to `"JetBrainsMono Nerd Font"` at `12.0`pt with
+  `line_height 1.2` and `letter_spacing 1.0`, giving an effective cell of
+  `9x19` from the legacy `8x16` base.
+- Family-level fallback order is the configured primary, then
+  `"JetBrains Mono"`, `"monospace"`, `"DejaVu Sans Mono"`, and
+  `"Noto Sans Symbols 2"` last. `DejaVu Sans Mono` covers box drawing and
+  block elements (`U+2580-U+259F`); `Noto Sans Symbols 2` covers braille
+  patterns (`U+2800-U+28FF`, TUI graphs such as btop CPU meters).
+- `DECSCUSR` (`CSI Ps SP q`) maps `0` to the configured default style,
+  `1`/`2` to blinking/steady block, `3`/`4` to blinking/steady underline,
+  and `5`/`6` to blinking/steady bar. Shape input handling is shipped in
+  `bitty-vt`; shape rendering, full shaping, ligature/kerning policy, and
+  color emoji remain candidate above.
+
 ### Shaping (HarfBuzz-grade), ligatures, and kerning
 
 Candidate contract — per-run shaping that preserves the grid:
