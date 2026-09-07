@@ -23,20 +23,23 @@ sidebar_order: 19
 > and the [P0 review checklist](../reviews/p0-review-checklist.md). The lifecycle is
 > `Draft -> experimental review evidence -> Accepted -> normative`.
 >
-> Amendment A1 (proposed, CTX-0124): this RFC additionally proposes a
+> Amendment A1 (Implemented-only, CTX-0124 design plus `bitty` CTX-0183,
+> CTX-0188, CTX-0189): this RFC additionally documents a
 > versioned test-automation scope (`bitty.debug/synthesizeInput`,
 > `bitty.debug/captureFrame`) and a live-profiling scope (RSS, CPU,
 > frame-time, GPU stats), coordinated with the
 > [Performance Budget RFC](performance-budget-rfc.md) (OQ-001) and motivated by
 > finding `ECO-DEV-04` (automated GUI test driver and input synthesis).
-> Everything under [Test-automation scope](#test-automation-scope-proposed-amendment-a1)
-> and [Live-profiling scope](#live-profiling-scope-proposed-amendment-a1) is
-> proposed design, not accepted contract: it authorizes no implementation,
-> weakens no normative control, and unblocks only the design half of `bitty`
-> CTX-0188 (frame capture plus input synthesis IPC) and CTX-0189 (process
-> memory, CPU, and frame profiling over IPC). Admission of the
-> keystroke-injection surface requires category-owner plus security-auditor
-> review before acceptance; see the admission gate below.
+> Everything under [Test-automation scope](#test-automation-scope-implemented-only-amendment-a1)
+> and [Live-profiling scope](#live-profiling-scope-implemented-only-amendment-a1) is
+> Implemented-only evidence, not accepted contract: it authorizes no additional
+> implementation beyond the merged `bitty` commits cited below,
+> weakens no normative control, and records the implementation half of `bitty`
+> CTX-0183 (verify harness, PR #328), CTX-0188 (frame capture plus input
+> synthesis IPC, PR #332), and CTX-0189 (process memory, CPU, and frame
+> profiling over IPC, PR #334) without moving acceptance. Admission of the
+> keystroke-injection surface still requires category-owner plus
+> security-auditor review before acceptance; see the admission gate below.
 
 ## Purpose and scope
 
@@ -387,10 +390,12 @@ CLI consumers authenticate and authorize through the same per-session
 scopes as a graphical DevTools client; the command adapter never widens
 a scope.
 
-## Test-automation scope (proposed, Amendment A1)
+## Test-automation scope (Implemented-only, Amendment A1)
 
-> Status: proposed. This section is design input for `bitty` CTX-0188 and
-> carries no acceptance, no compatibility promise, and no implementation
+> Status: Implemented-only. This section documents `bitty` CTX-0183 (PR #328,
+> commit `b795f90`, headless verify harness) and CTX-0188 (PR #332, commit
+> `144ee1c`, `synthesizeInput` plus `captureFrame`) as merged implementation
+> evidence and carries no acceptance, no compatibility promise, and no Verified
 > claim. It must not weaken any normative control listed under
 > [Normative sources this specification must not weaken](#normative-sources-this-specification-must-not-weaken);
 > where it conflicts with one, the normative text wins.
@@ -401,17 +406,24 @@ This scope lets an automated end-to-end harness drive one terminal and assert
 on its rendered frame without manual interaction, under explicit, revocable,
 per-session authority.
 
+The headless verify harness is implemented in `bitty` CTX-0183 (PR #328,
+commit `b795f90`, `crates/bitty-ipc/tests/devtools_verify.rs`): state asserts
+over the IPC socket as Implementation evidence only. It creates no new method,
+scope, transport, or budget and moves no acceptance; the bearer, redaction,
+and rate rules below still govern the two automation methods.
+
 ### Versioning
 
-The two methods below are candidates for protocol version `1.1`: purely
-additive over the accepted v1.0 surface, with no change to any existing
+The two methods below are implemented in `bitty` CTX-0188 (PR #332) as
+protocol version `1.1` surface (Implemented-only, not Accepted or Verified):
+purely additive over the accepted v1.0 surface, with no change to any existing
 method, scope, bound, or error shape. Unknown-field fail-closed, payload
 limits (1 MiB inbound, 256 KiB outbound chunks), and the major-version rule
 for removals all continue to apply.
 
 ### Methods
 
-| Method                        | Required scope and bearer                                           | Candidate params                                                                                       | Candidate result                                                                                |
+| Method                        | Required scope and bearer                                           | Implemented params                                                                                     | Implemented result                                                                              |
 | ----------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
 | `bitty.debug/synthesizeInput` | `debug.control` plus per-session automation bearer for one terminal | `terminalId`, `events[]` (at most 64 entries: bounded key, mouse, or paste-text events), `originLabel` | Receipt `{ accepted, rejected, syntheticSeq }` with per-event attribution                       |
 | `bitty.debug/captureFrame`    | `debug.trace` plus per-session automation bearer for one terminal   | `terminalId`, `format: "semantic"` (default) or `"pixels"`, optional viewport cap                      | Bounded frame record (geometry, frame sequence, truncated redacted preview), chunked at 256 KiB |
@@ -442,7 +454,8 @@ for removals all continue to apply.
 
 The automation bearer is a server-side, per-session sub-grant bound to one
 triple of (debug session, `terminalId`, method family) with a short expiry
-(candidate default 10 minutes, never exceeding the owning session lifetime):
+(implemented default 10 minutes per `bitty` CTX-0188, never exceeding the
+owning session lifetime):
 
 1. Issuance requires explicit local-user consent on the owning authenticated
    session (a DevTools UI gesture or a `bitty dev` confirmation prompt).
@@ -473,9 +486,9 @@ terminal-content responses (T-10 parity).
 Transport bounds stay at RC-9 parity (100 req/s sustained, 2x burst for one
 second, 1 MiB inbound frames, 16 concurrent connections per endpoint with
 newest-first shedding). On top of them, each automation method carries its
-own candidate per-session ceiling (`synthesizeInput`: at most 64 events per
-call and 10 calls per second sustained; `captureFrame`: at most 10 frames
-per second sustained). Both methods draw from the same per-consumer
+own implemented per-session ceiling per `bitty` CTX-0188 (`synthesizeInput`:
+at most 64 events per call and 10 calls per second sustained; `captureFrame`:
+at most 10 frames per second sustained). Both methods draw from the same per-consumer
 observability queues and batching (32 records or 8 KiB per wakeup), overruns
 shed with typed `budget` errors and counted drops, and automation load must
 not breach the PB-4 tail-latency or PB-7 idle-resource budgets defined in the
@@ -492,9 +505,11 @@ not breach the PB-4 tail-latency or PB-7 idle-resource budgets defined in the
 | Runaway harness floods input or capture                  | Per-method rate ceilings, RC-9 shedding, counted drops, revocable bearer                    | R-007, R-011 |
 | Synthetic input widens a scope or bypasses a budget gate | Capability-plus-scope intersection on every call; no bypass flag, variable, or build switch | R-006, R-011 |
 
-### CLI and MCP staging (proposed)
+### CLI and MCP staging (proposed; protocol methods Implemented-only)
 
-Candidate CLI mappings (no implementation claimed):
+Candidate CLI mappings (no CLI implementation claimed; the two protocol
+methods above are Implemented-only in `bitty` CTX-0188 while CLI verbs stay
+out of scope per that commit):
 
 | CLI candidate (proposed)                               | Protocol method               |
 | ------------------------------------------------------ | ----------------------------- |
@@ -516,14 +531,16 @@ surface, requires all of the following before any `Accepted` marker moves:
    wrong-session, wrong-terminal bearers all fail closed), rate-cap
    shedding order, frame redaction with preview-equals-export, and the
    no-bypass audit extended to bearer issuance.
-3. Proof that sustained automation load at the candidate ceilings breaches
+3. Proof that sustained automation load at the implemented ceilings breaches
    neither PB-4 tail latency nor PB-7 idle budgets.
 
-## Live-profiling scope (proposed, Amendment A1)
+## Live-profiling scope (Implemented-only, Amendment A1)
 
-> Status: proposed. This section is design input for `bitty` CTX-0189 and
-> carries no acceptance, no compatibility promise, and no implementation
-> claim. Metric definitions and measurement conditions are reused verbatim
+> Status: Implemented-only. This section documents `bitty` CTX-0189 (PR #334,
+> commit `7dbe4e2`, `getProcessStats`/`getFrameStats` plus
+> `streamProcessStats`/`streamFrameStats`) as merged implementation evidence
+> and carries no acceptance, no compatibility promise, and no Verified claim.
+> Metric definitions and measurement conditions are reused verbatim
 > from the [Performance Budget RFC](performance-budget-rfc.md) (OQ-001);
 > this scope adds no new budget and changes no number.
 
@@ -533,7 +550,7 @@ Live profiling is read-only observation of process and rendering health,
 exposed through the same versioned debug protocol and per-consumer
 observability queues; it creates no new queue family and no new transport:
 
-| Candidate method                 | Required scope  | Candidate content (numeric aggregates only)                                                                      |
+| Implemented method               | Required scope  | Implemented content (numeric aggregates only)                                                                    |
 | -------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `bitty.debug/getProcessStats`    | `debug.inspect` | RSS, average CPU over a bounded window, task and timer counts, using the PB-2, PB-3, and PB-7 conditions         |
 | `bitty.debug/getFrameStats`      | `debug.inspect` | Frame-time p50/p99, presented-fps, missed-present count, GPU memory where the renderer exposes it, backend label |
@@ -549,9 +566,9 @@ or 8 KiB per wakeup), 256 KiB chunking, and counted-drop semantics.
 Sampling is the only profiling posture in this scope:
 
 1. The profiler reads pre-aggregated counters on the cold path at a sampled
-   cadence with a candidate interval floor of 100 ms; successive samples
-   from the same owner coalesce latest-wins, consistent with the accepted
-   coalescing rule.
+   cadence with an implemented interval floor of 100 ms per `bitty` CTX-0189;
+   successive samples from the same owner coalesce latest-wins, consistent with
+   the accepted coalescing rule.
 2. No profiler code runs synchronously on the parser, render, or input hot
    paths, preserving the cold-path-only instrumentation principle and the
    PB-4 tail-latency budget.
@@ -563,7 +580,8 @@ Sampling is the only profiling posture in this scope:
 
 Profiling records carry zero terminal bytes: no PTY output, no clipboard
 content, no environment maps, no frame text. Renderer-supplied label strings
-are bounded (candidate at most 256 characters), never echo terminal content,
+are bounded (at most 256 characters per the RFC candidate bound enforced by
+the `bitty` CTX-0189 implementation), never echo terminal content,
 and are labeled untrusted observation data. Spooled exports, if any, follow
 the accepted trace-file rules (user-only storage, mode `0600`,
 preview-equals-export).
@@ -577,15 +595,15 @@ Budget number or release gate, streams no profiling state over the v1 MCP
 adapter, and admits no per-frame tracing posture. Battery metrics and
 platform-tier relaxations stay owned by OQ-001 open items and OQ-003.
 
-### Verification (proposed)
+### Verification (open; acceptance still required)
 
-Beyond the accepted verification plan, admission of both Amendment A1 scopes
-requires at minimum:
+Beyond the accepted verification plan, acceptance of both Amendment A1 scopes
+still requires at minimum (implementation is merged; acceptance is open):
 
 1. Bearer matrix: absent, expired, wrong-session, and wrong-terminal bearers
    fail closed with typed `scope` errors and zero partial state for both
    automation methods.
-2. Rate-cap shedding: sustained load above each candidate per-method ceiling
+2. Rate-cap shedding: sustained load above each implemented per-method ceiling
    sheds with typed `budget` errors, counted drops stay byte-accurate, and
    benign concurrent sessions are unaffected.
 3. Frame redaction: seeded secrets, clipboard bytes, environment bytes, and
@@ -616,6 +634,12 @@ requires at minimum:
    `bitty plugin revoke` and the plugin-manager action remove debug
    grants, and the host detaches affected handlers at the next dispatch
    boundary with an auditable receipt.
+
+> Implementation note (Implemented-only, CTX-0127): Windows instance
+> discovery over named pipes is implemented in `bitty` CTX-0196 (PR #330,
+> commit `8af138e`, registry-dir scan plus live pipe-namespace enumeration
+> with Unix exit-code parity). The accepted transport contract above is
+> unchanged; this note claims no Verified status.
 
 ## Record/replay and MCP adapter (accepted staging)
 
@@ -740,15 +764,18 @@ require a follow-up decision:
 8. Presentation for multi-session hosts: how `instance`, `window`, `view`,
    and `terminal` identifiers surface in the debug protocol when more
    than one graphical session exists.
-9. (Amendment A1, proposed) Automation bearer issuance UX and TTL default:
-   how consent is presented and whether 10 minutes remains the right
-   candidate expiry.
-10. (Amendment A1, proposed) `pixels`-format retention, rotation, and
-    garbage collection alongside the accepted trace-file policy in item 7.
-11. (Amendment A1, proposed) Admission criteria for a future per-frame
-    tracing posture, including its PB-4 and PB-7 neutrality proof.
-12. (Amendment A1, proposed) Whether `captureFrame` or profiling streams
-    ever join a post-v1 MCP elevation model, and under which consent shape.
+9. (Amendment A1, Implemented-only, acceptance open) Automation bearer
+   issuance UX and TTL default: how consent is presented and whether the
+   implemented 10 minutes remains the right expiry.
+10. (Amendment A1, Implemented-only, acceptance open) `pixels`-format
+    retention, rotation, and garbage collection alongside the accepted
+    trace-file policy in item 7.
+11. (Amendment A1, Implemented-only, acceptance open) Admission criteria for
+    a future per-frame tracing posture, including its PB-4 and PB-7 neutrality
+    proof.
+12. (Amendment A1, Implemented-only, acceptance open) Whether `captureFrame`
+    or profiling streams ever join a post-v1 MCP elevation model, and under
+    which consent shape.
 
 ## Acceptance criteria
 
