@@ -40,7 +40,19 @@ PR #332 (frame capture plus input synthesis IPC), and `CTX-0189` PR #334
 evidence only; design input is Amendment A1 (`bitty-docs` PR #145,
 `CTX-0124`, proposed not accepted). `R-014` remains `Open` (see R-014 row
 for the new `Implemented` citations); `R-022` was reviewed with no new
-merged evidence and remains `Open`. No risk moves on mechanism presence
+merged evidence and remains `Open`. FIND-0002 remediation wave (2026-09-07,
+`bitty` origin `main` `1fc6294`): all 14 open ledger items merged
+(`ec95c5c` PR #336 TOFU fail-closed, `76005eb` PR #340 prune ceiling,
+`fade082` PR #339 empty-roots, `33a6731` PR #347/#348 capability
+closed-set, `7e85887` PR #344 RichBlock SCN-1..3, `4af50e7` PR #346
+headless surface cap, `c5ec211` PR #342 symlink attestation, `f725664`
+PR #352 OSC 52 read reply plus `0cb244d` PR #364 write decode, `38973a0`
+PR #355/#356 cursor/tab bounds, `fd8a71a` PR #354 singular candidates
+plus `0e65f85` PR #366 baseline regen, `743859e` PR #350 unknown-flag
+exit 2, `2d36084` PR #360 combining buffer, `75f8637` PR #358 smart
+split, `58e488a` PR #362 fuel step slice). Each is cited in the wave
+table below as `Implemented`-only evidence; states remain `Open` pending
+auditor review per RS-1..RS-7. No risk moves on mechanism presence
 alone. Canonical snapshot:
 [`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
 `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004` `Open`,
@@ -114,6 +126,35 @@ soak point: 16 crates, ~808 headless soaking tests (904 `cargo test
 
 <!-- markdownlint-enable MD013 MD018 MD038 MD056 -->
 
+## FIND-0002 remediation wave (`Implemented`-only, 2026-09-07)
+
+All 14 open [FIND-0002](../findings/FIND-0002-comprehensive-code-review-ledger.md)
+items merged into `bitty` `origin/main` (`ec95c5c..0cb244d`, head `1fc6294`;
+each verified via read-only `git merge-base --is-ancestor`). Every row below
+is `Implemented`-only evidence: no risk moves to `Mitigated` without the full
+Entry-to-Mitigated checklist plus independent security-auditor review per
+RS-1..RS-7, so every State stays `Open`. Tooling and enhancement items with no
+direct P0-AC mapping (`CR-COMPAT-01` `fd8a71a` plus `0e65f85` baseline regen,
+`CR-APP-01` `743859e` unknown-flag exit 2 where the CLI contract already
+required `UsageError` exit 2, `CR-UI-01` `75f8637` smart split) are recorded
+in the ledger only and carry no matrix row.
+
+<!-- markdownlint-disable MD013 MD018 MD038 MD056 -->
+
+| Risk         | P0-AC                           | Merged evidence (read-only, `Implemented`-only)                                                                                                                                                                                                                                                                                                      | State |
+| ------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| R-015, R-022 | P0-AC-027, P0-AC-028, P0-AC-029 | `ec95c5c` (`CTX-0197`, PR #336) `TrustMode::Signed` fails closed when `candidate_identity` is absent with a trust store present; `76005eb` (`CTX-0199`, PR #340) `prune()` filters `self.current` before slicing and loops to the retention ceiling. Supply-chain install/verify/rollback mechanisms unchanged.                                      | Open  |
+| R-016        | P0-AC-030                       | `33a6731` (`CTX-0200`, PR #347/#348) manifest capability validation enforces the host closed set at manifest time; lock/install determinism restored. Capability-diff blocking behavior unchanged.                                                                                                                                                   | Open  |
+| R-021        | P0-AC-010                       | `7e85887` (`CTX-0201`, PR #344) `Scene::insert`/`replace_content` enforce SCN-1..3 node-count, depth, and text-byte limits at admission; direct `RichBlock` construction can no longer bypass AST bounds. Constrained-AST/no-scripts contract unchanged.                                                                                             | Open  |
+| R-003        | P0-AC-005, P0-AC-006            | `fade082` (`CTX-0198`, PR #339) `ResourcePolicy::new` rejects empty, relative, and un-canonicalizable roots; deny-by-default loader and no-deletion contract unchanged.                                                                                                                                                                              | Open  |
+| R-002        | P0-AC-003, P0-AC-004            | `4af50e7` (`CTX-0202`, PR #346) headless `present_draw_list` checks `width * height * 4` with checked arithmetic against `MAX_SURFACE_BYTES` before allocation. Image-store IMG-1..IMG-9 budgets unchanged; this row covers the headless present path only.                                                                                          | Open  |
+| R-011        | P0-AC-021, P0-AC-022            | `c5ec211` (`CTX-0200`/`CTX-0203`, PR #342) socket directory and bound-socket attestation use `symlink_metadata` and reject symlinks fail-closed. Endpoint ACL, peer-credential, and scope-matrix contract unchanged.                                                                                                                                 | Open  |
+| R-004        | P0-AC-007, P0-AC-008            | `f725664` (`CTX-0204`, PR #352) allowed OSC 52 reads return a base64 reply instead of discarding text; `0cb244d` (`CTX-0212`, PR #364) write path base64-decodes before bridging to the clipboard. Read/write consent separation and paste-inspection contract unchanged.                                                                            | Open  |
+| R-001        | P0-AC-001, P0-AC-002            | `38973a0` (`CTX-0205`, PR #355/#356) cursor-right and tab-forward loops break at the right margin; `2d36084` (`CTX-0208`, PR #360) zero-width and combining scalars attach to a bounded per-cell buffer (the text-rendering contract already specified combining support, so the code caught up). Parser bound/resynchronization contract unchanged. | Open  |
+| R-007        | P0-AC-013, P0-AC-014, P0-AC-015 | `58e488a` (`CTX-0210`, PR #362) fuel capped per `Executor` step slice rather than only at slice boundaries. Per-plugin VM, queue-budget, and attribution contract unchanged.                                                                                                                                                                         | Open  |
+
+<!-- markdownlint-enable MD013 MD018 MD038 MD056 -->
+
 ## Review gates and lifecycle
 
 Per [risk evidence RFC](../specifications/risk-evidence-rfc.md) RS-1..RS-7:
@@ -133,7 +174,10 @@ Per [risk evidence RFC](../specifications/risk-evidence-rfc.md) RS-1..RS-7:
   the review that moves a risk out of `Open`; `R-005`/`R-006`/`R-007` moved
   `Open -> Mitigated` at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`,
   Issues 137/138/139) per RS-1..RS-7 and PR #144/#145/#146 independent
-  review. Presence of `bitty-vt`, `bitty-rich` `ImageStore`, `bitty-ipc`
+  review. The 2026-09-07 FIND-0002 remediation wave (`ec95c5c..0cb244d`,
+  head `1fc6294`) adds `Implemented`-only rows and moves nothing; each
+  affected risk stays `Open` pending its auditor review. Presence of
+  `bitty-vt`, `bitty-rich` `ImageStore`, `bitty-ipc`
   256 KiB framing with peer credentials, `bitty-lua`/`piccolo` and resolver at
   `be3bdb4` is `Implemented` evidence, not `Verified` closure. `R-004` remains
   `Open` at `bitty` `7a4ee41` per the 2026-08-31 clipboard audit, which
