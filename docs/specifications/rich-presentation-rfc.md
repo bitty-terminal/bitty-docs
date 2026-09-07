@@ -223,6 +223,52 @@ Notes:
   window; it follows the isolation budget floor and maximum policy in the
   [Isolation Resource RFC](isolation-resource-rfc.md).
 
+### Kitty chunked-intake implementation evidence (bitty #376)
+
+Status: **experimental review evidence only.** The intake milestone merged in
+`bitty` `1fc6294` (CTX-0214, PR #376, `crates/bitty-rich/src/kitty.rs`).
+It records exactly what that change implements; it changes no accepted ceiling
+above, grants no new capability, and does not promote this RFC beyond
+`accepted`.
+
+What merged, exactly:
+
+1. Chunked exact-byte assembly. The `m=` chunk state machine maps the first
+   `m=1` chunk (which carries the `G` params) to `begin_chunk`, middle `m=1`
+   chunks to `append_chunk` with `more = true` (reporting `NeedMore` with the
+   buffered byte count), the final `m=0` chunk to `append_chunk` with
+   `more = false` (reporting `Completed` with the new placeholder id and total
+   length), and a lone `m=0` transmission to the single-shot `ingest` path.
+   Chunked transmissions assemble their exact bytes (`assembled == true`).
+2. FIFO evict-to-fit under a 320,000,000-byte ledger. The ledger cap
+   (`KITTY_LEDGER_MAX_BYTES = 320 * 1000 * 1000`, decimal, Ghostty
+   `total_limit` parity, configurable down via `with_ledger_cap`) covers
+   stored plus in-flight bytes. Admission evicts the oldest entries first
+   (Ghostty "prune prior to reserving" pattern); at most one transmission is
+   in flight per ledger, and at most 64 placeholders are retained (mirroring
+   `IMAGE_STORE_MAX_ENTRIES`). A single transmission larger than the cap is
+   rejected.
+3. Single-shot truncation unchanged. The `ingest` path keeps its historical
+   deterministic truncation at `KITTY_MAX_PAYLOAD_BYTES` (4096 bytes,
+   `assembled == false`) and is otherwise unchanged.
+4. Fail-closed outcomes. `append_chunk` with no open stream fails as `Orphan`
+   with state unchanged; `begin_chunk` while a stream is open fails as
+   `AlreadyInProgress` with the open stream kept; growth past the ledger cap
+   fails as `Oversize` with the in-flight stream dropped and nothing stored.
+   Length checks run before any buffer growth, so a hostile chunk cannot force
+   an over-cap allocation.
+5. Rendering still deferred. No base64 decode, no pixel allocation, no
+   placement calculation, no animation, and no renderer coupling occur in this
+   milestone; every placeholder is inert for rendering, and no `APC G`/`DCS`
+   parser integration is claimed.
+
+Explicit non-changes: IMG-1 through IMG-9 above are untouched. The
+320,000,000-byte intake ledger is a pre-decode intake bound on raw payload
+bytes; it is not the IMG-4 256 MiB aggregate decoded-store budget and does not
+redefine it. The decoding pipeline, animation lifecycle, and renderer contract
+sections of this RFC continue to describe the accepted target, not shipped
+behavior.
+
 ### Animation lifecycle
 
 1. Animated images decode frames lazily and pace presentation at the render
