@@ -11,14 +11,17 @@ sidebar_order: 11
 
 # Now / Next / Later
 
-> Status: **draft planning horizon** as of 2026-08-30. This document is a
+> Status: **draft planning horizon** as of 2026-09-07. This document is a
 > roadmap communication, not shipped behavior or a release promise. It links
 > accepted requirements, dependencies, owners, success evidence, and an explicit
 > confidence and horizon per the [Roadmap index](README.md) admission criteria.
 > It does not self-accept any requirement, does not weaken any normative
 > security control, and does not authorize website publication. Website
 > publication remains gated on a pinned immutable `bitty-docs` revision per the
-> [Website Delivery RFC](../specifications/website-delivery-rfc.md).
+> [Website Delivery RFC](../specifications/website-delivery-rfc.md). Current
+> snapshot is `bitty` `1835175` (previous `e8a7b76`, baseline `de134ec`,
+> 18 crates, release `v0.0.19`) at **Pre-alpha / Engineering Milestones M1-M8**;
+> the retired `a8735d0` / 16-crate / M1 baseline no longer describes the head.
 
 ## Admission criteria mapping
 
@@ -49,7 +52,8 @@ claims, and are not entries in the OQ register.
 
 ### Strategy sequence
 
-The current maturity label remains **Pre-alpha / M1 Hardening**. Headless test
+The current maturity label is **Pre-alpha / Engineering Milestones M1-M8**
+(see the milestone table below). Headless test
 soak and crate or contract presence are evidence for hardening work, not proof
 of a released or independently verified terminal product. Once the applicable
 design and security gates are satisfied, the roadmap should shift emphasis from
@@ -67,13 +71,36 @@ This sequence is a planning priority, not a release commitment. It does not
 supersede the release ladder, accepted RFCs, ADR 0008's post-v1.0 headless
 daemon deferral, or any security evidence gate.
 
+### Engineering milestones M1-M8
+
+One label can no longer describe the workspace, so the snapshot carries an
+explicit milestone frame with honest per-milestone statuses (all verified
+read-only against `bitty` origin `main` at `1835175`; subsystem detail lives
+in [`project-state.json`](../project/project-state.json)):
+
+| Milestone               | Status                    | Honest reading                                                                                 |
+| ----------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| M1 Terminal Truth       | Implemented, hardening    | PTY/VT/state/render/window path exists; correctness hardening continues; not `Verified`        |
+| M2 Correct Terminal     | Hardening                 | VT fixes landing, compat-lab forming with regenerated baselines; not `Verified`                |
+| M3 Usable Terminal      | In progress               | Config productizing, UX wave (`window.padding`/`opacity`, cursor hue, `smart_split`); not done |
+| M4 Workspace/Panel      | Early implementation      | `PanelRuntime` code plus async workers exist; Panel Runtime spec still Draft pre-study         |
+| M5 Plugin Ecosystem     | Infrastructure only       | Host dogfood experimental; plugin SDK is a separate repository and unverified here             |
+| M6 Rich/IPC/Agent       | Hardening, infrastructure | Kitty chunked intake, IPC profiling/ctl surface, agent scrubbing; linked risks unchanged       |
+| M7 Stable Compatibility | Not started               | Compat-lab is forming toward it; no compatibility claim                                        |
+| M8 Public Beta          | Not started               | No release-readiness claim; overall product not `Verified`/`Compatible`/`Release-ready`        |
+
+No milestone status moves a risk, weakens a control, or implies `Verified`.
+Risk states stay `R-004` `Open` and `R-005`/`R-006`/`R-007` `Mitigated` until
+the Risk Evidence RFC checklist plus auditor review says otherwise.
+
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](../product/release-ladder.md) stage
-  **Pre-alpha / M1 Hardening** at `bitty` `a8735d0` (`16 crates`, `32 OQs`
-  `Accepted` per CTX-0083, soak `~808` headless tests plus experimental
+  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `1835175` (`18 crates`, `32 OQs`
+  `Accepted`, release `v0.0.19`, compat-lab/perf hardening and UX wave through
+  `1835175` plus experimental
   `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
-  baseline `de134ec` previous `7e3104d`) mapped to the candidate `v0.1` through
+  baseline `de134ec` previous `e8a7b76`) mapped to the candidate `v0.1` through
   `v1.0` maturity ladder. The ladder does not weaken any normative control in
   the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
@@ -146,7 +173,12 @@ or `Release-ready`; `R-004` remains `Open`, `R-005`/`R-006`/`R-007` are
 `Accepted`/`Verified`, post-0189 `7dbe4e2` chain is not `Verified`, the
 FIND-0002 wave through `1fc6294` is not `Verified`, and
 Amendment A1 authorizes no additional implementation beyond the merged
-`b795f90`/`144ee1c`/`7dbe4e2` commits and moves no acceptance.
+`b795f90`/`144ee1c`/`7dbe4e2` commits and moves no acceptance. Post-`1fc6294`
+`bitty` origin `main` advanced to `1835175` (previous `e8a7b76`): OTP-gated
+clipboard reads `63b01db`, Kitty chunked intake `1fc6294`, agent credential
+scrubbing `a2d127b`, overlay z-index tiers `42d244e`, async panel workers
+`d04886a`, cursor hue `e8a7b76`, `window.padding`/`opacity` wiring `1835175`
+— all `Implemented` not `Verified`, none moving any risk or acceptance.
 
 ## Now — Verified and Mitigated hardening with attributable evidence
 
@@ -155,7 +187,7 @@ commit with independent security-auditor and docs-curator review, full matrix
 evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`).
 Experimental slice `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
-(`a8735d0` head, `de134ec` baseline `7e3104d` previous, `be3bdb4` M1 baseline);
+(`1835175` head, `de134ec` baseline `e8a7b76` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
@@ -569,7 +601,7 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
 ## References
 
 - [Roadmap index](README.md) — admission criteria and authority.
-- [Release Ladder](../product/release-ladder.md) — Pre-alpha / M1 Hardening `be3bdb4` to `v0.1`..`v1.0`.
+- [Release Ladder](../product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `1835175` to `v0.1`..`v1.0`.
 - [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) — candidate spine and ladders, draft research record from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
 - [Shared-conversation coverage](../sources/chatgpt-share-coverage.md) — provenance matrices for both historical conversations.
 - [Security Risk Register](../security/risk-register.md) — R-001..R-022, severity and stage.

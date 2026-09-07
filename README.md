@@ -1,13 +1,14 @@
 # bitty-docs
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
-terminal project. The project is currently in **Pre-alpha / M1 Hardening**
-(2026-08-29, `bitty` `a8735d0`; `R-004` clipboard re-audited at `bitty`
+terminal project. The project is currently in **Pre-alpha / Engineering
+Milestones M1-M8** (2026-09-07, `bitty` `1835175`, previous `e8a7b76`,
+baseline `de134ec`; `R-004` clipboard re-audited at `bitty`
 `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
 (2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
 `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139, baseline
-`de134ec`, previous `7e3104d`) are `Mitigated` per RS-1..RS-7; experimental
+`de134ec`) are `Mitigated` per RS-1..RS-7; experimental
 implementations `c0aadd2` (vertical slice, CTX-0095 PR #148) + `7e3104d`
 (plugin dogfood, CTX-0096 PR #149) + `a8735d0` (PTY reply fix, CTX-0098 PR #151)
 are `Implemented` (experimental) not `Verified`/`Compatible`/`Release-ready`,
@@ -17,10 +18,12 @@ requirements, and the implementation lifecycle
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate maturity); experimental code is review evidence, not acceptance. The
-`bitty` workspace is now 16 crates (`vt`, `pty`, `platform`, `config`,
+`bitty` workspace is now 18 crates (`vt`, `pty`, `platform`, `config`,
 `package`, `lua`, `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`,
-`agent`, `runtime`, `app`, `core`) with IPC/rich/resolver `Implemented`
-(experimental at `a8735d0`, headless tests soak ~808) but not yet independently
+`agent`, `runtime`, `app`, `core`, plus verification crates `compat-lab` and
+`perf`) with IPC/rich/resolver `Implemented`
+(experimental evidence retained from `a8735d0`, compat-lab/perf hardening and
+UX wave through `1835175`) but not yet independently
 verified; `Verified` requires security-auditor and P0-AC evidence per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md).
 `R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
@@ -31,9 +34,11 @@ residual UX and grant/budget soak gaps per independent review (see evidence
 matrix). Experimental slice `c0aadd2` implements real single-window terminal
 (`winit` 0.30/`wgpu` 25.0/`crossfont` 0.9, bounded PTY reply, Kitty `7727`) and
 `a8735d0` closes reply loop via `Runtime::write_replies` (bounded `4`KiB); `7e3104d`
-dogfoods public Plugin API with five bundled-disabled plugins. Canonical snapshot:
+dogfoods public Plugin API with five bundled-disabled plugins. Release
+`v0.0.19` (`c2aabee`, 2026-09-03) ships cross-platform `bitty` binaries with
+packaging (Homebrew, Scoop, AUR, deb/rpm/apk). Canonical snapshot:
 [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json)
-(synchronized `a8735d0`, `2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004`
+(synchronized `1835175`, `2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
@@ -41,7 +46,7 @@ dogfoods public Plugin API with five bundled-disabled plugins. Canonical snapsho
 
 - [Documentation map](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/README.md) — topic-oriented navigation and authority
   rules.
-- [User guide](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/user-guide/README.md) — an honest Pre-alpha / M1 Hardening plan
+- [User guide](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/user-guide/README.md) — an honest Pre-alpha plan
   for future user tasks, without invented commands before verification.
 - [Development](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/README.md) — contributor entry point and
   delivery expectations.
@@ -67,8 +72,8 @@ dogfoods public Plugin API with five bundled-disabled plugins. Canonical snapsho
 - [Website Delivery RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
 - [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
 - [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
-- [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha / M1 Hardening status
-  reconciliation and remaining hardening work (see `TODO.md` 2026-08-29).
+- [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha status
+  reconciliation and remaining hardening work (see `TODO.md` 2026-09-07).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
   traceability from the 20-turn historical design conversation to canonical
   documents.
@@ -118,7 +123,8 @@ for crates):
   `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated`
   at `d4d75e9`, experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
-  `a8735d0` 16 crates; IPC/rich/resolver + experimental slice implemented but not
+  `1835175` 18 crates; IPC/rich/resolver plus compat-lab/perf hardening and
+  experimental slice implemented but not
   yet verified) and must not be inferred from design prose.
 - **Verified / Compatible / Release-ready**: requires independent review and
   P0-AC evidence before compatibility or release claims.
@@ -145,9 +151,9 @@ decision, open-question, and source records together. See the workspace
 The normal delivery lifecycle is Issue, CarryCtx task, branch/worktree, commit,
 pull request, independent review plus CI, merge, and final task checkpoint.
 Documentation synchronization is part of the definition of done for every
-affected product or governance change. Current stage is **Pre-alpha / M1
-Hardening** (2026-08-29, `bitty` `a8735d0`, 16 crates, soak ~808 headless tests
-plus experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` (experimental) but not
+affected product or governance change. Current stage is **Pre-alpha /
+Engineering Milestones M1-M8** (2026-09-07, `bitty` `1835175`, 18 crates,
+release `v0.0.19`, experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` (experimental) but not
 yet `Verified`; `R-004` remains `Open` at `bitty` `7a4ee41` baseline `de134ec`
 per 2026-08-31 clipboard audit with residual platform-backend, real-window UX,
 and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007` `Mitigated` at

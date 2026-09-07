@@ -11,14 +11,14 @@ sidebar_order: 34
 
 # Security Evidence Matrix
 
-Status: **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `a8735d0`, 16 crates,
-32 OQs `Accepted`, soak ~808 headless tests plus experimental `c0aadd2`/`7e3104d`/`a8735d0`,
-`cargo test` 904 tests). `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
-(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`
-previous `7e3104d`) per RS-1..RS-7 and independent review; `R-004` remains
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-07, `bitty` `1835175` previous `e8a7b76` baseline `de134ec`, 18 crates,
+32 OQs `Accepted`, compat-lab/perf hardening and UX wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`).
+`R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
+(`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`)
+per RS-1..RS-7 and independent review; `R-004` remains
 `Open` at `7a4ee41` (audit 2026-08-31); all other rows remain `Open` because
-implementation is `Implemented` at `be3bdb4` (`ipc`, `rich`, `resolver` and tail
-crates headless) plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
+implementation is `Implemented` (headless hardening through `1835175`)
+plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
 not yet `Verified` per [risk evidence RFC](../specifications/risk-evidence-rfc.md)
 RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
 (spec) and `Open -> Mitigated -> Accepted` (risk) and
@@ -54,10 +54,10 @@ split, `58e488a` PR #362 fuel step slice). Each is cited in the wave
 table below as `Implemented`-only evidence; states remain `Open` pending
 auditor review per RS-1..RS-7. No risk moves on mechanism presence
 alone. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `a8735d0`,
-`2026-08-31`, `Pre-alpha / M1 Hardening`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `1835175`,
+`2026-09-07`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 
 This matrix is the Phase E companion to the
 [risk register](risk-register.md) and the
