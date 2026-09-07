@@ -335,24 +335,22 @@ Open: whether the CLI appearance flag set grows (for example spacing or
 padding flags); the wizard prompt UX and starter-content evolution; and the
 exact tick-line format, which remains a diagnostic, not a stable interface.
 
-## Scrollbar overlay (Draft, pending `bitty` #405)
+## Scrollbar overlay (shipped defaults)
 
-Status: **Draft proposal, not shipped** (read-only from `bitty`
-`origin/carryctx/ctx-0181`, commit `f1caedf`, CTX-0181, closes `bitty` #281;
-NOT merged to `bitty` origin `main` as of `7048139`, verified read-only via
-`merge-base --is-ancestor`). This section documents the proposed contract
-only. It authorizes no implementation, changes no normative contract above,
-and weakens no security control. The status flips to shipped defaults only
-after #405 merges, under a follow-up sync task.
+Status: **shipped defaults** (read-only from `bitty` `origin/main`,
+commit `c49ead1`, CTX-0181, closes `bitty` #281; merged to `bitty`
+origin `main`, verified read-only via `merge-base --is-ancestor`).
+This section reports the shipped contract only. It changes no normative
+contract above and weakens no security control.
 
-Proposed modes (`scrollbar.mode`, default `"hidden"`):
+Shipped modes (`scrollbar.mode`, default `"hidden"`):
 
 - `"hidden"` — never painted; zero pixels, zero geometry delta, so existing
   layouts stay geometry-neutral.
 - `"always"` — overlay thumb painted whenever scrollback exists.
 - `"auto"` — thumb revealed on mouse proximity, hover, or drag only.
 
-Proposed geometry: the thumb is painted in the present layer, never into
+Shipped geometry: the thumb is painted in the present layer, never into
 grid truth. Its geometry derives from scrollback length plus viewport
 offset; thumb width is logical pixels scaled by the live DPI factor (like
 `window.padding`), default `8`, range `1`–`32` (wider values fail closed).
@@ -361,10 +359,10 @@ drag scrolls through `View::scroll_by`. Hit-testing accounts for panel gaps
 (CTX-0177) and padding (CTX-0223); releases over the thumb skip hyperlink
 activation.
 
-Proposed config contract (candidate Lua surface):
+Shipped config contract:
 
 ```lua
--- Candidate schema (CTX-0181, unmerged).
+-- Shipped schema (CTX-0181, bitty #405).
 return {
     scrollbar = { mode = "auto", width = 8 },
 }

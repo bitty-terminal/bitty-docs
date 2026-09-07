@@ -3,12 +3,12 @@
   "snapshot_date": "2026-09-08",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "704813965c8a01b13b02081e8b57abaf3bd8818f",
-    "short": "7048139",
+    "revision": "c49ead135494b796a38c91158e535d06a308c62a",
+    "short": "c49ead1",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "183517592d7da1dd3fbb34d9d128c6263d5e0bd2",
-    "previous_short": "1835175",
+    "previous_revision": "704813965c8a01b13b02081e8b57abaf3bd8818f",
+    "previous_short": "7048139",
     "crates": 18
   },
   "latest_release": {
@@ -42,7 +42,7 @@
       "id": "M3",
       "name": "Usable Terminal",
       "status": "in-progress",
-      "evidence": "config productizing (user config-file loading 9a392ed, appearance overrides bc21631, Alt-as-Mod cc40ffc, init wizard 95ed41f); UX wave (cursor hue e8a7b76, smart_split 75f8637, z-index tiers 42d244e, split/zoom full present 5a535ee, chrome-held key-repeat swallow 88c0ead, runtime module split 61b655f, chrome-key cluster extract 3384903)"
+      "evidence": "config productizing (user config-file loading 9a392ed, appearance overrides bc21631, Alt-as-Mod cc40ffc, init wizard 95ed41f); UX wave (cursor hue e8a7b76, smart_split 75f8637, z-index tiers 42d244e, split/zoom full present 5a535ee, chrome-held key-repeat swallow 88c0ead, runtime module split 61b655f, chrome-key cluster extract 3384903, scrollbar overlay c49ead1)"
     },
     {
       "id": "M4",
@@ -316,11 +316,11 @@
   "subsystems": {
     "terminal_truth": {
       "assessment": "hardening",
-      "evidence": "vt/pty/term-state crates at 7048139; OSC 133 CommandRegion ordinal grouping in crates/bitty-rich/src/shell.rs plus CommandBlock anchoring in crates/bitty-rich/src/blocks.rs 4ccb771 (Implemented-only); combining-marks fix 2d36084; cursor/tab margin bounds 38973a0; OSC52 base64 read reply f725664 and write decode 0cb244d; DA replies pumped per pane 7048139"
+      "evidence": "vt/pty/term-state crates at c49ead1; OSC 133 CommandRegion ordinal grouping in crates/bitty-rich/src/shell.rs plus CommandBlock anchoring in crates/bitty-rich/src/blocks.rs 4ccb771 (Implemented-only); combining-marks fix 2d36084; cursor/tab margin bounds 38973a0; OSC52 base64 read reply f725664 and write decode 0cb244d; DA replies pumped per pane 7048139"
     },
     "render_ux": {
       "assessment": "hardening",
-      "evidence": "render crate present; window.padding/opacity wired config to runtime to render to winit at 1835175; cursor hue at existing alpha e8a7b76; overlay z-index tiers 42d244e; smart_split orientation 75f8637; braille/block font fallback 6b5bbe6; headless surface allocation bound 4af50e7; sRGB-decode upload colors b4b4e30; split/zoom full present 5a535ee; chrome-held key-repeat swallow 88c0ead; scrollbar overlay pending-merge f1caedf (Draft only, not shipped)"
+      "evidence": "render crate present; window.padding/opacity wired config to runtime to render to winit at 1835175; cursor hue at existing alpha e8a7b76; overlay z-index tiers 42d244e; smart_split orientation 75f8637; braille/block font fallback 6b5bbe6; headless surface allocation bound 4af50e7; sRGB-decode upload colors b4b4e30; split/zoom full present 5a535ee; chrome-held key-repeat swallow 88c0ead; scrollbar overlay shipped c49ead1 (Implemented-only, hidden default)"
     },
     "compat_lab": {
       "assessment": "forming",
@@ -343,8 +343,8 @@
       "evidence": "streaming Kitty chunked intake with 320MB ledger 1fc6294; Scene admission SCN-1..3 7e85887; empty-roots fix fade082; OTP-gated clipboard reads 63b01db; semantic-terminal P1-P5 Implemented-only (CommandBlock + fold MVP 4ccb771, Hint Mode 064486b, Composer + external editor ab1f7ab); experimental only, not Verified"
     },
     "scrollbar": {
-      "assessment": "proposal-only",
-      "evidence": "configurable overlay scrollbar (hidden/always/auto, width 1-32 default 8) on bitty origin/carryctx/ctx-0181 f1caedf (CTX-0181, closes #281) read-only; NOT merged to origin/main as of 7048139; documented as Draft only in docs/configuration/lua-and-xdg.md; no shipped claim"
+      "assessment": "implemented-unverified",
+      "evidence": "configurable overlay scrollbar (hidden/always/auto, width 1-32 default 8) merged to bitty origin/main at c49ead1 (CTX-0181, closes #281, bitty PR #405) read-only; documented as shipped defaults in docs/configuration/lua-and-xdg.md; Implemented-only, not Verified"
     },
     "ipc": {
       "assessment": "hardening",
@@ -356,7 +356,7 @@
     },
     "config": {
       "assessment": "productizing",
-      "evidence": "user config-file loading 9a392ed; CLI appearance overrides for font family/size/opacity bc21631; Alt-as-Mod defaults cc40ffc; init wizard 95ed41f"
+      "evidence": "user config-file loading 9a392ed; CLI appearance overrides for font family/size/opacity bc21631; Alt-as-Mod defaults cc40ffc; init wizard 95ed41f; scrollbar overlay config (mode/width, hidden default, fail-closed) shipped c49ead1"
     },
     "release_packaging": {
       "assessment": "operating",
@@ -364,22 +364,22 @@
     }
   },
   "sync_provenance": {
-    "carryctx_task": "CTX-0131",
-    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/159",
-    "previous_task": "CTX-0130",
-    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/157",
+    "carryctx_task": "CTX-0132",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/161",
+    "previous_task": "CTX-0131",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/159",
     "audit_task": "CTX-0092",
     "synchronized_at": "2026-09-08",
-    "synchronized_by": "docs-impl-0131",
-    "synchronized_revision": "7048139",
-    "previous_revision": "1835175",
+    "synchronized_by": "docs-impl-0132",
+    "synchronized_revision": "c49ead1",
+    "previous_revision": "7048139",
     "baseline_revision": "de134ec",
-    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as evidence; main has advanced to 7048139 (semantic-terminal P1-P5 4ccb771/064486b/ab1f7ab plus wave: sRGB b4b4e30, splitView D1 77bd6c5, repaint 5a535ee, paste chord 88c0ead, runtime split 61b655f, chrome-keys 3384903, DA per-pane 7048139, ctl denials 99f5b1d; scrollbar f1caedf pending-merge, Draft only)"
+    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as evidence; main has advanced to c49ead1 (previous 7048139: semantic-terminal P1-P5 4ccb771/064486b/ab1f7ab plus wave: sRGB b4b4e30, splitView D1 77bd6c5, repaint 5a535ee, paste chord 88c0ead, runtime split 61b655f, chrome-keys 3384903, DA per-pane 7048139, ctl denials 99f5b1d; scrollbar overlay c49ead1 merged via bitty #405, Implemented-only)"
   },
   "ownership": {
     "owner": "docs-curator + security-auditor",
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, latest release, subsystem assessments, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At Engineering Milestones M1-M8 per CTX-0131, R-005/R-006/R-007 stay Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit; all other risks remain Open. Experimental Implementations c0aadd2 (vertical slice), 7e3104d (plugin dogfood), a8735d0 (PTY reply + Kitty) stay Implemented (experimental) not Verified/Compatible/Release-ready per Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible ladder; semantic-terminal P1-P5 (4ccb771/064486b/ab1f7ab) are Implemented-only evidence at 7048139, not Accepted/Verified, closing no open question; scrollbar f1caedf stays proposal-only pending bitty #405 merge. Subsystem rows cover only bitty origin/main evidence verified read-only for this snapshot; plugin SDK, MCP adapter, DevTools client, and website rows are omitted because they live in separate repositories and were not verified here. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At Engineering Milestones M1-M8 per CTX-0132, R-005/R-006/R-007 stay Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit; all other risks remain Open. Experimental Implementations c0aadd2 (vertical slice), 7e3104d (plugin dogfood), a8735d0 (PTY reply + Kitty) stay Implemented (experimental) not Verified/Compatible/Release-ready per Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible ladder; semantic-terminal P1-P5 (4ccb771/064486b/ab1f7ab) are Implemented-only evidence at 7048139, not Accepted/Verified, closing no open question; scrollbar overlay c49ead1 (CTX-0181, bitty #405, closes #281) is merged to origin/main and Implemented-only, not Accepted/Verified. Subsystem rows cover only bitty origin/main evidence verified read-only for this snapshot; plugin SDK, MCP adapter, DevTools client, and website rows are omitted because they live in separate repositories and were not verified here. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
 }

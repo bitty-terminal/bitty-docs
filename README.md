@@ -2,7 +2,7 @@
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
 terminal project. The project is currently in **Pre-alpha / Engineering
-Milestones M1-M8** (2026-09-08, `bitty` `7048139`, previous `1835175`,
+Milestones M1-M8** (2026-09-08, `bitty` `c49ead1`, previous `7048139`,
 baseline `de134ec`; `R-004` clipboard re-audited at `bitty`
 `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -23,8 +23,8 @@ requirements, and the implementation lifecycle
 `agent`, `runtime`, `app`, `core`, plus verification crates `compat-lab` and
 `perf`) with IPC/rich/resolver `Implemented`
 (experimental evidence retained from `a8735d0`, compat-lab/perf hardening and
-UX wave through `7048139`, semantic-terminal P1-P5 `Implemented`-only at
-`4ccb771`/`064486b`/`ab1f7ab`, scrollbar Draft-only pending `bitty` #405) but not yet independently
+UX wave through `c49ead1`, semantic-terminal P1-P5 `Implemented`-only at
+`4ccb771`/`064486b`/`ab1f7ab`, scrollbar overlay `Implemented`-only at `c49ead1` (`bitty` #405)) but not yet independently
 verified; `Verified` requires security-auditor and P0-AC evidence per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/specifications/risk-evidence-rfc.md).
 `R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
@@ -39,7 +39,7 @@ dogfoods public Plugin API with five bundled-disabled plugins. Release
 `v0.0.19` (`c2aabee`, 2026-09-03) ships cross-platform `bitty` binaries with
 packaging (Homebrew, Scoop, AUR, deb/rpm/apk). Canonical snapshot:
 [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json)
-(synchronized `7048139`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+(synchronized `c49ead1`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
@@ -124,7 +124,7 @@ for crates):
   `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated`
   at `d4d75e9`, experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
-  `7048139` 18 crates; IPC/rich/resolver plus compat-lab/perf hardening and
+  `c49ead1` 18 crates; IPC/rich/resolver plus compat-lab/perf hardening and
   experimental slice implemented but not
   yet verified) and must not be inferred from design prose.
 - **Verified / Compatible / Release-ready**: requires independent review and
@@ -153,7 +153,7 @@ The normal delivery lifecycle is Issue, CarryCtx task, branch/worktree, commit,
 pull request, independent review plus CI, merge, and final task checkpoint.
 Documentation synchronization is part of the definition of done for every
 affected product or governance change. Current stage is **Pre-alpha /
-Engineering Milestones M1-M8** (2026-09-08, `bitty` `7048139`, 18 crates,
+Engineering Milestones M1-M8** (2026-09-08, `bitty` `c49ead1`, 18 crates,
 release `v0.0.19`, experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` (experimental) but not
 yet `Verified`; `R-004` remains `Open` at `bitty` `7a4ee41` baseline `de134ec`
 per 2026-08-31 clipboard audit with residual platform-backend, real-window UX,
