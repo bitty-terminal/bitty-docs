@@ -375,6 +375,42 @@ non-overridable. Unknown modes and out-of-range widths fail closed (exit
 2), never warn-ignored. Open: exact proximity radius, hover timing, and
 whether a CLI flag set grows to cover `scrollbar.*`.
 
+## Shipped layout gaps (panel gaps reference)
+
+Status: **shipped defaults** (read-only from `bitty` `origin/main`,
+commit `abde197`, CTX-0240, `bitty` #415; merged to `bitty` origin
+`main`, verified read-only via `merge-base --is-ancestor`). This section
+is the reference for the shipped gap contract; the merge-class
+instantiation stays in the [Configuration Model RFC](../specifications/configuration-model-rfc.md).
+It changes no normative contract above and weakens no security control.
+
+Shipped contract (`layout.gaps_in` / `layout.gaps_out`, cells):
+
+- Both fields are `0..=16` cells, default `0` (edge-to-edge tiling).
+  Larger values fail closed like every other config bound (threat T-01);
+  one cell is about `10`px wide at the default `10x22` cell.
+- The solver is content-agnostic: panel leaves flow through the same
+  `layout_with_gaps` path as terminal leaves (CTX-0177 algebra reuse).
+- Split siblings exclude the `gaps_in` bands, which are painted with the
+  theme background every damaged frame; `Gaps::ZERO` is bit-identical to
+  legacy tiling.
+- Stack (workspace) leaves share the container bounds, so `gaps_in`
+  between them is meaningless: a stack gets the `gaps_out` inset only,
+  with zero inner gap.
+
+Shipped config contract:
+
+```lua
+-- Shipped schema (CTX-0240, bitty #415).
+return {
+    layout = { gaps_in = 2, gaps_out = 1 },
+}
+```
+
+Absent `layout` tables (or absent keys within them) mean "this layer says
+nothing" and inherit silently. There are no per-panel-type gap overrides.
+Open: whether a CLI flag set grows to cover `layout.*`.
+
 ## Starters and distributions
 
 Status: **accepted direction.**
@@ -387,7 +423,7 @@ Candidate initial experiences are:
 
 - `minimal`: one small `init.lua`;
 - `starter`: a commented modular scaffold comparable to `kickstart.nvim`;
-- a later official distribution containing ordinary plugins for tabs,
+- a later official distribution containing ordinary plugins for workspace,
   statusline, search, sessions, command palette, and sensible key mappings.
 
 Distributions should layer under user overrides rather than require users to

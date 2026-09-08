@@ -19,7 +19,7 @@ sidebar_order: 11
 > security control, and does not authorize website publication. Website
 > publication remains gated on a pinned immutable `bitty-docs` revision per the
 > [Website Delivery RFC](../specifications/website-delivery-rfc.md). Current
-> snapshot is `bitty` `c49ead1` (previous `7048139`, baseline `de134ec`,
+> snapshot is `bitty` `29772a3` (previous `c49ead1`, baseline `de134ec`,
 > 18 crates, release `v0.0.19`) at **Pre-alpha / Engineering Milestones M1-M8**;
 > the retired `a8735d0` / 16-crate / M1 baseline no longer describes the head.
 
@@ -75,7 +75,7 @@ daemon deferral, or any security evidence gate.
 
 One label can no longer describe the workspace, so the snapshot carries an
 explicit milestone frame with honest per-milestone statuses (all verified
-read-only against `bitty` origin `main` at `c49ead1`; subsystem detail lives
+read-only against `bitty` origin `main` at `29772a3`; subsystem detail lives
 in [`project-state.json`](../project/project-state.json)):
 
 | Milestone               | Status                    | Honest reading                                                                                 |
@@ -96,12 +96,14 @@ the Risk Evidence RFC checklist plus auditor review says otherwise.
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](../product/release-ladder.md) stage
-  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `c49ead1` (`18 crates`, `32 OQs`
+  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `29772a3` (`18 crates`, `32 OQs`
   `Accepted`, release `v0.0.19`, compat-lab/perf hardening and UX wave through
-  `c49ead1` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay
+  `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay
+  `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font
+  `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, and V1-V3 gates
   `Implemented`-only plus experimental
   `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
-  baseline `de134ec` previous `7048139`) mapped to the candidate `v0.1` through
+  baseline `de134ec` previous `c49ead1`) mapped to the candidate `v0.1` through
   `v1.0` maturity ladder. The ladder does not weaken any normative control in
   the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
@@ -190,7 +192,22 @@ pump `7048139`, ctl denial surfacing `99f5b1d` — all `Implemented` not
 origin `main` advanced to `c49ead1` (previous `7048139`): scrollbar overlay
 `c49ead1` (CTX-0181, `bitty` #405, closes #281; hidden/always/auto, width
 `1`-`32` default `8`, fail-closed) — `Implemented` not `Verified`, moving
-no risk or acceptance.
+no risk or acceptance. Post-`c49ead1` `bitty` origin `main` advanced to
+`29772a3` (previous `c49ead1`): configurable leader/`mod_key` `2a5e451`
+(CTX-0236, `bitty` #411; top-level scalar, default `alt`, `super` allowed,
+`ctrl`/`shift` rejected fail-closed), measured font defaults `308687d`
+(CTX-0237, `bitty` #413; `line_height 1.375`, `letter_spacing 2.0`, live
+cell `10x22`), workspace rename alias plus panel gaps `abde197` (CTX-0240,
+`bitty` #415; canonical `bitty-terminal.workspace`, `tabs` shim deprecated
+with removal at or after `v0.2.0`, `layout.gaps_in`/`gaps_out` `0..=16`
+cells with stack inset-only), scrolled-viewport snap on input `884fd30`
+(CTX-0243, `bitty` #419), `window.radius_px` S0 parsed no-op `84aa580`
+(CTX-0241, `bitty` #417; `0..=24` default `0`, zero render effect),
+`frameHash` digest method `3f5ed24` (CTX-0244, `bitty` #421), and V1-V3
+panel-live visual gates `29772a3` (CTX-0242, `bitty` #423) — all
+`Implemented` not `Verified`, none moving any risk or acceptance; see the
+[Panel Extensibility Vision](../product/panel-vision.md) rename note and
+the [DevTools RFC](../specifications/devtools-rfc.md) Amendment A2.
 
 ## Now — Verified and Mitigated hardening with attributable evidence
 
@@ -199,7 +216,7 @@ commit with independent security-auditor and docs-curator review, full matrix
 evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`).
 Experimental slice `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
-(`c49ead1` head, `de134ec` baseline `7048139` previous);
+(`29772a3` head, `de134ec` baseline `c49ead1` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
@@ -613,7 +630,7 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
 ## References
 
 - [Roadmap index](README.md) — admission criteria and authority.
-- [Release Ladder](../product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `c49ead1` to `v0.1`..`v1.0`.
+- [Release Ladder](../product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `29772a3` to `v0.1`..`v1.0`.
 - [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md) — candidate spine and ladders, draft research record from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
 - [Shared-conversation coverage](../sources/chatgpt-share-coverage.md) — provenance matrices for both historical conversations.
 - [Security Risk Register](../security/risk-register.md) — R-001..R-022, severity and stage.

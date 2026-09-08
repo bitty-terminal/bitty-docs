@@ -625,10 +625,25 @@ different workspaces, mirroring Neovim distributions such as LazyVim.
 
 | Distribution    | Candidate plugin set                        | Intended audience                                              |
 | --------------- | ------------------------------------------- | -------------------------------------------------------------- |
-| `bitty-minimal` | terminal, tabs, splits                      | Users who want only a fast, reliable terminal                  |
+| `bitty-minimal` | terminal, workspace, splits                 | Users who want only a fast, reliable terminal                  |
 | `bitty-dev`     | terminal, files, git, AI, task runner, LSP  | Developers who want an IDE-like workspace without forking core |
 | `bitty-cloud`   | SSH, Kubernetes, Docker, logs, Grafana, AWS | Operators and cloud-native workflows                           |
 | `bitty-social`  | messaging, mail, browser, RSS               | Communication-centric workspaces                               |
+
+> Shipped rename note (Implemented-only, read-only from `bitty`
+> `origin/main`, commit `abde197`, CTX-0240, `bitty` #415): the canonical
+> first-party plugin id is `bitty-terminal.workspace` (claim
+> `workspaceline`, commands `bitty-terminal.workspace:new|close|next`). A
+> bitty workspace is a tab group within a window.
+> `bitty-terminal.tabs` (claim `tabline`, commands
+> `bitty-terminal.tabs:*`) remains as a deprecated shim delegating to the
+> canonical names (removal at or after `v0.2.0`); the old path resolves
+> identically but emits a deprecation warning, the new path does not. The
+> alias exists because stored capability grants bind plugin id plus
+> manifest hash (`GrantRecord` binds id+hash): a flag-day rename would
+> silently invalidate existing grants, scripts, and third-party `tabline`
+> claimants, so both ids resolve during the compat window. This note
+> records shipped status only and changes no candidate direction above.
 
 Candidate named distributions such as `LazyBitty` or `AstroBitty`
 (mirroring `LazyVim` or `AstroNvim`) and a community `awesome-bitty`

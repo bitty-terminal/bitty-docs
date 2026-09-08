@@ -176,24 +176,26 @@ document and this RFC binds its semantics:
 
 Status: **shipped defaults** (read-only from `bitty` `origin/main`,
 `crates/bitty-config/src/types.rs`, `merge.rs`, `keymap.rs`, `theme.rs`,
-CTX-0153/CTX-0169/CTX-0177/CTX-0180/CTX-0185/CTX-0191). This section records
+CTX-0153/CTX-0169/CTX-0177/CTX-0180/CTX-0185/CTX-0191/CTX-0236/CTX-0237/CTX-0240/CTX-0241). This section records
 shipped values as status; it instantiates the merge-class contract above
 without changing it. Normative precedence stays `CLI > file > profile >
 defaults` per [Lua and XDG configuration](../configuration/lua-and-xdg.md).
 
-| Field                                 | Shipped default                                                                                               | Merge class (settled) |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `font.family` / `size`                | `"JetBrainsMono Nerd Font"` / `12.0`                                                                          | scalar replace        |
-| `font.line_height` / `letter_spacing` | `1.2` / `1.0` (effective cell `9x19` from the legacy `8x16` base)                                             | scalar replace        |
-| `window.opacity` / `padding`          | `1.0` / `8`                                                                                                   | scalar replace        |
-| `terminal.scrollback`                 | `10000`                                                                                                       | scalar replace        |
-| `terminal.scroll_lines_per_notch`     | `3` (`1..=32`)                                                                                                | scalar replace        |
-| `terminal.scroll_pixels_per_notch`    | `16` (`1..=256`)                                                                                              | scalar replace        |
-| `selection.auto_copy`                 | `true` (copy-on-select; `false` keeps the highlight, copies only on chord)                                    | scalar replace        |
-| `layout.gaps_in` / `gaps_out`         | `0` / `0` cells (`0..=16`); edge-to-edge tiling                                                               | scalar replace        |
-| `appearance.theme`                    | unset means the `bitty-dark` preset (alias `dark`); unknown names fall back to it with a stderr warning       | scalar replace        |
-| `keymaps`                             | shipped Alt-as-Mod set (35 entries, context `global`); user entries replace by `context + chord`, else append | set-by-identifier     |
-| `plugins`                             | empty by default                                                                                              | set-by-identifier     |
+| Field                                 | Shipped default                                                                                                 | Merge class (settled) |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `font.family` / `size`                | `"JetBrainsMono Nerd Font"` / `12.0`                                                                            | scalar replace        |
+| `font.line_height` / `letter_spacing` | `1.375` / `2.0` (effective cell `10x22` from the legacy `8x16` base; measured raster truth at `12`pt, CTX-0237) | scalar replace        |
+| `window.opacity` / `padding`          | `1.0` / `8`                                                                                                     | scalar replace        |
+| `window.radius_px`                    | `0` physical px (`0..=24`); S0 parsed no-op with zero render effect (CTX-0241)                                  | scalar replace        |
+| `mod_key`                             | `"alt"` (`"super"` allowed; `ctrl`/`shift` rejected fail-closed, CTX-0236)                                      | scalar replace        |
+| `terminal.scrollback`                 | `10000`                                                                                                         | scalar replace        |
+| `terminal.scroll_lines_per_notch`     | `3` (`1..=32`)                                                                                                  | scalar replace        |
+| `terminal.scroll_pixels_per_notch`    | `16` (`1..=256`)                                                                                                | scalar replace        |
+| `selection.auto_copy`                 | `true` (copy-on-select; `false` keeps the highlight, copies only on chord)                                      | scalar replace        |
+| `layout.gaps_in` / `gaps_out`         | `0` / `0` cells (`0..=16`); edge-to-edge tiling; stack leaves take the `gaps_out` inset only (CTX-0240)         | scalar replace        |
+| `appearance.theme`                    | unset means the `bitty-dark` preset (alias `dark`); unknown names fall back to it with a stderr warning         | scalar replace        |
+| `keymaps`                             | shipped Alt-as-Mod set (35 entries, context `global`); user entries replace by `context + chord`, else append   | set-by-identifier     |
+| `plugins`                             | empty by default                                                                                                | set-by-identifier     |
 
 Absent `selection`/`layout` tables (or absent keys within them) mean "this
 layer says nothing" and inherit silently; present-but-partial `font`,
@@ -201,7 +203,8 @@ layer says nothing" and inherit silently; present-but-partial `font`,
 preserving attribution. Scalar-replace above matches the shipped
 `bitty-config` merge implementation exactly.
 
-The shipped keymap set is Alt-as-Mod (Super stays with the compositor):
+The shipped keymap set is the canonical Alt spelling rendered through the
+`mod_key` setting above (`alt` default, `super` opt-in rebinding):
 `alt+h/j/k/l` and `ctrl+alt+arrows` move focus; `alt+1..9` jumps to view id
 `1..=9`; `alt+u`/`alt+i` page up/down; `shift+alt+h/j/k/l` splits;
 `shift+ctrl+h/j/k/l` resizes; `alt+w` closes; `alt+z`/`alt+m`/`alt+f`
@@ -216,6 +219,30 @@ keys require a modifier. The full vocabulary is `goto_split`, `new_split`,
 `toggle_zoom`, `focus_next`, `focus_prev`, `focus:<1..=256>`,
 `copy_to_clipboard`, `paste_from_clipboard`, `scroll_page_up`,
 `scroll_page_down`.
+
+The shipped leader/mod setting is the top-level `mod_key` scalar (CTX-0236,
+`bitty` #411, commit `2a5e451`): `"alt"` by default (aliases `opt` /
+`option`) keeps the Alt-as-Mod map byte-identical, while `"super"`
+(aliases `meta` / `cmd` / `command` / `win` / `windows`) rebinds every
+`alt`-bearing default to Super. Parsing is trimmed and case-insensitive;
+anything else — including `ctrl` / `shift`, which would silently steal
+shell typing and shadow the mod-independent fixed chords (`ctrl+tab`
+cycles, `shift+ctrl` resizes, `ctrl+shift` copy/paste) — fails closed.
+`mod_key` is scalar-replace with per-layer source attribution, and an
+absent key means "this layer says nothing" so existing configs keep
+working. Explicit `keymaps` entries keep their exact spelling and overlay
+by `context + chord` identity, so a mod flip never rewrites user intent.
+
+The shipped window corner radius is `window.radius_px` (CTX-0241, bitty
+issue 417, commit `84aa580`): physical px `0..=24`, default `0` (square
+corners). Stage 0 is a parsed no-op — accepted, stored, and reported
+through the Lua, types, plan, merge, file, validation, reload, trust, and
+runtime path plus the `config check` row, with zero render effect (no
+`DrawList` / present consumer; unset, explicit `0`, and positive values
+present byte-identical frames). The default `0` keeps every path on the
+zero-cost fast path. Staged rollout: pane-level rounding is a later stage;
+window-level rounding stays with the compositor and is not a `bitty`
+rendering stage.
 
 Open: per-field reload classification (still deferred to the follow-up
 inventory); whether the CLI appearance flag set or the shipped keymap set

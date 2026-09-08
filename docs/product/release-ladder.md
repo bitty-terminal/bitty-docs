@@ -1,6 +1,6 @@
 ---
 title: Release Ladder
-description: Maps the Pre-alpha / Engineering Milestones M1-M8 stage (18 crates c49ead1, 32 OQs Accepted, release v0.0.19) to the v0.1-v1.0 maturity ladder and the Implemented/Verified lifecycle
+description: Maps the Pre-alpha / Engineering Milestones M1-M8 stage (18 crates 29772a3, 32 OQs Accepted, release v0.0.19) to the v0.1-v1.0 maturity ladder and the Implemented/Verified lifecycle
 category: product
 audience: maintainer
 document_type: overview
@@ -13,8 +13,8 @@ sidebar_order: 21
 
 ## Status and provenance
 
-- Stage: **Pre-alpha / Engineering Milestones M1-M8** as of 2026-09-08 (`bitty` `c49ead1`,
-  previous `7048139`, baseline `de134ec`, 18 crates, 32 OQs `Accepted`, release `v0.0.19`).
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** as of 2026-09-08 (`bitty` `29772a3`,
+  previous `c49ead1`, baseline `de134ec`, 18 crates, 32 OQs `Accepted`, release `v0.0.19`).
   Experimental implementations `c0aadd2` (CTX-0095 vertical slice, PR #148) +
   `7e3104d` (CTX-0096 dogfood, PR #149) + `a8735d0` (CTX-0098 PTY reply fix,
   PR #151) are `Implemented` (experimental) not `Verified`/`Compatible`. This
@@ -31,7 +31,7 @@ sidebar_order: 21
   maturity remains `Pre-alpha` (not `Verified`/`Compatible`/`Release-ready`).
   Canonical snapshot:
   [`docs/project/project-state.json`](../project/project-state.json)
-  (synchronized `c49ead1`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+  (synchronized `29772a3`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
   `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
   `Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 - Lifecycle: `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`

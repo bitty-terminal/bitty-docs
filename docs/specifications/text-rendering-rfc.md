@@ -387,13 +387,19 @@ Candidate contract — coverage-driven, deterministic, bounded:
 
 Status: **shipped-default notes only** (read-only from `bitty`
 `origin/main`, `crates/bitty-config/src/types.rs`,
-`crates/bitty-vt/src/action.rs`, CTX-0157/CTX-0163). They record what the
+`crates/bitty-vt/src/action.rs`, CTX-0157/CTX-0163/CTX-0237). They record what the
 implementation ships today; they change no candidate rule above and do not
 promote this RFC beyond `draft`.
 
 - Primary face defaults to `"JetBrainsMono Nerd Font"` at `12.0`pt with
-  `line_height 1.2` and `letter_spacing 1.0`, giving an effective cell of
-  `9x19` from the legacy `8x16` base.
+  `line_height 1.375` and `letter_spacing 2.0`, giving an effective cell of
+  `10x22` from the legacy `8x16` base. The values are measured raster
+  truth at `12`pt (CTX-0237, `bitty` #413, commit `308687d`: live
+  crossfont probe average advance `10`px, line `22`px, descent `-5`px),
+  so in-font tall glyphs (block elements, powerline separators, Nerd
+  icons) fit with zero overhang; over-tall outliers keep the permitted
+  overdraw path. The renderer resolves the baseline from measured face
+  metrics (legacy fixed-ratio fallback retained).
 - Family-level fallback order is the configured primary, then
   `"JetBrains Mono"`, `"monospace"`, `"DejaVu Sans Mono"`, and
   `"Noto Sans Symbols 2"` last. `DejaVu Sans Mono` covers box drawing and
