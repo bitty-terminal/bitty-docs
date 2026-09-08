@@ -1,8 +1,8 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
 This list sequences project-definition and hardening work at the **Pre-alpha /
-Engineering Milestones M1-M8** stage (2026-09-08, `bitty` `c49ead1` previous
-`7048139` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
+Engineering Milestones M1-M8** stage (2026-09-08, `bitty` `29772a3` previous
+`c49ead1` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
 experimental slice `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` not `Verified`;
 `R-004` re-audited at `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -18,13 +18,13 @@ Canonical choices live in the [open-question register](docs/decisions/open-quest
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate maturity); experimental code is review evidence, not acceptance.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `c49ead1`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+(synchronized `29772a3`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
-semantic-terminal plus scrollbar sync (CTX-0131), and the scrollbar shipped
-flip (CTX-0132).
+semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
+flip (CTX-0132), and the workspace/frameHash sync bundle (CTX-0133).
 
 ## Documentation foundation
 
@@ -284,17 +284,15 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [ ] Obtain independent docs-curator + security-auditor review for CTX-0116
       sync before closing; `Verified`/`Compatible` remain gated on RS-1..RS-7.
 
-## Documentation synchronization — CTX-0130 sync (2026-09-07)
+## Documentation synchronization — prior syncs (2026-09-07/08)
 
-- [x] Reconcile post-0223 state (CTX-0130, `bitty` `1835175` previous `e8a7b76`, 18 crates, release `v0.0.19`): refresh `project-state.json` with verified-only subsystem rows, adopt M1-M8 milestone frame, retire the `a8735d0` baseline from headers, add Draft semantic-terminal RFC; no risk-state or normative changes.
+- [x] CTX-0130 post-0223 reconciliation (`1835175` previous `e8a7b76`): verified-only subsystem rows, M1-M8 frame, Draft semantic-terminal RFC; no risk-state or normative changes.
+- [x] CTX-0131 scrollbar Draft plus semantic-terminal P1-P5 (`7048139` previous `1835175`): scrollbar Draft pending #405 (`f1caedf`); P1-P2 `4ccb771`, P3 `064486b`, P4-P5 `ab1f7ab` Implemented-only; wave refresh; no risk-state or normative changes.
+- [x] CTX-0132 scrollbar flip to shipped (`c49ead1` previous `7048139`): scrollbar shipped defaults (#405 merged); snapshot touch-up; no risk-state or normative changes.
 
-## Documentation synchronization — CTX-0131 sync (2026-09-08)
+## Documentation synchronization — CTX-0133 sync (2026-09-08)
 
-- [x] Sync scrollbar config plus semantic-terminal P1-P5 plus snapshot refresh (CTX-0131, `bitty` `7048139` previous `1835175`, 18 crates, release `v0.0.19`): document `scrollbar.*` modes/geometry/config-contract as Draft pending `bitty` #405 (`f1caedf`, unmerged); flip semantic-terminal P1-P2 (`4ccb771` #390), P3 (`064486b` #392), P4-P5 (`ab1f7ab` #394) to Implemented-only with SHAs, P6 plus OQ-S1..S7 stay open; refresh `project-state.json` with the new-merges wave (sRGB `b4b4e30`, splitView D1 `77bd6c5`, repaint `5a535ee`, paste chord `88c0ead`, runtime split `61b655f`, chrome-keys `3384903`, DA per-pane `7048139`, ctl denials `99f5b1d`) and scrollbar-pending plus composer/hints/blocks subsystem rows; no risk-state or normative changes.
-
-## Documentation synchronization — CTX-0132 sync (2026-09-08)
-
-- [x] Flip scrollbar Draft to shipped plus snapshot touch-up (CTX-0132, `bitty` `c49ead1` previous `7048139`, 18 crates, release `v0.0.19`): flip the scrollbar overlay section in `docs/configuration/lua-and-xdg.md` to shipped defaults at `c49ead1` (`bitty` #405 merged, CTX-0181, closes #281, verified via `merge-base --is-ancestor`); refresh `project-state.json` revision plus scrollbar/render_ux/config subsystem rows and the wave note; no risk-state or normative changes.
+- [x] Sync workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults, plus snapshot refresh (CTX-0133, `bitty` `29772a3` previous `c49ead1`, 18 crates, release `v0.0.19`): record canonical `bitty-terminal.workspace` with deprecated `tabs` shim (removal at or after `v0.2.0`, grant hash-binding rationale) in panel-vision plus roadmap; add shipped layout-gaps reference (`gaps_in`/`gaps_out` `0..=16`, stack inset-only) to lua-and-xdg; record `window.radius_px` S0 parsed no-op (`0..=24` default `0`, window-level rounding with the compositor) and `mod_key` leader setting (default `alt`, `super` allowed, `ctrl`/`shift` rejected) in the configuration-model shipped snapshot; update font defaults to `1.375`/`2.0` with live cell `10x22` in the configuration-model and text-rendering shipped notes; add DevTools RFC Amendment A2 (`frameHash` digest method, `FrameDigest` family, 120 s TTL, 2/s, local-only, pixel channel deferred, P0-AC-026 unchanged; V1-V3 panel-live gates Implemented-only, not Verified); refresh `project-state.json` to `29772a3` with validator, fixture, and summaries in lockstep; no risk-state or normative changes.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

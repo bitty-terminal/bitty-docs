@@ -12,8 +12,8 @@ sidebar_order: 1
 # Documentation map
 
 This index is the entry point for Bitty's canonical design corpus. The corpus
-is **Pre-alpha / Engineering Milestones M1-M8** (2026-09-08, `bitty` `c49ead1`
-previous `7048139` baseline `de134ec`, 18 crates,
+is **Pre-alpha / Engineering Milestones M1-M8** (2026-09-08, `bitty` `29772a3`
+previous `c49ead1` baseline `de134ec`, 18 crates,
 32 OQs `Accepted`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
 `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -24,7 +24,7 @@ implementations `c0aadd2` (vertical slice, CTX-0095) + `7e3104d` (dogfood,
 CTX-0096) + `a8735d0` (PTY fix, CTX-0098) are `Implemented` (experimental) not
 `Verified`/`Compatible`/`Release-ready`, overall not `Verified`): it records
 what the project intends, what it requires, what it is considering, what is
-`Implemented` (compat-lab/perf hardening and UX wave through `c49ead1` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus experimental single-window slice)
+`Implemented` (compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, and V1-V3 gates `Implemented`-only plus experimental single-window slice)
 but not yet `Verified`, and what remains `Open`/`Mitigated` (including `R-004`
 with residual platform-backend, real-window UX, and `8192`-byte bound-scope
 limits) and `Experimental Implementation` (reviewable code at `a8735d0`). Lifecycle is
@@ -32,7 +32,7 @@ limits) and `Experimental Implementation` (reviewable code at `a8735d0`). Lifecy
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate) per the [risk evidence RFC](specifications/risk-evidence-rfc.md).
 Canonical snapshot: [`project-state.json`](project/project-state.json)
-(synchronized `c49ead1`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+(synchronized `29772a3`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
 
@@ -43,7 +43,7 @@ Canonical snapshot: [`project-state.json`](project/project-state.json)
 | [Product vision](product/vision.md)                                                                    | Product intent, principles, scope, and success criteria.                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [Panel Extensibility Vision](product/panel-vision.md)                                                  | Draft vision for Panel as a programmable terminal workspace container; candidate direction only.                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [Proposed Delivery Sequence](product/proposed-delivery-sequence.md)                                    | Draft record of candidate build order, deferral list, version ladder, and daemon staging from historical advisor input; not a roadmap.                                                                                                                                                                                                                                                                                                                                                                                     |
-| [Release Ladder](product/release-ladder.md)                                                            | Pre-alpha / Engineering Milestones M1-M8 mapping of the v0.1-v1.0 maturity ladder to the 18-crate workspace and `Implemented`/`Verified` lifecycle (2026-09-08, `c49ead1`).                                                                                                                                                                                                                                                                                                                                                |
+| [Release Ladder](product/release-ladder.md)                                                            | Pre-alpha / Engineering Milestones M1-M8 mapping of the v0.1-v1.0 maturity ladder to the 18-crate workspace and `Implemented`/`Verified` lifecycle (2026-09-08, `29772a3`).                                                                                                                                                                                                                                                                                                                                                |
 | [Single-Window Vertical Slice Acceptance Plan](product/vertical-slice-acceptance.md)                   | Draft spec (CTX-0109) plus Experimental Implementation (CTX-0095 `c0aadd2` + CTX-0098 `a8735d0`, `Implemented` not `Verified`, PR #148/#151, bounded PTY reply loop, Kitty 7727 colon params): one process/window/workspace/terminal, end-to-end PTY/VT/state/render/input path, platform and PB-1..PB-7 expectations, and explicit exclusions; spec remains `Draft` until accepted.                                                                                                                                       |
 | [TerminalRegistry and View Lifecycle Contract](specifications/terminal-registry-view-lifecycle-rfc.md) | Accepted spec (CTX-0117) plus Experimental Implementation (part of `c0aadd2`/`a8735d0`, `Implemented` not `Verified`, view-rect + DPI -> PTY resize, bounded `write_replies`): ownership of TerminalId vs ViewId separation, RuntimeId/PersistentId, generation, view attachment/detachment, focus, layout, visibility, persistence, reattachment vs recreation, bounded resources, and failure semantics with explicit multi-window and daemon exclusions; spec is `Accepted` (not `Verified`/`Compatible`) per CTX-0117. |
 | [Workspace Compositor Specification](specifications/workspace-compositor.md)                           | Accepted spec (CTX-0118, no experimental implementation yet): Hyprland-inspired tiling compositor H/V `LayoutTree`, View types `Terminal`/`Rich`/`Browser`, Core-owned `gaps_in`/`gaps_out`/`border`/`radius`, `LayoutProvider` `dwindle`/`master`/`grid`, and drag/resize/move/scratchpad with deterministic layout, bounded resources, and `ViewId`/`TerminalId` separation; spec is `Accepted` (not `Verified`/`Compatible`) per CTX-0118.                                                                              |
@@ -62,7 +62,7 @@ Canonical snapshot: [`project-state.json`](project/project-state.json)
 | [Examples](examples/README.md)                                  | Future minimal, versioned, mechanically verified illustrations.                                                                                                     |
 | [Development](development/README.md)                            | Contributor entry point and current delivery expectations.                                                                                                          |
 | [Documentation workflow](development/documentation-workflow.md) | Normative taxonomy, metadata, ownership, review, synchronization, deprecation, and versioning policy.                                                               |
-| [Repository bootstrap](development/repository-bootstrap.md)     | Accepted zero-functionality Core and website scaffold contract plus implementation validation gates (18 crates `c49ead1` now `Implemented` but not yet `Verified`). |
+| [Repository bootstrap](development/repository-bootstrap.md)     | Accepted zero-functionality Core and website scaffold contract plus implementation validation gates (18 crates `29772a3` now `Implemented` but not yet `Verified`). |
 | [Toolchain and tooling policy](development/toolchain-policy.md) | Pinned per-repository toolchains and canonical gate commands all agents must use.                                                                                   |
 
 ## Architecture and interfaces
@@ -101,7 +101,7 @@ precedence over source summaries and non-security design suggestions.
 
 | Document                                                        | Purpose                                                                                                                                                        |
 | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Repository map](project/repository-map.md)                     | Local/remote topology, repository ownership, and current initialization state (18 crates `c49ead1`, Website Delivery OQ-023 and Governance OQ-024 `Accepted`). |
+| [Repository map](project/repository-map.md)                     | Local/remote topology, repository ownership, and current initialization state (18 crates `29772a3`, Website Delivery OQ-023 and Governance OQ-024 `Accepted`). |
 | [Technology strategy](project/technology-strategy.md)           | Accepted language/platform direction and implementation choices (18 crates, `bitty-lua` `piccolo` 0.3.3 `Accepted`).                                           |
 | [Reference projects](project/reference-projects.md)             | Untrusted, read-only research snapshots and study questions.                                                                                                   |
 | [Website content contract](project/website-content-contract.md) | Normative ownership and validation boundary between `bitty-docs` and `bitty-website`.                                                                          |
@@ -119,7 +119,7 @@ precedence over source summaries and non-security design suggestions.
 | [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions; currently an explicit empty state.        |
 | [Findings](findings/README.md)                                                                       | Durable reviewed evidence; internal and excluded from website publication.             |
 | [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents. |
-| [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-08, `c49ead1`).            |
+| [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-08, `29772a3`).            |
 
 ## Interpretation rules
 
@@ -128,17 +128,17 @@ Use the following lifecycle labels consistently
 spec, `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 crate):
 
-| Label                                 | Meaning                                                                                                                                                                                                                                          |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Normative requirement                 | A future implementation gate. Mechanism details may remain open.                                                                                                                                                                                 |
-| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. All 32 OQs (OQ-001..032) are `Accepted` as of 2026-08-29.                                                                                                           |
-| Candidate / Draft                     | A proposal to investigate, compare, or prototype. Spec remains `Draft` until reviewed `Accepted`; 7 `Draft` specs remain (see `specifications/README.md` prioritization).                                                                        |
-| Experimental Implementation           | Code exists at `c0aadd2`/`7e3104d`/`a8735d0` (`Implemented` experimental, not `Verified`): single-window slice, PTY reply loop, dogfood plugins — reviewable evidence distinct from `Draft` (no code) and `Accepted`.                            |
-| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated` at `d4d75e9`.                                      |
-| Implemented                           | Demonstrated by code, tests, or release evidence in the owning repository (`bitty` `c49ead1`, 18 crates, compat-lab/perf hardening plus scrollbar overlay plus experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` but not yet `Verified`). |
-| Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed; experimental code does not imply `Verified`.                                                                       |
+| Label                                 | Meaning                                                                                                                                                                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Normative requirement                 | A future implementation gate. Mechanism details may remain open.                                                                                                                                                                                                               |
+| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. All 32 OQs (OQ-001..032) are `Accepted` as of 2026-08-29.                                                                                                                                         |
+| Candidate / Draft                     | A proposal to investigate, compare, or prototype. Spec remains `Draft` until reviewed `Accepted`; 7 `Draft` specs remain (see `specifications/README.md` prioritization).                                                                                                      |
+| Experimental Implementation           | Code exists at `c0aadd2`/`7e3104d`/`a8735d0` (`Implemented` experimental, not `Verified`): single-window slice, PTY reply loop, dogfood plugins — reviewable evidence distinct from `Draft` (no code) and `Accepted`.                                                          |
+| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated` at `d4d75e9`.                                                                    |
+| Implemented                           | Demonstrated by code, tests, or release evidence in the owning repository (`bitty` `29772a3`, 18 crates, compat-lab/perf hardening plus scrollbar overlay plus workspace/frameHash wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` but not yet `Verified`). |
+| Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed; experimental code does not imply `Verified`.                                                                                                     |
 
-At the 2026-09-08 snapshot (`c49ead1`, baseline `de134ec` previous `7048139`),
+At the 2026-09-08 snapshot (`29772a3`, baseline `de134ec` previous `c49ead1`),
 some product behavior is `Implemented` (`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package`/`compat-lab`/`perf` plus experimental
 `c0aadd2`/`7e3104d`/`a8735d0`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified`
 requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41`

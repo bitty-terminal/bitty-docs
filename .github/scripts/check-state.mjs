@@ -201,11 +201,11 @@ function validateSnapshot(data) {
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "c49ead1") {
-    failures.push("sync_provenance.synchronized_revision must be c49ead1");
+  if (!provenance || provenance.synchronized_revision !== "29772a3") {
+    failures.push("sync_provenance.synchronized_revision must be 29772a3");
   }
-  if (!provenance || provenance.carryctx_task !== "CTX-0132") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0132");
+  if (!provenance || provenance.carryctx_task !== "CTX-0133") {
+    failures.push("sync_provenance.carryctx_task must be CTX-0133");
   }
   if (!provenance || !provenance.github_issue?.includes("bitty-docs/issues")) {
     failures.push(
@@ -351,7 +351,7 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("c49ead1") ||
+      !summary.includes("29772a3") ||
       !summary.includes("Pre-alpha / Engineering Milestones M1-M8") ||
       !summary.includes("v0.0.19")
     ) {

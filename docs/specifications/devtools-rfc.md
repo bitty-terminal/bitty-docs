@@ -40,6 +40,18 @@ sidebar_order: 19
 > profiling over IPC, PR #334) without moving acceptance. Admission of the
 > keystroke-injection surface still requires category-owner plus
 > security-auditor review before acceptance; see the admission gate below.
+>
+> Amendment A2 (Implemented-only, `bitty` CTX-0244 plus CTX-0242): this RFC
+> additionally documents the `bitty.debug/frameHash` digest method (SHA-256
+> over canonical frame bytes, new `FrameDigest` automation family, 120 s
+> TTL cap, 2 digests/s, local-only, raw pixel channel deferred) and the
+> V1-V3 panel-live visual gates built on frame-digest equality. Everything
+> under [Frame digest method and panel-live gates](#frame-digest-method-and-panel-live-gates-implemented-only-amendment-a2)
+> is Implemented-only evidence, not accepted contract: it authorizes no
+> additional implementation beyond the merged `bitty` commits cited below,
+> weakens no normative control (P0-AC-026 unchanged), and records the
+> implementation half of `bitty` CTX-0244 (frameHash digest, PR #421) and
+> CTX-0242 (V1-V3 harness gates, PR #423) without moving acceptance.
 
 ## Purpose and scope
 
@@ -616,6 +628,72 @@ still requires at minimum (implementation is merged; acceptance is open):
 5. No-bypass audit extended: no flag, variable, configuration key, or debug
    build switch issues, persists, or widens an automation bearer.
 
+## Frame digest method and panel-live gates (Implemented-only, Amendment A2)
+
+> Status: Implemented-only. This section documents `bitty` CTX-0244 (PR
+> #421, commit `3f5ed24`, `bitty.debug/frameHash` digest method) and
+> CTX-0242 (PR #423, commit `29772a3`, V1-V3 panel-live visual gates) as
+> merged implementation evidence and carries no acceptance, no
+> compatibility promise, and no Verified claim. It must not weaken any
+> normative control listed under
+> [Normative sources this specification must not weaken](#normative-sources-this-specification-must-not-weaken);
+> where it conflicts with one, the normative text wins. P0-AC-026 is
+> unchanged: digests are uninvertible, carry no text, and cannot leak
+> clipboard or environment bytes, so the redaction boundary does not move.
+
+The V1-V3 gates ask an equality question — does the frame the IPC path
+observed equal the frame the present path produced — not a transport
+question. A collision-resistant digest over canonical frame bytes answers
+equality in 32 bytes with zero pixel bytes on the wire.
+
+### Digest method
+
+| Implemented method      | Required scope and bearer                                                       | Implemented content                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `bitty.debug/frameHash` | `debug.trace` plus per-session `FrameDigest` automation bearer for one terminal | Hex SHA-256 digest (`algo: "sha256-v1"`) over canonical `BFH1` header plus `headless_rgba`, with frame sequence |
+
+1. Canonical bytes are the `BFH1` magic plus big-endian width, height,
+   and frame sequence followed by the raw premultiplied RGBA bytes. The
+   hash is std-only SHA-256 (no new dependency), pinned against the NIST
+   `"abc"` vector plus fixed canonical-frame vectors so the algorithm can
+   never silently drift; any future layout change bumps `sha256-v1` with a
+   dual-verify migration.
+2. Issuance reuses the CTX-0188 consent minter with no new scope and no
+   widening: the new `AutomationFamily::FrameDigest` bearer can never
+   satisfy a `Capture` check. Its TTL cap is 120 s (2 minutes, strictly
+   below the 10-minute automation cap), and its rate ceiling is 2
+   digests/s per bearer (overruns shed with typed `budget` /
+   `RateLimited` errors).
+3. Transport stays local-attested only; unattributed or out-of-scope
+   calls fail closed with `ScopeDenied`. Every attributable call —
+   granted and denied — appends one `digest` audit entry (caller
+   identity, frame sequence, served digest) to the bounded log (64
+   entries, drop-oldest).
+4. No raw pixel channel exists: pixel bytes never cross IPC under any
+   grant. That option stays deferred; admitting it needs a separate
+   review, not an extension of this amendment.
+
+### V1-V3 panel-live gates
+
+Implemented in `bitty` CTX-0242 as headless digest-equality gates
+(`crates/bitty-runtime/tests/panel_live_framehash.rs`), all
+Implemented-only evidence, not Verified:
+
+- V1 gap-diff plus rerun: the gapped digest differs from the no-gap
+  baseline for the same frame, and a rerun digest matches.
+- V2 focus-change plus restore: moving focus changes the digest, and
+  switching back restores it.
+- V3 workspace-alias parity: the `workspace` canonical path and the
+  `tabs` shim produce equal digests.
+- A real-Unix-socket `frameHash` round-trip proves the served digest
+  equals the present-path digest with zero pixel bytes. The live-grant
+  ws4 ceremony stays local-manual (ignore-gated).
+
+Acceptance of this amendment needs the Amendment A1 admission gate plus
+frame-digest specifics: the 120 s TTL and 2/s ceiling stay adequate under
+harness load, the digest audit stays byte-accurate under contention, and
+no pixel channel ships without its own reviewed amendment.
+
 ## Transport, authentication, and session lifecycle (accepted)
 
 1. DevTools connections use the existing IPC transport: current-user
@@ -776,6 +854,11 @@ require a follow-up decision:
 12. (Amendment A1, Implemented-only, acceptance open) Whether `captureFrame`
     or profiling streams ever join a post-v1 MCP elevation model, and under
     which consent shape.
+13. (Amendment A2, Implemented-only, acceptance open) Whether the
+    `FrameDigest` bearer TTL cap (120 s) and rate ceiling (2 digests/s)
+    stay adequate under harness load, and whether a raw pixel channel is
+    ever admitted (deferred; needs its own reviewed amendment, never an
+    extension of A2).
 
 ## Acceptance criteria
 
