@@ -98,8 +98,10 @@ product implementation evidence:
   `bitty-website`, `bitty-devtools`, `bitty-mcp`, `bitty-plugin-sdk`, and
   `bitty-plugin-template`.
 - At the time of the repository inventory, those remotes had no commits.
-- The local umbrella root and `bitty-plugins/` are routing/grouping directories,
-  not Git repositories. SDK and template children are independent repositories.
+- The local umbrella root, `bitty-plugins/`, and `bitty-ai/` are
+  routing/grouping directories, not Git repositories. SDK and template children
+  are independent repositories. The `bitty-mcp` remote is unchanged; its local
+  checkout is grouped at `bitty-ai/bitty-mcp`.
 
 Current topology and observation dates belong in the
 [repository map](../project/repository-map.md); re-verify drift-prone remote

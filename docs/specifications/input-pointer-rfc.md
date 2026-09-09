@@ -174,6 +174,75 @@ through an explicit encoder or command path.
 - Bounded: modifier mask is `u8`; no chord exceeds `4` simultaneous modifiers
   after normalization.
 
+## Default Mod and chord consumption (candidate)
+
+- **Default Mod**: `Alt` is the candidate default Mod prefix entering
+  Bitty's own command namespace (`Alt+H/J/K/L` focus, `Alt+1..9`
+  workspaces), because it reads as a window-manager modifier and collides
+  less with the terminal-critical `Ctrl+C/D/Z/L` family than `Ctrl` would.
+  The default is a configuration value, not a hardcoded constant.
+- **Only registered chords are consumed**: Bitty consumes exactly the `Alt`
+  chords bound in the keymap registry; every unregistered `Alt` chord
+  continues to the terminal input encoder (legacy `ESC`-prefix Meta
+  handling or Kitty distinct-modifier encoding). A global `Alt` capture
+  would break shell readline, Emacs bindings, and TUI Meta usage and is
+  explicitly rejected.
+- **Normal versus terminal layering**: plain keys go to the terminal, `Mod`
+  chords go to Bitty dispatch, and application-specific sequences (Neovim
+  leader, tmux prefix, shell bindings) stay inside the terminal. This keeps
+  three keyboard layers disjoint.
+
+## Key dispatch priority (candidate)
+
+```text
+keypress
+   |
+   v
+Bitty Binding Resolver -- matched? -- yes --> command dispatch
+   |
+   no
+   v
+Terminal Input Encoder --> PTY
+```
+
+Candidate precedence inside the resolver:
+
+1. Emergency and reserved Bitty bindings.
+2. Active overlay or modal capture.
+3. User-defined Bitty bindings.
+4. Plugin-suggested bindings.
+5. Terminal encoding (the fallthrough above).
+
+The boundary must stay deterministic: Core, plugins, and the terminal never
+ambiguously compete for one keypress. Plugin bindings remain suggestions
+under the accepted precedence (explicit user mapping wins) from the
+[Plugin Platform RFC](plugin-platform-rfc.md); this section only adds the
+emergency, overlay, and terminal-fallthrough ordering around it.
+
+## Mod plus Leader and discoverability (candidate)
+
+- **Leader sequences**: besides immediate `Mod` chords for high-frequency
+  actions, a Leader entry (for example `Alt+Space`) opens a Bitty command
+  sequence namespace (`w` workspace, `p` panel, `a` AI, `g` git, `?` help),
+  in the spirit of tmux prefix and Neovim leader. This avoids shortcut
+  namespace explosion as plugin count grows.
+- **Which-key help**: after the Leader prefix, a floating overlay lists the
+  available next keys and narrows per keystroke, so the Help panel doubles
+  as a which-key menu. Dismissal is `Esc` or the same shortcut; the overlay
+  is presentation-only under the overlay rules of the
+  [Panel Runtime pre-study](panel-runtime-pre-study.md).
+- **Flash-style jump**: a binding labels every panel with a jump key for
+  one-keystroke focus, optionally extended to a panel-action mode (toggle
+  floating, close, fullscreen per label). This composes with the Leader and
+  which-key layers into one keyboard language.
+- **Registry-driven discovery**: with many plugins no user can memorize
+  every shortcut, so every plugin command registers once with id, title,
+  and category and Bitty derives help content, command-palette search,
+  shortcut-conflict diagnostics, and Leader menus from that single
+  registry. The registry itself is owned by the
+  [Plugin Platform RFC](plugin-platform-rfc.md); this section only states
+  the input-side consumption requirement.
+
 ## Application cursor and keypad modes (candidate)
 
 - `DECCKM` (cursor keys) and `DECKPAM`/`DECKPNM` (keypad) are terminal modes
@@ -590,6 +659,9 @@ architecture and security-auditor review.
   beyond Shift+Wheel compat, and if so which private CSI.
 - Whether left/right modifier distinction ever justifies a new capability or
   remains a configuration knob.
+- Whether the `Alt`-default Mod, only-registered-chords-consumed rule,
+  dispatch priority, Leader sequences, and which-key/flash discoverability
+  enter acceptance together or as separate follow-ups.
 
 These are tracked as candidate follow-ups; they do not block the rest of the
 contract.

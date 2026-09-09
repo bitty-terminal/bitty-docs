@@ -39,6 +39,9 @@ Core Cargo workspace for initialization; the expanded crate graph is now
   are `Accepted` 2026-08-29.
 - `bitty-plugins/` is only a local grouping directory, not a Git repository.
   Each child directory will be an independent plugin repository.
+- `bitty-ai/` is only a local grouping directory, not a Git repository. It
+  hosts AI-subsystem repositories; its only child today is `bitty-mcp`,
+  whose repository and remote are unchanged by the move.
 - Documentation belongs to `bitty-docs`. A future website consumer must use
   validated canonical Markdown rather than maintain duplicate specifications;
   no consumer exists yet.
@@ -61,7 +64,9 @@ bitty-terminal/                     # local umbrella, not a Git repo
 ├── bitty-docs/                     # independent repo: canonical knowledge
 ├── bitty-website/                  # independent repo: Astro public website
 ├── bitty-devtools/                 # independent repo: debug UI/client
-├── bitty-mcp/                      # independent repo: MCP adapter
+│
+├── bitty-ai/                       # local grouping only, never parent Git repo
+│   └── bitty-mcp/                  # independent repo: MCP adapter
 │
 └── bitty-plugins/                  # local grouping only, never parent Git repo
     ├── bitty-plugin-sdk/           # independent repo
@@ -87,11 +92,11 @@ checks matching that repository's CI job names.
 | `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only) | `Docs quality`                                   |
 | `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only) | `Website quality`                                |
 | `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
-| `bitty-mcp/`                           | `https://github.com/bitty-terminal/bitty-mcp`             | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
+| `bitty-ai/bitty-mcp/`                  | `https://github.com/bitty-terminal/bitty-mcp`             | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
 | `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only) | `Actionlint`, `Quality gates`                    |
 | `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only) | `Lint GitHub Actions workflows`, `Quality gates` |
 
-Neither the umbrella root nor `bitty-plugins/` is initialized as a Git
+Neither the umbrella root, `bitty-plugins/`, nor `bitty-ai/` is initialized as a Git
 repository. This is an intentional routing and grouping boundary, not an
 omission.
 
@@ -103,7 +108,7 @@ omission.
 | `bitty-docs`            | Vision, requirements, architecture, ADRs, RFCs, roadmap, and research                  | Accepted authoritative documentation repository                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `bitty-website`         | Astro static shell and future presentation consumer of canonical `bitty-docs` Markdown | Astro, Bun, and Workers Static Assets bootstrap accepted; loader, synchronization, version selection, routes, and redirect manifest `Accepted` via Website Delivery RFC (OQ-023, 2026-08-29); theme/search remain open                                                                                                                                                                                                                                                          |
 | `bitty-devtools`        | Human debugging client                                                                 | Repository created; debug-protocol model is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `bitty-mcp`             | Agent and MCP adapter                                                                  | Repository created; internal-protocol boundary is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `bitty-ai/bitty-mcp`    | Agent and MCP adapter                                                                  | Repository created; local checkout grouped at `bitty-ai/bitty-mcp`; remote unchanged; internal-protocol boundary is a candidate                                                                                                                                                                                                                                                                                                                                                 |
 | `bitty-plugin-sdk`      | Lua helpers, LuaLS types, mock host, and test tools                                    | Independent repository accepted; exact responsibilities are candidates                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `bitty-plugin-template` | Plugin scaffold, CI, and manifest examples                                             | Independent repository accepted; format is a candidate                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | Each plugin repository  | One optional user experience or integration                                            | Independent-repository model accepted; public API constraints are candidates                                                                                                                                                                                                                                                                                                                                                                                                    |
