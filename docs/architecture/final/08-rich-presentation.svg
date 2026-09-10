@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1200" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L1 Rich Presentation Protocol & Terminal Truth</text>
+  <text x="30" y="32" class="title">L1 Rich Presentation Protocol &amp; Terminal Truth</text>
   <text x="30" y="52" class="subtitle">Preserves canonical terminal grid state while layering rich presentation blocks (Markdown, images, inline widgets) without parser pollution.</text>
 
   <!-- Interactive Link Banner -->
@@ -125,6 +125,6 @@
       <rect x="850" y="300" width="280" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="990" y="327" class="node-title">Overlay Quad Pass</text>
-    <text x="990" y="341" class="node-sub">Textures & Meshes</text>
+    <text x="990" y="341" class="node-sub">Textures &amp; Meshes</text>
   </g>
 </svg>

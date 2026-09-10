@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1100" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L0 System Overview & Trust Boundaries</text>
+  <text x="30" y="32" class="title">L0 System Overview &amp; Trust Boundaries</text>
   <text x="30" y="52" class="subtitle">System-level architecture showing the terminal pipeline, runtime orchestration, and three primary untrusted isolation domains.</text>
 
   <!-- Interactive Link Banner -->
@@ -206,7 +206,7 @@
       <rect x="830" y="150" width="200" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="930" y="177" class="node-title">bitty-plugin-host</text>
-    <text x="930" y="191" class="node-sub">Registry & Queues</text>
+    <text x="930" y="191" class="node-sub">Registry &amp; Queues</text>
   </g>
   <g id="node-bitty_lua" filter="url(#shadow)">
     <a href="../interactive/00-overview.html" target="_blank">
@@ -227,7 +227,7 @@
       <rect x="70" y="470" width="190" height="55" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="165" y="494.5" class="node-title">bitty-ipc</text>
-    <text x="165" y="508.5" class="node-sub">Framing & Unix Sockets</text>
+    <text x="165" y="508.5" class="node-sub">Framing &amp; Unix Sockets</text>
   </g>
   <g id="node-bitty_agent" filter="url(#shadow)">
     <a href="../interactive/00-overview.html" target="_blank">

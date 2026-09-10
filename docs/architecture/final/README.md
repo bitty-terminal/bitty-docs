@@ -12,13 +12,17 @@ sidebar_order: 11
 # Final Architecture Diagrams
 
 This directory holds the vector SVG exports for every architecture diagram under
-`docs/architecture/`. Each SVG is an export generated from the canonical
-architecture models and features an embedded interactive link pointing directly to
-its rich, operable HTML canvas equivalent under `docs/architecture/interactive/`.
+`docs/architecture/`. Each SVG is a maintained export synchronized with the
+canonical architecture models and features an embedded interactive link pointing
+directly to its rich, operable HTML canvas equivalent under
+`docs/architecture/interactive/`.
 
 - Interactive suite: [`../interactive/index.html`](../interactive/index.html).
-- Single source of truth: [`../glossary.yaml`](../glossary.yaml) and
-  [`../interactive/js/diagrams-data.js`](../interactive/js/diagrams-data.js).
+- Canonical source of truth: [`../glossary.yaml`](../glossary.yaml) — the
+  authoritative node, boundary, and edge inventory.
+- Derived and synchronized data: the structured graph definitions in
+  [`../interactive/js/diagrams-data.js`](../interactive/js/diagrams-data.js) and
+  these SVG exports.
 - Levels: L0 overview, L1 subsystem, L2 flow, L3 relation.
 
 ## Inventory and Interactive Destinations
@@ -54,13 +58,11 @@ SVG preview or directly link to the interactive HTML visualization:
 [![L0 System Overview](final/00-overview.svg)](interactive/00-overview.html)
 ```
 
-## Regeneration
+## Maintenance
 
-All SVGs can be regenerated deterministically from the canonical data model:
-
-```bash
-bun -e '
-  import { readFileSync, writeFileSync } from "fs";
-  // Evaluates docs/architecture/interactive/js/diagrams-data.js to export SVGs
-'
-```
+The SVGs are maintained vector exports committed alongside the synchronized
+data model in
+[`../interactive/js/diagrams-data.js`](../interactive/js/diagrams-data.js). This
+repository does not ship an SVG generator: when a diagram changes, update its
+SVG export and the corresponding interactive model in the same change, then run
+`just svg` to confirm every committed SVG is well-formed XML.

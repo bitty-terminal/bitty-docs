@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1200" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L1 Isolation Domains & L3 Resource Ceilings</text>
+  <text x="30" y="32" class="title">L1 Isolation Domains &amp; L3 Resource Ceilings</text>
   <text x="30" y="52" class="subtitle">Three isolated security domains (PTY child, Plugin runtime, IPC/MCP), 10 quantitative resource ceilings (RC-1 to RC-10), and 4 failure semantics (FS-1 to FS-4).</text>
 
   <!-- Interactive Link Banner -->
@@ -48,11 +48,11 @@
   </g>
   <g id="group-ir_d3_box">
     <rect x="810" y="100" width="340" height="440" rx="10" fill="rgba(219, 39, 119, 0.05)" stroke="#db2777" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="824" y="124" class="group-label">IR-D3: IPC & MCP Interface Domain</text>
+    <text x="824" y="124" class="group-label">IR-D3: IPC &amp; MCP Interface Domain</text>
   </g>
   <line x1="220" y1="165" x2="220" y2="201" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="175" y="169" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />
-  <text x="220" y="179" class="edge-label">fork & pty</text>
+  <text x="220" y="179" class="edge-label">fork &amp; pty</text>
   <line x1="220" y1="232.5" x2="220" y2="271" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="175" y="237.75" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />
   <text x="220" y="247.75" class="edge-label">stdout stream</text>
@@ -92,7 +92,7 @@
       <rect x="70" y="205" width="300" height="55" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" />
     </a>
     <text x="220" y="229.5" class="node-title-dark">Child Shell Process</text>
-    <text x="220" y="243.5" class="node-sub-dark">Isolated pgid & Session</text>
+    <text x="220" y="243.5" class="node-sub-dark">Isolated pgid &amp; Session</text>
   </g>
   <g id="node-rc7" filter="url(#shadow)">
     <a href="../interactive/06-isolation-resource.html" target="_blank">

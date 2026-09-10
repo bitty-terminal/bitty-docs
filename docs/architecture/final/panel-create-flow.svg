@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1130" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L2 Panel & View Creation Sequence</text>
+  <text x="30" y="32" class="title">L2 Panel &amp; View Creation Sequence</text>
   <text x="30" y="52" class="subtitle">Window allocation, Workspace compositor lookup, LayoutTree splitting, View allocation, and content binding (Terminal, Rich, Browser).</text>
 
   <!-- Interactive Link Banner -->
@@ -64,7 +64,7 @@
   <text x="622" y="296" class="edge-label">recalculate</text>
   <line x1="430" y1="300" x2="274" y2="300" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="307" y="286" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />
-  <text x="352" y="296" class="edge-label">validate & draw</text>
+  <text x="352" y="296" class="edge-label">validate &amp; draw</text>
   <g id="node-pc_req" filter="url(#shadow)">
     <a href="../interactive/panel-create-flow.html" target="_blank">
       <rect x="50" y="100" width="220" height="60" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" />

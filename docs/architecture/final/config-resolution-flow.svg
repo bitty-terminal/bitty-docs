@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1130" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L2 Config Resolution Flow & Live Reconcile</text>
+  <text x="30" y="32" class="title">L2 Config Resolution Flow &amp; Live Reconcile</text>
   <text x="30" y="52" class="subtitle">Detailed step-by-step resolution of configuration sources, layer precedence merging, non-overridable policy checks, and live vs restart classification.</text>
 
   <!-- Interactive Link Banner -->

@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1180" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L1 Workspace Compositor & Panel Architecture</text>
+  <text x="30" y="32" class="title">L1 Workspace Compositor &amp; Panel Architecture</text>
   <text x="30" y="52" class="subtitle">Hierarchy of Instance, Window, Workspace, LayoutTree, and View containers. Separates terminal state from view presentation and dynamic layout providers.</text>
 
   <!-- Interactive Link Banner -->
@@ -40,7 +40,7 @@
   </a>
   <g id="group-identity_hierarchy">
     <rect x="50" y="100" width="320" height="320" rx="10" fill="rgba(100, 116, 139, 0.05)" stroke="#64748b" stroke-width="1.5" stroke-dasharray="none" />
-    <text x="64" y="124" class="group-label">Container & Window Hierarchy</text>
+    <text x="64" y="124" class="group-label">Container &amp; Window Hierarchy</text>
   </g>
   <g id="group-workspace_box">
     <rect x="410" y="100" width="360" height="490" rx="10" fill="rgba(5, 150, 105, 0.05)" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,4" />
@@ -48,7 +48,7 @@
   </g>
   <g id="group-views_box">
     <rect x="810" y="100" width="320" height="490" rx="10" fill="rgba(37, 99, 235, 0.05)" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="824" y="124" class="group-label">View Leaves & Panel Candidates</text>
+    <text x="824" y="124" class="group-label">View Leaves &amp; Panel Candidates</text>
   </g>
   <line x1="210" y1="170" x2="210" y2="226" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="165" y="184" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />
@@ -129,7 +129,7 @@
     <a href="../interactive/03-panel-system.html" target="_blank">
       <rect x="440" y="425" width="300" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
-    <text x="590" y="452" class="node-title">Focus Stack & Navigation</text>
+    <text x="590" y="452" class="node-title">Focus Stack &amp; Navigation</text>
     <text x="590" y="466" class="node-sub">Directional (L/R/U/D)</text>
   </g>
   <g id="node-view_term" filter="url(#shadow)">

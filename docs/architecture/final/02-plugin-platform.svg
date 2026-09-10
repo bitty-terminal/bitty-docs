@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1140" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L1 Plugin Platform, VM & Event Pipeline</text>
+  <text x="30" y="32" class="title">L1 Plugin Platform, VM &amp; Event Pipeline</text>
   <text x="30" y="52" class="subtitle">Plugin discovery, manifest validation, capability gating, per-plugin Lua VM execution, and bounded cold-path event queues.</text>
 
   <!-- Interactive Link Banner -->
@@ -40,7 +40,7 @@
   </a>
   <g id="group-manifest_group">
     <rect x="50" y="100" width="320" height="260" rx="10" fill="rgba(2, 132, 199, 0.05)" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="64" y="124" class="group-label">Manifest & Identity Stage</text>
+    <text x="64" y="124" class="group-label">Manifest &amp; Identity Stage</text>
   </g>
   <g id="group-security_gate">
     <rect x="410" y="100" width="280" height="260" rx="10" fill="rgba(217, 119, 6, 0.05)" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4" />
@@ -101,7 +101,7 @@
     <a href="../interactive/02-plugin-platform.html" target="_blank">
       <rect x="70" y="220" width="280" height="55" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
-    <text x="210" y="244.5" class="node-title">ID & SemVer Resolver</text>
+    <text x="210" y="244.5" class="node-title">ID &amp; SemVer Resolver</text>
     <text x="210" y="258.5" class="node-sub">Lexical + Version Graph</text>
   </g>
   <g id="node-compat_gate" filter="url(#shadow)">
@@ -158,7 +158,7 @@
       <rect x="760" y="480" width="300" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="910" y="507" class="node-title">Host API Bridge</text>
-    <text x="910" y="521" class="node-sub">Async & Deadlined</text>
+    <text x="910" y="521" class="node-sub">Async &amp; Deadlined</text>
   </g>
   <g id="node-event_filter" filter="url(#shadow)">
     <a href="../interactive/02-plugin-platform.html" target="_blank">

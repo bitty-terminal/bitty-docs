@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1130" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L2 Plugin Load Sequence & Lifecycle Flow</text>
+  <text x="30" y="32" class="title">L2 Plugin Load Sequence &amp; Lifecycle Flow</text>
   <text x="30" y="52" class="subtitle">Sequence from plugin discovery, manifest parsing, capability diff checking, user consent gate, Piccolo VM instantiation, to FS-2 budget monitoring.</text>
 
   <!-- Interactive Link Banner -->
@@ -77,7 +77,7 @@
       <rect x="320" y="100" width="220" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="430" y="127" class="node-title">2. Parse Manifest</text>
-    <text x="430" y="141" class="node-sub"><=256 KiB Schema Check</text>
+    <text x="430" y="141" class="node-sub">&lt;=256 KiB Schema Check</text>
   </g>
   <g id="node-pl_dep" filter="url(#shadow)">
     <a href="../interactive/plugin-load-flow.html" target="_blank">
@@ -105,7 +105,7 @@
       <rect x="590" y="230" width="220" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="700" y="257" class="node-title">6. Lazy Reservations</text>
-    <text x="700" y="271" class="node-sub">Commands & Triggers</text>
+    <text x="700" y="271" class="node-sub">Commands &amp; Triggers</text>
   </g>
   <g id="node-pl_vm" filter="url(#shadow)">
     <a href="../interactive/plugin-load-flow.html" target="_blank">

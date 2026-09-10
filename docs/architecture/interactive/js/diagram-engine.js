@@ -1,8 +1,7 @@
 /**
  * Bitty Interactive Architecture Diagram Engine
- * High-performance 2D Canvas & Konva.js hybrid interactive diagram renderer.
- * Zero external hard dependencies - runs completely offline with full interactivity,
- * while seamlessly taking advantage of Konva.js if loaded.
+ * High-performance dependency-free 2D canvas interactive diagram renderer.
+ * Runs completely offline with full interactivity and no external libraries.
  */
 
 (function (global) {

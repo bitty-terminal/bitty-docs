@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1200" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L2 Config Pipeline & XDG Layer Stack</text>
+  <text x="30" y="32" class="title">L2 Config Pipeline &amp; XDG Layer Stack</text>
   <text x="30" y="52" class="subtitle">Evaluates init.lua inside an ephemeral sandbox, applies declared XDG layer precedence, validates schemas, and computes reload diffs.</text>
 
   <!-- Interactive Link Banner -->
@@ -44,11 +44,11 @@
   </g>
   <g id="group-pipeline">
     <rect x="430" y="100" width="360" height="490" rx="10" fill="rgba(59, 130, 246, 0.05)" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="none" />
-    <text x="444" y="124" class="group-label">Evaluation & Merge Pipeline (Candidate A)</text>
+    <text x="444" y="124" class="group-label">Evaluation &amp; Merge Pipeline (Candidate A)</text>
   </g>
   <g id="group-classification">
     <rect x="830" y="100" width="320" height="490" rx="10" fill="rgba(16, 185, 129, 0.05)" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="844" y="124" class="group-label">Reload Classification & Action</text>
+    <text x="844" y="124" class="group-label">Reload Classification &amp; Action</text>
   </g>
   <line x1="220" y1="330" x2="536.875" y2="204" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="333.4375" y="253" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />

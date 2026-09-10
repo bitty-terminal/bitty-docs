@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1160" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L2 Startup Sequence & Flow Simulation</text>
+  <text x="30" y="32" class="title">L2 Startup Sequence &amp; Flow Simulation</text>
   <text x="30" y="52" class="subtitle">End-to-end initialization sequence from CLI invocation, config loading, window creation, PTY child launch, to event loop start.</text>
 
   <!-- Interactive Link Banner -->
@@ -103,7 +103,7 @@
     <a href="../interactive/startup-flow.html" target="_blank">
       <rect x="890" y="180" width="220" height="60" rx="4" fill="#ecfdf5" stroke="#059669" stroke-width="1.5" />
     </a>
-    <text x="1000" y="207" class="node-title-dark">4. Validate & Reconcile</text>
+    <text x="1000" y="207" class="node-title-dark">4. Validate &amp; Reconcile</text>
     <text x="1000" y="221" class="node-sub-dark">RuntimeConfig</text>
   </g>
   <g id="node-f_platform" filter="url(#shadow)">

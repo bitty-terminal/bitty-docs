@@ -64,8 +64,7 @@ Every HTML model in `interactive/` is powered by the shared diagram engine
    traverse the subsystem pipeline.
 6. **Vector Export**: One-click export to high-resolution PNG or clean vector SVG.
 7. **Zero Network Dependence**: Fully functional offline without external CDN
-   access, while supporting Konva.js and Fabric.js canvas enhancements when
-   available.
+   access or third-party canvas libraries.
 
 ## Single Source of Truth
 

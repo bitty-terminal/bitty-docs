@@ -30,7 +30,7 @@
   
   <!-- Header Bar -->
   <rect x="0" y="0" width="1180" height="65" fill="#1e293b" />
-  <text x="30" y="32" class="title">L1 IPC, Debug Protocol & Agent Architecture</text>
+  <text x="30" y="32" class="title">L1 IPC, Debug Protocol &amp; Agent Architecture</text>
   <text x="30" y="52" class="subtitle">Inter-process communication framework, frame capture, input synthesis for bitty-devtools, and MCP server interface for AI agents.</text>
 
   <!-- Interactive Link Banner -->
@@ -40,15 +40,15 @@
   </a>
   <g id="group-client_domain">
     <rect x="50" y="100" width="320" height="420" rx="10" fill="rgba(168, 85, 247, 0.05)" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="64" y="124" class="group-label">External Clients & AI Agents</text>
+    <text x="64" y="124" class="group-label">External Clients &amp; AI Agents</text>
   </g>
   <g id="group-ipc_gateway">
     <rect x="410" y="100" width="340" height="420" rx="10" fill="rgba(59, 130, 246, 0.05)" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="none" />
-    <text x="424" y="124" class="group-label">Bitty IPC Transport & Scope Gate</text>
+    <text x="424" y="124" class="group-label">Bitty IPC Transport &amp; Scope Gate</text>
   </g>
   <g id="group-core_services">
     <rect x="790" y="100" width="340" height="420" rx="10" fill="rgba(5, 150, 105, 0.05)" stroke="#059669" stroke-width="1.5" stroke-dasharray="6,4" />
-    <text x="804" y="124" class="group-label">Core Observation & Control Handlers</text>
+    <text x="804" y="124" class="group-label">Core Observation &amp; Control Handlers</text>
   </g>
   <line x1="210" y1="170" x2="436" y2="170" stroke="#38bdf8" stroke-width="1.5"  marker-end="url(#arrow)" />
   <rect x="278" y="156" width="90" height="14" rx="3" fill="#0f172a" fill-opacity="0.8" />
@@ -135,6 +135,6 @@
       <rect x="820" y="340" width="280" height="60" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
     </a>
     <text x="960" y="367" class="node-title">Terminal State Observer</text>
-    <text x="960" y="381" class="node-sub">Screen Buffer & Cursor</text>
+    <text x="960" y="381" class="node-sub">Screen Buffer &amp; Cursor</text>
   </g>
 </svg>
