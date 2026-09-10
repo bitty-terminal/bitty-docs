@@ -83,6 +83,34 @@ workspace -> extensible application shell`, with the workspace stage as the
   (`GUI for CLI without abandoning CLI`) and for agent-controllable surfaces
   via the accepted IPC transport.
 
+## Candidate platform identity (009)
+
+- **Candidate identity**: Bitty is best described as a **composable terminal
+  workspace**: a terminal-centered, workspace-composed, Lua-programmable
+  environment whose capabilities combine through commands, events, services,
+  and UI surfaces. This vision does not replace the accepted Product Vision
+  slogan; it re-expresses the same direction (`Small core. Stable API.
+Everything composable. Extensions own the experience.`) with the workspace
+  and composition emphasis that the 009 research direction proposes.
+- **Candidate layering**: a long-term architecture of five layers —
+  User Plugins (AI, Git, files, mail, DevTools), Plugin Composition
+  (services, events, commands, UI), Workspace and UI Runtime (windows,
+  panels, layouts, focus), Terminal Runtime (PTY, VT, state, input, render),
+  and Platform (Linux, macOS, Windows, BSD) — with IPC running across layers
+  as a capability-controlled bus, not as an add-on. The philosophy is
+  microkernel-like (small trusted mechanism plus replaceable policy plus
+  message and service composition) without claiming an OS microkernel.
+  Accepted anchors: the [Architecture Overview](../architecture/overview.md)
+  one-way DAG and data-flow invariants, the accepted local IPC framing and
+  scopes in the [IPC and Agent RFC](../specifications/ipc-agent-rfc.md), and
+  the accepted Plugin API surface in the
+  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md).
+- **Candidate corollary**: AI is never a special citizen of Bitty Core. Core
+  knows only events, commands, services, permissions, panels, processes,
+  terminal sessions, and IPC; any AI experience is one composition of those
+  primitives. The same rule keeps Git, file management, and similar
+  experiences in plugins.
+
 ## Panel is not Terminal
 
 ### A first-class container
@@ -170,6 +198,31 @@ bitty.bind("SUPER", "E", function()
   bitty.panel.toggle("file-explorer")
 end)
 ```
+
+### Candidate tiling interaction properties
+
+- **Declarative relationships over imperative geometry**: users express
+  intent (`left of`, `move to workspace 3`, `focus next panel`) and the
+  compositor owns placement, rather than users managing coordinates,
+  overlap, and stacking by hand. This matches the keyboard-driven terminal
+  workflow (shell, Neovim, tmux) where leaving the keyboard to drag windows
+  breaks flow.
+- **Deterministic layout**: the layout tree plus workspace state determines
+  every surface rectangle, so a workspace (`coding` with two terminals plus
+  an AI panel, for example) can be saved, restored, serialized, scripted,
+  and navigated by keyboard. Workspace save and restore is a candidate
+  capability; no persistence contract is accepted here.
+- **Candidate scrolling layout**: alongside classic tiling, a scrolling
+  layout option (in the spirit of niri) keeps each surface at a preferred
+  width and navigates by focus and scroll instead of shrinking every
+  surface as count grows. Terminal surfaces are width-sensitive, so this
+  layout may suit wide terminal-plus-tool workspaces. It would arrive as a
+  `LayoutProvider` option under the accepted Workspace Compositor, not as
+  a Core primitive change.
+- **Floating kept, not abandoned**: tiling is the default state (stable,
+  predictable, keyboard-friendly, persistable); floating serves temporary
+  or independent objects (help, quick AI, settings, pets, previews); see
+  the candidate presentation modes below.
 
 ## Prior art and lineages
 
@@ -432,6 +485,39 @@ predecessor material and is not accepted by this vision.
     [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](../decisions/adrs/ADR-0008-headless.md)
     until a future daemon ADR revisits it.
 
+## Candidate panel presentation modes
+
+- **Candidate principle**: a Panel is content plus behavior; its presentation
+  **Mode** is a runtime property deciding how it appears in the workspace.
+  Panels share identity, surface, focus, input, lifecycle, and visibility
+  handling while differing in layout strategy, and a panel may move between
+  modes (tiled to floating to fullscreen and back, as in a window manager
+  `togglefloating`) without being recreated.
+- **Candidate mode taxonomy**:
+
+  | Mode         | Candidate use                                                        |
+  | ------------ | -------------------------------------------------------------------- |
+  | `tiled`      | Long-lived working surfaces: terminal, AI, Git, file panels          |
+  | `floating`   | Help, settings, quick AI, pets, small tools; focusable and movable   |
+  | `overlay`    | Transient interaction: command palette, flash jump, which-key, hints |
+  | `fullscreen` | Temporarily maximized terminal, AI, or document surface              |
+  | `scratchpad` | Hidden tool recalled and dismissed by one binding (AI, notes, music) |
+  | `pinned`     | Fixed to a workspace edge across layout changes                      |
+  | `popover`    | Small panel attached to one UI element                               |
+
+- **Candidate semantics**: floating and overlay must not be conflated.
+  Floating panels are real panels with lifecycle, focus, move, and resize;
+  overlays are instantaneous interaction layers. Scratchpad, pinned, and
+  popover are proposed v1 vocabulary only; `tiled`, `floating`, `overlay`,
+  and per-Window scratchpad already have draft or accepted anchors in the
+  [Workspace Compositor](../specifications/workspace-compositor.md) and the
+  [Panel Runtime pre-study](../specifications/panel-runtime-pre-study.md).
+- **Candidate suggestion plus rules**: a plugin suggests a mode
+  (`preferred_mode`) but never forces it; user panel rules decide, in the
+  spirit of window-manager window rules (match on plugin, role, or panel id
+  to set mode, size, anchor, focusability). Rule precedence and schema
+  belong to a future Panel RFC.
+
 ## Inter-panel Event Bus
 
 - **Hypothetical candidate direction**: panels and plugins could compose workflows through an
@@ -674,6 +760,18 @@ extensions of this culture, as is `~/.config/bitty/` sharing (`init.lua`,
   directly; with them it remains capability-checked composition through the
   same Panel and Event contracts.
 
+- **Candidate service composition**: the Service Registry is the mechanism
+  behind plugin-extends-plugin. A base plugin provides versioned services
+  (`ai.chat`, `vcs.diff`, `project.current`); a composed plugin requires
+  them through the host service boundary and combines them without Core
+  involvement (an AI review plugin requiring `ai.chat` plus `vcs.diff`, for
+  example). Service disappearance (a provider reloads or unloads) must
+  degrade consumers gracefully; exact semantics belong to a future service
+  lifecycle RFC. The accepted mechanics are the manifest `dependencies`
+  plus `services.provided` declarations and the validated service call
+  boundary in the
+  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md).
+
 Community aggregation would follow the `awesome-bitty` pattern of plugins,
 layouts, themes, and configurations built on the same primitives. Distributions
 do not change the extension boundary: official and community plugins use the
@@ -735,6 +833,10 @@ are the closest accepted anchors for this priority.
 | Distribution culture (`LazyBitty`, `AstroBitty`), sharing, and plugin-extends-plugin hierarchy             | Candidate | This vision + [Default Distribution RFC](../specifications/default-distribution-rfc.md)                                                                                             |
 | Distributions (`minimal`, `dev`, `cloud`, `social`) and `awesome-bitty`                                    | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
 | Primitive stability order                                                                                  | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
+| Composable-terminal-workspace identity, five-layer plus capability-bus framing, AI-never-special-citizen   | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
+| Declarative tiling properties, deterministic save/restore, scrolling-layout option, floating kept          | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
+| Seven presentation modes with Mode as runtime property, preferred mode plus Panel Rules                    | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
+| Service Registry as plugin-on-plugin mechanism with graceful service disappearance                         | Candidate | This vision; requires RFC or ADR                                                                                                                                                    |
 
 Research provenance `tmp/research/chatgpt-2026-08-30-1.md` (the first available
 snapshot; the unsuffixed path does not exist) and
@@ -760,6 +862,9 @@ on its availability; accepted documents override it where they conflict.
   [Default Distribution RFC](../specifications/default-distribution-rfc.md).
 - Whether the primitive priority above becomes a formal versioning policy
   or a reviewer guideline.
+- Whether the scrolling-layout option, workspace save/restore, the
+  `pinned`/`popover` modes, and Panel Rules precedence enter a Panel RFC
+  together or as separate follow-ups.
 
 These remain open until a Panel RFC, a follow-up cross-cutting decision, or
 an ADR closes them. This vision does not close an open question on its own;
@@ -780,6 +885,9 @@ a standalone product document per the
 - [Core and Plugin Boundaries](../architecture/core-boundaries.md)
 - [Security Overview](../security/overview.md)
 - [Proposed Delivery Sequence](../product/proposed-delivery-sequence.md)
+- [Input and Pointer Contract](../specifications/input-pointer-rfc.md)
+- [Panel Runtime and Event Bus Pre-Study](../specifications/panel-runtime-pre-study.md)
+- [AI Architecture](../specifications/ai-architecture.md)
 - External research `tmp/research/chatgpt-2026-08-30-1.md`
   and `tmp/research/chatgpt-2026-08-30-2.md`
   (workspace-local, temporary, untracked, untrusted, non-canonical inputs in

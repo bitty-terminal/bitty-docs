@@ -62,17 +62,20 @@ Where this RFC picks a threshold or encoding, it refines those sources. It does 
 
 ## Terminology
 
-| Term            | Meaning                                                                                                                                              |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ModelProvider   | Host-owned registry of LLM providers and models exposed via `ai.model`, with per-model capability and budget metadata.                               |
-| ContextProvider | Host-owned source of bounded context for an agent turn, one of workspace, project, git, diagnostics, or terminal.                                    |
-| Stable Id       | Persistent, cross-restart identifier for one of Instance, Window, Workspace, View, or Terminal, used for attribution and scoping.                    |
-| SemanticZone    | Core-owned boundary record (prompt, input, command, output) derived from OSC 7/133, owned by terminal state and consumed by rich and context layers. |
-| Context Budget  | Per-turn byte ceiling for assembled context, 32 KiB in this RFC, with counted truncation and chunking to Rich streaming.                             |
-| Agent level     | Attenuated authority tier: `inspect`, `self`, `workspace`, or `all`, each implying a distinct capability set.                                        |
-| AgentWorkspace  | Ephemeral, per-session working directory scoped to one `AgentId` and one generation, disposed at session close.                                      |
-| Rich streaming  | Incremental delivery of agent output as Markdown, Diff, or ToolCard `Scene` fragments with damage tracking.                                          |
-| Tool Bus        | Capability-checked dispatch surface where agent tool calls are validated, consented, and forwarded via the MCP adapter.                              |
+| Term               | Meaning                                                                                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ModelProvider      | Host-owned registry of LLM providers and models exposed via `ai.model`, with per-model capability and budget metadata.                               |
+| ContextProvider    | Host-owned source of bounded context for an agent turn, one of workspace, project, git, diagnostics, or terminal.                                    |
+| Stable Id          | Persistent, cross-restart identifier for one of Instance, Window, Workspace, View, or Terminal, used for attribution and scoping.                    |
+| SemanticZone       | Core-owned boundary record (prompt, input, command, output) derived from OSC 7/133, owned by terminal state and consumed by rich and context layers. |
+| Context Budget     | Per-turn byte ceiling for assembled context, 32 KiB in this RFC, with counted truncation and chunking to Rich streaming.                             |
+| Agent level        | Attenuated authority tier: `inspect`, `self`, `workspace`, or `all`, each implying a distinct capability set.                                        |
+| AgentWorkspace     | Ephemeral, per-session working directory scoped to one `AgentId` and one generation, disposed at session close.                                      |
+| Rich streaming     | Incremental delivery of agent output as Markdown, Diff, or ToolCard `Scene` fragments with damage tracking.                                          |
+| Tool Bus           | Capability-checked dispatch surface where agent tool calls are validated, consented, and forwarded via the MCP adapter.                              |
+| bitty-ai           | Candidate independent AI sub-platform repository (Rust workspace plus Lua AI plugins) built only on generic Bitty primitives; not Core.              |
+| Bridge             | Candidate scoped-IPC process boundary between the Bitty host and the bitty-ai runtime; never an in-process native load.                              |
+| Pressure-test gate | Candidate architecture rule: bitty-ai must build on generic primitives, so a new Core AI-specific API demand signals a Plugin API abstraction gap.   |
 
 ## ModelProvider
 
@@ -494,6 +497,67 @@ All criteria are **proposed** and become acceptance gates only when the implemen
 
 - Given seeded secrets across provider credentials, clipboard, environment, and terminal text, typed `SecretField` redaction removes them before queueing, mode `0600` is asserted on files, and export preview equals actual export byte-for-byte, while elevation grants are per-client and revokable with immediate detachment and auditable receipt. Verification: `unit` + `manual-audit` with secret corpuses, permission and preview assertions, and revocation-lifecycle suite.
 
+## Sub-platform staging (proposed)
+
+Status: **proposed contract**. How the AI stack is staged as an independent
+sub-platform without becoming Core. Numbered for reference; none is
+implemented by this RFC alone.
+
+- **BA-1 Independent repository.** `bitty-ai` is staged as an independent
+  repository under `github.com/bitty-terminal`, holding the AI runtime,
+  providers, streaming, context, tools, bridge, and Lua-facing AI services.
+  AI plugins (`ai-chat`, `ai-shell`, `ai-explain`, `ai-git`, `ai-context`)
+  are ordinary plugins that build on `bitty-ai` services through the
+  accepted manifest `dependencies` plus `services.provided` mechanics from
+  the [Plugin Platform RFC](plugin-platform-rfc.md), never on private
+  channels.
+- **BA-2 Agent versus AI split.** `bitty-agent` (in Core) owns how Bitty
+  describes an agent, communicates with it, authorizes it, and passes
+  observations and tool calls; it never performs model selection, LLM I/O,
+  or API-key handling. `bitty-ai` owns provider abstraction, streaming,
+  context assembly, and the tool loop. The two meet only at IPC and service
+  boundaries.
+- **BA-3 Bridge process model.** The Bitty host never loads `bitty-ai` via
+  `dlopen` into the main process. A `bitty-ai-host` helper owns providers,
+  streaming, context, and tools behind scoped IPC, consistent with the
+  prohibition on native in-process plugins and the out-of-process helper
+  staging in the [Plugin Reuse RFC](plugin-reuse-and-providers.md). Lua
+  plugins see only the composed AI services, never raw provider sockets.
+- **BA-4 Rust workspace layout (candidate).** `bitty-ai` is staged as a Rust
+  workspace with narrow crates — core data model (`ModelId`, `Message`,
+  `ToolCall`, `StreamEvent`), provider abstraction (`complete`/`stream`/
+  `capabilities`), runtime (streaming, cancellation, timeout, retry, rate
+  limiting, backpressure), context (collectors, filters, budgets,
+  snapshots), tools (schema, call, permission), bridge (IPC/service
+  mapping), and host composition — plus one directory per model provider
+  (OpenAI, Anthropic, Ollama, OpenAI-compatible). Crate names and trait
+  spellings are illustrative until a `bitty-ai` repository task pins them.
+- **BA-5 Lua composes, Rust enables.** Lua AI plugins orchestrate
+  (`ai.session`, `ai.context.collect` with explicit terminal/cwd/git
+  selection and token budget, `ai.tools.register`), while Rust owns
+  mechanism: HTTP/SSE streaming, retries, timeouts, resource bounds,
+  capability enforcement, terminal state, and provider protocols. Lua is
+  offered semantic primitives (`workspace.focus`, `terminal.snapshot`,
+  `service.require`, `ai.chat`), never Rust internals (raw IPC frames,
+  channels, grid cells, renderer calls), so Rust may refactor freely while
+  the Lua surface stays stable.
+- **BA-6 Pressure-test gate.** `bitty-ai` is the architecture pressure test
+  for the Plugin API: it must be realizable from generic primitives
+  (Plugin API, services, IPC, UI primitives, capabilities) without Core
+  changes. Each newly demanded Core AI-specific API is treated as evidence
+  of a Plugin API abstraction gap to fix at the primitive level, not as a
+  feature request to grant. This gate is a reviewer rule, not an automated
+  check.
+
+### Sub-platform verification (proposed)
+
+- Given the staged `bitty-ai` services, an AI chat turn, a shell-error
+  explainer driven by `terminal.command-finished`, and a Git review flow
+  combining `ai.chat` with `vcs.diff` are all expressible through service
+  composition with no Core AI concept and no in-process native load.
+  Verification: `integration` with provider stubs plus a negative suite
+  asserting no Core AI-specific API exists beyond the generic primitives.
+
 ## Alternatives considered
 
 | Alternative                                              | Why rejected or deferred                                                                                                                                                                                                      |
@@ -517,6 +581,7 @@ These are out of this draft and remain tracked as follow-up work; they must not 
 - How instance/window/workspace/view/terminal Stable Ids surface across multi-session hosts when windows migrate between instances.
 - Whether the `all` level requires an OS-level authorization primitive on certain platforms beyond the Bitty consent ledger.
 - Retention and audit-log lifetime for agent turns, tool results, and elevated context (remains an open item; no normative retention period is set by this draft).
+- Whether `bitty-ai` repository creation, the BA-4 crate layout, and the BA-6 pressure-test gate enter acceptance with this RFC or as a separate `bitty-ai` staging decision.
 
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 
