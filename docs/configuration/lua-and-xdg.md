@@ -411,6 +411,83 @@ Absent `layout` tables (or absent keys within them) mean "this layer says
 nothing" and inherit silently. There are no per-panel-type gap overrides.
 Open: whether a CLI flag set grows to cover `layout.*`.
 
+## Shipped workspace decoration (Core-owned px reference)
+
+Status: **shipped config surface, live painting deferred** (read-only from
+`bitty` `origin/main`, PR `bitty` #487 merge commit `485fbfd`, CTX-0292,
+closes `bitty` #486; merged to `bitty` origin `main`, verified read-only via
+`merge-base --is-ancestor`). This section is the reference for the shipped
+decoration surface; the accepted normative contract is the
+[Workspace Compositor Specification](../specifications/workspace-compositor.md)
+section "Core-owned gaps, border, and radius" (accepted CTX-0118), and the
+merge-class instantiation stays in the
+[Configuration Model RFC](../specifications/configuration-model-rfc.md). It
+changes no normative contract above and weakens no security control.
+
+Shipped contract (`decoration.*`, logical pixels):
+
+| Field                 | Default | Valid range | Owner |
+| --------------------- | ------- | ----------- | ----- |
+| `decoration.gaps_in`  | `4` px  | `0..=32` px | Core  |
+| `decoration.gaps_out` | `6` px  | `0..=32` px | Core  |
+| `decoration.border`   | `2` px  | `0..=8` px  | Core  |
+| `decoration.radius`   | `6` px  | `0..=16` px | Core  |
+
+- Core owns the surface: the four fields are validated through `ConfigPlan`,
+  never proposed by a `LayoutProvider`, and never carried by a `View`, so no
+  plugin mutation path exists (accepted contract rules 1-4).
+- Unknown keys and out-of-range values fail closed with a source-attributed
+  diagnostic; Core never falls back to a silent default when validation
+  fails.
+- `decoration` deep-merges as a table while each field is scalar-replace
+  with per-field source attribution; project layers may set the surface
+  because it is presentation-only chrome with no process authority (like the
+  scrollbar), and the fields reload `Live`.
+- The Core solver is total, deterministic, and saturating: `gaps_out`
+  insets the workspace area, `gaps_in` reserves the band between siblings,
+  `border` insets each View's content rect, and `radius` is carried as clip
+  metadata. Values are logical pixels scaled by the Window DPI factor only
+  at render time; an out-of-range live update is rejected fail-closed.
+- `bitty --safe` forces `gaps_in = 0`, `gaps_out = 0`, `border = 1`,
+  `radius = 0` (`0/0/1/0`) regardless of user configuration (accepted
+  contract rule 5).
+
+Shipped config contract:
+
+```lua
+-- Shipped schema (CTX-0292, bitty #487).
+return {
+    decoration = { gaps_in = 4, gaps_out = 6, border = 2, radius = 6 },
+}
+```
+
+Absent `decoration` tables (or absent keys within them) mean "this layer
+says nothing" and inherit silently.
+
+Status honesty: live present-path painting of px decoration is **deferred**.
+The shipped single-window present path still paints the cell-unit
+`layout.gaps_in` / `layout.gaps_out` gaps; px decoration needs fractional-cell
+View frames plus a renderer radius primitive, tracked as `bitty` CTX-0294 on
+the CTX-0238g stage-2 renderer radius lane. Until that lands, `decoration.*`
+values are validated, stored, attributed, and carried, but must not be
+described as a visible change.
+
+### Decoration px versus layout cells
+
+Two similarly named gap surfaces exist and must not be conflated:
+
+| Surface                           | Unit                 | Default   | Range    | Status                                                         |
+| --------------------------------- | -------------------- | --------- | -------- | -------------------------------------------------------------- |
+| `layout.gaps_in` / `gaps_out`     | cells (`10x22` each) | `0` / `0` | `0..=16` | shipped; painted by the single-window path (CTX-0177/CTX-0240) |
+| `decoration.gaps_in` / `gaps_out` | logical px           | `4` / `6` | `0..=32` | shipped config surface; live painting deferred (CTX-0292)      |
+
+Also distinct: `decoration.radius` (View frame corner radius, logical px)
+versus `window.radius_px` (window corner radius, physical px, S0 parsed no-op,
+CTX-0241).
+
+Open: whether a CLI flag set grows to cover `decoration.*`; the CTX-0294 /
+CTX-0238g stage-2 delivery owns the actual visual behavior.
+
 ## Starters and distributions
 
 Status: **accepted direction.**
