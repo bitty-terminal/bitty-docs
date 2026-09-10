@@ -1,6 +1,6 @@
 ---
 title: Architecture Diagrams
-description: Text-source-first diagram pipeline for Bitty — glossary, D2 graphs, Mermaid flows, SVG finals, visual rules, and levels
+description: Interactive HTML diagram suite and architectural models for Bitty — unified canvas visualizations, component inspector, layer filtering, flow stepper, and vector SVG exports
 category: architecture
 audience: contributor
 document_type: overview
@@ -11,120 +11,139 @@ sidebar_order: 10
 
 # Architecture Diagrams
 
-This directory is the text-source-first diagram pipeline for Bitty
+This directory hosts the interactive HTML architecture diagram suite for Bitty
 at **Pre-alpha / M1 Hardening** (2026-08-29, `bitty` `7a4ee41` baseline
-`de134ec`, 16 crates, 32 OQs Accepted). It replaces any Fabric.js or
-hand-drawn editor as the source of truth with version-controlled text
-sources and deterministic SVG finals.
+`de134ec`, 16 crates, 32 OQs Accepted). It provides rich, interactive HTML5 canvas
+models that allow contributors and architects to pan, zoom, inspect component
+properties, filter layers dynamically, simulate lifecycle flows step by step, and
+export vector graphics.
 
-## Single source
+## Architecture Diagram Hub
 
-- Canonical inventory: [glossary.yaml](glossary.yaml) — every node and
-  edge that diagrams may use, with `shape`, `kind`, `level`, and
-  provenance (`7a4ee41`). No diagram may invent a node that glossary
-  does not define.
-- Rendering does not change semantics: D2 and Mermaid are views of the
-  same glossary.
+The master gallery and interactive explorer is located at:
 
-## Tool choice
+- **[Interactive Architecture Explorer Hub](interactive/index.html)** — unified
+  dashboard with live search, category filters, and embedded modal view for all 13
+  models.
 
-| Artifact            | Source                | Purpose                                                                                |
-| ------------------- | --------------------- | -------------------------------------------------------------------------------------- |
-| Architecture graphs | `d2/*.d2`             | Crate DAG, trust boundaries, panel compositor, config, package, isolation — D2 primary |
-| Flows               | `mermaid/*.mmd`       | Startup, plugin load, config resolution, panel creation — Mermaid only                 |
-| Refinement          | draw.io or Excalidraw | Refinement only, never source — export back to D2 or Mermaid when needed               |
-| Final               | `final/*.svg`         | SVG only — exported from D2 or Mermaid, never hand-edited                              |
+## Diagram Inventory
 
-No Fabric.js custom editor is used in this task; D2 and Mermaid are the
-only diagram sources.
+| ID                       | Title                                     | Level | Format             | Direct Interactive Model                                               |
+| ------------------------ | ----------------------------------------- | ----- | ------------------ | ---------------------------------------------------------------------- |
+| `00-overview`            | System Overview & Trust Boundaries        | L0    | Interactive Canvas | [00-overview.html](interactive/00-overview.html)                       |
+| `01-core`                | Core Workspace Topology & 16-Crate DAG    | L1    | Interactive Canvas | [01-core.html](interactive/01-core.html)                               |
+| `02-plugin-platform`     | Plugin Platform, VM & Event Pipeline      | L1    | Interactive Canvas | [02-plugin-platform.html](interactive/02-plugin-platform.html)         |
+| `03-panel-system`        | Workspace Compositor & Panel Architecture | L1    | Interactive Canvas | [03-panel-system.html](interactive/03-panel-system.html)               |
+| `04-config-model`        | Config Pipeline & XDG Layer Stack         | L2    | Interactive Canvas | [04-config-model.html](interactive/04-config-model.html)               |
+| `05-package-lifecycle`   | Package Lifecycle & Integrity Chain       | L2    | Interactive Canvas | [05-package-lifecycle.html](interactive/05-package-lifecycle.html)     |
+| `06-isolation-resource`  | Isolation Domains & Resource Ceilings     | L1+L3 | Interactive Canvas | [06-isolation-resource.html](interactive/06-isolation-resource.html)   |
+| `07-ipc-agent`           | IPC, Debug Protocol & MCP Architecture    | L1    | Interactive Canvas | [07-ipc-agent.html](interactive/07-ipc-agent.html)                     |
+| `08-rich-presentation`   | Rich Presentation & Terminal Truth        | L1    | Interactive Canvas | [08-rich-presentation.html](interactive/08-rich-presentation.html)     |
+| `startup-flow`           | Startup Sequence & Simulation             | L2    | Flow Stepper       | [startup-flow.html](interactive/startup-flow.html)                     |
+| `plugin-load-flow`       | Plugin Load Sequence & Simulation         | L2    | Flow Stepper       | [plugin-load-flow.html](interactive/plugin-load-flow.html)             |
+| `config-resolution-flow` | Config Resolution & Reconcile             | L2    | Flow Stepper       | [config-resolution-flow.html](interactive/config-resolution-flow.html) |
+| `panel-create-flow`      | Panel & View Creation Sequence            | L2    | Flow Stepper       | [panel-create-flow.html](interactive/panel-create-flow.html)           |
 
-## Visual rules
+## Interactive Features
 
-| Shape or line     | Meaning                   | D2 style                              |
-| ----------------- | ------------------------- | ------------------------------------- |
-| `rect`            | module or crate           | `shape: rectangle`                    |
-| `rounded`         | panel or capability       | `rectangle` with `border-radius: 8`   |
-| `dashed` boundary | trust boundary or sandbox | container with `style.stroke-dash: 4` |
-| `solid` edge      | call or depends           | default solid arrow                   |
-| `dashed` edge     | event or async            | `style.stroke-dash: 3`                |
+Every HTML model in `interactive/` is powered by the shared diagram engine
+([diagram-engine.js](interactive/js/diagram-engine.js) and
+[diagram-engine.css](interactive/css/diagram-engine.css)):
 
-Examples live in the d2 sources; see comments at the top of each file.
+1. **Pan and Zoom**: Drag background to pan; mouse wheel to zoom focused on the
+   cursor. Responsive auto-fit button to re-center graph.
+2. **Draggable Nodes**: Rearrange nodes and clusters interactively. Connected
+   edges and arrows dynamically recalculate anchor intersections in real time.
+3. **Component Inspector**: Click any node or edge to open a slide-out drawer
+   displaying metadata, crate paths, architectural invariants, security rules,
+   and incoming/outgoing connection links.
+4. **Dynamic Layer Filtering**: Toggle visibility between Foundation, State,
+   Presentation, Extension Host, Orchestration, and Security Boundaries.
+5. **Flow Simulation**: For sequence and lifecycle flows, step forward and back
+   through the execution order or toggle auto-play to watch animated signals
+   traverse the subsystem pipeline.
+6. **Vector Export**: One-click export to high-resolution PNG or clean vector SVG.
+7. **Zero Network Dependence**: Fully functional offline without external CDN
+   access, while supporting Konva.js and Fabric.js canvas enhancements when
+   available.
 
-## Level hierarchy
+## Single Source of Truth
 
-| Level | Name      | Use                                 | Files                                                                                                                                              |
-| ----- | --------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| L0    | overview  | system context and trust boundaries | `d2/00-overview.d2`                                                                                                                                |
-| L1    | subsystem | crate and service breakdown         | `d2/01-core.d2`, `02-plugin-platform.d2`, `03-panel-system.d2`, `04-config-model.d2`, `05-package-lifecycle.d2`, `06-isolation-resource.d2`        |
-| L2    | flow      | sequence and state transitions      | `mermaid/startup-flow.mmd`, `plugin-load-flow.mmd`, `config-resolution-flow.mmd`, `panel-create-flow.mmd`, plus L2 fragments inside d2 when needed |
-| L3    | relation  | dependency and compatibility matrix | edges inside `d2/01-core.d2` and `d2/06-isolation-resource.d2` marked `level: L3` in `glossary.yaml`                                               |
+- Canonical inventory: [glossary.yaml](glossary.yaml) — defines every node,
+  boundary, edge, shape, and level. No diagram may invent nodes not defined in
+  the glossary.
+- Data models: [interactive/js/diagrams-data.js](interactive/js/diagrams-data.js)
+  encodes the structured graph definitions, invariants, and descriptions
+  synchronized with the architecture corpus.
+- Legacy text sources (`d2/*.d2`, `mermaid/*.mmd`) remain preserved in the
+  repository for reference and text-based diffing.
+- Static vector previews in `final/*.svg` carry clickable banners linking
+  directly to the corresponding interactive HTML visualization.
 
-## Inventory
+## Directory Layout
 
 ```text
 docs/architecture/
-├── README.md                 # this file — pipeline contract
-├── glossary.yaml             # single node/edge source
+├── README.md                 # this file — interactive architecture index
+├── glossary.yaml             # single node and edge data dictionary
 ├── overview.md               # system context, invariants, data flows
 ├── core-boundaries.md        # core vs plugin ownership and P0 gates
-├── d2/
-│   ├── 00-overview.d2        # L0 system overview
-│   ├── 01-core.d2            # L1 core crate DAG per ADR 0003
-│   ├── 02-plugin-platform.d2 # L1 plugin platform, registry, generation
-│   ├── 03-panel-system.d2    # L1 workspace compositor and Panel candidate
-│   ├── 04-config-model.d2    # L2 config pipeline and XDG layers per OQ-010
-│   ├── 05-package-lifecycle.d2 # L2 package lifecycle and integrity chain per OQ-021
-│   └── 06-isolation-resource.d2 # L1 domains and L3 ceilings per OQ-014
-├── mermaid/
-│   ├── startup-flow.mmd      # L2 startup from CLI to renderer
-│   ├── plugin-load-flow.mmd  # L2 manifest, resolver, grant, VM
-│   ├── config-resolution-flow.mmd # L2 Lua to RuntimeConfig
-│   └── panel-create-flow.mmd # L2 Window to View to LayoutProvider
-└── final/
-    ├── README.md             # SVG generation and provenance
-    └── *.svg                 # exported finals or placeholder via d2
+├── interactive/              # interactive HTML visualization suite
+│   ├── index.html            # architecture diagram explorer hub
+│   ├── 00-overview.html      # L0 system overview
+│   ├── 01-core.html          # L1 core crate DAG
+│   ├── 02-plugin-platform.html # L1 plugin platform
+│   ├── 03-panel-system.html  # L1 workspace compositor
+│   ├── 04-config-model.html  # L2 config pipeline
+│   ├── 05-package-lifecycle.html # L2 package lifecycle
+│   ├── 06-isolation-resource.html # L1 isolation & L3 ceilings
+│   ├── 07-ipc-agent.html     # L1 IPC & MCP agent
+│   ├── 08-rich-presentation.html # L1 rich presentation
+│   ├── startup-flow.html     # L2 startup stepper
+│   ├── plugin-load-flow.html # L2 plugin load stepper
+│   ├── config-resolution-flow.html # L2 config resolution stepper
+│   ├── panel-create-flow.html # L2 panel create stepper
+│   ├── css/
+│   │   └── diagram-engine.css # dark/light themes & controls
+│   └── js/
+│       ├── diagram-engine.js # canvas engine with drag/zoom/inspector
+│       └── diagrams-data.js  # canonical graph models
+├── final/                    # vector SVG previews with interactive links
+│   ├── README.md             # SVG preview provenance and links
+│   └── *.svg                 # vector exports linking to interactive HTML
+├── d2/                       # legacy D2 text graph sources
+└── mermaid/                  # legacy Mermaid flow sources
 ```
 
-## Accuracy
+## Accuracy and Governance
 
-Nodes and edges follow:
+Nodes and edges strictly adhere to:
 
 - Crate graph and dependency DAG from
   [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md) and
   `bitty/Cargo.toml` (16 crates `be3bdb4`, 18 members with harness at
-  `7a4ee41`) — see `d2/01-core.d2`.
+  `7a4ee41`) — see [01-core.html](interactive/01-core.html).
 - Overall model, invariants, and data flows from [Architecture
-  Overview](overview.md) — see `d2/00-overview.d2`.
-- Ownership and P0 gates from [Core and Plugin Boundaries](core-boundaries.md) —
-  shared across all diagrams.
+  Overview](overview.md) — see [00-overview.html](interactive/00-overview.html).
+- Ownership and P0 gates from [Core and Plugin Boundaries](core-boundaries.md).
 - Plugin API, manifest, and DropOldest queue budgets from
-  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) —
-  `d2/02-plugin-platform.d2` and `mermaid/plugin-load-flow.mmd`.
+  [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — see
+  [02-plugin-platform.html](interactive/02-plugin-platform.html).
 - Panel hierarchy and decoration ownership from
-  [Workspace Compositor](../specifications/workspace-compositor.md) —
-  `d2/03-panel-system.d2` and `mermaid/panel-create-flow.mmd`.
-- Configuration pipeline Candidate A from
-  [Configuration Model RFC](../specifications/configuration-model-rfc.md) —
-  `d2/04-config-model.d2` and `mermaid/config-resolution-flow.mmd`.
+  [Workspace Compositor](../specifications/workspace-compositor.md) — see
+  [03-panel-system.html](interactive/03-panel-system.html).
+- Configuration pipeline from
+  [Configuration Model RFC](../specifications/configuration-model-rfc.md) — see
+  [04-config-model.html](interactive/04-config-model.html).
 - Lifecycle and integrity chain from
-  [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md) —
-  `d2/05-package-lifecycle.d2`.
+  [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md) — see
+  [05-package-lifecycle.html](interactive/05-package-lifecycle.html).
 - Domains and ceilings RC-1..RC-10 from
-  [Isolation and Resource RFC](../specifications/isolation-resource-rfc.md) —
-  `d2/06-isolation-resource.d2`.
-
-If a future crate or RFC changes the topology, update `glossary.yaml`
-first and then the affected `d2/*.d2` or `mermaid/*.mmd` files.
-
-## Generating SVG finals
-
-Text is the source; SVG is the artifact. See [final/README.md](final/README.md)
-for deterministic generation commands, placeholder behavior when `d2`
-is not installed, and verification.
-
-## Embedding in docs
-
-- Mermaid flows are embedded directly with a fenced ` ```mermaid ` block
-  that includes the `.mmd` file content.
-- D2 graphs are referenced as SVG images from `final/` after export; do not
-  paste Fabric.js or draw.io XML into Markdown.
+  [Isolation and Resource RFC](../specifications/isolation-resource-rfc.md) — see
+  [06-isolation-resource.html](interactive/06-isolation-resource.html).
+- IPC protocol and MCP tool definitions from
+  [IPC and Agent RFC](../specifications/ipc-agent-rfc.md) — see
+  [07-ipc-agent.html](interactive/07-ipc-agent.html).
+- Rich presentation overlays and Terminal Truth separation from
+  [Rich Presentation RFC](../specifications/rich-presentation-rfc.md) — see
+  [08-rich-presentation.html](interactive/08-rich-presentation.html).

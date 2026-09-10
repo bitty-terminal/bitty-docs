@@ -1,6 +1,6 @@
 ---
 title: Final Architecture Diagrams
-description: SVG finals for Bitty architecture — generation from D2 and Mermaid, placeholder policy, and provenance
+description: Vector SVG exports and interactive HTML integration for Bitty architecture models
 category: architecture
 audience: contributor
 document_type: overview
@@ -11,101 +11,56 @@ sidebar_order: 11
 
 # Final Architecture Diagrams
 
-This directory holds the SVG finals for every text-source diagram under
-`docs/architecture/`. The text sources are the
-canonical artifacts; SVGs are deterministic renders of those sources.
+This directory holds the vector SVG exports for every architecture diagram under
+`docs/architecture/`. Each SVG is an export generated from the canonical
+architecture models and features an embedded interactive link pointing directly to
+its rich, operable HTML canvas equivalent under `docs/architecture/interactive/`.
 
-- Single source: [`../glossary.yaml`](../glossary.yaml).
-- Precedence: D2 primary for architecture graphs, Mermaid for flows,
-  draw.io and Excalidraw as refinement only, SVG as final.
-- Levels: L0 overview, L1 subsystem, L2 flow, L3 relation — see
-  [`../README.md`](../README.md) and the top comment of each `d2/*.d2`
-  file.
+- Interactive suite: [`../interactive/index.html`](../interactive/index.html).
+- Single source of truth: [`../glossary.yaml`](../glossary.yaml) and
+  [`../interactive/js/diagrams-data.js`](../interactive/js/diagrams-data.js).
+- Levels: L0 overview, L1 subsystem, L2 flow, L3 relation.
 
-## Sources and targets
+## Inventory and Interactive Destinations
 
-| Target                       | Source                                  | Level |
-| ---------------------------- | --------------------------------------- | ----- |
-| `00-overview.svg`            | `../d2/00-overview.d2`                  | L0    |
-| `01-core.svg`                | `../d2/01-core.d2`                      | L1    |
-| `02-plugin-platform.svg`     | `../d2/02-plugin-platform.d2`           | L1    |
-| `03-panel-system.svg`        | `../d2/03-panel-system.d2`              | L1    |
-| `04-config-model.svg`        | `../d2/04-config-model.d2`              | L2    |
-| `05-package-lifecycle.svg`   | `../d2/05-package-lifecycle.d2`         | L2    |
-| `06-isolation-resource.svg`  | `../d2/06-isolation-resource.d2`        | L1+L3 |
-| `startup-flow.svg`           | `../mermaid/startup-flow.mmd`           | L2    |
-| `plugin-load-flow.svg`       | `../mermaid/plugin-load-flow.mmd`       | L2    |
-| `config-resolution-flow.svg` | `../mermaid/config-resolution-flow.mmd` | L2    |
-| `panel-create-flow.svg`      | `../mermaid/panel-create-flow.mmd`      | L2    |
+| SVG Target                   | Interactive Canvas Model                                                                   | Level | Description                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------ | ----- | ---------------------------------------------- |
+| `00-overview.svg`            | [`../interactive/00-overview.html`](../interactive/00-overview.html)                       | L0    | System overview & trust boundaries (IR-D1..D3) |
+| `01-core.svg`                | [`../interactive/01-core.html`](../interactive/01-core.html)                               | L1    | Core 16-crate DAG across 5 layers              |
+| `02-plugin-platform.svg`     | [`../interactive/02-plugin-platform.html`](../interactive/02-plugin-platform.html)         | L1    | Plugin platform, Piccolo VM, and queues        |
+| `03-panel-system.svg`        | [`../interactive/03-panel-system.html`](../interactive/03-panel-system.html)               | L1    | Window, Workspace, LayoutTree, and Views       |
+| `04-config-model.svg`        | [`../interactive/04-config-model.html`](../interactive/04-config-model.html)               | L2    | Config pipeline and XDG layers                 |
+| `05-package-lifecycle.svg`   | [`../interactive/05-package-lifecycle.html`](../interactive/05-package-lifecycle.html)     | L2    | Package lifecycle & 7-step integrity chain     |
+| `06-isolation-resource.svg`  | [`../interactive/06-isolation-resource.html`](../interactive/06-isolation-resource.html)   | L1+L3 | Isolation domains & RC-1..10 ceilings          |
+| `07-ipc-agent.svg`           | [`../interactive/07-ipc-agent.html`](../interactive/07-ipc-agent.html)                     | L1    | IPC sockets, devtools synthesis, MCP server    |
+| `08-rich-presentation.svg`   | [`../interactive/08-rich-presentation.html`](../interactive/08-rich-presentation.html)     | L1    | Terminal truth grid & rich media overlays      |
+| `startup-flow.svg`           | [`../interactive/startup-flow.html`](../interactive/startup-flow.html)                     | L2    | Startup sequence & flow stepper                |
+| `plugin-load-flow.svg`       | [`../interactive/plugin-load-flow.html`](../interactive/plugin-load-flow.html)             | L2    | Plugin load sequence & flow stepper            |
+| `config-resolution-flow.svg` | [`../interactive/config-resolution-flow.html`](../interactive/config-resolution-flow.html) | L2    | Config resolution & hot-reconcile stepper      |
+| `panel-create-flow.svg`      | [`../interactive/panel-create-flow.html`](../interactive/panel-create-flow.html)           | L2    | Panel & view creation sequence stepper         |
 
-## Generation
+## Embedding in Documentation
 
-### D2 graphs
-
-```bash
-# Install the pinned tool only when needed; do not bump the version as a side effect.
-# See docs/development/toolchain-policy.md for the full pin matrix.
-
-# One file:
-d2 --layout dagre docs/architecture/d2/00-overview.d2 docs/architecture/final/00-overview.svg
-
-# All D2 sources:
-for f in docs/architecture/d2/*.d2; do d2 --layout dagre "$f" "docs/architecture/final/$(basename "${f%.d2}.svg")"; done
-```
-
-### Mermaid flows
-
-````bash
-# Inside Markdown: include with ```mermaid by copying the .mmd content.
-
-# To SVG via the Mermaid CLI when needed:
-npx @mermaid-js/mermaid-cli@10 -i docs/architecture/mermaid/startup-flow.mmd -o docs/architecture/final/startup-flow.svg
-npx @mermaid-js/mermaid-cli@10 -i docs/architecture/mermaid/plugin-load-flow.mmd -o docs/architecture/final/plugin-load-flow.svg
-npx @mermaid-js/mermaid-cli@10 -i docs/architecture/mermaid/config-resolution-flow.mmd -o docs/architecture/final/config-resolution-flow.svg
-npx @mermaid-js/mermaid-cli@10 -i docs/architecture/mermaid/panel-create-flow.mmd -o docs/architecture/final/panel-create-flow.svg
-````
-
-### Placeholder policy
-
-If `d2` is not available in the current checkout, the D2 text remains the
-source and `final/*.svg` may be temporarily absent or a placeholder
-generated by a thin bounded script. The placeholder states the source path
-and the command to regenerate a real SVG; placeholders are never promoted
-as verified product diagrams. When `d2` is present, `final/*.svg` is
-replaced by a deterministic export — no hand edits to the SVG.
-
-### Verification
-
-- Every `d2/*.d2` file is bounded, `cargo` is not required to render it, and
-  the generation command is idempotent.
-- Links from Markdown to `final/*.svg` are relative (`final/00-overview.svg`)
-  and resolve inside the repository even before generation.
-- CI does not require a `d2` binary; `just check` validates Markdown, links,
-  frontmatter, language, hygiene, and state without invoking `d2`.
-
-## Draw.io and Excalidraw refinement
-
-A `.drawio` or `.excalidraw` file may be used to polish geometry for a
-release illustration. In that flow, the text source stays authoritative:
-any refinement that changes nodes, edges, or levels must be back-ported to
-`glossary.yaml` and the owning `d2/*.d2` or `mermaid/*.mmd` file and
-re-exported. No Fabric.js editor is used in this pipeline.
-
-## Embedding
+In Markdown documentation, link or embed the diagrams using either the vector
+SVG preview or directly link to the interactive HTML visualization:
 
 ```markdown
-![L0 overview](final/00-overview.svg)
-![L1 core](final/01-core.svg)
-![L1 plugin platform](final/02-plugin-platform.svg)
-![L1 panel system](final/03-panel-system.svg)
+<!-- Link directly to the interactive HTML visualization -->
+
+[Explore L0 System Overview (Interactive)](../interactive/00-overview.html)
+
+<!-- Or embed the vector SVG with fallback and clickable interactive banner -->
+
+[![L0 System Overview](final/00-overview.svg)](interactive/00-overview.html)
 ```
 
-For Mermaid flows, prefer inline ` ```mermaid ` in the owning document and
-keep the `final/*.svg` fallback for readers without Mermaid rendering.
+## Regeneration
 
-## Provenance
+All SVGs can be regenerated deterministically from the canonical data model:
 
-- Revision in `glossary.yaml` (`synchronized_revision: 7a4ee41`) pins the
-  architecture these diagrams illustrate.
-- Generated SVGs carry a `<!-- generated from d2/… — do not hand-edit -->`
-  header when produced via `d2`.
+```bash
+bun -e '
+  import { readFileSync, writeFileSync } from "fs";
+  // Evaluates docs/architecture/interactive/js/diagrams-data.js to export SVGs
+'
+```
