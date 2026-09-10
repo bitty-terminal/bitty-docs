@@ -31,6 +31,13 @@ owned by the implementing task. Frontmatter `status` is `accepted` per the
 repository metadata schema; document status is Accepted. Lifecycle is
 `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`.
 
+- Reconciliation note (ADR 0009, 2026-09-11): the Lua-side spellings for the
+  host-owned task and timer registries are `bitty.tasks.spawn` /
+  `bitty.tasks.cancel` and `bitty.timers.create` / `bitty.timers.cancel`; the
+  bare `task.spawn` and `timer.create` spellings used in this ADR are internal
+  concept labels, not Lua identifiers. Caps, refusal codes, generation
+  ownership, and queue interactions are unchanged
+  ([LUA-OQ-9](ADR-0009-plugin-api-v1-lua-surface.md#lua-oq-9-tasks-and-timers)).
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-007 and R-018 and T-07 and T-14),
   `bitty-lua` and `bitty-plugin-host` maintainers (CTX-0054).

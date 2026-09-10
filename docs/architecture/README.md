@@ -137,7 +137,7 @@ Nodes and edges strictly adhere to:
 - Lifecycle and integrity chain from
   [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md) — see
   [05-package-lifecycle.html](interactive/05-package-lifecycle.html).
-- Domains and ceilings RC-1..RC-10 from
+- Domains and ceilings RC-1..RC-11 from
   [Isolation and Resource RFC](../specifications/isolation-resource-rfc.md) — see
   [06-isolation-resource.html](interactive/06-isolation-resource.html).
 - IPC protocol and MCP tool definitions from
