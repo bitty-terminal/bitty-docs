@@ -269,6 +269,76 @@ redefine it. The decoding pipeline, animation lifecycle, and renderer contract
 sections of this RFC continue to describe the accepted target, not shipped
 behavior.
 
+### Kitty decode, placement, and present-path implementation evidence
+
+Status: **experimental review evidence only.** This subsection records the
+Kitty graphics pipeline merged in `bitty` `origin/main` (read-only at
+`1f31435`, verified via `merge-base --is-ancestor`). It changes no accepted
+ceiling above, grants no new capability, and does not promote this RFC beyond
+`accepted`. Sixel and iTerm2 inline images remain unimplemented.
+
+What merged, exactly:
+
+1. **Payload decode** (`bitty` #425 `0cc82de`, CTX-0247): assembled Kitty
+   payloads decode to RGBA8 for `f=100` PNG (every PNG color type normalized
+   through `normalize_to_color8 | ALPHA`), `f=24` raw RGB, and `f=32` raw
+   RGBA; every other `f=` value is rejected, never guessed. Bounds are checked
+   with checked arithmetic before allocation: `8192` px per side, `4096 x 4096`
+   px area, `64 MiB` RGBA. Fail-closed on every malformed or truncated input;
+   prefix-invalid inputs (including every prefix of a valid PNG) error
+   deterministically; deterministic pseudo-random fuzz-shape tests cover
+   garbage and truncated inputs. Animated PNG contributes only its first
+   frame (animation stays deferred).
+2. **APC `G` parser wiring and base64 unwrap** (`bitty` #431 `c1d8243`,
+   CTX-0255/CTX-0256, closes `bitty` #430): the VT parser routes Kitty `APC G`
+   transmissions into the intake ledger and unwraps base64, so real PTY output
+   (for example `chafa` kitty format) reaches decode instead of being parsed
+   and discarded.
+3. **Placement and CPU composite** (`bitty` #427 `bd15d94`, CTX-0248):
+   decoded bitmaps are stored in a bounded layer (`64` images, `256 MiB`
+   decoded bytes, oldest-first eviction), bound to cursor-anchored cell rects
+   (`c`/`r` spans or pixel-derived), clamped to the viewport, scroll-tied to
+   the grid, suppressed on the alternate screen, and composited topmost into
+   the present path (software CPU blend) without mutating grid truth. Actions
+   `absent`/`t`/`T` are mapped; delete/query/frame/put actions are stored but
+   never painted (fail closed).
+4. **Security-review hardening F1-F5** (CTX-0249 follow-ups): placement-cap
+   alignment plus per-frame blit budget (`<= 32` blits, `<= 64 MiB` padded
+   staging) and raster cache (`bitty` #465 `3d45924`, CTX-0252); real-GPU
+   fail-closed display gate plus saturating origin math (`bitty` #463
+   `6d4aa2f`, CTX-0253); per-pane origin binding so a background pane can
+   never paint over the focused pane's grid (`bitty` #467 `18c333a`,
+   CTX-0254, closes `bitty` #466).
+5. **Real-GPU texture upload and blit** (`bitty` #505 `fdd9e28`, CTX-0291,
+   closes `bitty` #504): the wgpu present path uploads admitted blits
+   (positional texture-slot reuse, padded staging rows, device texture-limit
+   check) and draws each one quad topmost, retiring the CTX-0253 skip gate;
+   malformed/oversized/over-budget blits stay fail-closed and counted in
+   `PresentStats`.
+6. **Live evidence:** `chafa` 1.18.2 kitty-format output decodes end-to-end
+   through the live PTY (runtime placement created). CTX-0250's original live
+   run found zero painted pixels only because the F3 gate skipped GPU blits;
+   the CTX-0291 live run on a wgpu window reports `images=1`,
+   `images_skipped=0` and red `0 -> 12710`, blue `0 -> 4148`, yellow
+   `0 -> 117` pixel counts (`recording/ctx-0291/`). The dedicated CTX-0250
+   live-verify task itself remains open; pixel painting is evidenced by
+   CTX-0291, not by closing CTX-0250.
+
+Recorded deviations and open items (not silently resolved):
+
+- The Kitty path admits `8192` px per side within the same `4096²`-pixel area
+  and `64 MiB` byte budget, while accepted IMG-2 states `4096 x 4096` px.
+  The memory ceiling is identical either way, but the side cap differs;
+  aligning the IMG-2 wording or tightening the Kitty path is a follow-up for
+  the owning RFC revision.
+- Images are topmost over same-origin cursor and selection fills
+  (cursor-on-top is follow-up), the decoded-image store is global FIFO (a
+  noisy origin can evict another origin's stored images; per-origin quotas are
+  follow-up), and scroll-region (`DECSTBM`) moves that do not grow scrollback
+  are not tracked (full-screen scroll is exact).
+- Animation, image delete/query actions, and the Sixel/iTerm2 adapters remain
+  unimplemented; no `Verified`/`Compatible` claim is made here.
+
 ### Animation lifecycle
 
 1. Animated images decode frames lazily and pace presentation at the render

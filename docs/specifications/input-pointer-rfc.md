@@ -243,6 +243,58 @@ emergency, overlay, and terminal-fallthrough ordering around it.
   [Plugin Platform RFC](plugin-platform-rfc.md); this section only states
   the input-side consumption requirement.
 
+## Shipped keymap dispatch and help overlay (implementation evidence)
+
+Status: **experimental review evidence only.** This subsection records what
+merged into `bitty` `origin/main`; it does not accept the candidate sections
+above, does not close OQ-004/OQ-007, and does not promote this RFC beyond
+`draft`. The candidate Leader-sequence namespace, flash-style jump, and
+registry-driven plugin discovery remain unimplemented candidates.
+
+1. **Keymap registry with a configurable Mod slot** (`bitty` #411 `2a5e451`,
+   CTX-0236; extended through `bitty` #433/#435/#437/#439/#455/#457/#461).
+   `mod_key` is a scalar (`"alt"` default, `"super"` opt-in, `ctrl`/`shift`
+   fail closed) and the 79-entry shipped set is rendered against it, so a
+   mod flip rebinds every `alt`-bearing default while `ctrl`-fixed chords
+   pass through. Explicit user entries overlay by `context + chord` identity.
+   Chords, actions, and contexts fail closed; single-character keys require a
+   modifier; named keys (`tab`, `enter`, `escape`, `space`, `backspace`,
+   `delete`/`del`, `insert`/`ins`, `home`/`hm`, `end`, `pageup`/`pgup`/`pu`,
+   `pagedown`/`pgdn`/`pd`, arrows, `f1..f35`) are bindable. This realizes the
+   candidate "only registered chords are consumed" rule: a matched chord is
+   consumed by its action and never reaches the PTY, while unbound keys reach
+   the terminal input encoder.
+2. **Explicit dispatch priority** (`bitty` #451 `49bfe9f`, CTX-0275):
+   `Emergency` (reserved `Esc` cancel, overrides user remaps while a modal
+   pends) > `Modal` (active modal captures non-confirm chrome chords) >
+   `User` (the resolved keymap table) > `Plugin` (slot reserved, inert and
+   deny-by-default) > `Terminal` (encoding fall-through, unchanged). This
+   instantiates the candidate precedence for the emergency, overlay/modal,
+   and terminal-fallthrough layers; the plugin-suggested layer is not live.
+3. **Workspace chords and close discipline** (`bitty` #433 `227ca3a`,
+   CTX-0257, DEC-0034; move in `bitty` #457 `8b987a0`, CTX-0259):
+   `alt+n`/`alt+1..9`/`alt+-`/`alt+=`/`alt+tab`/`alt+w` plus
+   `shift+alt+1..9` move the focused window. A live workspace close never
+   kills silently: the first chord arms a pending confirm (loud summary plus
+   overlay banner), repeating the chord confirms, `Esc` cancels, and idle
+   workspaces close immediately. Workspace semantics are owned by the
+   [Workspace Compositor Specification](workspace-compositor.md) evidence
+   section; this document only records the input-side consumption.
+4. **Registry-generated help overlay** (`bitty` #461 `c8faa52`, CTX-0265):
+   `toggle_help` (backtick chord plus the `alt+?` shifted-symbol spellings)
+   paints a floating overlay listing every bound shortcut, regenerated from
+   the live keymap registry on every show; `Esc` dismisses and consumes. The
+   overlay is informational, not modal — other bound chords still dispatch
+   and unbound keys still reach the shell. This is the shipped which-key-style
+   help surface; it is **not** the candidate Leader-prefix namespace.
+
+Evidence: `crates/bitty-config/src/keymap.rs`, `crates/bitty-app/src/chrome_keys.rs`,
+and `crates/bitty-runtime/src/runtime/help.rs` on `bitty` `origin/main`
+read-only at `1f31435`; the shipped defaults are also recorded in the
+[Configuration Model RFC](configuration-model-rfc.md) snapshot and the
+[Lua and XDG configuration](../configuration/lua-and-xdg.md) reference. All
+status remains `Implemented` (experimental), not `Verified`/`Compatible`.
+
 ## Application cursor and keypad modes (candidate)
 
 - `DECCKM` (cursor keys) and `DECKPAM`/`DECKPNM` (keypad) are terminal modes
