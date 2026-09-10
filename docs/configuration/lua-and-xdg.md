@@ -306,7 +306,9 @@ reported here as shipped status; they change no normative contract above.
   single `Cli` layer plan over the file and profile values; sibling fields
   keep file values. `--font-size` and `--opacity` are parsed as raw text and
   validated at merge time — invalid values fail closed (exit 2), never
-  warn-ignored.
+  warn-ignored. Since CTX-0290, `--opacity` below `1.0` scales pixel alpha
+  through the shipped premultiplied renderer path; when the surface cannot
+  composite premultiplied the window stays opaque (fail-closed).
 - Explicit config path: `--config PATH` wins verbatim; else `BITTY_CONFIG`;
   else the XDG default is probed (`$XDG_CONFIG_HOME/bitty/init.lua`,
   fallback `~/.config/bitty/init.lua`, then the `config.lua` alias).
@@ -487,6 +489,67 @@ CTX-0241).
 
 Open: whether a CLI flag set grows to cover `decoration.*`; the CTX-0294 /
 CTX-0238g stage-2 delivery owns the actual visual behavior.
+
+## Shipped keymaps and Mod key
+
+Status: **shipped defaults** (read-only from `bitty` `origin/main`, CTX-0236,
+CTX-0257, CTX-0258, CTX-0259, CTX-0262, CTX-0263, CTX-0264, CTX-0265; merged
+to `bitty` origin `main` at commits `2a5e451`, `227ca3a`, `6e662a2`,
+`1ea2f66`, `8b987a0`, `bc1fbba`, `11d9bec`, `c8faa52`, all verified read-only
+via `merge-base --is-ancestor`). This section is the shipped reference for the
+keybinding surface; the merge-class instantiation stays in the
+[Configuration Model RFC](../specifications/configuration-model-rfc.md), and
+the input-side dispatch evidence stays in the
+[Input and Pointer Contract](../specifications/input-pointer-rfc.md).
+
+Shipped schema:
+
+```lua
+-- Shipped schema (CTX-0236/CTX-0257).
+return {
+    mod_key = "alt", -- "alt" (default; opt/option) or "super" (meta/cmd/win)
+    keymaps = {
+        { chord = "alt+h", action = "goto_split:left", context = "global" },
+    },
+}
+```
+
+- `mod_key` is scalar-replace with per-field source attribution. `"alt"` keeps
+  the canonical map byte-identical; `"super"` rebinds every `alt`-bearing
+  default (including the `ctrl+shift+alt+h/j/k/l` resize variant) to Super.
+  `ctrl`/`shift` and unknown values fail closed; explicit `keymaps` entries
+  keep their exact spelling and overlay by `context + chord` identity.
+- `keymaps` is set-by-identifier: a user entry with the same `context + chord`
+  replaces the shipped entry, anything else appends. The shipped set is
+  79 entries, all context `global`; unknown chords, actions, or contexts
+  fail closed, and single-character keys require at least one modifier.
+- Shipped groups (canonical Alt spelling): workspace `alt+n` / `alt+1..9` /
+  `alt+-` / `alt+=` / `alt+tab` / `alt+w` (CTX-0257, DEC-0034) plus
+  `shift+alt+1..9` move-to-workspace (CTX-0259); spatial focus
+  `alt+h/j/k/l`, `alt+arrows`, `ctrl+alt+arrows`; split
+  `shift+alt+h/j/k/l`, `shift+alt+arrows`; resize `shift+ctrl+h/j/k/l`,
+  `shift+ctrl+arrows`, `ctrl+shift+alt+h/j/k/l`, `ctrl+shift+alt+arrows`
+  (CTX-0258/CTX-0262); page `alt+u`/`alt+i`; zoom
+  `alt+z`/`alt+m`/`alt+f`; focus cycle `ctrl+tab`/`ctrl+shift+tab`; clipboard
+  `ctrl+shift+c`/`ctrl+shift+v`; per-window font size
+  `ctrl+=`/`ctrl+plus`/`ctrl+-`/`ctrl+0` with shifted spellings (CTX-0263);
+  help popup backtick chord plus `alt+?` spellings (CTX-0265).
+- Named keys are bindable beyond letters and digits: `tab`, `enter`,
+  `escape`, `space`, `backspace`, `delete`/`del`, `insert`/`ins`, `home`/`hm`,
+  `end`, `pageup`/`pgup`/`pu`, `pagedown`/`pgdn`/`pd`, arrows, and `f1..f35`
+  (CTX-0264; short aliases canonicalize to the long names).
+- Single-owner consumption: a chord that matches a bound keymap is consumed by
+  its action and never reaches the PTY; unbound keys (plain `Tab`, arrows,
+  letters, digits) always reach the shell. Workspace close never kills
+  silently: a live workspace arms a pending confirm (repeat the chord to
+  confirm, `Esc` cancels) and idle workspaces close immediately. The help
+  popup (CTX-0265) is a presentation-only overlay generated from the live
+  registry on every show; it is informational, not modal, so unbound keys
+  still reach the shell while it is visible.
+
+Open: whether the shipped set grows CLI flags or a command-palette surface;
+the candidate Leader sequences and flash-style jump remain unimplemented
+candidates in the [Input and Pointer Contract](../specifications/input-pointer-rfc.md).
 
 ## Starters and distributions
 

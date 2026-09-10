@@ -360,6 +360,50 @@ Rules:
 5. `bitty --safe` starts with `gaps_in = 0`, `gaps_out = 0`, `border = 1`,
    `radius = 0` regardless of user configuration.
 
+## Shipped slice (implementation evidence)
+
+Status: **experimental implementation evidence.** The single-window slice in
+`bitty` `origin/main` (`1f31435`, verified read-only via
+`merge-base --is-ancestor`) implements a bounded subset of this accepted
+contract. It does not promote this specification beyond `Accepted`, does not
+close its open items, and does not claim `Verified`/`Compatible`; the full
+compositor above remains the target.
+
+What merged, exactly:
+
+1. **Core-owned decoration config surface** (`bitty` #487 `485fbfd`,
+   CTX-0292): `decoration.gaps_in`/`gaps_out`/`border`/`radius` in logical px
+   with the defaults and ranges in the table above, fail-closed `ConfigPlan`
+   validation, scalar-replace per-field attribution, `Live` reload, and
+   `bitty --safe` forcing `0/0/1/0`. The Core solver is carried
+   (`layout_with_decoration`, `decorated_allocations`, `set_decoration`).
+   Bounds and reload coverage: `bitty` #490 `5afb8a2` (CTX-0295).
+2. **Workspace operations entry** (`bitty` #433 `227ca3a`, CTX-0257, DEC-0034):
+   runtime-owned workspace slots with MRU order (capacity `16`), a pure
+   workspaceline overlay string, and a presented overlay banner. Keys:
+   `Alt+N` new, `Alt+1..9` focus, `Alt+-`/`Alt+=` previous/next, `Alt+Tab`
+   last-used, `Alt+W` close. Close never kills silently: a live workspace
+   arms a pending confirm, repeating the chord confirms, `Esc` cancels, and
+   idle workspaces close immediately. `bitty ctl workspace list` rides
+   `view.inspect`; `workspace new|focus|move` ride `view.manage`;
+   `workspace close ws:N` requires the elevated `terminal.manage` scope
+   because it kills live sessions.
+3. **Move focused window across workspaces** (`bitty` #457 `8b987a0`,
+   CTX-0259): `Mod+Shift+Number` and `ctl workspace move ws:N` reparent the
+   focused leaf with its pane session untouched; same-workspace is a no-op
+   and unknown targets fail closed with state untouched.
+4. **Per-leaf presentation mode field** (`bitty` #449 `83847c6`, CTX-0276):
+   `PresentationMode` on `View` unifies the zoom/overlay/visibility
+   special-cases toward one field. Only `Tiled` is live; `Floating`,
+   `Fullscreen`, and `Scratchpad` parse but every cross-mode transition is
+   gated (follow-up), so existing zoom/overlay behavior stays byte-identical.
+
+Explicit non-claims: live present-path painting of px decoration is
+**deferred** (`bitty` CTX-0294 on the CTX-0238g stage-2 renderer lane; the
+single-window path still paints the cell-unit `layout.*` gaps), and the
+`LayoutProvider` plugin algorithms, drag/resize interactions, and scratchpad
+retention in this specification are not implemented in the slice.
+
 ## Layout algorithms as plugin via LayoutProvider
 
 Layout algorithms are not Core built-ins. Core provides only `H` and `V`
