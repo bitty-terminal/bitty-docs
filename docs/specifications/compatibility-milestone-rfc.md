@@ -167,8 +167,12 @@ independent reviewer sign-off:
   from 15m to 30m timeouts after measured 11m to 15m suites with timeout-only
   failures; no test assertion, budget number, or cross-platform matrix entry
   changes.
+- `bitty` CTX-0285 (commit `8e4dd3a`, PR #478): compat-lab dump discovery
+  derives the umbrella root from `$BITTY_WORKSPACE` instead of a hardcoded
+  absolute checkout path and drops the `tmp/` mirror, because `tmp/` is
+  process scratch rather than durable evidence.
 
-All three are `Implemented`, not `Verified`; they change no M1 requirement,
+All four are `Implemented`, not `Verified`; they change no M1 requirement,
 no evidence threshold, and no normative control.
 
 ## Affected contracts
