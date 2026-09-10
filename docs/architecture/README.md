@@ -109,7 +109,7 @@ Nodes and edges follow:
 - Lifecycle and integrity chain from
   [Package Lifecycle RFC](../specifications/package-lifecycle-rfc.md) —
   `d2/05-package-lifecycle.d2`.
-- Domains and ceilings RC-1..RC-10 from
+- Domains and ceilings RC-1..RC-11 from
   [Isolation and Resource RFC](../specifications/isolation-resource-rfc.md) —
   `d2/06-isolation-resource.d2`.
 

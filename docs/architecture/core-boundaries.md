@@ -69,8 +69,11 @@ New requirements should pass through these two questions first.
   OQ-011/012/013).
 - First-party and community plugins use the same API, capabilities, and
   lifecycle, with no private channel (Governance RFC OQ-024).
-- The authoritative Plugin API definition lives in the core repository. The SDK
-  is generated output and development support (Plugin Platform RFC).
+- The authoritative Plugin API v1 contract text lives in the `bitty-docs`
+  corpus ([Plugin API v1 Lua Surface RFC](../specifications/plugin-api-v1-lua-surface-rfc.md),
+  [ADR 0009](../decisions/adrs/ADR-0009-plugin-api-v1-lua-surface.md)). The
+  `bitty` repository owns the implementation and parity evidence; the SDK is
+  generated output and development support (Plugin Platform RFC).
 - The debug protocol sits inside the core boundary. DevTools and MCP consume it
   from outside that boundary (DevTools RFC OQ-019; IPC/Agent RFC OQ-018).
 
@@ -308,10 +311,10 @@ The Lua API exposes system semantics, never Rust implementation structure,
 so that Rust may refactor freely while the Lua surface stays stable:
 
 ```lua
--- Candidate direction: semantic APIs plugins should see.
-terminal:snapshot()
-workspace:focus(view)
-bitty.service.require("ai.chat")
+-- Accepted v1 semantic API spellings (ADR 0009; Plugin API v1 Lua Surface RFC).
+bitty.terminal.snapshot({ scope = "semantic" })
+bitty.ui.mount("statusline", component)
+bitty.services.get("ai.chat", { version = ">=2.0" })
 ```
 
 ```lua

@@ -1,10 +1,10 @@
 ---
 title: ADR 0009 - Plugin API v1 Lua Surface Acceptance Resolution
-description: Decision proposal resolving LUA-OQ-1 through LUA-OQ-12 and the conditions for accepting the Plugin API v1 Lua Surface RFC
+description: Accepted decision resolving LUA-OQ-1 through LUA-OQ-12 for the Plugin API v1 Lua Surface RFC
 category: decisions
 audience: plugin-author
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 39
 ---
@@ -13,14 +13,16 @@ sidebar_order: 39
 
 ## Status
 
-**Proposed — awaiting project ratification.** Frontmatter `status` is `draft`
-because the repository metadata schema has no `proposed` value; the document
-status is Proposed. On ratification this ADR becomes Accepted, the
+**Accepted** on 2026-09-11 by the project initiator (user) as a wholesale
+ratification of all twelve resolutions (LUA-OQ-1 through LUA-OQ-12) exactly as
+proposed. The
 [Plugin API v1 Lua Surface RFC](../../specifications/plugin-api-v1-lua-surface-rfc.md)
-flips `draft` to `accepted`, and the synchronized documents listed under
-[Acceptance effects](#acceptance-effects) change in the same commit. Until then
-this document selects no behavior, authorizes no implementation, and does not
-weaken any normative security control.
+now carries frontmatter `status: accepted` and records the resolved
+dispositions; the synchronized documents listed under
+[Acceptance effects](#acceptance-effects) were updated in the same change. This
+document selects the resolved behavior and authorizes the SDK/template and
+host-bridge workstreams to derive from it, but it authorizes no implementation
+by itself and does not weaken any normative security control.
 
 - Deciders: project initiator (user), coordinated by the commander; CarryCtx
   `bitty-docs` task CTX-0144 (follow-up to CTX-0143, RFC draft merged `05ccdd9`).
@@ -543,34 +545,34 @@ entry points or per-slot hook files: lifecycle surface before any need.
 
 ## Ratification checklist
 
-The project ratifies this ADR wholesale by checking every row, or records
-exceptions explicitly. No row is accepted by default.
+Ratified wholesale on 2026-09-11 by the project initiator (user): every row
+below was checked with no per-row exceptions.
 
-- [ ] Ratify LUA-OQ-1 contract/implementation/generation authority split and the
+- [x] Ratify LUA-OQ-1 contract/implementation/generation authority split and the
       `bitty-docs`-canonical wording.
-- [ ] Ratify LUA-OQ-2 typed-denial stubs with the `bitty.env` absence carve-out.
-- [ ] Ratify LUA-OQ-3 JSON Schema metadata and the manifest `[lazy].commands`
+- [x] Ratify LUA-OQ-2 typed-denial stubs with the `bitty.env` absence carve-out.
+- [x] Ratify LUA-OQ-3 JSON Schema metadata and the manifest `[lazy].commands`
       table extension.
-- [ ] Ratify LUA-OQ-4 snapshot fields, visible-region default, and optional
+- [x] Ratify LUA-OQ-4 snapshot fields, visible-region default, and optional
       `terminal_id` targeting.
-- [ ] Ratify LUA-OQ-5 chord grammar reuse and the v1 `when = "global"`
+- [x] Ratify LUA-OQ-5 chord grammar reuse and the v1 `when = "global"`
       constraint.
-- [ ] Ratify LUA-OQ-6 store value model, 256 KiB quota / 8 KiB value defaults,
+- [x] Ratify LUA-OQ-6 store value model, 256 KiB quota / 8 KiB value defaults,
       persistence across generations, and the Isolation RFC `RC-11` amendment.
-- [ ] Ratify LUA-OQ-7 `ui.mount` + `ui.update` and the reduced v1 node subset.
-- [ ] Ratify LUA-OQ-8 provider contract and the manifest `[services.provided]`
+- [x] Ratify LUA-OQ-7 `ui.mount` + `ui.update` and the reduced v1 node subset.
+- [x] Ratify LUA-OQ-8 provider contract and the manifest `[services.provided]`
       table extension.
-- [ ] Ratify LUA-OQ-9 `bitty.tasks.*` / `bitty.timers.*` spelling and the
+- [x] Ratify LUA-OQ-9 `bitty.tasks.*` / `bitty.timers.*` spelling and the
       ADR 0007 reconciliation.
-- [ ] Ratify LUA-OQ-10 identity payloads and the title/cwd attribution addition.
-- [ ] Ratify LUA-OQ-11 overlay retention with the non-focusable constraint and
+- [x] Ratify LUA-OQ-10 identity payloads and the title/cwd attribution addition.
+- [x] Ratify LUA-OQ-11 overlay retention with the non-focusable constraint and
       Panel RFC compatibility note.
-- [ ] Ratify LUA-OQ-12 fixed `init.lua` entry point.
+- [x] Ratify LUA-OQ-12 fixed `init.lua` entry point.
 
 ## Acceptance effects
 
-On ratification, one change performs all of the following; no divergent copy is
-created:
+Ratification performed all of the following in one change on 2026-09-11; no
+divergent copy is created:
 
 1. This ADR: document status Proposed to Accepted (frontmatter `status: draft`
    to `accepted`), retaining the resolution text as the record.
@@ -591,12 +593,12 @@ created:
    spellings; [ADR 0006](ADR-0006-os-env-policy.md): note recording the LUA-OQ-2
    denial-stub interpretation.
 6. [Isolation Resource RFC](../../specifications/isolation-resource-rfc.md):
-   new `RC-11` store quota row if the LUA-OQ-6 numbers are ratified.
+   `RC-11` store quota row added from the ratified LUA-OQ-6 numbers.
 7. [Specifications index](../../specifications/README.md),
    [decision register](../index.md), and
    [ADR index](README.md): RFC moved from Draft to Accepted; ADR 0009 added.
 8. CarryCtx CTX-0144 records the ratification decision; SDK/template tasks for
-   R-SDK-1/R-SDK-2/R-SDK-3/R-TPL-1 and the `bitty` host-bridge work become
+   R-SDK-1/R-SDK-2/R-SDK-3/R-TPL-1 and the `bitty` host-bridge work are
    unblocked but still require their own scoped tasks. No code is authorized by
    this ADR.
 
@@ -611,7 +613,8 @@ or deferred exactly as the RFC's exclusion list states.
 ## References
 
 - [Plugin API v1 Lua Surface RFC](../../specifications/plugin-api-v1-lua-surface-rfc.md)
-  (draft `05ccdd9`, CTX-0143) — resolved surface and open questions.
+  (accepted 2026-09-11, CTX-0143/CTX-0144; draft `05ccdd9`) — resolved
+  surface, and the resolutions recorded by this ADR.
 - [Plugin Platform RFC](../../specifications/plugin-platform-rfc.md) — accepted
   manifest, capabilities, namespaces, lifecycle, event pipeline.
 - [Lua Runtime RFC](../../specifications/lua-runtime-rfc.md) — accepted host

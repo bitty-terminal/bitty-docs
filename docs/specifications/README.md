@@ -23,6 +23,7 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [Terminal State RFC](terminal-state-rfc.md)                                             | OQ-007                                         | Accepted |
 | [Configuration Model RFC](configuration-model-rfc.md)                                   | OQ-010                                         | Accepted |
 | [Plugin Platform RFC](plugin-platform-rfc.md)                                           | OQ-011, OQ-012, OQ-013                         | Accepted |
+| [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md)                       | OQ-011 (surface spelling refinement)           | Accepted |
 | [Package Lifecycle RFC](package-lifecycle-rfc.md)                                       | OQ-021                                         | Accepted |
 | [Lua Runtime RFC](lua-runtime-rfc.md)                                                   | OQ-009                                         | Accepted |
 | [Rich Presentation RFC](rich-presentation-rfc.md)                                       | OQ-008, OQ-015, OQ-016                         | Accepted |
@@ -44,7 +45,6 @@ shipped, stable, or compatibility-guaranteed behavior:
 | [Panel Runtime and Event Bus Pre-Study](panel-runtime-pre-study.md)                     | OQ-014 (panel platform follow-up, research)    | Draft    |
 | [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md)             | OQ-014 (browser and agent follow-up, research) | Draft    |
 | [Semantic Terminal RFC](semantic-terminal-rfc.md)                                       | — (interaction proposal, research)             | Draft    |
-| [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md)                       | OQ-011 (surface spelling refinement)           | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence (`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`):
 
@@ -58,12 +58,14 @@ The following drafts are under review and do not authorize shipped, stable, norm
 | [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md) | browser webview MCP agent memory isolation matrix | Draft  | none (research pre-study, no implementation, CTX-0120)                                                             | P2 — browser and agent prerequisite     |
 | [AI Architecture](ai-architecture.md)                                       | post-1.0, OQ-018 contracts                        | Draft  | none                                                                                                               | P2 — deferred post-1.0, lowest priority |
 | [Semantic Terminal RFC](semantic-terminal-rfc.md)                           | command blocks, folding, hint mode, composer      | Draft  | P1-P5 `Implemented`-only at `7048139` (`4ccb771` #390, `064486b` #392, `ab1f7ab` #394, CTX-0131); P6 proposal only | P1 — post-slice interaction candidate   |
-| [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md)           | plugin API Lua module, functions, payloads        | Draft  | none (design only, CTX-0143)                                                                                       | P0 — unblocks SDK R-SDK-1               |
 
-The Plugin API v1 Lua Surface RFC entered the Draft table on 2026-09-11 under
-`bitty-docs/CTX-0143`; it proposes the deferred OQ-011 Lua surface spelling and
-authorizes no behavior. The 2026-09-01 review note above counts the drafts that
-existed on that date; this dated addition does not rewrite it.
+The Plugin API v1 Lua Surface RFC was accepted on 2026-09-11 under
+`bitty-docs/CTX-0144` through
+[ADR 0009](../decisions/adrs/ADR-0009-plugin-api-v1-lua-surface.md), which
+ratified all twelve `LUA-OQ-*` resolutions; it moved from the Draft table to the
+accepted table and authorizes derivation, not implementation. The 2026-09-01
+review note above counts the drafts that existed on that date; this dated
+acceptance does not rewrite it.
 
 Naming note: current entries use RFC-style filenames; renaming accepted
 specifications to `SPEC-NNNN-short-title.md` follows the policy below and is
