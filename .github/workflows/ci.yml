@@ -46,6 +46,12 @@ jobs:
       - name: Check repository hygiene
         run: bun .github/scripts/check-docs.mjs hygiene
 
+      - name: Validate architecture SVG assets
+        run: |
+          sudo apt-get update -o Acquire::Retries=3
+          sudo apt-get install -y --no-install-recommends libxml2-utils
+          find docs/architecture -name '*.svg' -print0 | xargs -0 xmllint --noout
+
       - name: Check project state snapshot
         run: bun .github/scripts/check-state.mjs
 
