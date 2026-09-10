@@ -39,6 +39,13 @@
   reads CarryCtx state back, reviews diffs, and runs acceptance gates.
 - Implementers stop at `in_review`; an independent reviewer accepts completion.
 - Do not commit, merge, publish, or change external state unless explicitly asked.
+- Fresh clones have no CarryCtx state DB. Restore the local DB from the
+  workflow mirror with `just workflow-import` (validate-only:
+  `just workflow-import-dry`). It validates the snapshot before any write,
+  refuses to replace a non-empty local DB without `--force`, preserves the
+  committed `.carryctx/config.toml`, and prints provenance and restored
+  counts. Mirror snapshots are redacted publication artifacts: never merge
+  them back, and rotate at the source any secret that leaked before rotation.
 
 The primary post-initialization lifecycle is GitHub Issue, CarryCtx task,
 branch/worktree, commit, pull request, independent review plus CI, merge, then
