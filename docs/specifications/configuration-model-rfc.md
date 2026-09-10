@@ -176,31 +176,32 @@ document and this RFC binds its semantics:
 
 Status: **shipped defaults** (read-only from `bitty` `origin/main`,
 `crates/bitty-config/src/types.rs`, `merge.rs`, `keymap.rs`, `theme.rs`,
-CTX-0153/CTX-0169/CTX-0177/CTX-0180/CTX-0185/CTX-0191/CTX-0236/CTX-0237/CTX-0240/CTX-0241). This section records
+CTX-0153/CTX-0169/CTX-0177/CTX-0180/CTX-0185/CTX-0191/CTX-0236/CTX-0237/CTX-0240/CTX-0241/CTX-0292). This section records
 shipped values as status; it instantiates the merge-class contract above
 without changing it. Normative precedence stays `CLI > file > profile >
 defaults` per [Lua and XDG configuration](../configuration/lua-and-xdg.md).
 
-| Field                                 | Shipped default                                                                                                 | Merge class (settled) |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `font.family` / `size`                | `"JetBrainsMono Nerd Font"` / `12.0`                                                                            | scalar replace        |
-| `font.line_height` / `letter_spacing` | `1.375` / `2.0` (effective cell `10x22` from the legacy `8x16` base; measured raster truth at `12`pt, CTX-0237) | scalar replace        |
-| `window.opacity` / `padding`          | `1.0` / `8`                                                                                                     | scalar replace        |
-| `window.radius_px`                    | `0` physical px (`0..=24`); S0 parsed no-op with zero render effect (CTX-0241)                                  | scalar replace        |
-| `mod_key`                             | `"alt"` (`"super"` allowed; `ctrl`/`shift` rejected fail-closed, CTX-0236)                                      | scalar replace        |
-| `terminal.scrollback`                 | `10000`                                                                                                         | scalar replace        |
-| `terminal.scroll_lines_per_notch`     | `3` (`1..=32`)                                                                                                  | scalar replace        |
-| `terminal.scroll_pixels_per_notch`    | `16` (`1..=256`)                                                                                                | scalar replace        |
-| `selection.auto_copy`                 | `true` (copy-on-select; `false` keeps the highlight, copies only on chord)                                      | scalar replace        |
-| `layout.gaps_in` / `gaps_out`         | `0` / `0` cells (`0..=16`); edge-to-edge tiling; stack leaves take the `gaps_out` inset only (CTX-0240)         | scalar replace        |
-| `appearance.theme`                    | unset means the `bitty-dark` preset (alias `dark`); unknown names fall back to it with a stderr warning         | scalar replace        |
-| `keymaps`                             | shipped Alt-as-Mod set (35 entries, context `global`); user entries replace by `context + chord`, else append   | set-by-identifier     |
-| `plugins`                             | empty by default                                                                                                | set-by-identifier     |
+| Field                                                   | Shipped default                                                                                                               | Merge class (settled) |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `font.family` / `size`                                  | `"JetBrainsMono Nerd Font"` / `12.0`                                                                                          | scalar replace        |
+| `font.line_height` / `letter_spacing`                   | `1.375` / `2.0` (effective cell `10x22` from the legacy `8x16` base; measured raster truth at `12`pt, CTX-0237)               | scalar replace        |
+| `window.opacity` / `padding`                            | `1.0` / `8`                                                                                                                   | scalar replace        |
+| `window.radius_px`                                      | `0` physical px (`0..=24`); S0 parsed no-op with zero render effect (CTX-0241)                                                | scalar replace        |
+| `mod_key`                                               | `"alt"` (`"super"` allowed; `ctrl`/`shift` rejected fail-closed, CTX-0236)                                                    | scalar replace        |
+| `terminal.scrollback`                                   | `10000`                                                                                                                       | scalar replace        |
+| `terminal.scroll_lines_per_notch`                       | `3` (`1..=32`)                                                                                                                | scalar replace        |
+| `terminal.scroll_pixels_per_notch`                      | `16` (`1..=256`)                                                                                                              | scalar replace        |
+| `selection.auto_copy`                                   | `true` (copy-on-select; `false` keeps the highlight, copies only on chord)                                                    | scalar replace        |
+| `layout.gaps_in` / `gaps_out`                           | `0` / `0` cells (`0..=16`); edge-to-edge tiling; stack leaves take the `gaps_out` inset only (CTX-0240)                       | scalar replace        |
+| `decoration.gaps_in` / `gaps_out` / `border` / `radius` | `4` / `6` / `2` / `6` logical px (`0..=32` / `0..=32` / `0..=8` / `0..=16`); Core-owned; live px painting deferred (CTX-0292) | scalar replace        |
+| `appearance.theme`                                      | unset means the `bitty-dark` preset (alias `dark`); unknown names fall back to it with a stderr warning                       | scalar replace        |
+| `keymaps`                                               | shipped Alt-as-Mod set (35 entries, context `global`); user entries replace by `context + chord`, else append                 | set-by-identifier     |
+| `plugins`                                               | empty by default                                                                                                              | set-by-identifier     |
 
-Absent `selection`/`layout` tables (or absent keys within them) mean "this
-layer says nothing" and inherit silently; present-but-partial `font`,
-`window`, and `terminal` tables fail closed rather than filling defaults,
-preserving attribution. Scalar-replace above matches the shipped
+Absent `selection`/`layout`/`decoration` tables (or absent keys within them)
+mean "this layer says nothing" and inherit silently; present-but-partial
+`font`, `window`, and `terminal` tables fail closed rather than filling
+defaults, preserving attribution. Scalar-replace above matches the shipped
 `bitty-config` merge implementation exactly.
 
 The shipped keymap set is the canonical Alt spelling rendered through the
@@ -243,6 +244,19 @@ present byte-identical frames). The default `0` keeps every path on the
 zero-cost fast path. Staged rollout: pane-level rounding is a later stage;
 window-level rounding stays with the compositor and is not a `bitty`
 rendering stage.
+
+The shipped Core-owned decoration is the `decoration.gaps_in` / `gaps_out` /
+`border` / `radius` table (CTX-0292, `bitty` #487, merge commit `485fbfd`,
+closes `bitty` #486; accepted spec CTX-0118): logical pixels `4` / `6` / `2` /
+`6` within `0..=32` / `0..=32` / `0..=8` / `0..=16`, fail-closed validation
+with source-attributed diagnostics, scalar-replace with per-field attribution,
+`Live` reload, and `bitty --safe` forcing `0/0/1/0` regardless of user
+configuration. It is distinct from the cell-unit `layout.gaps_in` /
+`gaps_out` panel gaps above. The px surface is validated, stored, and carried
+(`layout_with_decoration`, `decorated_allocations`, `set_decoration`), but the
+present path does not paint it yet (fractional-cell View frames plus a renderer
+radius primitive), so no visual effect is claimed; live painting is deferred
+to `bitty` CTX-0294 on the CTX-0238g stage-2 renderer radius lane.
 
 Open: per-field reload classification (still deferred to the follow-up
 inventory); whether the CLI appearance flag set or the shipped keymap set
