@@ -238,6 +238,56 @@ The command registry remains Core-owned and generation-aware per the accepted
    `network.connect:DESTINATION` with destination policy; a panel command that
    needs them must hold the same capability as any other plugin command.
 
+### Presentation modes (candidate research)
+
+Mode is a runtime property of a panel, not a static panel kind. One `PanelId`
+may move between modes (tiled to floating to fullscreen and back) without
+recreation, and every mode shares identity, surface, focus, input, lifecycle,
+and visibility handling while differing in layout strategy:
+
+1. `tiled` is the default state: long-lived terminal, AI, Git, and file
+   surfaces composed by the `LayoutTree`. Stable, predictable,
+   keyboard-friendly, and persistable.
+2. `floating` panels (help, settings, quick AI, pets, small tools) are real
+   panels with lifecycle, focus, move, and resize; they never participate in
+   tiled geometry.
+3. `overlay` is an instantaneous interaction layer (command palette, flash
+   jump, which-key, completion, search), never a focusable panel; overlay
+   and floating must not be conflated even though both draw above tiles.
+4. `fullscreen` temporarily maximizes one surface within its workspace.
+5. `scratchpad` hides a tool per `Window` and recalls it with one binding,
+   reusing the accepted `scratchpad.toggle` semantics from the
+   [Workspace Compositor](workspace-compositor.md).
+6. `pinned` fixes a panel to a workspace edge across layout changes.
+7. `popover` attaches a small panel to one UI element.
+
+Rules under research:
+
+1. A provider suggests a mode (`preferred_mode`) at creation, but user panel
+   rules decide: match on plugin, role, or panel id to set mode, size,
+   anchor, and focusability, in the spirit of window-manager window rules.
+   Rule precedence and schema belong to a future Panel RFC.
+2. Mode transitions route through the command registry as validated
+   `LayoutTree` or compositor updates; no transition mutates terminal state
+   or bypasses capability checks.
+3. A non-focusable mode (for example a pet panel with `focusable = false`)
+   never receives keyboard, IME, or wheel events under the focus routing
+   below, but may still subscribe to observation bus topics.
+
+### Layout options and workspace persistence (candidate research)
+
+1. A scrolling layout option (in the spirit of niri) keeps each surface at
+   a preferred width with `min_width`/`max_width` bounds and navigates by
+   focus and scroll instead of shrinking every tile. It would arrive as a
+   `LayoutProvider` proposal under the accepted compositor contract, with
+   no Core primitive change.
+2. Deterministic layout (tree plus workspace state determines every
+   rectangle) makes workspace save and restore expressible as data: a named
+   workspace serializes its `LayoutTree`, `ViewId` set, panel attachments,
+   and modes, and restores them through the same validated commit path as
+   live layout. Persistence format, versioning, and PTY reattachment rules
+   belong to a future RFC; no persistence is claimed here.
+
 ### Overlay (candidate research)
 
 Overlay is a presentation-only ephemeral surface owned by the compositor:
@@ -687,6 +737,9 @@ These require an RFC or ADR before any implementation may claim them:
    a formal versioning policy.
 8. Whether `Browser` panels require an extra per-window process budget beyond
    the existing `RC-3` aggregate.
+9. Whether the seven presentation modes, `preferred_mode` plus Panel Rules
+   precedence, the scrolling-layout option, and workspace save/restore enter
+   a Panel RFC together or as separate follow-ups.
 
 ## Synchronization notes
 

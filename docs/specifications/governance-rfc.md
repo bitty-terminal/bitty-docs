@@ -106,15 +106,15 @@ and this RFC must be corrected.
 
 ## Terminology
 
-| Term                  | Accepted meaning                                                                                                                                                                     |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Formal repository     | One of the seven repositories under `github.com/bitty-terminal`: `bitty`, `bitty-docs`, `bitty-website`, `bitty-devtools`, `bitty-mcp`, `bitty-plugin-sdk`, `bitty-plugin-template`. |
-| Grouping directory    | A local path that only groups repositories, never a Git repository itself: the umbrella root and `bitty-plugins/` grouping.                                                          |
-| Protected branch      | A GitHub branch with settings that require pull requests, status checks, and reviews before merge.                                                                                   |
-| CODEOWNERS            | The GitHub file that maps paths to owning teams or users for automatic review requests.                                                                                              |
-| Compatibility promise | The documented guarantee about breaking versus additive changes across a version range, including deprecation period and migration guidance.                                         |
-| Release train         | The coordinated sequencing of releases across the seven repositories and future first-party plugins that keeps cross-repository changes atomic in evidence.                          |
-| Pin                   | An exact committed version or revision (tag, `Cargo.lock` entry, `bun.lock` entry, action SHA) that makes a build reproducible.                                                      |
+| Term                  | Accepted meaning                                                                                                                                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Formal repository     | One of the seven repositories under `github.com/bitty-terminal`: `bitty`, `bitty-docs`, `bitty-website`, `bitty-devtools`, `bitty-mcp`, `bitty-plugin-sdk`, `bitty-plugin-template`.                                                                                            |
+| Grouping directory    | A local path that only groups repositories, never a Git repository itself: the umbrella root, the `bitty-plugins/` grouping (hosts the `bitty-mcp` plugin checkout at `bitty-plugins/bitty-mcp`), and the `bitty-ai/` grouping (empty, reserved for future AI-core subsystems). |
+| Protected branch      | A GitHub branch with settings that require pull requests, status checks, and reviews before merge.                                                                                                                                                                              |
+| CODEOWNERS            | The GitHub file that maps paths to owning teams or users for automatic review requests.                                                                                                                                                                                         |
+| Compatibility promise | The documented guarantee about breaking versus additive changes across a version range, including deprecation period and migration guidance.                                                                                                                                    |
+| Release train         | The coordinated sequencing of releases across the seven repositories and future first-party plugins that keeps cross-repository changes atomic in evidence.                                                                                                                     |
+| Pin                   | An exact committed version or revision (tag, `Cargo.lock` entry, `bun.lock` entry, action SHA) that makes a build reproducible.                                                                                                                                                 |
 
 ## Accepted summary
 
