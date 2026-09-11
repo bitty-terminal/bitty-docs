@@ -43,6 +43,21 @@ packaging (Homebrew, Scoop, AUR, deb/rpm/apk). Canonical snapshot:
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
+## See the project workflow (CarryCtx)
+
+CarryCtx engineering state (tasks, sessions, checkpoints) is not cloned. A
+fresh clone restores it from the in-repo `refs/heads/carryctx-snapshots`
+branch:
+
+```sh
+just workflow-import-dry   # fetch + validate the snapshot; no DB writes
+just workflow-import       # initialize CarryCtx state if needed, then import
+```
+
+Then `carryctx stats` reports the restored tasks, sessions, and checkpoints.
+Provenance, redaction, and `--force` behavior are covered under the
+repository snapshot documentation below.
+
 ## Start here
 
 - [Documentation map](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/README.md) — topic-oriented navigation and authority
