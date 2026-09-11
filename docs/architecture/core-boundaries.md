@@ -368,7 +368,11 @@ open items above still require their own RFCs.
 - The manifest format and dependency resolution; the current candidate is
   `bitty-plugin.toml`.
 - The implementation mechanism for per-plugin VMs, asynchronous callbacks, and
-  resource-budget thresholds and enforcement.
+  resource-budget thresholds and enforcement. A bounded proposed resolution for
+  the VM bridge, lifecycle, source staging, and host-service wiring is recorded
+  in the Draft
+  [Plugin Host Runtime RFC](../specifications/plugin-host-runtime-rfc.md)
+  (OQ-033/OQ-034/OQ-035); it remains unratified.
 - Plugin signing, source trust, installation, and update models.
 - The default bundled-plugin set and disabling behavior.
 - Observation-event batching, dropping, and backpressure semantics.
