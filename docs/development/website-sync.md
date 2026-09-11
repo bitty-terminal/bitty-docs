@@ -18,6 +18,11 @@ into the developer command surface. It does not invent product code,
 does not authorize shipped behavior, and does not weaken the normative
 English-only, metadata, or link gates.
 
+The pipeline is owned by `bitty-website` under CarryCtx `CTX-0017` and
+consumes the pinned revision. This guide records the developer command
+surface and the operator procedure; the canonical prose remains in this
+repository and is never hand-copied into the website.
+
 ## Source of truth
 
 `bitty-docs` owns canonical prose, metadata, source paths, and internal
@@ -56,21 +61,64 @@ Behavior, per the RFC and `bitty-website/scripts/sync-docs.mjs`:
 
 1. Reject a missing `--pin`, a short SHA, or a floating name such as
    `main` (SY-3) — fail closed.
-2. Resolve the pin to a commit (`git rev-parse <pin>^{commit}`); peel a
-   tag to its commit SHA.
-3. Clear stale content under `bitty-website/src/content/docs/`.
-4. Fetch `docs/` from the pinned revision via `git archive` (sparse
-   checkout equivalent) into `src/content/docs/` after clearing stale
-   content.
-5. Run parity gates on the copied tree — `metadata`, `language`, `links`,
-   `hygiene` via `bitty-docs/.github/scripts/check-docs.mjs` — so the
-   mirror inherits the same fail-closed checks as the canonical repo.
-6. Write the pin back to `src/content/docs-revision.json` with a fresh
-   `synced_at`.
+2. Resolve the pin to a single commit SHA (`git rev-parse <pin>^{commit}`);
+   peel a tag to its commit SHA.
+3. Materialize the pinned tree in an isolated temporary clone: when a
+   local `bitty-docs` checkout contains the pin (derived from
+   `BITTY_DOCS_REPO_PATH`, `BITTY_WORKSPACE`, or an ancestor checkout),
+   clone it locally; otherwise clone the remote derived from the pin's
+   `source` field. The command never checks out, detaches, stashes, or
+   otherwise mutates the shared `bitty-docs` working tree.
+4. Run the canonical four parity gates (`metadata`, `language`, `links`,
+   `hygiene`) on that pinned snapshot before copying anything.
+5. Clear stale content and copy the pinned `docs/` tree into
+   `bitty-website/src/content/docs/docs/`, including non-Markdown assets
+   needed by rendered pages.
+6. Regenerate the provenance manifest and write the pin back to
+   `src/content/docs-revision.json`. `synced_at` advances only when the
+   revision changes, so re-running the same pin is a byte-for-byte no-op
+   and the command is idempotent.
 
 Manual edits inside `src/content/docs/` are not allowed. The directory is
 a generated read-only mirror of the pin (SY-4). A commit that changes
-rendered documentation without updating the pin is a hygiene failure.
+rendered documentation without updating the pin is a hygiene failure;
+`bun run docs:check` fails closed when the committed mirror or manifest
+diverges from the pinned revision.
+
+## Provenance manifest
+
+The canonical frontmatter schema is closed to exactly eight flat fields
+(LD-2), so provenance is recorded in a generated manifest rather than by
+adding keys that would break source parity:
+
+```text
+bitty-website/src/content/docs-manifest.json
+```
+
+The manifest names the `revision` and `source` and maps every mirrored
+source-relative path to its SHA-256. The manifest key set equals the
+mirrored file set, and each hash matches the bytes in
+`src/content/docs/docs/`. This makes provenance (`source path + revision`)
+and hand-edit detection mechanical, and keeps the mirrored Markdown
+byte-identical to the pinned canonical file.
+
+## Staleness gate (SY-4)
+
+`bun run docs:check` (also `just docs-check`) materializes the pinned
+revision read from `src/content/docs-revision.json`, re-runs the parity
+gates on the pinned snapshot, and compares the committed mirror and
+manifest byte-for-byte against it. It exits non-zero with an actionable
+file list when:
+
+- the pin is missing, malformed, a short SHA, or a floating branch;
+- a mirrored file was hand-edited or removed;
+- a file added to the pinned revision is missing from the mirror;
+- a file added under `src/content/docs/docs/` does not exist at the pin;
+- the manifest key set, hashes, `revision`, or `source` disagree with the
+  committed mirror or the pin.
+
+The website build runs this gate before `astro build`, so CI fails on
+stale content instead of publishing a mixed corpus.
 
 ## Pin validation (SY-3)
 
@@ -80,12 +128,11 @@ The Astro build imports the pin and fails closed when:
 - the pin names a floating branch;
 - the copied tree does not match the pin (or the peeled tag SHA).
 
-Stale-content detection (SY-4) rejects a build where a Markdown file's
-embedded pin comment or sidecar does not equal
-`src/content/docs-revision.json`. Preview builds may render a candidate
-pin but must surface it (for example `<!-- docs-revision: <sha> -->`) and
-must not be promoted to production without advancing the pin to the merged
-docs SHA.
+Stale-content detection (SY-4) runs as `bun run docs:check` before the
+build and compares the committed mirror and manifest against the pinned
+revision. Preview builds may render a candidate pin but must surface it
+(for example `<!-- docs-revision: <sha> -->`) and must not be promoted to
+production without advancing the pin to the merged docs SHA.
 
 ## Publication filtering (LD-3)
 
@@ -176,8 +223,8 @@ A rename or removal of a file with `website_publish: true` must declare
 
 ## Parity gates (`check-docs.mjs`)
 
-The sync command re-runs the canonical four gates on the copied tree so
-the mirror cannot drift from the source:
+The sync command re-runs the canonical four gates on the pinned snapshot
+so the mirror cannot drift from the source:
 
 - `metadata` — eight flat frontmatter fields, `title == H1`,
   category/audience/document_type/status enums, unquoted boolean and
@@ -194,17 +241,65 @@ typecheck, static build, Wrangler dry-run) and the same source-of-truth
 rule applies: filtering by `website_publish` never hides a malformed
 file.
 
-## Static site, no staleness
+## Static site and reproducibility
 
 The website is static (`astro build` to `dist/`, Workers Static Assets).
-There is no server-side docs fetch at request time and no copy-paste
-staleness. Every published page is traceable to exactly one
-`bitty-docs` SHA via `src/content/docs-revision.json` and
+There is no server-side docs fetch at request time. Every published page
+is traceable to exactly one `bitty-docs` SHA via
+`src/content/docs-revision.json`, `src/content/docs-manifest.json`, and
 `src/content/versions.json`; rebuilding the website at the recorded
 commit and pin reproduces the same `dist/`. Until public domains are
 registered, the placeholder origin is `bitty.xuepoo.xyz` and no
 deployment has been performed or verified — the deployment workflow
 remains configuration only.
+
+## Operator: refreshing documentation into the website
+
+The canonical corpus stays in `bitty-docs`; the website is a pinned,
+generated mirror. To publish a docs change:
+
+1. Merge the `bitty-docs` change (content, metadata, links, and
+   `docs/project/redirects.json` when a published identity moves) after
+   its `just check` is green, and record the merged commit SHA.
+2. In a `bitty-website` worktree, advance the pin and regenerate the
+   mirror:
+
+   ```sh
+   just docs-sync PIN=<merged-docs-sha>
+   # equivalent: bun run sync:docs --pin <merged-docs-sha>
+   ```
+
+3. Verify the mirror is current and reproducible:
+
+   ```sh
+   just docs-check
+   just check
+   ```
+
+4. Commit the regenerated `src/content/docs/`,
+   `src/content/docs-manifest.json`, and the advanced
+   `src/content/docs-revision.json` in one change, and open the website
+   pull request linked to the docs pull request and the owning CarryCtx
+   task.
+
+Never hand-edit `src/content/docs/` or `src/content/docs-manifest.json`;
+the next `docs:check` catches it. A mirrored copy is never the source.
+
+## Continuous recording rule
+
+Canonical documentation is recorded continuously, not retroactively:
+every merged `bitty-docs` change that alters publishable content leaves
+the website pin one revision behind until the website pin-advance change
+merges. The website must be re-pinned as part of the same delivery
+window, and `docs:check` fails CI while the mirror and pin disagree. If
+the docs change and the website pin advance cannot ship together, the
+docs task stays open or carries a blocking dependency on the website
+task; the website never publishes a stale or duplicated contract.
+
+The deterministic `docs:check` gate is the release blocker. A scheduled
+cross-repository freshness check that compares the pin against the
+`bitty-docs` default branch remains follow-up work and is not claimed
+here.
 
 ## Cross-repository ordering
 
