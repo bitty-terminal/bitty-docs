@@ -26,6 +26,8 @@
 ## CarryCtx workflow
 
 - CarryCtx is the durable project record; the external harness runs agents.
+- Install the `carryctx` CLI globally for local development (recommended):
+  `cargo install carryctx` or `npm i -g carryctx`.
 - Start/resume a named session, inspect the task/team context, then claim and
   start only the assigned task.
 - Record progress, risks, blockers, decisions, and a checkpoint as work proceeds.
