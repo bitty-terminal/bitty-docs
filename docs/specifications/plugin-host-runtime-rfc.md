@@ -1,24 +1,25 @@
 ---
 title: Plugin Host Runtime RFC
-description: Draft proposal resolving the runtime plugin host bridge, per-plugin VM lifecycle, source staging, and host-service wiring boundary for OQ-033, OQ-034, and OQ-035
+description: Accepted contract resolving the runtime plugin host bridge, per-plugin VM lifecycle, source staging, and host-service wiring boundary for OQ-033, OQ-034, and OQ-035
 category: specifications
 audience: plugin-author
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 30
 ---
 
 # Plugin Host Runtime RFC
 
-> Status: **draft**. This document proposes bounded resolutions for three
-> missing accepted designs: [OQ-033](../decisions/open-questions.md) (runtime
+> Status: **accepted** on 2026-09-11. The project initiator (user) ratified the
+> bounded resolutions for [OQ-033](../decisions/open-questions.md) (runtime
 > plugin host bridge and per-plugin VM lifecycle), OQ-034 (runtime source
-> resolution and staging), and OQ-035 (host-service wiring boundary). It does
-> not self-accept, does not authorize shipped, stable, or
-> compatibility-guaranteed behavior, and requires independent category-owner,
-> docs-curator, and security-reviewer review plus project-initiator ADR
-> ratification before any status change. The lifecycle is
+> resolution and staging), and OQ-035 (host-service wiring boundary) through
+> [ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md),
+> including the four named numeric defaults. Acceptance records the reviewed
+> contract; it does not by itself authorize shipped, stable, or
+> compatibility-guaranteed behavior beyond the verification obligations below,
+> and it weakens no normative security control. The lifecycle is
 > Draft -> experimental review evidence -> Accepted -> normative; only
 > Accepted or normative documents authorize shipped behavior.
 
@@ -67,8 +68,9 @@ Out of scope, owned elsewhere and only referenced here:
 
 This RFC selects concrete mechanisms for controls the accepted sources already
 require. It moves no requirement between owners, relaxes no P0 gate, and
-changes no accepted numeric ceiling. Every number introduced below is a
-proposed default with a named constant; the ratifying ADR owns the final value.
+changes no accepted numeric ceiling. Every number introduced below is a named
+constant; [ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md)
+fixes the four proposed defaults, and changing one requires an RFC revision.
 
 ## Provenance and problem statement
 
@@ -348,9 +350,9 @@ treated as verified:
 
 ### B.6 Proposed bounds
 
-All values are proposed defaults with named constants; the ratifying ADR owns
-the final numbers, and changing one requires an RFC revision rather than
-silent drift.
+All values are named constants fixed by
+[ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md);
+changing one requires an RFC revision rather than silent drift.
 
 | Constant                        | Proposed default | Applies to                                         |
 | ------------------------------- | ---------------- | -------------------------------------------------- |
@@ -428,8 +430,8 @@ rollback, and purge have independent semantics.
 
 ## Verification and acceptance obligations
 
-This draft does not satisfy any of the following. When ratified, they become
-the acceptance gates for the implementing repositories:
+Acceptance of this RFC does not satisfy any of the following. They are the
+acceptance gates for the implementing repositories:
 
 1. Seam tests: host-module injection is read-only; `require` denies traversal,
    bytecode, native artifacts, and cross-tree loads; bounded execution
@@ -445,7 +447,9 @@ the acceptance gates for the implementing repositories:
    rejects rather than truncates; no bridge call blocks the VM thread.
 5. Independent review by the category owner, docs curator, and a security
    reviewer, then project-initiator ADR ratification of OQ-033, OQ-034, and
-   OQ-035.
+   OQ-035 (the contract ratification is satisfied by
+   [ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md) on
+   2026-09-11).
 6. Documentation synchronization: this RFC, the
    [open-question register](../decisions/open-questions.md), the
    [decision register](../decisions/index.md), the
@@ -454,28 +458,36 @@ the acceptance gates for the implementing repositories:
    [Core boundaries](../architecture/core-boundaries.md) pending-decision
    pointer move together.
 
-## Open questions requiring user ratification
+## Ratified resolutions
 
-This RFC proposes bounded resolutions but cannot ratify them. The following
-require an ADR and project-initiator decision (the registered OQ rows):
+The project initiator (user) ratified the following through
+[ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md) on
+2026-09-11; the registered OQ rows are now Accepted:
 
-1. OQ-033: adopt the `bitty-runtime` orchestration placement, the `bitty-lua`
+1. OQ-033: adopted the `bitty-runtime` orchestration placement, the `bitty-lua`
    seam extensions, the synchronous non-blocking marshalling contract, and the
    `RC-1`-reused activation deadline.
-2. OQ-034: adopt the refined store layout and `current.json` atomic pointer,
-   the extended runtime source record, and the local-path development flow.
-3. OQ-035: adopt the host-service ownership and persistence table, the
+2. OQ-034: adopted the refined store layout and `current.json` atomic pointer,
+   the extended runtime source record, and the local-path development flow;
+   this resolves the store-layout dependency previously delegated to the draft
+   [Package management](../extensibility/package-management.md) candidate
+   layout.
+3. OQ-035: adopted the host-service ownership and persistence table, the
    synchronous non-blocking and `Send` contract, and the fail-closed error
    contract.
-4. Numeric defaults `PLUGIN_MANIFEST_MAX_BYTES`, `PLUGIN_MODULE_MAX_FILES`,
-   `PLUGIN_MODULE_TREE_MAX_BYTES`, and `PLUGIN_MODULE_PATH_MAX_BYTES` are
-   proposals; the ADR must fix or revise them.
+4. Numeric defaults `PLUGIN_MANIFEST_MAX_BYTES` (256 KiB),
+   `PLUGIN_MODULE_MAX_FILES` (4096), `PLUGIN_MODULE_TREE_MAX_BYTES` (16 MiB),
+   and `PLUGIN_MODULE_PATH_MAX_BYTES` (1024) are fixed as named constants.
 
 ## References
 
 - [Open-question register](../decisions/open-questions.md) - OQ-033, OQ-034,
-  OQ-035.
-- [Decision register](../decisions/index.md) - candidate queue.
+  OQ-035 (Accepted).
+- [Decision register](../decisions/index.md) - candidate queue (accepted
+  entry).
+- [ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md) -
+  project-initiator ratification of OQ-033, OQ-034, and OQ-035 and the four
+  numeric defaults.
 - [Plugin Platform RFC](plugin-platform-rfc.md) - accepted manifest,
   capabilities, lifecycle, generations, event pipeline.
 - [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md) - accepted
