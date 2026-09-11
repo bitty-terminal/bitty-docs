@@ -367,7 +367,10 @@ Status: **experimental implementation evidence.** The single-window slice in
 `merge-base --is-ancestor`) implements a bounded subset of this accepted
 contract. It does not promote this specification beyond `Accepted`, does not
 close its open items, and does not claim `Verified`/`Compatible`; the full
-compositor above remains the target.
+compositor above remains the target. Entries 1-4 record the single-window
+compositor slice; entries 5-6 record `bitty-ui` presentation primitives merged
+later. All cited commits are ancestors of `origin/main`, verified read-only via
+`merge-base --is-ancestor`.
 
 What merged, exactly:
 
@@ -397,12 +400,36 @@ What merged, exactly:
    special-cases toward one field. Only `Tiled` is live; `Floating`,
    `Fullscreen`, and `Scratchpad` parse but every cross-mode transition is
    gated (follow-up), so existing zoom/overlay behavior stays byte-identical.
+5. **Overlay z-index tiers** (`bitty` #368 `42d244e`, CTX-0217, closes
+   `bitty` #367): `OverlayTier` derives `Ord` with
+   `Editor < Float < Popup < Messages` (`BOTTOM`/`TOP` constants),
+   `OverlayLayer` pairs a tier with a node and bounds, `overlay_tiered` carries
+   an explicit tier, `overlay_stack` stable-sorts layers by tier so paint order
+   is deterministic regardless of input order, and `overlay_tier` reads an
+   overlay node's tier. The legacy `overlay` constructor keeps `Float` as its
+   default and its single-overlay output byte-identical. The `bitty-ui`
+   presentation layer reuses `OverlayTier::Float` for overlay-like
+   `PresentationMode`s, but multi-tier stacking through
+   `overlay_tiered`/`overlay_stack` is not yet consumed by the app present path.
+6. **Adaptive dwindle `smart_split` orientation** (`bitty` #358 `75f8637`,
+   CTX-0209, closes `bitty` #357): `LayoutNode::smart_split` and
+   `smart_split_with_multiplier` choose the axis from the container aspect
+   ratio with the Hyprland heuristic
+   `splitTop = height * width_multiplier > width` (`smart_split_axis`): wide
+   containers split side-by-side, tall containers stack, square ties break
+   side-by-side, and non-finite or non-positive multipliers fall back to
+   `1.0`. The constructors delegate to the explicit `split` path, whose API and
+   geometry are unchanged, and the heuristic is unit-tested. This is an opt-in
+   `bitty-ui` constructor, not the `LayoutProvider` dwindle plugin promised
+   above, and the app split path still chooses an explicit axis.
 
 Explicit non-claims: live present-path painting of px decoration is
 **deferred** (`bitty` CTX-0294 on the CTX-0238g stage-2 renderer lane; the
 single-window path still paints the cell-unit `layout.*` gaps), and the
 `LayoutProvider` plugin algorithms, drag/resize interactions, and scratchpad
-retention in this specification are not implemented in the slice.
+retention in this specification are not implemented in the slice. The
+`smart_split` constructor and the overlay tiers above are opt-in `bitty-ui`
+primitives recorded as evidence, not live compositor wiring.
 
 ## Layout algorithms as plugin via LayoutProvider
 

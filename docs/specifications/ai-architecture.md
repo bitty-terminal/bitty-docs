@@ -422,6 +422,36 @@ The Tool Bus is the host-owned dispatch surface where agent tool calls are valid
 - **TB-6 Budgets and backpressure.** Tool Bus dispatch reuses RC-9/RC-10 sharing: at most `8` tool calls per assistant turn, each result `<= 16 KiB`, per-connection rate and concurrency caps apply, and observation streams drop oldest with counted metrics. Long tool outputs are chunked at RC-10.
 - **TB-7 Host execution only.** The `bitty-agent` crate never executes a tool. `ToolRegistry::stub_invoke` exists only for deterministic tests. Real execution happens in the host/runtime that mediates capability-checked dispatch, rate limits, per-client scopes, consent prompts, and audit — matching the separation already accepted for `bitty-agent`.
 
+### Tool Bus scrubbing implementation evidence (bitty #370)
+
+Status: **experimental review evidence only.** The milestone merged in `bitty`
+`a2d127b` (CTX-0216, PR #370, `crates/bitty-agent/src/tool.rs`); the full API
+record is in the
+[IPC and Agent RFC](ipc-agent-rfc.md#credential-scrubbing-implementation-evidence-bitty-370).
+It does not promote this draft beyond `draft`, does not implement the runtime
+Tool Bus, and does not satisfy TB-4 or TB-7 (capability, consent, and audit
+remain deferred to the host).
+
+What it demonstrates for this architecture:
+
+1. **PP-2 redaction is implementable at the tool boundary.** Stored
+   `ToolCall::arguments` and `ToolResult::content` remain raw for dispatch, but
+   every log/IPC view passes through key- and pattern-based redaction
+   (`[redacted]` for sensitive keys; PEM/JWT/token-prefix scanning for
+   unstructured text), with `Debug` redacting by design. This is the
+   `bitty-agent` half of P0-AC-026 parity; the typed `SecretField` markers
+   required by PP-2 remain the accepted target.
+2. **TB-3/TB-6 bounds hold.** Scrubbed views respect the already-accepted
+   `16 KiB` argument/result caps, so redaction does not widen bounded
+   `AgentMessage` framing.
+3. **TB-7 separation is preserved.** Redaction lives in `bitty-agent`; the
+   crate still never executes a tool and performs no model, window, or GPU I/O.
+
+Explicit non-claims: redaction is a textual boundary, not a guarantee for
+unrecognized secret shapes; consent, capability checks, the audit ledger, and
+`SecretField` typing are not implemented by this milestone; no
+`Verified`/`Compatible` claim is made.
+
 ## Privacy-first
 
 Status: **proposed contract**. Privacy is a property, not a mode flag.
