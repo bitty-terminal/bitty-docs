@@ -39,14 +39,13 @@
   reads CarryCtx state back, reviews diffs, and runs acceptance gates.
 - Implementers stop at `in_review`; an independent reviewer accepts completion.
 - Do not commit, merge, publish, or change external state unless explicitly asked.
-- Fresh clones have no CarryCtx state DB. The target restore path is the in-repo
-  publication branch (`refs/heads/carryctx-snapshots`) via
-  `carryctx import --from-git refs/remotes/origin/carryctx-snapshots`.
-  Migration status: this repository still restores from the
-  `bitty-docs-workflow` mirror via `just workflow-import` and
-  `just workflow-import-dry` until the owning migration task lands. Published
-  snapshots are redacted publication artifacts: never merge them back, and
-  rotate at the source any secret that leaked before rotation.
+- Fresh clones have no CarryCtx state DB. Restore the local DB from the
+  in-repo snapshot branch with `just workflow-import` (validate-only:
+  `just workflow-import-dry`). It fetches `refs/heads/carryctx-snapshots`,
+  refuses to replace a non-empty local DB without `--force`, and prints
+  provenance and restored counts. Snapshots are redacted publication artifacts
+  from `carryctx export --publication`: never merge them back, and rotate at
+  the source any secret that leaked before rotation.
 
 The primary post-initialization lifecycle is GitHub Issue, CarryCtx task,
 branch/worktree, commit, pull request, independent review plus CI, merge, then
