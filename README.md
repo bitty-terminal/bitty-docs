@@ -102,32 +102,22 @@ the
 ## CarryCtx snapshot publication
 
 CarryCtx runtime state (`.git/carryctx/state.sqlite`) is never cloned. The
-target mechanism publishes a redacted snapshot inside this repository itself on
-branch `refs/heads/carryctx-snapshots`, using the native CarryCtx flow:
-`carryctx export --publication` writes `manifest.redacted: true` to that ref and
-the operator pushes it with
-`git push origin refs/heads/carryctx-snapshots`. A fresh clone restores it with
-`carryctx import --from-git refs/remotes/origin/carryctx-snapshots` (`--mode
-merge` for history). The publication ref is publish-only, so CarryCtx refuses
-it as a merge source and restore uses replace mode; a secret that leaked before
-rotation must still be rotated at the source.
-
-Migration status: this repository has not yet switched to the native in-repo
-flow. Until the owning migration task lands, the legacy
-[bitty-docs-workflow](https://github.com/bitty-terminal/bitty-docs-workflow)
-mirror and its recipes stay in place:
+redacted engineering snapshot lives in this repository on branch
+`refs/heads/carryctx-snapshots`, one commit per publication. The commander's
+merge closeout publishes it with `just workflow-publish`; a fresh clone restores
+its local CarryCtx DB from that branch:
 
 ```sh
-just workflow-import-dry   # fetch + validate the LATEST mirror snapshot; no DB writes
+just workflow-import-dry   # fetch + validate the snapshot; no DB writes
 just workflow-import       # initialize CarryCtx state if needed, then import
 ```
 
-The legacy import validates snapshot shape, per-table row counts, and the v2
-redacted stamp before any write, refuses to replace a non-empty local DB without
-`--force` (`just workflow-import --force`, or pass flags directly to
-`scripts/fetch-ctxpack.sh`), and prints provenance (snapshot id + source commit)
-plus restored counts. Do not treat the mirror as the target model; it is
-retained only while migration is pending.
+The import fetches `refs/heads/carryctx-snapshots`, refuses to replace a
+non-empty local DB without `--force` (`just workflow-import --force`), and
+prints provenance (snapshot commit + source). Snapshots are redacted
+publication artifacts produced by `carryctx export --publication`: CarryCtx
+refuses them as merge sources, so restore always uses replace mode, and a
+secret that leaked before rotation must still be rotated at the source.
 
 ## Status and authority
 
