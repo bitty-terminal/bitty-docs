@@ -63,12 +63,12 @@ Behavior, per the RFC and `bitty-website/scripts/sync-docs.mjs`:
    `main` (SY-3) — fail closed.
 2. Resolve the pin to a single commit SHA (`git rev-parse <pin>^{commit}`);
    peel a tag to its commit SHA.
-3. Materialize the pinned tree in an isolated temporary checkout: use a
-   local `bitty-docs` checkout when it contains the pin (derived from
-   `BITTY_DOCS_REPO_PATH` or a sibling path) and `git archive` it, or
-   clone the remote derived from the pin's `source` field. The command
-   never checks out, detaches, stashes, or otherwise mutates the shared
-   `bitty-docs` working tree.
+3. Materialize the pinned tree in an isolated temporary clone: when a
+   local `bitty-docs` checkout contains the pin (derived from
+   `BITTY_DOCS_REPO_PATH`, `BITTY_WORKSPACE`, or an ancestor checkout),
+   clone it locally; otherwise clone the remote derived from the pin's
+   `source` field. The command never checks out, detaches, stashes, or
+   otherwise mutates the shared `bitty-docs` working tree.
 4. Run the canonical four parity gates (`metadata`, `language`, `links`,
    `hygiene`) on that pinned snapshot before copying anything.
 5. Clear stale content and copy the pinned `docs/` tree into
