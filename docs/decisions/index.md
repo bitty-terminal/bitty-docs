@@ -125,6 +125,13 @@ the historical conversation:
   LUA-OQ-1 through LUA-OQ-12; contract authority in `bitty-docs`,
   implementation and parity in `bitty`, SDK generated; frontmatter `accepted`
   on 2026-09-11.)
+- Runtime plugin host bridge, per-plugin VM lifecycle, source resolution and
+  staging, and host-service wiring. (Accepted:
+  [Plugin Host Runtime RFC](../specifications/plugin-host-runtime-rfc.md) and
+  [ADR 0010](adrs/ADR-0010-plugin-host-runtime-acceptance.md) — resolves
+  [OQ-033](open-questions.md), [OQ-034](open-questions.md), and
+  [OQ-035](open-questions.md) from bitty `CTX-0324` D4/P0 Gaps A/B/C; frontmatter
+  `accepted` on 2026-09-11.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](../specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](../specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
