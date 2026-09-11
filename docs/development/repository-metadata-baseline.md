@@ -14,7 +14,7 @@ sidebar_order: 22
 ## Purpose and status
 
 - Status: **Proposed** (frontmatter `status: draft`). Companion to
-  [ADR 0009](../decisions/adrs/ADR-0009-repository-metadata-baseline.md); not
+  [ADR 0011](../decisions/adrs/ADR-0011-repository-metadata-baseline.md); not
   yet accepted.
 - Scope: the `bitty-terminal` estate and the CarryCtx family plus the taps.
 - Authority: this guide defines the canonical target for repository-level
@@ -199,7 +199,7 @@ of truth for the channel.
 ## Rollout order and atomicity
 
 1. **Accept this baseline** (this guide and
-   [ADR 0009](../decisions/adrs/ADR-0009-repository-metadata-baseline.md)).
+   [ADR 0011](../decisions/adrs/ADR-0011-repository-metadata-baseline.md)).
 2. **Low-risk metadata** per repository: `.editorconfig`, `SECURITY.md`,
    `CONTRIBUTING.md`, `CODEOWNERS`/`FUNDING.yml`, issue and pull-request
    templates, `dependabot.yml`, `commitlint.config.ts`, `lefthook.yml`. None of
@@ -273,7 +273,7 @@ are recorded here as text:
 
 - [Decision register](../decisions/index.md) - accepted directions and the ADR
   queue.
-- [ADR 0009 - Repository Metadata and GitHub Baseline](../decisions/adrs/ADR-0009-repository-metadata-baseline.md)
+- [ADR 0011 - Repository Metadata and GitHub Baseline](../decisions/adrs/ADR-0011-repository-metadata-baseline.md)
 - [ADR 0001 - Repository Bootstrap Baseline](../decisions/adrs/ADR-0001-repository-bootstrap-baseline.md)
 - [Governance RFC](../specifications/governance-rfc.md) - OQ-024 license,
   branch protection, ownership, and release train.

@@ -1,15 +1,15 @@
 ---
-title: ADR 0009 - Repository Metadata and GitHub Baseline
+title: ADR 0011 - Repository Metadata and GitHub Baseline
 description: Proposes the canonical shared and per-repository metadata and .github baseline across the Bitty and CarryCtx repository estate
 category: decisions
 audience: contributor
 document_type: specification
 status: draft
 website_publish: true
-sidebar_order: 39
+sidebar_order: 41
 ---
 
-# ADR 0009 - Repository Metadata and GitHub Baseline
+# ADR 0011 - Repository Metadata and GitHub Baseline
 
 ## Status
 
