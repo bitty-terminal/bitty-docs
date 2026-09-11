@@ -631,6 +631,13 @@ Lua and no bypass of the existing P0 gates.
 - Whether terminal content should keep a smaller `content_inset` than panels
   (per-surface inset design decision), raised as a follow-up by CTX-0333
   (`bitty` PR #562).
+- The focused/idle outline color contract and the panel open/close, focus, and
+  workspace-switch animations are candidate-only: they are proposed in
+  [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) and
+  [RFC-0002](../decisions/rfcs/RFC-0002-panel-animations.md) and tracked as
+  OQ-039 and OQ-040 in the
+  [open-question register](../decisions/open-questions.md). This accepted
+  specification does not yet define them and owns no animation behavior.
 - Point-in-time decoration citations in the pre-studies still spell the
   pre-CTX-0333 defaults: [Panel Runtime pre-study](panel-runtime-pre-study.md)
   `gaps_in 4` and [Browser and Agent pre-study](browser-agent-pre-study.md)

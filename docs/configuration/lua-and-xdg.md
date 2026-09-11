@@ -498,7 +498,10 @@ accepts; the merge/reload mechanics stay in the
 [Configuration Model RFC](../specifications/configuration-model-rfc.md), and the
 design-only proposal for not-yet-supported appearance knobs is the
 [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
-(draft; OQ-036 label position, OQ-037 frame color, OQ-038 opacity and blur).
+(draft; OQ-036 label position, OQ-037 frame color, OQ-038 opacity and blur,
+OQ-039 focused/idle outline colors), and the animation proposal is the
+[Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md)
+(draft; OQ-040).
 
 | Key                         | Default                        | Range or values                    |
 | --------------------------- | ------------------------------ | ---------------------------------- |
@@ -519,8 +522,12 @@ design-only proposal for not-yet-supported appearance knobs is the
   `decoration.gap * DPI_scale + layout.gap_cells * cell_axis` (CTX-0333).
 - `window.opacity` is whole-window, not per-surface or background-only; a
   per-surface or background-only knob and blur remain design-only (OQ-038).
-- Label position and frame/margin-line color have no config key yet (OQ-036,
-  OQ-037); do not document them as supported.
+- Label position, frame/margin-line color, and focused/idle outline colors have
+  no config key yet (OQ-036, OQ-037, OQ-039); do not document them as
+  supported.
+- Panel animations and effects have no config key yet (OQ-040,
+  [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md));
+  do not document `appearance.animations` as supported.
 
 ## Shipped keymaps and Mod key
 
@@ -716,9 +723,14 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - What is the trust database location and invalidation rule for local project
   configuration?
 - Which appearance knobs beyond the shipped set (workspace/tab label position,
-  frame and margin-line color, per-surface background opacity, blur) are
-  adopted, and under what render/compositor contract? (OQ-036/OQ-037/OQ-038;
+  frame and margin-line color, focused/idle outline colors, per-surface
+  background opacity, blur) are adopted, and under what render/compositor
+  contract? (OQ-036/OQ-037/OQ-038/OQ-039;
   [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md),
   draft.)
+- Which panel transitions animate, with what bounded durations/easings and
+  reduced-motion behavior? (OQ-040;
+  [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md),
+  draft. Candidate-only; not a supported `init.lua` key.)
 - What are the final manifest/lock names, and how do they coexist with Lua
   plugin specifications or distribution imports?

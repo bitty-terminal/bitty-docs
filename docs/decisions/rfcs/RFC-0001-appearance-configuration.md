@@ -1,6 +1,6 @@
 ---
 title: Appearance Configuration RFC
-description: Candidate proposal to expose all visual appearance knobs through init.lua including gap sizes label position border color opacity and blur
+description: Candidate proposal to expose all visual appearance knobs through init.lua including gap sizes label position focus and idle outline colors opacity and blur
 category: decisions
 audience: contributor
 document_type: specification
@@ -111,14 +111,14 @@ Notes:
 
 ## Requested knobs and disposition
 
-| Requested knob                         | Current support                           | Disposition                             |
-| -------------------------------------- | ----------------------------------------- | --------------------------------------- |
-| Gap sizes                              | `layout.*` (cells) + `decoration.*` (px)  | Supported; document precedence (below)  |
-| Workspace/tab label position (T/B/L/R) | None                                      | Proposal + OQ-036                       |
-| Border / margin-line color             | None; colors live in theme presets only   | Proposal + OQ-037                       |
-| Background opacity                     | Whole-window `window.opacity` only        | Proposal + OQ-038 (render/compositor)   |
-| Blur amount                            | None                                      | Proposal + OQ-038 (render/compositor)   |
-| Per-surface content inset              | `decoration.content_inset` (all surfaces) | Follow-up from CTX-0333 (linked, below) |
+| Requested knob                                    | Current support                           | Disposition                             |
+| ------------------------------------------------- | ----------------------------------------- | --------------------------------------- |
+| Gap sizes                                         | `layout.*` (cells) + `decoration.*` (px)  | Supported; document precedence (below)  |
+| Workspace/tab label position (T/B/L/R)            | None                                      | Proposal + OQ-036                       |
+| Border / margin-line and focus/idle outline color | None; colors live in theme presets only   | Proposal + OQ-037 / OQ-039              |
+| Background opacity                                | Whole-window `window.opacity` only        | Proposal + OQ-038 (render/compositor)   |
+| Blur amount                                       | None                                      | Proposal + OQ-038 (render/compositor)   |
+| Per-surface content inset                         | `decoration.content_inset` (all surfaces) | Follow-up from CTX-0333 (linked, below) |
 
 ## Gap sizes: supported, precedence documented
 
@@ -172,8 +172,72 @@ Candidate constraints for review:
 - unknown color spellings fail validation naming `decoration.border_color`.
 
 Open: whether color belongs under `decoration.*`, under a broader
-`appearance.*` palette, or is resolved only through theme presets; and how
-per-focus / per-urgent border colors interact. Tracked as OQ-037.
+`appearance.*` palette, or is resolved only through theme presets. Tracked as
+OQ-037. The focused/idle pair that refines this base color is OQ-039 below.
+
+### Focus and idle outline colors: proposal (OQ-039)
+
+User direction (bitty `CTX-0340`, m0298) asks for distinct focused and idle
+panel outlines. Candidate: extend the Core-owned `decoration.*` surface with a
+focus/idle color pair so each `View` frame renders a focused outline (accent)
+and an idle outline (subtle) without a plugin hook. This refines the base
+`decoration.border_color` proposal above instead of replacing it.
+
+Candidate keys:
+
+| `init.lua` key                    | Default     | Values                  | Reload |
+| --------------------------------- | ----------- | ----------------------- | ------ |
+| `decoration.border_color`         | unset       | `#RRGGBB` / `#RRGGBBAA` | live   |
+| `decoration.border_color_focused` | `#33CCFF`   | `#RRGGBB` / `#RRGGBBAA` | live   |
+| `decoration.border_color_idle`    | `#595959AA` | `#RRGGBB` / `#RRGGBBAA` | live   |
+
+Candidate resolution order (later wins): theme token (`border.focused`,
+`border.idle`) then `decoration.border_color` then the explicit
+`decoration.border_color_focused` / `decoration.border_color_idle` pair. The
+pair is evaluated per `View` at paint time from Core focus state; a plugin
+never sets it.
+
+Value format: canonical `#RRGGBB` or `#RRGGBBAA` (the 8-digit form is RGBA byte
+order). Alpha defaults to `FF` when omitted; `#RGB` shorthand is a candidate
+for review. Named colors, `rgb()`/`rgba()` function syntax, gradients, images,
+and CSS selectors are rejected fail-closed with a diagnostic naming the
+offending key. This is stricter than Hyprland, which also accepts `rgba()` and
+legacy ARGB integers; Bitty accepts one canonical grammar so merged layers stay
+byte-comparable.
+
+Candidate constraints for review:
+
+- namespacing: the pair lives under the Core-owned `decoration.*` surface with
+  the existing scalar-replace, per-field attribution, and `Live` reload class;
+- scope: global for all `View` borders by default; a per-View-type override
+  table is a candidate left to OQ-039, not part of this key set;
+- theme interaction: a theme preset supplies the token defaults; explicit user
+  keys override the preset, and `appearance.theme` reload stays
+  `restart-required`;
+- safe mode: `bitty --safe` ignores user and preset color values and forces an
+  opaque built-in pair (`#FFFFFF` focused, `#808080` idle, alpha `FF`) that
+  passes the contrast rules below;
+- the base `decoration.border_color` and the pair are presentation-only chrome;
+  no plugin or `LayoutProvider` may set them at runtime.
+
+Candidate minimum-contrast rule (proposed OQ-037/OQ-039 resolution):
+
+| Rule | Requirement                                                                                                                          | Enforcement                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| AC-1 | focused outline >= 3:1 contrast against the adjacent `Workspace` background (WCAG 2.1 SC 1.4.11 non-text contrast)                   | `ConfigPlan` rejects a violating resolved pair fail-closed                |
+| AC-2 | focused outline >= 3:1 against the idle outline, or an enabled non-color focus cue (focused border thickness >= idle + 1 logical px) | `ConfigPlan` rejects a violating pair unless the non-color cue is enabled |
+| AC-3 | idle outline >= 1.5:1 contrast against the background                                                                                | `bitty config check` advisory only; subtlety remains allowed              |
+
+Contrast is computed on the resolved sRGB bytes with the WCAG
+relative-luminance formula against the theme surface color at the configured
+opacity. The `3:1` value is the WCAG AA non-text threshold; `1.5:1` is a
+design-advisory floor proposed here, not a normative accessibility claim.
+
+Open: whether the pair is `decoration.*` or a theme palette namespace; whether
+per-View-type overrides ship in v1; whether a failing idle contrast is a hard
+validation error or an advisory; whether `#RGB` shorthand is admitted; and
+whether safe mode keeps a distinct idle color or collapses to one outline.
+Tracked as OQ-039.
 
 ## Background opacity and blur: proposal (OQ-038)
 
@@ -247,9 +311,15 @@ Candidate conventions for review:
   accessibility contrast.
 - **OQ-038** — per-surface background opacity and blur compositor/render
   contract, platform gating, and performance budget.
+- **OQ-039** — focused/idle outline color contract: namespace, value format,
+  theme interaction, per-surface scope, safe mode, and the AC-1..AC-3
+  minimum-contrast rule.
 
-All three are `Open` in the
+OQ-036 through OQ-039 are `Open` in the
 [open-question register](../open-questions.md) and have no acceptance evidence.
+Panel open/close, focus-change, and workspace-switch animations are a separate
+contract in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part
+of this RFC's key set.
 
 ## Compatibility and migration
 
@@ -270,6 +340,7 @@ gracefully. Evidence belongs in `bitty`; this RFC records the contract only.
 
 - [Configuration Model RFC](../../specifications/configuration-model-rfc.md)
 - [Lua and XDG](../../configuration/lua-and-xdg.md)
+- [Panel Animations and Effects RFC](RFC-0002-panel-animations.md) (OQ-040)
 - [Workspace Compositor Specification](../../specifications/workspace-compositor.md)
 - [Security Overview](../../security/overview.md)
 - [Interfaces: Rich content](../../interfaces/rich-content.md)
