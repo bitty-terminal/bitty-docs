@@ -490,6 +490,38 @@ CTX-0241).
 Open: whether a CLI flag set grows to cover `decoration.*`; the CTX-0294 /
 CTX-0238g stage-2 delivery owns the actual visual behavior.
 
+## Appearance knobs (supported reference)
+
+Status: **implementation reference** read-only from `bitty` `origin/main`
+`d9f5b49`. This is the lookup table for the appearance knobs `init.lua` already
+accepts; the merge/reload mechanics stay in the
+[Configuration Model RFC](../specifications/configuration-model-rfc.md), and the
+design-only proposal for not-yet-supported appearance knobs is the
+[Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
+(draft; OQ-036 label position, OQ-037 frame color, OQ-038 opacity and blur).
+
+| Key                         | Default                        | Range or values                    |
+| --------------------------- | ------------------------------ | ---------------------------------- |
+| `appearance.theme`          | `bitty-dark` (alias `dark`)    | preset name; unknown falls back    |
+| `theme` (alias)             | unset                          | `appearance.theme` wins            |
+| `font.family`               | `JetBrainsMono Nerd Font`      | non-empty, `<= 128` bytes          |
+| `font.size`                 | `12.0`                         | `(0, 128]`                         |
+| `font.line_height`          | `1.375`                        | `[1.0, 2.0]`                       |
+| `font.letter_spacing`       | `2.0`                          | `[0.0, 8.0]`                       |
+| `window.opacity`            | `1.0`                          | `[0.0, 1.0]` whole window          |
+| `window.padding`            | `8`                            | `0..=64` logical px                |
+| `window.radius_px`          | `0`                            | `0..=24` physical px (no-op S0)    |
+| `layout.gaps_in`/`gaps_out` | `0`/`0`                        | `0..=16` cells                     |
+| `decoration.*`              | see decoration reference above | logical px                         |
+| `scrollbar.mode`/`width`    | `hidden`/`8`                   | `hidden`/`always`/`auto`, `1..=32` |
+
+- The gap layers compose: effective gap =
+  `decoration.gap * DPI_scale + layout.gap_cells * cell_axis` (CTX-0333).
+- `window.opacity` is whole-window, not per-surface or background-only; a
+  per-surface or background-only knob and blur remain design-only (OQ-038).
+- Label position and frame/margin-line color have no config key yet (OQ-036,
+  OQ-037); do not document them as supported.
+
 ## Shipped keymaps and Mod key
 
 Status: **shipped defaults** (read-only from `bitty` `origin/main`, CTX-0236,
@@ -683,5 +715,10 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - What are the native macOS and Windows directory mappings?
 - What is the trust database location and invalidation rule for local project
   configuration?
+- Which appearance knobs beyond the shipped set (workspace/tab label position,
+  frame and margin-line color, per-surface background opacity, blur) are
+  adopted, and under what render/compositor contract? (OQ-036/OQ-037/OQ-038;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md),
+  draft.)
 - What are the final manifest/lock names, and how do they coexist with Lua
   plugin specifications or distribution imports?

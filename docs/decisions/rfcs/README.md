@@ -11,8 +11,12 @@ sidebar_order: 40
 
 # Requests for comments
 
-No standalone RFC is currently open in this directory. Candidate mechanisms in
-the design corpus remain candidates until a scoped RFC is written and reviewed.
+| RFC                                                                  | Status | Targets                |
+| -------------------------------------------------------------------- | ------ | ---------------------- |
+| [Appearance Configuration RFC](RFC-0001-appearance-configuration.md) | Draft  | OQ-036, OQ-037, OQ-038 |
+
+Candidate mechanisms in the design corpus remain candidates until a scoped RFC
+is written and reviewed.
 
 ## Admission criteria
 

@@ -114,6 +114,13 @@ facts before relying on them operationally.
 The following proposals have not been accepted merely because they appeared in
 the historical conversation:
 
+- Appearance configuration: workspace/tab label position, frame and margin-line
+  color, per-surface background opacity, and blur. (Draft:
+  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md) —
+  scopes the bitty `CTX-0335` request; already-supported appearance knobs are
+  recorded as reference while [OQ-036](open-questions.md),
+  [OQ-037](open-questions.md), and [OQ-038](open-questions.md) remain `Open`;
+  frontmatter `draft`.)
 - Plugin API v1, capability/manifest model, and event phases. (Accepted:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
