@@ -18,10 +18,10 @@ into the developer command surface. It does not invent product code,
 does not authorize shipped behavior, and does not weaken the normative
 English-only, metadata, or link gates.
 
-The pipeline is implemented in `bitty-website` (CarryCtx `CTX-0017`) and
-is consumed from the pinned revision. This guide records the developer
-command surface and the operator procedure; the canonical prose remains
-in this repository and is never hand-copied into the website.
+The pipeline is owned by `bitty-website` under CarryCtx `CTX-0017` and
+consumes the pinned revision. This guide records the developer command
+surface and the operator procedure; the canonical prose remains in this
+repository and is never hand-copied into the website.
 
 ## Source of truth
 
@@ -296,10 +296,10 @@ the docs change and the website pin advance cannot ship together, the
 docs task stays open or carries a blocking dependency on the website
 task; the website never publishes a stale or duplicated contract.
 
-Cross-repository freshness is monitored separately: a scheduled workflow
-compares the pin against the `bitty-docs` default branch and files a
-tracking issue when the pin is behind. That monitor is advisory; the
-deterministic `docs:check` gate above is the release blocker.
+The deterministic `docs:check` gate is the release blocker. A scheduled
+cross-repository freshness check that compares the pin against the
+`bitty-docs` default branch remains follow-up work and is not claimed
+here.
 
 ## Cross-repository ordering
 
