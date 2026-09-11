@@ -558,6 +558,52 @@ audit — all of which belong to the runtime/IPC host under
 both Linux CI and the `windows-latest` job, and keeps the future migration path
 `AgentMessage -> bitty_ipc::Frame` a thin adapter without cap redefinition.
 
+### Credential scrubbing implementation evidence (bitty #370)
+
+Status: **experimental review evidence only.** The scrubbing milestone merged
+in `bitty` `a2d127b` (CTX-0216, PR #370, `crates/bitty-agent/src/tool.rs`). It
+records exactly what that change implements; it changes no accepted bound
+above, grants no new capability, and does not promote this RFC beyond
+`accepted`. Raw arguments and results are still stored for host dispatch;
+scrubbing is the required view for every log or IPC crossing, not a mutation of
+the stored value.
+
+What merged, exactly:
+
+1. **Sensitive-key redaction.** `is_sensitive_key` matches keys
+   case-insensitively, by exact name or explicit suffix (`_key`, `-token`,
+   `.secret`, `_pwd`, `_pass`, `_password`, ...), for `auth`, `pwd`, `pass`,
+   `pw`, `key`, `token`, `secret`, `password`, `credential`, `bearer`,
+   `cookie`, `authorization`, `passphrase`, and known markers (`api_key`,
+   `access_token`, `refresh_token`, `client_secret`, `private_key`,
+   `x-api-key`, `set-cookie`, ...). Short bare tokens are exact/suffix-only so
+   ordinary keys (`author`, `path`, `bypass`, `power`, `description`) are not
+   mangled; matching is intentionally fail-closed (over-redact rather than
+   leak).
+2. **Typed and unstructured values.** Any value under a sensitive key is
+   replaced with `REDACTED_MARKER` (`[redacted]`) regardless of JSON type
+   (string, number, object, array); a malformed or unbalanced shape under a
+   sensitive key redacts the whole payload rather than passing bytes through.
+   Unstructured text is additionally scanned for PEM blocks, known token
+   prefixes, JWTs (`eyJ`), and bearer values.
+3. **Boundary helpers.** `scrub_tool_args` / `scrub_tool_result` redact and
+   bound output to `MAX_TOOL_ARGS_BYTES` / `MAX_TOOL_RESULT_BYTES` (`16 KiB`
+   each, the accepted caps above). `ToolCall::scrubbed_arguments` /
+   `ToolCall::scrubbed` / `ToolCall::log_safe` and
+   `ToolResult::scrubbed_content` / `ToolResult::scrubbed` /
+   `ToolResult::log_safe` are the log/IPC views; `Debug` for both types is
+   redacting by design, so `format!("{:?}", call)` cannot emit a credential.
+4. **Adversarial coverage.** Negative tests assert JSON, bare-pair, header,
+   PEM, AWS, JWT, and `pass`/`pw` vectors are redacted; positive tests assert
+   legitimate values survive; cap tests assert scrubbed output stays within the
+   `16 KiB` bounds; debug/log-safe tests assert no seeded secret is emitted.
+
+Explicit non-changes: the scrubbing gate is key- and pattern-based, so a
+secret shape outside those patterns is not guaranteed to be redacted; the
+runtime Tool Bus, capability checks, per-tool consent, audit, and typed
+`SecretField` machinery are not implemented by this milestone; no
+`Verified`/`Compatible` claim is made by this evidence.
+
 ## Failure semantics
 
 Numbered for reference; none is implemented by this RFC alone:

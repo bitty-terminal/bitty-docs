@@ -524,6 +524,53 @@ Rules:
 3. Exported content treats all terminal and rich text as untrusted display data;
    URIs and file paths inside export output are not auto-executed.
 
+### OTP-gated clipboard read implementation evidence (bitty #374)
+
+Status: **experimental review evidence only.** The read-grant milestone merged
+in `bitty` `63b01db` (CTX-0213, PR #374, closes `bitty` #373,
+`crates/bitty-rich/src/clipboard.rs`). It records exactly what that change
+implements; it changes no accepted ceiling above, grants no new capability, and
+does not promote this RFC beyond `accepted`. The accepted write-side `copy`
+contract in the table above is unchanged, and the alternate-screen policy below
+is unaffected.
+
+What merged, exactly:
+
+1. **Single-use read grants (Ghostty OTP pattern).** `ClipboardState::grant_read`
+   mints a `ClipboardReadToken` from 256 bits of OS entropy
+   (`CLIPBOARD_READ_TOKEN_LEN = 32`). `handle_action_with_token` redeems a
+   token atomically by removing the matching live grant before building the
+   outcome, so replaying it is denied. At most `16`
+   (`CLIPBOARD_MAX_OUTSTANDING_GRANTS`) grants are outstanding; minting beyond
+   that evicts the oldest grant, which becomes unredeemable. When OS entropy is
+   unavailable, minting returns no token instead of falling back to a
+   predictable value.
+2. **Scope-bound redemption.** A grant is minted for a `ClipboardGrantScope`
+   (a `u64` such as a pane or client id) and is redeemable only from the same
+   scope; a token presented from another scope is denied and left unconsumed.
+   Token comparison is constant-time, so it does not leak the stored grant
+   prefix through timing.
+3. **Default-deny preserved.** The token-less `handle_action` path never
+   consults or consumes grants: every read stays
+   `ClipboardOutcome::ReadDenied`. A read with no token, an unknown token, an
+   evicted token, or a scope mismatch is denied and leaves all grants
+   unconsumed; denied reads increment a counter.
+4. **Bounded captured-write history.** A granted read returns the most recently
+   captured OSC 52 write payload (bounded by
+   `CLIPBOARD_MAX_PAYLOAD_BYTES = 4096`, truncated at the cap), or empty data
+   when no write has been captured. History keeps at most `16` writes
+   (`CLIPBOARD_MAX_HISTORY`, oldest dropped), and grants never expose the
+   platform clipboard.
+5. **Debug redaction.** `ClipboardReadToken` and `OutstandingGrant` implement
+   `Debug` with token bytes replaced by `[redacted]`, and `ClipboardState`'s
+   `Debug` reports only the grant count, so formatting state cannot leak grant
+   entropy.
+
+Explicit non-changes: the UI that would ask the user for consent and the
+capability that would let an embedder mint grants remain outside this headless
+seam; OSC 52 read requests stay denied without a live, in-scope token; and no
+`Verified`/`Compatible` claim is made by this evidence.
+
 ## Structured transport and alternate-screen policy (OQ-016)
 
 ### The three semantic sources
