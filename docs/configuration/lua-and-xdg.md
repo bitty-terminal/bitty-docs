@@ -632,15 +632,29 @@ warning to stderr instead of failing the process.
   This slice performs no platform reduced-motion query, so `auto` treats an
   absent signal as "animate".
 
-- Per-View/per-panel appearance overrides (`views.<selector>.*`), the
-  focus/idle outline width (`decoration.border_width` / `_focused` / `_idle`),
-  per-panel animation overrides, and plugin-supplied appearance are **candidate
-  only** (OQ-041, OQ-043, OQ-044, OQ-045, OQ-049;
-  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
-  amendments and
-  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)).
-  No `views.*` key or `decoration.border_width*` key is accepted or supported;
-  do not document one as working.
+- Per-View/per-panel appearance overrides (`views.<selector>.*`) and the
+  focus/idle outline width (`decoration.border_width` / `_focused` / `_idle`)
+  are **accepted contracts** but **not supported yet** (OQ-041 and OQ-045
+  resolved 2026-09-12, docs CTX-0163;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)).
+  The accepted selector grammar is `*` < content type
+  (`empty`/`terminal`/`rich`/`browser`) < `ws:<1..=16>` < `view:<ViewId>`,
+  resolved per field per `View`; the accepted `views.*` field set is
+  `border_color`/`_focused`/`_idle`, `border_width`/`_focused`/`_idle`, and
+  `background_image`/`background_fit`; `opacity`, `blur`, and `animations` are
+  reserved and rejected until OQ-038/OQ-043 accept them. A fatal
+  `views.<selector>` field or selector rejects the whole reload; `--safe`
+  ignores every `views.*` entry. No `views.*` key or `decoration.border_width*`
+  key is supported; do not document one as working. `background_image_roots`
+  remains global-only and cannot be widened per `View`.
+- Per-panel animation overrides are **candidate and narrowed** (OQ-043;
+  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)):
+  the accepted OQ-041 layer fixes the override mechanics, so only the animation
+  field set and its reduced-motion/budget interaction remain. The global
+  `appearance.animations.*` contract is unchanged.
+- Plugin-supplied appearance (OQ-044) and plugin-supplied images (OQ-049) remain
+  **open**; the override layer is Core-owned user configuration and grants no
+  plugin authority.
 - The per-panel background-image contract
   (`decoration.background_image` / `decoration.background_fit` /
   `decoration.background_image_roots`) is **accepted as a contract** but **not
@@ -864,15 +878,18 @@ These commands are further described in [CLI](../interfaces/cli.md).
   [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md);
   accepted and shipped in `bitty` `3c5878e`; `appearance.animations.*` is a
   supported `init.lua` key.)
-- What is the per-View/per-panel appearance override contract (selector grammar,
+- The per-View/per-panel appearance override contract (selector grammar,
   precedence, inheritance, reload, fail-closed validation, safe mode, and
-  per-View contrast), the focus/idle outline-width contract, and what
-  per-panel animation and plugin-supplied appearance contracts apply?
-  ([OQ-041/OQ-043/OQ-044/OQ-045](../decisions/open-questions.md);
-  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
-  amendments;
-  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md);
-  candidate only.)
+  per-View contrast) and the focus/idle outline-width contract are accepted
+  ([OQ-041/OQ-045](../decisions/open-questions.md), resolved 2026-09-12, docs
+  CTX-0163;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)).
+  What remains open is the per-panel animation override field set
+  ([OQ-043](../decisions/open-questions.md), narrowed) and plugin-supplied
+  appearance ([OQ-044](../decisions/open-questions.md)), with plugin-supplied
+  images under [OQ-049](../decisions/open-questions.md);
+  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md).
+  Accepted-but-unshipped, not a supported `init.lua` key yet.
 - The per-panel background-image contract is accepted
   ([OQ-042](../decisions/open-questions.md), resolved 2026-09-12); the
   plugin-supplied-image path remains open as

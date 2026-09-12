@@ -1,6 +1,6 @@
 ---
 title: Appearance Configuration RFC
-description: Accepted focus and idle outline color contract and per-panel background-image contract plus proposed per-View appearance override and outline-width candidate layers and the remaining appearance knob proposals exposed through init.lua
+description: Accepted focus and idle outline color, per-View appearance override, focus/idle outline width, and per-panel background-image contracts plus the remaining appearance knob proposals exposed through init.lua
 category: decisions
 audience: contributor
 document_type: specification
@@ -17,39 +17,45 @@ sidebar_order: 45
 > ([OQ-039](../open-questions.md)): the
 > `decoration.border_color_focused` / `decoration.border_color_idle` pair, the
 > `#RRGGBB` / `#RRGGBBAA` grammar, the resolution order, `live` reload, and the
-> `--safe` pair. A 2026-09-12 amendment adds the **per-View/per-panel appearance
-> override layer** as a reviewed candidate surface
+> `--safe` pair. A 2026-09-12 amendment records the **per-View/per-panel
+> appearance override contract** as a reviewed candidate surface
 > ([OQ-041](../open-questions.md)): `views.<selector>.*` overrides, precedence,
-> inheritance, live reload, fail-closed validation, and safe mode. A second
-> 2026-09-12 amendment adds the **focus/idle outline width contract** as a
-> reviewed candidate ([OQ-045](../open-questions.md)): the
-> `decoration.border_width` / `_focused` / `_idle` triple, logical-px bounds,
-> live reload, DPI scaling, and the non-color cue it gives the accepted AC-2
-> rule. A third 2026-09-12 amendment adds the **per-panel background-image
-> contract** as an accepted contract
+> inheritance, live reload, fail-closed validation, and safe mode. A later
+> 2026-09-12 acceptance amendment (docs `CTX-0163`) **accepts** that per-View
+> override contract and the companion **focus/idle outline width contract**
+> ([OQ-045](../open-questions.md)): the `views.<selector>.*` selector grammar,
+> per-field resolution, per-resolved-`View` contrast, whole-reload fail-closed
+> validation, and `--safe` behavior, plus the `decoration.border_width` /
+> `_focused` / `_idle` triple, logical-px bounds, live reload, DPI scaling, safe
+> `1`/`1`, and the AC-2 non-color cue. A third 2026-09-12 amendment adds the
+> **per-panel background-image contract** as an accepted contract
 > ([OQ-042](../open-questions.md)): PNG/JPEG/static-WebP formats, bounds BG-1..BG-5
 > reused from the accepted image-store corpus (IMG-1..IMG-5) plus the design
 > bound BG-6 and present-path bound BG-7, deny-by-default
 > path roots, the `fill`/`fit`/`center`/`tile`/`stretch` fit modes, per-`View`
 > override interaction, fail-closed whole-reload rejection, and `--safe`
 > ignoring image contributions; the plugin-supplied-image sub-question is
-> registered as [OQ-049](../open-questions.md). The per-View and width
-> amendments are reviewed candidates, not accepted or implemented features; they
-> leave the global OQ-039 pair accepted and unchanged, and the width keys remain
-> candidate and unshipped. This RFC does not accept the label
+> registered as [OQ-049](../open-questions.md). Acceptance is a reviewed
+> contract, not implementation evidence: no product code ships and no key is
+> supported until `bitty` implements it. This RFC does not accept the label
 > position ([OQ-036](../open-questions.md)), base frame/margin-line color
 > ([OQ-037](../open-questions.md)), background opacity/blur
 > ([OQ-038](../open-questions.md)), or per-panel animation overrides
-> ([OQ-043](../open-questions.md)), which remain `Open`. Acceptance itself
-> shipped no product code; the accepted OQ-039 outline-color pair is now
-> implemented in `bitty` PR #572 (merge commit `f83b1e1`, CTX-0340) and is
-> documented in [Lua and XDG](../../configuration/lua-and-xdg.md). It does not
-> weaken any normative
-> control in the [Security Overview](../../security/overview.md),
+> ([OQ-043](../open-questions.md)), which remain `Open`; the accepted override
+> contract explicitly reserves and rejects their `views.*` fields until those
+> questions accept them. Per-surface opacity and blur therefore stay
+> unsatisfied by `views.<selector>.opacity`/`blur`; only the resolved
+> `window.opacity` scalar remains a usable (whole-window) value. The CTX-0163
+> acceptance itself shipped no product code, but the earlier accepted OQ-039
+> outline-color pair is now implemented in `bitty` PR #572 (merge commit
+> `f83b1e1`, CTX-0340) and is documented in
+> [Lua and XDG](../../configuration/lua-and-xdg.md). It does not weaken any
+> normative control in the [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Configuration Model RFC](../../specifications/configuration-model-rfc.md).
 > The supported-knob entries below are implementation-derived reference read
-> read-only from `bitty` `origin/main` `3eb8e0e`; everything else is candidate.
+> read-only from `bitty` `origin/main` `3eb8e0e`; the accepted amendments above
+> are reviewed contracts and the remaining knobs are candidate or open.
 > The accepted animation contract is
 > [RFC-0002](RFC-0002-panel-animations.md). The cross-cutting extension
 > architecture is reviewed in the
@@ -257,8 +263,8 @@ Accepted constraints:
 
 - namespacing: the pair lives under the Core-owned `decoration.*` surface with
   the existing scalar-replace, per-field attribution, and `Live` reload class;
-- scope: global for all `View` borders by default; a per-View-type override
-  table is deferred to a future revision, not part of this key set;
+- scope: global for all `View` borders by default; the per-`View` override table
+  is accepted separately below, not part of this OQ-039 key set;
 - theme interaction: a theme preset supplies the token defaults; explicit user
   keys override the preset, and `appearance.theme` reload stays
   `restart-required`;
@@ -278,13 +284,13 @@ Accepted minimum-contrast rule (resolving the contrast half of OQ-039):
 
 Reviewer note (non-blocking note c, amended 2026-09-12): AC-2 depends on a
 non-color focus cue (focused border thickness >= idle + 1 logical px). That
-cue is now **specified** as the candidate outline-width contract below
+cue is now **accepted** as the outline-width contract below
 ([OQ-045](../open-questions.md)); it is still not a shipped contract, so until
 `bitty` implements it the pair must satisfy focused >= 3:1 against idle. The
 cue is no longer an unrecorded gap: AC-2 may be satisfied either by the color
-delta or by a documented non-color cue (the width delta being the natural
-one), and enforcement follows the same fail-closed rule. The width keys remain
-candidate and unshipped; this note records the design, not an implementation.
+delta or by the accepted non-color cue (the width delta being the natural one),
+and enforcement follows the same fail-closed rule. The width keys are
+accepted-but-unshipped; this note records the design, not an implementation.
 
 Contrast is computed on the resolved sRGB bytes with the WCAG
 relative-luminance formula against the theme surface color at the configured
@@ -295,43 +301,45 @@ Resolved for OQ-039: the pair is `decoration.*`; `#RGB` shorthand is not
 accepted in v1; a failing idle contrast stays advisory; and safe mode keeps a
 distinct idle color (`#808080`). The OQ-039 scope note said per-View-type
 overrides were "deferred to a future revision". That sub-question is now
-reconciled by the per-View override layer below: the _global_ pair stays as
-accepted, and a new, separately reviewed override contract
-([OQ-041](../open-questions.md)) is registered rather than retroactively
+reconciled by the accepted per-View override layer below: the _global_ pair
+stays as accepted, and the separately reviewed override contract
+([OQ-041](../open-questions.md)) was accepted rather than retroactively
 widening OQ-039. `#RGB` shorthand remains deferred follow-up work.
 
-## Focus and idle outline width: reviewed candidate (OQ-045)
+## Focus and idle outline width: accepted (OQ-045)
 
 Direction (user requirement, docs `CTX-0157` follow-up m0313/m0315, 2026-09-12):
 the **focused outline width must be configurable**, and every appearance
 property must be discussed in this corpus rather than left implicit. The
-accepted OQ-039 pair already colors the focused and idle outlines; this
-candidate adds the matching **width** triple so a focused `View` can read
-thicker than an idle one.
+accepted OQ-039 pair already colors the focused and idle outlines; this section
+accepts the matching **width** triple so a focused `View` can read thicker than
+an idle one.
 
-This section is a **reviewed candidate** for a future revision. It is recorded
-here, not marked accepted, because it adds new keys, changes the frame
-geometry contract, and depends on the same deferred px-decoration painting as
-`decoration.border`. No key below is accepted or shipped.
+Status: **accepted** as a reviewed contract by the 2026-09-12 acceptance
+amendment (docs `CTX-0163`, [OQ-045](../open-questions.md)). Acceptance records
+a reviewed contract, not implementation evidence: the keys are not supported
+until `bitty` implements them, and painting them depends on the same deferred
+px-decoration painting as `decoration.border` (`bitty` CTX-0294). No width key
+is shipped by this acceptance.
 
-### Candidate keys
+### Keys
 
-Candidate `init.lua` surface (all logical px, matching `decoration.border`):
+Accepted `init.lua` surface (all logical px, matching `decoration.border`):
 
-| Candidate key                     | Default                                                     | Values              | Reload |
+| Accepted key                      | Default                                                     | Values              | Reload |
 | --------------------------------- | ----------------------------------------------------------- | ------------------- | ------ |
 | `decoration.border_width`         | inherits `decoration.border` (current accepted default `2`) | `0..=16` logical px | live   |
 | `decoration.border_width_focused` | inherits `decoration.border_width`                          | `0..=16` logical px | live   |
 | `decoration.border_width_idle`    | inherits `decoration.border_width`                          | `0..=16` logical px | live   |
 
-Candidate resolution order (later wins): the accepted `decoration.border`
+Accepted resolution order (later wins): the accepted `decoration.border`
 value, then `decoration.border_width` (base), then the explicit
 `decoration.border_width_focused` / `decoration.border_width_idle` pair. An
 unset base or pair member inherits the next-less-specific value and never
 silently shadows it, mirroring the accepted OQ-039 color rule. A user who sets
 only `decoration.border_width` keeps that width for both focus states.
 
-Candidate constraints:
+Accepted constraints:
 
 - **Bounds are fail-closed.** Integer logical px in `0..=16`, a
   deliberately wider ceiling than the accepted `decoration.border` `0..=8`
@@ -347,29 +355,34 @@ Candidate constraints:
 - **Safe mode.** `bitty --safe` ignores user and preset width values and forces
   a built-in pair — focused `1`, idle `1` (equal, no width cue) with the
   accepted safe colors `#FFFFFF` / `#808080` — so safe mode never relies on a
-  width cue for focus. Safe mode never leaves an override in effect.
+  width cue for focus and satisfies AC-2 by color instead. This matches the
+  shipped `--safe` decoration invariant that forces `border = 1`. Safe mode
+  never leaves an override in effect.
 - **DPI scaling.** Values are integers in logical px and are scaled by the
   `Window` DPI factor only at render time, exactly like `decoration.border`;
-  layout math stays in logical pixels, and the focused/idle delta is therefore
-  `>= 1` logical px at any DPI. The candidate preserves the accepted rule that
-  the content rectangle is the frame inset by `border + content_inset`; a
-  focused width change must not move the content grid, so the frame is drawn
-  inside the `View` rectangle and the focused delta is absorbed by the frame,
-  not by content reflow.
+  layout math stays in logical pixels, and a focused/idle delta of `1` logical
+  px stays at least `1` logical px at any DPI. The accepted rule that the
+  content rectangle is the frame inset by `border + content_inset` is
+  preserved; a focused width change must not move the content grid, so the
+  frame is drawn inside the `View` rectangle and the focused delta is absorbed
+  by the frame, not by content reflow.
 - **Per-View override interaction.** `decoration.border_width`,
-  `_focused`, and `_idle` are ordinary fields in the `views.<selector>.*`
-  override model below: each resolves **per field per `View`** under the same
-  selector tiers and order-independent precedence, with unknown fields failing
-  closed. Setting only `border_width_focused` in a `views` entry does not reset
-  an inherited `border_width_idle`. AC-1..AC-3 contrast is evaluated on the
-  resolved per-`View` color pair independently of width.
-- **Non-color cue for AC-2.** `border_width_focused > border_width_idle` is the
-  natural non-color focus affordance the accepted AC-2 rule referenced. When
-  the resolved pair has a focused width at least `idle + 1` logical px, a
-  focused/idle color pair that fails the `3:1` threshold may still satisfy AC-2
-  through the width cue; otherwise the color pair must meet `3:1`. This
-  resolves the design half of the AC-2 gap recorded above, but it is not
-  implementation evidence: the keys stay candidate until `bitty` ships them.
+  `_focused`, and `_idle` are ordinary fields in the accepted
+  `views.<selector>.*` override model below: each resolves **per field per
+  `View`** under the same selector tiers and order-independent precedence,
+  with unknown fields failing closed. Setting only `border_width_focused` in a
+  `views` entry does not reset an inherited `border_width_idle`. AC-1..AC-3
+  contrast is evaluated on the resolved per-`View` color pair independently of
+  width.
+- **Non-color cue for AC-2.** `border_width_focused >= border_width_idle + 1`
+  (integers) is the accepted non-color focus affordance the AC-2 rule
+  referenced. When the resolved pair has a focused width at least
+  `idle + 1` logical px, a focused/idle color pair that fails the `3:1`
+  threshold may still satisfy AC-2 through the width cue; otherwise the color
+  pair must meet `3:1`. The cue is resolved per `View`, so a per-View width
+  override participates in that `View`'s AC-2 evaluation. This closes the
+  design half of the AC-2 gap, but it is not implementation evidence: the keys
+  stay accepted-but-unshipped until `bitty` ships them.
 - **Reference semantics.** This mirrors Hyprland's `border_size` (base),
   `active_border` and `inactive_border` (focused/idle) distinction, adapted to
   Bitty's `View` vocabulary: Bitty keeps one Core-owned `decoration.*`
@@ -381,14 +394,14 @@ Candidate constraints:
 - **OQ-039 (accepted):** the accepted color pair and its AC-1..AC-3 rule are
   unchanged. The width triple only supplies the non-color cue AC-2 already
   allowed.
-- **OQ-041 (candidate):** the width fields join the override field set below;
+- **OQ-041 (accepted below):** the width fields join the override field set;
   they do not alter the selector grammar, precedence tiers, or reload rules.
 - **OQ-042 (accepted):** the background-image contract accepts the image fields
   as part of the OQ-041 override field set. **OQ-043/OQ-044/OQ-049 (open):**
-  per-panel animations, plugin-supplied appearance generally, and
+  per-panel animation overrides, plugin-supplied appearance generally, and
   plugin-supplied images remain separate.
 
-## Per-View and per-panel appearance overrides: reviewed candidate (OQ-041)
+## Per-View and per-panel appearance overrides: accepted (OQ-041)
 
 Direction (user directive, bitty `CTX-0343` / docs `CTX-0157`, 2026-09-12):
 every `View` (leaf) and panel surface must support **independent** appearance
@@ -398,70 +411,128 @@ plugins can extend it. This is the appearance half of that directive; the
 extension-architecture half is the
 [UI Extensibility Architecture](../../specifications/ui-extensibility-architecture.md).
 
-This section is a **reviewed candidate** for a future revision. It is recorded
-here, not marked accepted, because it changes the OQ-039 contract from a single
-global pair to a resolved per-`View` value and needs its own acceptance
-(ADR/RFC update) plus renderer evidence before any key ships.
+Status: **accepted** as a reviewed contract by the 2026-09-12 acceptance
+amendment (docs `CTX-0163`, [OQ-041](../open-questions.md)). Acceptance records
+a reviewed contract, not implementation evidence: no product code ships and no
+`views.*` key is supported until `bitty` implements it. Acceptance reconciles
+the layer with the accepted OQ-039 color pair, the accepted OQ-042
+background-image contract, and the accepted OQ-045 width triple, and does not
+reopen any accepted default. The override layer is **Core-owned user
+configuration**; plugin-supplied appearance remains
+[OQ-044](../open-questions.md)/[OQ-049](../open-questions.md).
 
-### Key grammar
+### Selector grammar
 
-Candidate: a `views` table keyed by a bounded selector, where each entry is an
-override of already-defined appearance fields. The selector is one of:
+The accepted surface is a `views` table keyed by a bounded, closed selector
+grammar. Every entry overrides already-defined appearance fields:
 
 ```lua
--- Candidate schema only; not a shipped key.
+-- Accepted contract only; not a shipped key until bitty implements it.
 return {
     views = {
-        ["*"] = { opacity = 0.95 },                    -- all views (global-ish)
-        terminal = { border_color_focused = "#33CCFF" },-- per View/content type
-        rich = { opacity = 1.0 },
-        browser = { blur = 8 },
-        ["ws:2"] = { opacity = 0.8 },                  -- per Workspace label
-        ["view:7"] = { border_color_idle = "#444444AA" }, -- exact ViewId
+        ["*"] = { border_color_focused = "#33CCFF" },   -- every View
+        ["terminal"] = { border_color_idle = "#595959AA" }, -- per ViewContent
+        ["rich"] = { border_width_focused = 3 },
+        ["browser"] = { background_fit = "fit" },
+        ["ws:2"] = { border_width_idle = 1 },           -- per Workspace label
+        ["view:7"] = { background_image = "~/wall/one.png" }, -- exact ViewId
     },
 }
 ```
 
-Candidate selector grammar, most specific wins:
+Accepted selector grammar (exactly one of, case-sensitive, no whitespace
+inside the key):
 
-| Selector form     | Matches                                       | Example    |
-| ----------------- | --------------------------------------------- | ---------- |
-| `"*"`             | every `View` in every `Workspace`             | `["*"]`    |
-| view/content type | `terminal`, `rich`, `browser` (`ViewContent`) | `terminal` |
-| `"ws:<label>"`    | every `View` in the named `Workspace`         | `"ws:2"`   |
-| `"view:<ViewId>"` | exactly one `View` by stable `ViewId`         | `"view:7"` |
+| Selector form     | Matches                                           | Accepted value domain                               | Example    |
+| ----------------- | ------------------------------------------------- | --------------------------------------------------- | ---------- |
+| `"*"`             | every `View` in every `Workspace`                 | the literal `*` only                                | `["*"]`    |
+| content type      | every `View` whose `ViewContent` is that type     | `empty`, `terminal`, `rich`, `browser` (closed set) | `terminal` |
+| `"ws:<label>"`    | every `View` in the named `Workspace`             | `<label>` = canonical decimal `1..=16`              | `"ws:2"`   |
+| `"view:<ViewId>"` | exactly one `View` by its current stable `ViewId` | `<ViewId>` = canonical decimal `1..=2^64-1`         | `"view:7"` |
 
-Candidate override fields, all optional and each defaulting to the resolved
-global value:
+Grammar rules, all fail-closed at `ConfigPlan` validation with a
+source-attributed diagnostic naming the offending key; an invalid selector is
+never ignored and never partially matched:
 
-| Field                  | Source of the global default                     |
-| ---------------------- | ------------------------------------------------ |
-| `opacity`              | `window.opacity` until OQ-038 resolves           |
-| `blur`                 | unset until OQ-038 resolves                      |
-| `background_image`     | `decoration.background_image` (OQ-042, accepted) |
-| `background_fit`       | `decoration.background_fit` (OQ-042, accepted)   |
-| `border_color`         | `decoration.border_color` (OQ-037)               |
-| `border_color_focused` | `decoration.border_color_focused`                |
-| `border_color_idle`    | `decoration.border_color_idle`                   |
-| `border_width`         | `decoration.border_width` (OQ-045)               |
-| `border_width_focused` | `decoration.border_width_focused`                |
-| `border_width_idle`    | `decoration.border_width_idle`                   |
+1. The selector set is closed. Any key that is not `*`, a `ViewContent` name,
+   `ws:<label>`, or `view:<ViewId>` is rejected. Unknown selector forms,
+   unknown content-type names, and unknown `views.*` keys are errors.
+2. `ws:<label>` uses the `Workspace`'s stable user-facing label — the numeric
+   identity used by `workspace_focus:<1..=16>` and `ctl workspace … ws:N`, not a
+   display title. The label is bounded to `1..=16` by the accepted
+   workspaces-per-`Window` ceiling in the
+   [Terminal Registry and View Lifecycle RFC](../../specifications/terminal-registry-view-lifecycle-rfc.md)
+   (`max_workspaces_per_window` in `[1, 16]`); `ws:0`, `ws:17`, a non-integer,
+   or a leading-zero spelling is rejected. If a future Workspace-naming feature
+   lands, it must not silently change this selector's meaning.
+3. `view:<ViewId>` uses canonical decimal without leading zeros, bounded to the
+   `u64` `ViewId` range defined in the
+   [Workspace Compositor Specification](../../specifications/workspace-compositor.md).
+   It matches the `View` that currently holds that `ViewId`; because `ViewId`
+   numeric reuse requires a generation bump on disposal, a selector matches a
+   live `View` or is inert, never a stale handle.
+4. `empty` is accepted for `ViewContent` completeness (a placeholder `View`
+   still has a Core frame) but is normally inert because no custom appearance
+   is set for it.
+5. Within one layer a Lua table has unique keys; across merged layers the
+   higher-precedence layer wins per field. The `views` table adds no
+   whole-table cap because the selector set is closed and each entry is a
+   fixed-shape scalar table; the key set that can match a live `View` is
+   bounded by the accepted `View`/`Workspace` ceilings, and the aggregate parse
+   is bounded by the Config VM RC-1/RC-2 budgets and PB-1 in
+   [ADR 0007](../adrs/ADR-0007-async-gc.md) and the
+   [Performance Budget RFC](../../specifications/performance-budget-rfc.md).
+   No new numeric ceiling is invented.
 
-Animation options are part of the user directive but are **not** in this
-candidate's key set; they are deferred to [OQ-043](../open-questions.md) and
-the global `appearance.animations.*` contract is unchanged until then. Unknown
-selector forms, unknown fields, and unknown `views.*` keys fail closed with a
-source-attributed diagnostic naming the offending key; they are never silently
-ignored.
+### Accepted overridable field set
+
+Every field is optional and defaults to the resolved global value. The accepted
+field set is exactly the fields whose global owner is an accepted contract:
+
+| `views.<selector>.<field>` | Global default source                                 | Contract          |
+| -------------------------- | ----------------------------------------------------- | ----------------- |
+| `border_color`             | `decoration.border_color` (OQ-039 base member, unset) | accepted (OQ-039) |
+| `border_color_focused`     | `decoration.border_color_focused` (`#33CCFF`)         | accepted (OQ-039) |
+| `border_color_idle`        | `decoration.border_color_idle` (`#595959AA`)          | accepted (OQ-039) |
+| `border_width`             | `decoration.border_width` (inherits `border`)         | accepted (OQ-045) |
+| `border_width_focused`     | `decoration.border_width_focused`                     | accepted (OQ-045) |
+| `border_width_idle`        | `decoration.border_width_idle`                        | accepted (OQ-045) |
+| `background_image`         | `decoration.background_image` (unset)                 | accepted (OQ-042) |
+| `background_fit`           | `decoration.background_fit` (`"fill"`)                | accepted (OQ-042) |
+
+Reserved fields, rejected fail-closed until their owning question accepts them
+(a reserved field present in a `views` entry rejects the whole reload; it is
+never silently ignored or partially applied):
+
+| Reserved field | Owner                          | Why reserved                                             |
+| -------------- | ------------------------------ | -------------------------------------------------------- |
+| `opacity`      | [OQ-038](../open-questions.md) | per-surface opacity needs a renderer/compositor contract |
+| `blur`         | [OQ-038](../open-questions.md) | blur needs a compositor/shader and performance budget    |
+| `animations`   | [OQ-043](../open-questions.md) | per-panel animation overrides are a separate contract    |
+
+The reserved set is closed: an unknown field is an error, and a reserved field
+is an error until the owning OQ is accepted, so this contract cannot be used to
+smuggle an unaccepted knob. `border_color` resolves as the accepted OQ-039 base
+member; the broader frame/margin-line color question
+([OQ-037](../open-questions.md)) stays open and gains no key here. Whole-window
+`window.opacity` remains the only opacity value in effect until OQ-038 accepts a
+per-surface one.
+
+Field value bounds are the global field's bounds, unchanged:
+`#RRGGBB`/`#RRGGBBAA` for colors, integer logical px `0..=16` for widths, the
+OQ-042 path/format/bound rules for `background_image`, and the OQ-042 fit enum
+for `background_fit`. `decoration.background_image_roots` is global-only and is
+**not** in the `views.*` field set, so a per-`View` entry can never widen the
+approved roots.
 
 ### Precedence and inheritance
 
-Candidate resolution order, later wins, evaluated per field per `View`:
+Accepted resolution order, later wins, evaluated per field per `View`:
 
 ```text
 built-in safe defaults
   -> appearance.theme preset tokens
-  -> global decoration.* / window.* (and appearance.animations.* if OQ-043 admits it)
+  -> global decoration.* / window.* (and, when accepted, appearance.animations.*)
   -> views["*"]
   -> views["<content-type>"]
   -> views["ws:<label>"]
@@ -470,62 +541,112 @@ built-in safe defaults
 
 Rules:
 
-1. Resolution is per field, not per table: a later selector that sets only
-   `opacity` does not reset an inherited `border_color_focused`.
+1. Resolution is **per field, not per table**. A later selector that sets only
+   `border_width_focused` does not reset an inherited `background_image` or
+   `border_color_idle`; an unset field inherits the next-less-specific resolved
+   value and never silently shadows it.
 2. Selector tiers are ordered `* < content-type < ws: < view:` regardless of
-   declaration order in `init.lua`; a `view:` entry always beats a `ws:` entry
+   declaration order in `init.lua`. A `view:` entry always beats a `ws:` entry
    for the same field, so two `init.lua` files that declare the same selectors
    in different order resolve identically. This keeps merged layers
-   byte-comparable, matching the configuration model.
-3. A `ViewId` selector follows the `View` across workspace moves because
+   byte-comparable, matching the
+   [Configuration Model RFC](../../specifications/configuration-model-rfc.md).
+3. Within a tier at most one selector matches a given `View` (one content type,
+   one workspace, one exact `ViewId`), so there is no intra-tier ambiguity and
+   no last-declared-wins rule.
+4. A `view:<ViewId>` selector follows the `View` across workspace moves because
    `ViewId` is stable for the `View` lifetime; a `Terminal` rebind does not
    change the `View` selector match. `ws:` selectors follow the `Workspace`.
-4. The resolved value is presentation-only state on the `Workspace`/`View`
-   presentation record; it never enters `bitty-term-state`.
+5. The resolved value is presentation-only state on the `Workspace`/`View`
+   presentation record; it never enters `bitty-term-state` and never changes
+   cell geometry, hit testing, selection, or Terminal Truth.
 
-### Live reload and fail-closed validation
+### Per-View contrast
 
-Candidate: the override table follows the existing `ConfigPlan` rules —
-typed, bounded, scalar-replace per field with source attribution, and a
-documented reload class.
+The accepted OQ-039 contrast rule applies to **each fully resolved per-`View`
+pair**, not only the global pair:
 
-- A change to a value that the renderer can hot-apply is `live`; the affected
+- **AC-1** — the resolved focused outline must meet `>= 3:1` contrast against
+  the adjacent `Workspace` background.
+- **AC-2** — the resolved focused outline must meet `>= 3:1` against the
+  resolved idle outline, **or** the resolved non-color cue must hold
+  (`border_width_focused >= border_width_idle + 1` logical px, per the accepted
+  OQ-045 width triple). A per-`View` width override participates in that
+  `View`'s AC-2 evaluation.
+- **AC-3** — the resolved idle outline `>= 1.5:1` against the background stays
+  advisory only.
+
+A resolved per-`View` pair that violates AC-1 or AC-2 is a validation failure,
+not a warning. Enforcement is fail-closed at two bounded points, with no silent
+fallback or clamping:
+
+1. During a `ConfigPlan` reconcile, every `views` entry whose target set is
+   currently resolvable (`*`, content-type, and any `ws:`/`view:` that matches a
+   live `View`/`Workspace`) is resolved against that `View`'s background and
+   checked. A violation rejects the **entire reload**; the previous committed
+   appearance stays in effect.
+2. A `ws:`/`view:` entry whose target does not exist yet is accepted
+   structurally (grammar, field, bounds) and stays inert. When it first
+   matches — `View` creation, bind, or a workspace move that brings a `View`
+   under it — the resolved pair is checked before the appearance is committed.
+   A violation fails that `View` creation/bind closed with a source-attributed
+   diagnostic; the `View` is never composed with a violating pair, and no
+   previously committed appearance is silently rewritten.
+
+Contrast is computed on the resolved sRGB bytes with the WCAG
+relative-luminance formula, exactly as the accepted OQ-039 rule specifies.
+Because `views.*` can lower contrast per `View`, this rule is what makes the
+override layer fail-closed rather than an accessibility bypass.
+
+### Live reload and whole-reload fail-closed validation
+
+The accepted override table follows the existing `ConfigPlan` rules — typed,
+bounded, scalar-replace per field with source attribution, and a documented
+reload class:
+
+- A change to a value the renderer can hot-apply is `live`; the affected
   `View`s repaint at the next present tick with no grid damage.
-- A selector that adds or removes a `view:`/`ws:` match is also `live`; it
+- Adding, removing, or editing a `view:`/`ws:` selector is also `live`; it
   re-resolves the affected `View` set without recreating a `View` or
-  `Terminal`.
-- If a new value fails validation, the entire reload is rejected fail-closed:
-  the previous resolved appearance stays in effect and a source-attributed
-  diagnostic names the key. The renderer never applies a partial or clamped
-  override.
-- Unknown fields and malformed selectors are rejected at `ConfigPlan`
-  validation, not at paint time.
+  `Terminal`. A selector that stops matching falls the affected field back to
+  its inherited value.
+- Removing a field is `live` and restores the inherited value.
+- If **any** value in a reload fails validation, the **entire** reload is
+  rejected fail-closed: the previous resolved appearance stays in effect and a
+  source-attributed diagnostic names the offending key. The renderer never
+  applies a partial, clamped, or silently dropped override.
+- Unknown fields, reserved fields, malformed selectors, out-of-range widths,
+  invalid colors, and OQ-042 image bound/path/format failures are rejected at
+  `ConfigPlan` validation, not at paint time.
 
-### Safe-mode behavior
+### Safe mode and override suppression
 
-Candidate: `bitty --safe` ignores every `views.*` override, including `"*"`,
-and forces the safe global values already defined for OQ-039
-(`#FFFFFF` focused, `#808080` idle, opaque), opacity `1.0`, no blur, and no
-background image. Safe mode never leaves an override in effect, even one that
-would otherwise pass validation.
+`bitty --safe` ignores every `views.*` entry, including `"*"`, and reads no
+external configuration layer (the shipped safe-mode precedence documented in
+the [CLI reference](../../interfaces/cli.md#safe-mode-configuration-precedence)).
+It forces the safe global values: the opaque outline pair `#FFFFFF` focused /
+`#808080` idle, `border_width`/`_focused`/`_idle` each `1`, opacity `1.0`, no
+blur, and no background image. Safe mode never leaves an override in effect,
+even one that would pass validation, so a hostile or invalid `views` table
+cannot influence safe startup or `config check`.
 
-### Composition with OQ-039 and OQ-040
+### Interaction with OQ-039, OQ-042, OQ-043, and OQ-045
 
-- **OQ-039 (accepted):** the accepted global pair remains the base value. The
-  override layer only refines it per `View`; acceptance does not reopen the
-  global OQ-039 defaults, grammar, or contrast rule.
-- **Contrast:** AC-1..AC-3 must be evaluated on each resolved per-`View` pair,
-  not only the global pair. A per-`View` override that violates AC-1/AC-2 fails
-  validation; the idle-only advisory AC-3 stays advisory.
-- **Width cue (OQ-045):** the candidate outline-width triple is part of this
-  override model; `border_width` / `_focused` / `_idle` resolve per field per
-  `View`, and a focused width at least `idle + 1` logical px satisfies the AC-2
-  non-color cue independently of the color pair. The keys stay candidate.
-- **OQ-040 (accepted):** per-panel animation _options_ are part of the user
-  directive but not part of this candidate; they are registered as
-  [OQ-043](../open-questions.md). Until OQ-043 resolves, `views.<selector>`
-  does not accept an `animations` table, and the global
-  `appearance.animations.*` contract is unchanged.
+- **OQ-039 (accepted):** the accepted global pair and its AC-1..AC-3 rule are
+  unchanged and remain the base value; the override layer only refines them per
+  `View` and evaluates contrast on the resolved pair.
+- **OQ-042 (accepted):** `background_image`/`background_fit` join the field set
+  under the accepted image contract; `background_image_roots` stays global
+  policy and cannot be widened per `View`.
+- **OQ-045 (accepted):** the width triple joins the field set; per-`View` width
+  supplies the AC-2 non-color cue.
+- **OQ-043 (open, narrowed):** the `animations` field is reserved and rejected.
+  The per-panel animation question is now narrowed to whether, and with what
+  per-field precedence, an accepted `appearance.animations.*` set may be
+  overridden per selector; the selector grammar and precedence tiers above are
+  accepted and available for that future revision, so OQ-043 no longer needs to
+  redesign the override layer. The global `appearance.animations.*` contract in
+  [RFC-0002](RFC-0002-panel-animations.md) is unchanged.
 - **Plugin interaction:** the override layer is Core-owned configuration. A
   plugin may not set `views.*`, `decoration.*`, or `window.*` at runtime; the
   authority question for plugin-supplied appearance is
@@ -564,7 +685,7 @@ the fail-closed behavior now, and defers only the plugin-supply sub-question.
 | `decoration.background_image_roots` | `[]` (deny all) | bounded list of directory paths, each `<= 4096` bytes, at most `32` entries | live   | global path policy; not overridable per `View` |
 
 Per-`View` override: `views.<selector>.background_image` and
-`views.<selector>.background_fit` join the [OQ-041](#per-view-and-per-panel-appearance-overrides-reviewed-candidate-oq-041)
+`views.<selector>.background_fit` join the [OQ-041](#per-view-and-per-panel-appearance-overrides-accepted-oq-041)
 override field set. A `views.*` entry may select a path and a fit mode but may
 **not** widen the approved roots: `decoration.background_image_roots` is
 global-only and is deliberately absent from the `views.*` field set, so a
@@ -711,12 +832,16 @@ records the contract only.
 
 ### Interaction with OQ-041 and OQ-044
 
-- **OQ-041 (candidate):** the two image fields join the override field set; the
+- **OQ-041 (accepted):** the two image fields join the override field set; the
   selector grammar, precedence tiers, reload rules, and per-`View` contrast rule
   are unchanged.
 - **OQ-044 (open):** plugin-supplied appearance generally remains open; this
   contract only settles the Core-owned user-configuration path and explicitly
   withholds the plugin image path, which OQ-049 narrows.
+
+Per-surface `opacity` and `blur` stay reserved and rejected in `views.*` until
+[OQ-038](#background-opacity-and-blur-proposal-oq-038) accepts them, so the
+override layer cannot enable them early.
 
 ## Background opacity and blur: proposal (OQ-038)
 
@@ -805,8 +930,9 @@ Candidate conventions for review:
   minimum-contrast rule. **Accepted** 2026-09-12 (see the section above).
 - **OQ-041** — per-View/per-panel appearance override contract: selector
   grammar, precedence, inheritance, live reload, fail-closed validation,
-  safe-mode behavior, and per-`View` contrast enforcement. **Open**; the
-  amendment above is its reviewed candidate.
+  safe-mode behavior, and per-`View` contrast enforcement. **Accepted**
+  2026-09-12 (see the section above); the field set, reserved fields, and
+  per-`View` contrast rule are fixed here.
 - **OQ-042** — per-panel background-image contract: format, size/dimension
   limits, decode path, cache budget, tiling/scaling, path trust, and whether a
   plugin may supply an image. **Accepted** 2026-09-12 for the Core-owned
@@ -815,28 +941,30 @@ Candidate conventions for review:
   open.
 - **OQ-043** — per-panel animation override contract: which transition leaves
   may be overridden per selector, precedence, reduced-motion interaction, and
-  budget attribution. **Open**.
+  budget attribution. **Open, narrowed**: the accepted OQ-041 selector grammar,
+  precedence tiers, and reload rules now cover the override mechanics; what
+  remains is the animation field set and its reduced-motion/budget interaction.
 - **OQ-044** — plugin-supplied appearance contract: whether and how a plugin
   may contribute appearance for its own `View`s or content under a capability,
   and the ownership boundary against Core-owned chrome. **Open**.
 - **OQ-045** — focus/idle outline-width contract: defaults, `0..=16` bounds,
   per-`View` override resolution, DPI scaling, safe-mode values, and the
-  non-color cue it supplies to AC-2. **Open**; the amendment above is its
-  reviewed candidate.
+  non-color cue it supplies to AC-2. **Accepted** 2026-09-12 (see the section
+  above).
 
-OQ-036, OQ-037, OQ-038, and OQ-041, OQ-043, OQ-044, and OQ-045 remain `Open` in
-the [open-question register](../open-questions.md) and have no acceptance
-evidence. [OQ-039](../open-questions.md) and
-[OQ-042](../open-questions.md) are accepted by this RFC; OQ-042's
-plugin-supply sub-question is registered as
-[OQ-049](../open-questions.md). Panel open/close, focus-change, and
-workspace-switch animations are a separate accepted contract
-in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part of this
-RFC's key set. The per-View override layer and the outline-width triple are
-reviewed candidate amendments to this RFC and are not accepted; they are
-therefore not part of the accepted key set. The background-image contract is
-accepted, but its `decoration.background_image*` keys are not part of the
-accepted key set until `bitty` implements them.
+[OQ-039](../open-questions.md), [OQ-041](../open-questions.md),
+[OQ-042](../open-questions.md), and [OQ-045](../open-questions.md) are accepted
+by this RFC; OQ-042's plugin-supply sub-question is registered as
+[OQ-049](../open-questions.md). [OQ-036](../open-questions.md),
+[OQ-037](../open-questions.md), [OQ-038](../open-questions.md),
+[OQ-043](../open-questions.md), and [OQ-044](../open-questions.md) remain
+`Open`. Panel open/close, focus-change, and workspace-switch animations are a
+separate accepted contract in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040);
+they are not part of this RFC's key set. The accepted per-View override layer
+and outline-width triple are part of the accepted key set here, but no accepted
+key is a supported `init.lua` key until `bitty` implements it. The
+background-image contract is accepted, and its `decoration.background_image*`
+keys stay unimplemented until `bitty` implements them.
 
 ## Ratification note (2026-09-12)
 
@@ -854,22 +982,48 @@ implements it. Acceptance was independent of implementation; the lifecycle is
 
 ### Amendment note (2026-09-12, per-View overrides)
 
-A later 2026-09-12 amendment records the per-View/per-panel override layer as a
-reviewed candidate (the section above) and registers
+A later 2026-09-12 amendment recorded the per-View/per-panel override layer as a
+reviewed candidate (the section above) and registered
 [OQ-041](../open-questions.md), [OQ-042](../open-questions.md),
-[OQ-043](../open-questions.md), and [OQ-044](../open-questions.md). It does not
-change the accepted OQ-039 defaults, does not make `views.*` a supported key,
-and is not itself accepted; acceptance requires a future revision with renderer
-and validation evidence.
+[OQ-043](../open-questions.md), and [OQ-044](../open-questions.md). It did not
+change the accepted OQ-039 defaults and did not make `views.*` a supported key.
 
 ### Amendment note (2026-09-12, outline width)
 
-A second 2026-09-12 amendment records the focus/idle outline-width triple
+A second 2026-09-12 amendment recorded the focus/idle outline-width triple
 (`decoration.border_width` / `_focused` / `_idle`) as a reviewed candidate,
-specifies the AC-2 non-color cue, and registers
-[OQ-045](../open-questions.md). It does not change the accepted OQ-039 color
-defaults or contrast rule, does not make any width key supported, and is not
-itself accepted.
+specified the AC-2 non-color cue, and registered
+[OQ-045](../open-questions.md). It did not change the accepted OQ-039 color
+defaults or contrast rule and did not make any width key supported.
+
+### Acceptance note (2026-09-12, per-View overrides and outline width)
+
+The 2026-09-12 acceptance amendment (docs `CTX-0163`, Issue #222) **accepts**
+the per-View/per-panel appearance override contract and the focus/idle
+outline-width contract, closing [OQ-041](../open-questions.md) and
+[OQ-045](../open-questions.md) and narrowing
+[OQ-043](../open-questions.md) to its animation-specific remainder:
+
+- the closed selector grammar `* < content-type < ws:<1..=16> < view:<ViewId>`,
+  with fail-closed rejection of unknown forms, content types, and fields;
+- the accepted field set `border_color`/`_focused`/`_idle`,
+  `border_width`/`_focused`/`_idle`, `background_image`, and `background_fit`,
+  each resolving per field per `View` under order-independent tier precedence
+  over the global values;
+- the reserved-but-rejected fields `opacity`, `blur`, and `animations` until
+  [OQ-038](../open-questions.md) and [OQ-043](../open-questions.md) accept
+  them;
+- per-resolved-`View` AC-1/AC-2 enforcement with the accepted OQ-045 width cue
+  and advisory AC-3;
+- `Live` reload for values and match-set changes, whole-reload fail-closed
+  rejection preserved, and `--safe` ignoring every `views.*` entry;
+- the width triple `0..=16` logical px with the safe `1`/`1` pair.
+
+This amendment does not change the accepted OQ-039 color defaults or contrast
+rule, does not change the accepted OQ-042 image bounds, does not grant any
+plugin-supplied appearance (OQ-044/OQ-049 remain open), and does not make any
+key supported. Acceptance is a reviewed contract, not implementation evidence:
+the keys stay accepted-but-unshipped until `bitty` implements them.
 
 ### Amendment note (2026-09-12, background images)
 
@@ -886,7 +1040,8 @@ rejection, and `--safe` ignoring image contributions. The plugin-supplied-image
 sub-question is registered as [OQ-049](../open-questions.md). This amendment is
 a reviewed contract, not implementation evidence: no image key is supported and
 no product code ships until `bitty` implements them. It does not change the
-accepted OQ-039 color contract or the OQ-041/OQ-045 candidate status.
+accepted OQ-039 color contract or the accepted OQ-041/OQ-045 override and width
+contracts.
 
 ## Compatibility and migration
 
@@ -901,14 +1056,19 @@ An accepted appearance RFC must define, at minimum: headless tests for
 fail-closed validation and bounds of every new key; geometry tests proving label
 placement reserves space without changing content grids; renderer tests for
 color parsing and contrast; and platform-gated blur tests that degrade
-gracefully. For the per-View override layer specifically: tests that resolution
-is order-independent across selector tiers, that an invalid override rejects the
-whole reload fail-closed, that `--safe` ignores every `views.*` entry, and that
-AC-1/AC-2 are enforced on each resolved per-`View` pair. For the outline-width
-triple: tests for the `0..=16` bound and whole-reload rejection, that a focused
-width `>= idle + 1` satisfies AC-2 without the color delta, that the content
-grid is unchanged by a focused width change, and that `--safe` forces the
-`1`/`1` pair. Evidence belongs in `bitty`; this RFC records the contract only.
+gracefully. For the accepted per-View override layer specifically: tests that
+resolution is order-independent across selector tiers and across `init.lua`
+declaration order, that an unknown selector form, unknown field, or reserved
+field rejects the whole reload fail-closed, that `--safe` ignores every
+`views.*` entry, that `ws:`/`view:` match-set changes re-resolve without
+recreating a `View`, that a `view:<ViewId>` selector follows a `View` across a
+workspace move, and that AC-1/AC-2 are enforced on each resolved per-`View`
+pair (including the fail-closed path when an inert selector first matches). For
+the accepted outline-width triple: tests for the `0..=16` bound and
+whole-reload rejection, that a focused width `>= idle + 1` satisfies AC-2
+without the color delta, that the content grid is unchanged by a focused width
+change, and that `--safe` forces the `1`/`1` pair. Evidence belongs in `bitty`;
+this RFC records the contract only.
 
 ## References
 
@@ -920,6 +1080,11 @@ grid is unchanged by a focused width change, and that `--safe` forces the
 - [Interfaces: Rich content](../../interfaces/rich-content.md)
 - `bitty` `CTX-0333` / PR #562: unified panel gaps and `content_inset`.
 - `bitty` `CTX-0335`: appearance-knobs request this RFC scopes.
-- `bitty` `CTX-0344`: outline-width implementation, blocked on this design.
+- `bitty` `CTX-0343`: per-panel appearance overrides, unblocked by the accepted
+  OQ-041 contract.
+- `bitty` `CTX-0344`: outline-width implementation, unblocked by the accepted
+  OQ-045 contract.
+- `bitty` `CTX-0347`: per-`View` background image, unblocked by the accepted
+  OQ-041 + OQ-042 contracts.
 - Hyprland `border_size` / `active_border` / `inactive_border`: read-only
   semantics reference for the base/focused/idle width distinction.
