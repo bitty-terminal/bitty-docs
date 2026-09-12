@@ -124,15 +124,15 @@ the historical conversation:
   [OQ-038](open-questions.md) remain `Open`; frontmatter `accepted`.)
 - Per-View/per-panel appearance overrides and the UI extension architecture:
   selector grammar, precedence, reload, safe mode, focus/idle outline width,
-  per-panel animations, and plugin-supplied appearance. (Candidate: the per-View
-  override and outline-width amendments in the
-  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md)
-  and the
+  per-panel animations, and plugin-supplied appearance. (Accepted: the per-View
+  override contract and the outline-width contract in the
+  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md),
+  docs `CTX-0163`, closing [OQ-041](open-questions.md) and
+  [OQ-045](open-questions.md) on 2026-09-12; the
   [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)
-  review; registers [OQ-041](open-questions.md),
-  [OQ-043](open-questions.md), [OQ-044](open-questions.md), and
-  [OQ-045](open-questions.md) on 2026-09-12; no acceptance, no implementation
-  claim.)
+  records the acceptance; [OQ-043](open-questions.md) is narrowed to the
+  animation field set, while [OQ-044](open-questions.md) and
+  [OQ-049](open-questions.md) remain open. No implementation claim.)
 - Per-panel background images for user configuration. (Accepted:
   [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md) —
   resolves the Core-owned user-configuration half of
