@@ -381,8 +381,10 @@ and adds `decoration.content_inset` so text does not sit flush against the view
 margin line. It is the `init.lua` shape
 `decoration = { gaps_in = 6, gaps_out = 6, border = 2, radius = 6, content_inset = 6 }`.
 The merged single-window decoration surface ([`bitty` #487](https://github.com/bitty-terminal/bitty/pull/487),
-CTX-0292) predates this amendment and still ships the `4/6/2/6` defaults; the
-`6/6/2/6/6` set and `content_inset` land with `bitty` PR #562.
+CTX-0292) predates this amendment and shipped the `4/6/2/6` defaults; the
+`6/6/2/6/6` set and `content_inset` shipped with `bitty` PR #562 (merge commit
+`9031b3f`), and the live present-path painting shipped with `bitty` PR #519
+(CTX-0294) and PR #533 (CTX-0311).
 
 ## Shipped slice (implementation evidence)
 
@@ -637,10 +639,11 @@ Lua and no bypass of the existing P0 gates.
   and
   [RFC-0002](../decisions/rfcs/RFC-0002-panel-animations.md) (OQ-040),
   closed 2026-09-12 in the
-  [open-question register](../decisions/open-questions.md). This accepted
-  specification does not yet define their values and owns no animation
-  behavior; the accepted keys are not yet shipped and this specification's
-  decoration contract is unchanged.
+  [open-question register](../decisions/open-questions.md) and shipped in
+  `bitty` PR #580 (CTX-0341). This accepted specification does not define their
+  values and owns no animation behavior; the shipped animation keys are
+  documented in [Lua and XDG](../configuration/lua-and-xdg.md) and this
+  specification's decoration contract is unchanged.
 - A focus/idle outline **width** contract is a reviewed **candidate** in
   [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-045):
   `decoration.border_width` / `_focused` / `_idle` in logical px, resolving

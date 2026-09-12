@@ -40,14 +40,16 @@ sidebar_order: 45
 > position ([OQ-036](../open-questions.md)), base frame/margin-line color
 > ([OQ-037](../open-questions.md)), background opacity/blur
 > ([OQ-038](../open-questions.md)), or per-panel animation overrides
-> ([OQ-043](../open-questions.md)), which remain `Open`. Acceptance is a
-> reviewed contract, not implementation evidence: no product code ships and no
-> key is supported until `bitty` implements it. It does not weaken any normative
+> ([OQ-043](../open-questions.md)), which remain `Open`. Acceptance itself
+> shipped no product code; the accepted OQ-039 outline-color pair is now
+> implemented in `bitty` PR #572 (merge commit `f83b1e1`, CTX-0340) and is
+> documented in [Lua and XDG](../../configuration/lua-and-xdg.md). It does not
+> weaken any normative
 > control in the [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Configuration Model RFC](../../specifications/configuration-model-rfc.md).
 > The supported-knob entries below are implementation-derived reference read
-> read-only from `bitty` `origin/main` `d9f5b49`; everything else is candidate.
+> read-only from `bitty` `origin/main` `3eb8e0e`; everything else is candidate.
 > The accepted animation contract is
 > [RFC-0002](RFC-0002-panel-animations.md). The cross-cutting extension
 > architecture is reviewed in the
@@ -102,45 +104,52 @@ Non-goals:
 
 ## Already-supported appearance knobs (implementation reference)
 
-Status: read-only reference from `bitty` `origin/main` `d9f5b49`. The owning
+Status: read-only reference from `bitty` `origin/main` `3eb8e0e`. The owning
 configuration contract is the
 [Configuration Model RFC](../../specifications/configuration-model-rfc.md); the
 shipped reference prose is [Lua and XDG](../../configuration/lua-and-xdg.md).
 `decoration.content_inset` and the unified `decoration.gaps_in` default are the
-`CTX-0333` amendment (`bitty` PR #562, merge commit `9031b3f`); they are merged
-into `bitty` `origin/main`.
+`CTX-0333` amendment (`bitty` PR #562, merge commit `9031b3f`); the
+focused/idle outline pair is `CTX-0340` (`bitty` PR #572, merge commit
+`f83b1e1`); both are merged into `bitty` `origin/main`.
 
-| `init.lua` key                     | Default                   | Range or values              | Reload           |
-| ---------------------------------- | ------------------------- | ---------------------------- | ---------------- |
-| `appearance.theme` (alias `theme`) | `bitty-dark` (alias dark) | preset name or unknown       | restart-required |
-| `font.family`                      | `JetBrainsMono Nerd Font` | non-empty, `<= 128` bytes    | live             |
-| `font.size`                        | `12.0`                    | `(0, 128]`                   | live             |
-| `font.line_height`                 | `1.375`                   | `[1.0, 2.0]`                 | live             |
-| `font.letter_spacing`              | `2.0`                     | `[0.0, 8.0]`                 | live             |
-| `window.opacity`                   | `1.0`                     | `[0.0, 1.0]`                 | live             |
-| `window.padding`                   | `8`                       | `0..=64` logical px          | live             |
-| `window.radius_px`                 | `0`                       | `0..=24` physical px         | live (no-op S0)  |
-| `layout.gaps_in`                   | `0`                       | `0..=16` cells               | live             |
-| `layout.gaps_out`                  | `0`                       | `0..=16` cells               | live             |
-| `decoration.gaps_in`               | `4` (CTX-0333: `6`)       | `0..=32` logical px          | live             |
-| `decoration.gaps_out`              | `6`                       | `0..=32` logical px          | live             |
-| `decoration.border`                | `2`                       | `0..=8` logical px           | live             |
-| `decoration.radius`                | `6`                       | `0..=16` logical px          | live             |
-| `decoration.content_inset`         | `6` (CTX-0333)            | `0..=32` logical px          | live             |
-| `scrollbar.mode`                   | `hidden`                  | `hidden` / `always` / `auto` | live             |
-| `scrollbar.width`                  | `8`                       | `1..=32` logical px          | live             |
+| `init.lua` key                     | Default                   | Range or values              | Reload          |
+| ---------------------------------- | ------------------------- | ---------------------------- | --------------- |
+| `appearance.theme` (alias `theme`) | `bitty-dark` (alias dark) | preset name or unknown       | live            |
+| `font.family`                      | `JetBrainsMono Nerd Font` | non-empty, `<= 128` bytes    | live            |
+| `font.size`                        | `12.0`                    | `(0, 128]`                   | live            |
+| `font.line_height`                 | `1.375`                   | `[1.0, 2.0]`                 | live            |
+| `font.letter_spacing`              | `2.0`                     | `[0.0, 8.0]`                 | live            |
+| `window.opacity`                   | `1.0`                     | `[0.0, 1.0]`                 | live            |
+| `window.padding`                   | `8`                       | `0..=64` logical px          | live            |
+| `window.radius_px`                 | `0`                       | `0..=24` physical px         | live (no-op S0) |
+| `layout.gaps_in`                   | `0`                       | `0..=16` cells               | live            |
+| `layout.gaps_out`                  | `0`                       | `0..=16` cells               | live            |
+| `decoration.gaps_in`               | `6`                       | `0..=32` logical px          | live            |
+| `decoration.gaps_out`              | `6`                       | `0..=32` logical px          | live            |
+| `decoration.border`                | `2`                       | `0..=8` logical px           | live            |
+| `decoration.radius`                | `6`                       | `0..=16` logical px          | live            |
+| `decoration.content_inset`         | `6`                       | `0..=32` logical px          | live            |
+| `decoration.border_color`          | unset (theme token)       | `#RRGGBB` / `#RRGGBBAA`      | live            |
+| `decoration.border_color_focused`  | `#33CCFF`                 | `#RRGGBB` / `#RRGGBBAA`      | live            |
+| `decoration.border_color_idle`     | `#595959AA`               | `#RRGGBB` / `#RRGGBBAA`      | live            |
+| `scrollbar.mode`                   | `hidden`                  | `hidden` / `always` / `auto` | live            |
+| `scrollbar.width`                  | `8`                       | `1..=32` logical px          | live            |
 
 Notes:
 
 - `appearance.theme` wins over the top-level `theme` alias; an unknown preset
   falls back to the built-in default with a logged fallback (CTX-0169/CTX-0180).
+  The reload class is `Live` as of the CTX-0295 reconcile test.
 - `window.opacity` is **whole-window** opacity from the presentation path; it is
   not a per-surface or background-only knob (see OQ-038).
 - `window.radius_px` is currently a parsed no-op (CTX-0241 S0); document it as
   a knob but do not describe a visible rounding effect.
-- `decoration.*` values are validated, stored, and attributed, but live
-  painting of px decoration is deferred (`bitty` CTX-0294), so they are not a
-  visible change yet.
+- `decoration.*` values are validated, stored, attributed, and painted: the
+  live present path ships the px decoration (`bitty` PR #519 CTX-0294, PR #533
+  CTX-0311). The focused/idle outline pair resolves theme token then base
+  `decoration.border_color` then the explicit pair, with AC-1/AC-2 fail-closed
+  and AC-3 advisory; `bitty --safe` forces `#FFFFFF`/`#808080`.
 
 ## Requested knobs and disposition
 
