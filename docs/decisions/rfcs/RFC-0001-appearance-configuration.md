@@ -1,25 +1,35 @@
 ---
 title: Appearance Configuration RFC
-description: Candidate proposal to expose all visual appearance knobs through init.lua including gap sizes label position border color opacity and blur
+description: Accepted focus and idle outline color contract and proposal scope for the remaining appearance knobs exposed through init.lua including gap sizes label position opacity and blur
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 45
 ---
 
 # Appearance Configuration RFC
 
-> Status: **draft proposal** (RFC-0001). Not **Accepted**, not **Verified**, not
-> **normative**. It proposes a candidate contract for review and registers open
-> questions; it authorizes no shipped, stable, or compatibility-guaranteed
-> behavior, adds no product code, and does not weaken any normative control in
-> the [Security Overview](../../security/overview.md),
+> Status: **accepted** on 2026-09-12 by the project initiator (ratification of
+> the PR #212 recommended defaults; independent design review APPROVE).
+> Acceptance covers the focused/idle outline color contract
+> ([OQ-039](../open-questions.md)): the
+> `decoration.border_color_focused` / `decoration.border_color_idle` pair, the
+> `#RRGGBB` / `#RRGGBBAA` grammar, the resolution order, `live` reload, and the
+> `--safe` pair. It does not accept the label position
+> ([OQ-036](../open-questions.md)), base frame/margin-line color
+> ([OQ-037](../open-questions.md)), or background opacity/blur
+> ([OQ-038](../open-questions.md)) proposals, which remain `Open`. Acceptance
+> is a reviewed contract, not implementation evidence: no product code ships and
+> no key is supported until `bitty` implements it. It does not weaken any
+> normative control in the [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Configuration Model RFC](../../specifications/configuration-model-rfc.md).
 > The supported-knob entries below are implementation-derived reference read
 > read-only from `bitty` `origin/main` `d9f5b49`; everything else is candidate.
+> The accepted animation contract is
+> [RFC-0002](RFC-0002-panel-animations.md).
 
 ## Motivation
 
@@ -111,14 +121,14 @@ Notes:
 
 ## Requested knobs and disposition
 
-| Requested knob                         | Current support                           | Disposition                             |
-| -------------------------------------- | ----------------------------------------- | --------------------------------------- |
-| Gap sizes                              | `layout.*` (cells) + `decoration.*` (px)  | Supported; document precedence (below)  |
-| Workspace/tab label position (T/B/L/R) | None                                      | Proposal + OQ-036                       |
-| Border / margin-line color             | None; colors live in theme presets only   | Proposal + OQ-037                       |
-| Background opacity                     | Whole-window `window.opacity` only        | Proposal + OQ-038 (render/compositor)   |
-| Blur amount                            | None                                      | Proposal + OQ-038 (render/compositor)   |
-| Per-surface content inset              | `decoration.content_inset` (all surfaces) | Follow-up from CTX-0333 (linked, below) |
+| Requested knob                                    | Current support                           | Disposition                             |
+| ------------------------------------------------- | ----------------------------------------- | --------------------------------------- |
+| Gap sizes                                         | `layout.*` (cells) + `decoration.*` (px)  | Supported; document precedence (below)  |
+| Workspace/tab label position (T/B/L/R)            | None                                      | Proposal + OQ-036                       |
+| Border / margin-line and focus/idle outline color | None; colors live in theme presets only   | OQ-037 proposal; OQ-039 accepted        |
+| Background opacity                                | Whole-window `window.opacity` only        | Proposal + OQ-038 (render/compositor)   |
+| Blur amount                                       | None                                      | Proposal + OQ-038 (render/compositor)   |
+| Per-surface content inset                         | `decoration.content_inset` (all surfaces) | Follow-up from CTX-0333 (linked, below) |
 
 ## Gap sizes: supported, precedence documented
 
@@ -172,8 +182,84 @@ Candidate constraints for review:
 - unknown color spellings fail validation naming `decoration.border_color`.
 
 Open: whether color belongs under `decoration.*`, under a broader
-`appearance.*` palette, or is resolved only through theme presets; and how
-per-focus / per-urgent border colors interact. Tracked as OQ-037.
+`appearance.*` palette, or is resolved only through theme presets. Tracked as
+OQ-037. The focused/idle pair that refines this base color is OQ-039 below.
+
+### Focus and idle outline colors: accepted (OQ-039)
+
+Ratified 2026-09-12 (PR #212 recommended defaults; independent design review
+APPROVE). User direction (bitty `CTX-0340`, m0298) asks for distinct focused and
+idle panel outlines. Accepted: extend the Core-owned `decoration.*` surface with
+a focus/idle color pair so each `View` frame renders a focused outline (accent)
+and an idle outline (subtle) without a plugin hook. This refines the base
+`decoration.border_color` proposal above instead of replacing it.
+
+Accepted keys:
+
+| `init.lua` key                    | Default     | Values                  | Reload |
+| --------------------------------- | ----------- | ----------------------- | ------ |
+| `decoration.border_color`         | unset       | `#RRGGBB` / `#RRGGBBAA` | live   |
+| `decoration.border_color_focused` | `#33CCFF`   | `#RRGGBB` / `#RRGGBBAA` | live   |
+| `decoration.border_color_idle`    | `#595959AA` | `#RRGGBB` / `#RRGGBBAA` | live   |
+
+Accepted resolution order (later wins): theme token (`border.focused`,
+`border.idle`) then `decoration.border_color` then the explicit
+`decoration.border_color_focused` / `decoration.border_color_idle` pair. The
+pair is evaluated per `View` at paint time from Core focus state; a plugin
+never sets it.
+
+Reviewer clarification (non-blocking note a): only an explicit user value for a
+pair member overrides the resolved `decoration.border_color`; an unset pair
+member inherits the base and never silently shadows it. A user who sets only
+`decoration.border_color` keeps that color for both focus states.
+
+Value format: canonical `#RRGGBB` or `#RRGGBBAA` (the 8-digit form is RGBA byte
+order). Alpha defaults to `FF` when omitted; `#RGB` shorthand is a candidate
+for review. Named colors, `rgb()`/`rgba()` function syntax, gradients, images,
+and CSS selectors are rejected fail-closed with a diagnostic naming the
+offending key. This is stricter than Hyprland, which also accepts `rgba()` and
+legacy ARGB integers; Bitty accepts one canonical grammar so merged layers stay
+byte-comparable.
+
+Accepted constraints:
+
+- namespacing: the pair lives under the Core-owned `decoration.*` surface with
+  the existing scalar-replace, per-field attribution, and `Live` reload class;
+- scope: global for all `View` borders by default; a per-View-type override
+  table is deferred to a future revision, not part of this key set;
+- theme interaction: a theme preset supplies the token defaults; explicit user
+  keys override the preset, and `appearance.theme` reload stays
+  `restart-required`;
+- safe mode: `bitty --safe` ignores user and preset color values and forces an
+  opaque built-in pair (`#FFFFFF` focused, `#808080` idle, alpha `FF`) that
+  passes the contrast rules below;
+- the base `decoration.border_color` and the pair are presentation-only chrome;
+  no plugin or `LayoutProvider` may set them at runtime.
+
+Accepted minimum-contrast rule (resolving the contrast half of OQ-039):
+
+| Rule | Requirement                                                                                                                          | Enforcement                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| AC-1 | focused outline >= 3:1 contrast against the adjacent `Workspace` background (WCAG 2.1 SC 1.4.11 non-text contrast)                   | `ConfigPlan` rejects a violating resolved pair fail-closed                |
+| AC-2 | focused outline >= 3:1 against the idle outline, or an enabled non-color focus cue (focused border thickness >= idle + 1 logical px) | `ConfigPlan` rejects a violating pair unless the non-color cue is enabled |
+| AC-3 | idle outline >= 1.5:1 contrast against the background                                                                                | `bitty config check` advisory only; subtlety remains allowed              |
+
+Reviewer note (non-blocking note c): AC-2 depends on a non-color focus cue
+(focused border thickness >= idle + 1 logical px) that is not yet a shipped
+contract. Until that thickness cue is specified, the pair must satisfy
+focused >= 3:1 against idle, and the cue gap is tracked as an implementation
+follow-up rather than silently relied on.
+
+Contrast is computed on the resolved sRGB bytes with the WCAG
+relative-luminance formula against the theme surface color at the configured
+opacity. The `3:1` value is the WCAG AA non-text threshold; `1.5:1` is a
+design-advisory floor accepted here, not a normative accessibility claim.
+
+Resolved for OQ-039: the pair is `decoration.*`; per-View-type overrides are
+deferred to a future RFC; `#RGB` shorthand is not accepted in v1; a failing
+idle contrast stays advisory; and safe mode keeps a distinct idle color
+(`#808080`). Per-View-type overrides and `#RGB` shorthand are deferred follow-up
+work for a future revision, not open questions in this RFC.
 
 ## Background opacity and blur: proposal (OQ-038)
 
@@ -242,14 +328,36 @@ Candidate conventions for review:
 ## Open questions
 
 - **OQ-036** — workspace/tab label bar placement, visibility, ownership, and
-  bounds.
+  bounds. Still `Open`.
 - **OQ-037** — frame/margin-line color contract, namespace, theming, and
-  accessibility contrast.
+  accessibility contrast. Still `Open`; the focused/idle pair below is its
+  accepted specialization.
 - **OQ-038** — per-surface background opacity and blur compositor/render
-  contract, platform gating, and performance budget.
+  contract, platform gating, and performance budget. Still `Open`.
+- **OQ-039** — focused/idle outline color contract: namespace, value format,
+  theme interaction, per-surface scope, safe mode, and the AC-1..AC-3
+  minimum-contrast rule. **Accepted** 2026-09-12 (see the section above).
 
-All three are `Open` in the
+OQ-036, OQ-037, and OQ-038 remain `Open` in the
 [open-question register](../open-questions.md) and have no acceptance evidence.
+[OQ-039](../open-questions.md) is accepted by this RFC. Panel open/close,
+focus-change, and workspace-switch animations are a separate accepted contract
+in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part of this
+RFC's key set.
+
+## Ratification note (2026-09-12)
+
+The project initiator ratified the PR #212 recommended defaults; the independent
+design review returned APPROVE. The accepted focus/idle defaults are focused
+`#33CCFF` (opaque) and idle `#595959AA` (`#RRGGBB` / `#RRGGBBAA`, live reload,
+safe-mode `#FFFFFF` / `#808080`); the accepted animation defaults are recorded
+in [RFC-0002](RFC-0002-panel-animations.md). This RFC is `accepted`
+frontmatter; [OQ-039](../open-questions.md) is closed and
+[OQ-036](../open-questions.md), [OQ-037](../open-questions.md), and
+[OQ-038](../open-questions.md) remain `Open`. No product code ships with this
+acceptance, and no accepted key is a supported `init.lua` key until `bitty`
+implements it. Acceptance was independent of implementation; the lifecycle is
+`Draft -> accepted -> normative`.
 
 ## Compatibility and migration
 
@@ -270,6 +378,7 @@ gracefully. Evidence belongs in `bitty`; this RFC records the contract only.
 
 - [Configuration Model RFC](../../specifications/configuration-model-rfc.md)
 - [Lua and XDG](../../configuration/lua-and-xdg.md)
+- [Panel Animations and Effects RFC](RFC-0002-panel-animations.md) (OQ-040)
 - [Workspace Compositor Specification](../../specifications/workspace-compositor.md)
 - [Security Overview](../../security/overview.md)
 - [Interfaces: Rich content](../../interfaces/rich-content.md)
