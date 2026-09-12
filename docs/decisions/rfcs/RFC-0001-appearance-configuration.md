@@ -1,6 +1,6 @@
 ---
 title: Appearance Configuration RFC
-description: Accepted focus and idle outline color contract plus a proposed per-View appearance override layer and the remaining appearance knob proposals exposed through init.lua
+description: Accepted focus and idle outline color contract plus proposed per-View appearance override and outline-width candidate layers and the remaining appearance knob proposals exposed through init.lua
 category: decisions
 audience: contributor
 document_type: specification
@@ -20,9 +20,14 @@ sidebar_order: 45
 > `--safe` pair. A 2026-09-12 amendment adds the **per-View/per-panel appearance
 > override layer** as a reviewed candidate surface
 > ([OQ-041](../open-questions.md)): `views.<selector>.*` overrides, precedence,
-> inheritance, live reload, fail-closed validation, and safe mode. The amendment
-> is a reviewed contract, not an accepted or implemented feature; it leaves the
-> global OQ-039 pair accepted and unchanged. It does not accept the label
+> inheritance, live reload, fail-closed validation, and safe mode. A second
+> 2026-09-12 amendment adds the **focus/idle outline width contract** as a
+> reviewed candidate ([OQ-045](../open-questions.md)): the
+> `decoration.border_width` / `_focused` / `_idle` triple, logical-px bounds,
+> live reload, DPI scaling, and the non-color cue it gives the accepted AC-2
+> rule. The amendments are reviewed contracts, not accepted or implemented
+> features; they leave the global OQ-039 pair accepted and unchanged, and the
+> width keys remain candidate and unshipped. They do not accept the label
 > position ([OQ-036](../open-questions.md)), base frame/margin-line color
 > ([OQ-037](../open-questions.md)), background opacity/blur
 > ([OQ-038](../open-questions.md)), background images
@@ -254,11 +259,15 @@ Accepted minimum-contrast rule (resolving the contrast half of OQ-039):
 | AC-2 | focused outline >= 3:1 against the idle outline, or an enabled non-color focus cue (focused border thickness >= idle + 1 logical px) | `ConfigPlan` rejects a violating pair unless the non-color cue is enabled |
 | AC-3 | idle outline >= 1.5:1 contrast against the background                                                                                | `bitty config check` advisory only; subtlety remains allowed              |
 
-Reviewer note (non-blocking note c): AC-2 depends on a non-color focus cue
-(focused border thickness >= idle + 1 logical px) that is not yet a shipped
-contract. Until that thickness cue is specified, the pair must satisfy
-focused >= 3:1 against idle, and the cue gap is tracked as an implementation
-follow-up rather than silently relied on.
+Reviewer note (non-blocking note c, amended 2026-09-12): AC-2 depends on a
+non-color focus cue (focused border thickness >= idle + 1 logical px). That
+cue is now **specified** as the candidate outline-width contract below
+([OQ-045](../open-questions.md)); it is still not a shipped contract, so until
+`bitty` implements it the pair must satisfy focused >= 3:1 against idle. The
+cue is no longer an unrecorded gap: AC-2 may be satisfied either by the color
+delta or by a documented non-color cue (the width delta being the natural
+one), and enforcement follows the same fail-closed rule. The width keys remain
+candidate and unshipped; this note records the design, not an implementation.
 
 Contrast is computed on the resolved sRGB bytes with the WCAG
 relative-luminance formula against the theme surface color at the configured
@@ -273,6 +282,92 @@ reconciled by the per-View override layer below: the _global_ pair stays as
 accepted, and a new, separately reviewed override contract
 ([OQ-041](../open-questions.md)) is registered rather than retroactively
 widening OQ-039. `#RGB` shorthand remains deferred follow-up work.
+
+## Focus and idle outline width: reviewed candidate (OQ-045)
+
+Direction (user requirement, docs `CTX-0157` follow-up m0313/m0315, 2026-09-12):
+the **focused outline width must be configurable**, and every appearance
+property must be discussed in this corpus rather than left implicit. The
+accepted OQ-039 pair already colors the focused and idle outlines; this
+candidate adds the matching **width** triple so a focused `View` can read
+thicker than an idle one.
+
+This section is a **reviewed candidate** for a future revision. It is recorded
+here, not marked accepted, because it adds new keys, changes the frame
+geometry contract, and depends on the same deferred px-decoration painting as
+`decoration.border`. No key below is accepted or shipped.
+
+### Candidate keys
+
+Candidate `init.lua` surface (all logical px, matching `decoration.border`):
+
+| Candidate key                     | Default                                                     | Values              | Reload |
+| --------------------------------- | ----------------------------------------------------------- | ------------------- | ------ |
+| `decoration.border_width`         | inherits `decoration.border` (current accepted default `2`) | `0..=16` logical px | live   |
+| `decoration.border_width_focused` | inherits `decoration.border_width`                          | `0..=16` logical px | live   |
+| `decoration.border_width_idle`    | inherits `decoration.border_width`                          | `0..=16` logical px | live   |
+
+Candidate resolution order (later wins): the accepted `decoration.border`
+value, then `decoration.border_width` (base), then the explicit
+`decoration.border_width_focused` / `decoration.border_width_idle` pair. An
+unset base or pair member inherits the next-less-specific value and never
+silently shadows it, mirroring the accepted OQ-039 color rule. A user who sets
+only `decoration.border_width` keeps that width for both focus states.
+
+Candidate constraints:
+
+- **Bounds are fail-closed.** Integer logical px in `0..=16`, a
+  deliberately wider ceiling than the accepted `decoration.border` `0..=8`
+  range because a focused outline may need to stand out from a thick idle one.
+  A value outside `0..=16`, a non-integer, or an unknown key is rejected by
+  `ConfigPlan` with a source-attributed diagnostic naming the offending key;
+  Core never clamps silently.
+- **Live reload, whole-reload fail-closed.** A valid width change is `live`
+  and repaints at the next present tick with no grid damage. If any value in
+  the reload fails validation, the **entire** reload is rejected: the previous
+  resolved geometry stays in effect and no partial or clamped width is
+  applied.
+- **Safe mode.** `bitty --safe` ignores user and preset width values and forces
+  a built-in pair — focused `1`, idle `1` (equal, no width cue) with the
+  accepted safe colors `#FFFFFF` / `#808080` — so safe mode never relies on a
+  width cue for focus. Safe mode never leaves an override in effect.
+- **DPI scaling.** Values are integers in logical px and are scaled by the
+  `Window` DPI factor only at render time, exactly like `decoration.border`;
+  layout math stays in logical pixels, and the focused/idle delta is therefore
+  `>= 1` logical px at any DPI. The candidate preserves the accepted rule that
+  the content rectangle is the frame inset by `border + content_inset`; a
+  focused width change must not move the content grid, so the frame is drawn
+  inside the `View` rectangle and the focused delta is absorbed by the frame,
+  not by content reflow.
+- **Per-View override interaction.** `decoration.border_width`,
+  `_focused`, and `_idle` are ordinary fields in the `views.<selector>.*`
+  override model below: each resolves **per field per `View`** under the same
+  selector tiers and order-independent precedence, with unknown fields failing
+  closed. Setting only `border_width_focused` in a `views` entry does not reset
+  an inherited `border_width_idle`. AC-1..AC-3 contrast is evaluated on the
+  resolved per-`View` color pair independently of width.
+- **Non-color cue for AC-2.** `border_width_focused > border_width_idle` is the
+  natural non-color focus affordance the accepted AC-2 rule referenced. When
+  the resolved pair has a focused width at least `idle + 1` logical px, a
+  focused/idle color pair that fails the `3:1` threshold may still satisfy AC-2
+  through the width cue; otherwise the color pair must meet `3:1`. This
+  resolves the design half of the AC-2 gap recorded above, but it is not
+  implementation evidence: the keys stay candidate until `bitty` ships them.
+- **Reference semantics.** This mirrors Hyprland's `border_size` (base),
+  `active_border` and `inactive_border` (focused/idle) distinction, adapted to
+  Bitty's `View` vocabulary: Bitty keeps one Core-owned `decoration.*`
+  namespace, one canonical unit (logical px), and per-field fail-closed
+  resolution rather than Hyprland's per-window rule syntax.
+
+### Interaction with OQ-039 and OQ-041
+
+- **OQ-039 (accepted):** the accepted color pair and its AC-1..AC-3 rule are
+  unchanged. The width triple only supplies the non-color cue AC-2 already
+  allowed.
+- **OQ-041 (candidate):** the width fields join the override field set below;
+  they do not alter the selector grammar, precedence tiers, or reload rules.
+- **OQ-042/OQ-043/OQ-044 (open):** unaffected; background images, per-panel
+  animations, and plugin-supplied appearance remain separate.
 
 ## Per-View and per-panel appearance overrides: reviewed candidate (OQ-041)
 
@@ -328,6 +423,9 @@ global value:
 | `border_color`         | `decoration.border_color` (OQ-037)     |
 | `border_color_focused` | `decoration.border_color_focused`      |
 | `border_color_idle`    | `decoration.border_color_idle`         |
+| `border_width`         | `decoration.border_width` (OQ-045)     |
+| `border_width_focused` | `decoration.border_width_focused`      |
+| `border_width_idle`    | `decoration.border_width_idle`         |
 
 Animation options are part of the user directive but are **not** in this
 candidate's key set; they are deferred to [OQ-043](../open-questions.md) and
@@ -399,6 +497,10 @@ would otherwise pass validation.
 - **Contrast:** AC-1..AC-3 must be evaluated on each resolved per-`View` pair,
   not only the global pair. A per-`View` override that violates AC-1/AC-2 fails
   validation; the idle-only advisory AC-3 stays advisory.
+- **Width cue (OQ-045):** the candidate outline-width triple is part of this
+  override model; `border_width` / `_focused` / `_idle` resolve per field per
+  `View`, and a focused width at least `idle + 1` logical px satisfies the AC-2
+  non-color cue independently of the color pair. The keys stay candidate.
 - **OQ-040 (accepted):** per-panel animation _options_ are part of the user
   directive but not part of this candidate; they are registered as
   [OQ-043](../open-questions.md). Until OQ-043 resolves, `views.<selector>`
@@ -512,14 +614,19 @@ Candidate conventions for review:
 - **OQ-044** — plugin-supplied appearance contract: whether and how a plugin
   may contribute appearance for its own `View`s or content under a capability,
   and the ownership boundary against Core-owned chrome. **Open**.
+- **OQ-045** — focus/idle outline-width contract: defaults, `0..=16` bounds,
+  per-`View` override resolution, DPI scaling, safe-mode values, and the
+  non-color cue it supplies to AC-2. **Open**; the amendment above is its
+  reviewed candidate.
 
-OQ-036, OQ-037, OQ-038, and OQ-041 through OQ-044 remain `Open` in the
+OQ-036, OQ-037, OQ-038, and OQ-041 through OQ-045 remain `Open` in the
 [open-question register](../open-questions.md) and have no acceptance evidence.
 [OQ-039](../open-questions.md) is accepted by this RFC. Panel open/close,
 focus-change, and workspace-switch animations are a separate accepted contract
 in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part of this
-RFC's key set. The per-View override layer is a reviewed candidate amendment to
-this RFC and is not accepted; it is therefore not part of the accepted key set.
+RFC's key set. The per-View override layer and the outline-width triple are
+reviewed candidate amendments to this RFC and are not accepted; they are
+therefore not part of the accepted key set.
 
 ## Ratification note (2026-09-12)
 
@@ -545,6 +652,15 @@ change the accepted OQ-039 defaults, does not make `views.*` a supported key,
 and is not itself accepted; acceptance requires a future revision with renderer
 and validation evidence.
 
+### Amendment note (2026-09-12, outline width)
+
+A second 2026-09-12 amendment records the focus/idle outline-width triple
+(`decoration.border_width` / `_focused` / `_idle`) as a reviewed candidate,
+specifies the AC-2 non-color cue, and registers
+[OQ-045](../open-questions.md). It does not change the accepted OQ-039 color
+defaults or contrast rule, does not make any width key supported, and is not
+itself accepted.
+
 ## Compatibility and migration
 
 No behavior changes in this RFC. When a knob is accepted, existing configs
@@ -561,8 +677,11 @@ color parsing and contrast; and platform-gated blur tests that degrade
 gracefully. For the per-View override layer specifically: tests that resolution
 is order-independent across selector tiers, that an invalid override rejects the
 whole reload fail-closed, that `--safe` ignores every `views.*` entry, and that
-AC-1/AC-2 are enforced on each resolved per-`View` pair. Evidence belongs in
-`bitty`; this RFC records the contract only.
+AC-1/AC-2 are enforced on each resolved per-`View` pair. For the outline-width
+triple: tests for the `0..=16` bound and whole-reload rejection, that a focused
+width `>= idle + 1` satisfies AC-2 without the color delta, that the content
+grid is unchanged by a focused width change, and that `--safe` forces the
+`1`/`1` pair. Evidence belongs in `bitty`; this RFC records the contract only.
 
 ## References
 
@@ -574,3 +693,6 @@ AC-1/AC-2 are enforced on each resolved per-`View` pair. Evidence belongs in
 - [Interfaces: Rich content](../../interfaces/rich-content.md)
 - `bitty` `CTX-0333` / PR #562: unified panel gaps and `content_inset`.
 - `bitty` `CTX-0335`: appearance-knobs request this RFC scopes.
+- `bitty` `CTX-0344`: outline-width implementation, blocked on this design.
+- Hyprland `border_size` / `active_border` / `inactive_border`: read-only
+  semantics reference for the base/focused/idle width distinction.

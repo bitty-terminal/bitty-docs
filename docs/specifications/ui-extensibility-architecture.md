@@ -91,22 +91,23 @@ The extension surface today is a set of accepted, bounded mechanisms. The
 inventory below is implementation-derived reference from `bitty` `origin/main`
 and the accepted contract documents; it claims no new behavior.
 
-| Extension point          | Mechanism                                                           | Status                | Authority                                                                                                                 |
-| ------------------------ | ------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Commands                 | `bitty.commands.register`; qualified IDs, bounded JSON Schema       | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Events                   | `bitty.events.subscribe`; closed kind set, observation/interception | Accepted              | [Plugin Platform RFC](plugin-platform-rfc.md)                                                                             |
-| Lifecycle                | generation-scoped `plugin.*` events; lazy activation                | Accepted              | [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                                                     |
-| Key suggestions          | `bitty.keymaps.suggest`; user mapping wins                          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| UI slots                 | `bitty.ui.mount`/`update`; closed slot set, `SceneNode` subset      | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Terminal observation     | `bitty.terminal.snapshot` semantic scope only                       | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Services                 | `bitty.services.get`/`provide`; versioned interfaces                | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Layout algorithms        | `LayoutProvider` pure geometry proposal                             | Accepted (trait open) | [Workspace Compositor](workspace-compositor.md)                                                                           |
-| Rich/declarative content | `SceneNode`/`RichBlock` scene contract                              | Accepted              | [Rich Presentation RFC](rich-presentation-rfc.md)                                                                         |
-| Appearance configuration | `init.lua` `ConfigPlan` keys; theme presets                         | Accepted/partial      | [Configuration Model RFC](configuration-model-rfc.md), [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) |
-| Per-View appearance      | `views.<selector>.*` override layer                                 | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md)                                                        |
-| Panel providers          | `register_panel`, `PanelId`, panel lifecycle                        | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Protocol registration    | OSC/APC and structured-output handlers                              | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Decoration/annotation    | Level 3 presentation contributions                                  | Excluded from v1      | [Plugin system](../extensibility/plugin-system.md)                                                                        |
+| Extension point          | Mechanism                                                              | Status                | Authority                                                                                                                 |
+| ------------------------ | ---------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Commands                 | `bitty.commands.register`; qualified IDs, bounded JSON Schema          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Events                   | `bitty.events.subscribe`; closed kind set, observation/interception    | Accepted              | [Plugin Platform RFC](plugin-platform-rfc.md)                                                                             |
+| Lifecycle                | generation-scoped `plugin.*` events; lazy activation                   | Accepted              | [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                                                     |
+| Key suggestions          | `bitty.keymaps.suggest`; user mapping wins                             | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| UI slots                 | `bitty.ui.mount`/`update`; closed slot set, `SceneNode` subset         | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Terminal observation     | `bitty.terminal.snapshot` semantic scope only                          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Services                 | `bitty.services.get`/`provide`; versioned interfaces                   | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Layout algorithms        | `LayoutProvider` pure geometry proposal                                | Accepted (trait open) | [Workspace Compositor](workspace-compositor.md)                                                                           |
+| Rich/declarative content | `SceneNode`/`RichBlock` scene contract                                 | Accepted              | [Rich Presentation RFC](rich-presentation-rfc.md)                                                                         |
+| Appearance configuration | `init.lua` `ConfigPlan` keys; theme presets                            | Accepted/partial      | [Configuration Model RFC](configuration-model-rfc.md), [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) |
+| Per-View appearance      | `views.<selector>.*` override layer                                    | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md)                                                        |
+| Outline width            | `decoration.border_width` / `_focused` / `_idle`, per-View overridable | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-045)                                               |
+| Panel providers          | `register_panel`, `PanelId`, panel lifecycle                           | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Protocol registration    | OSC/APC and structured-output handlers                                 | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Decoration/annotation    | Level 3 presentation contributions                                     | Excluded from v1      | [Plugin system](../extensibility/plugin-system.md)                                                                        |
 
 Two structural facts follow from the inventory:
 
@@ -164,8 +165,8 @@ Ordered by expected increase in plugin freedom per unit of risk. Every item is
 
 What: the `views.<selector>.*` override layer in
 [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md), resolving
-global defaults to per-`View` opacity, blur, border color, and (later)
-animation options.
+global defaults to per-`View` opacity, blur, border color, outline width,
+and (later) animation options.
 
 Why it increases freedom: today the only look controls are global, so a plugin
 or user cannot give a terminal a different frame from a rich panel. Per-View
@@ -175,7 +176,10 @@ touching terminal truth or the layout solver.
 Risk: medium. Adds a resolution pass and per-`View` state to the presentation
 record; must keep AC-1..AC-2 contrast per resolved pair, stay order-independent,
 and remain fail-closed and `--safe`-clean. It must not become an
-`is_terminal` branch in Core layout.
+`is_terminal` branch in Core layout. The candidate outline-width triple
+([OQ-045](../decisions/open-questions.md)) joins the field set and supplies the
+AC-2 non-color cue (`border_width_focused >= border_width_idle + 1` logical px),
+so the appearance layer no longer depends on an unrecorded thickness gap.
 
 Disposition: reviewed candidate; tracked as
 [OQ-041](../decisions/open-questions.md). Needs a renderer/validation design and
@@ -323,6 +327,9 @@ closed-grammar addition requiring its own reviewed contract.
   contract.
 - [OQ-044](../decisions/open-questions.md): plugin-supplied appearance contract
   and the ownership boundary against Core chrome.
+- [OQ-045](../decisions/open-questions.md): focus/idle outline-width contract
+  (defaults, `0..=16` bounds, per-View override resolution, DPI scaling,
+  safe mode, and the AC-2 non-color cue).
 - Whether a bounded panel-provider surface belongs in Plugin API `1.x` or a new
   major version, and how it reconciles with the unresolved Panel identity
   question.
@@ -342,7 +349,8 @@ only.
 ## References
 
 - [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
-  (OQ-039 accepted; per-View override candidate; OQ-041/OQ-042/OQ-043/OQ-044).
+  (OQ-039 accepted; per-View override and outline-width candidates;
+  OQ-041/OQ-042/OQ-043/OQ-044/OQ-045).
 - [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md)
   (OQ-040 accepted).
 - [Workspace Compositor Specification](workspace-compositor.md).
