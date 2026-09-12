@@ -99,8 +99,8 @@ configuration contract is the
 [Configuration Model RFC](../../specifications/configuration-model-rfc.md); the
 shipped reference prose is [Lua and XDG](../../configuration/lua-and-xdg.md).
 `decoration.content_inset` and the unified `decoration.gaps_in` default are the
-`CTX-0333` amendment (`bitty` PR #562); they are not yet merged into `bitty`
-`origin/main`.
+`CTX-0333` amendment (`bitty` PR #562, merge commit `9031b3f`); they are merged
+into `bitty` `origin/main`.
 
 | `init.lua` key                     | Default                   | Range or values              | Reload           |
 | ---------------------------------- | ------------------------- | ---------------------------- | ---------------- |
@@ -371,7 +371,7 @@ Candidate constraints:
 
 ## Per-View and per-panel appearance overrides: reviewed candidate (OQ-041)
 
-Direction (user directive, bitty `CTX-0357` / docs `CTX-0157`, 2026-09-12):
+Direction (user directive, bitty `CTX-0343` / docs `CTX-0157`, 2026-09-12):
 every `View` (leaf) and panel surface must support **independent** appearance
 properties — per-panel opacity, blur, background image, border/outline color,
 and animation options — instead of one global look, so the UI is freer and

@@ -13,7 +13,7 @@ sidebar_order: 31
 
 > Status: **draft / candidate architecture review** as of 2026-09-12. This
 > document records a scoped review requested by docs `CTX-0157` (bitty
-> `CTX-0357`) and does not describe implemented behavior, does not authorize
+> `CTX-0343`) and does not describe implemented behavior, does not authorize
 > shipped or compatibility-guaranteed behavior, and does not weaken any
 > normative control in the [Security Overview](../security/overview.md),
 > [Threat Model](../security/threat-model.md), or
@@ -369,5 +369,5 @@ only.
   terminal control, small-core rendering, Lua/mux, and tiling decoration.
   Bitty embeds none of their code and accepts none of their configuration
   syntax.
-- docs `CTX-0157` / bitty `CTX-0357`: per-panel independent appearance and
+- docs `CTX-0157` / bitty `CTX-0343`: per-panel independent appearance and
   extensibility-architecture directive this review scopes.

@@ -443,8 +443,8 @@ The defaults above are the canonical `CTX-0333` set (`6/6/2/6/6` +
 [Workspace Compositor Specification](../specifications/workspace-compositor.md)
 "Core-owned gaps, border, radius, and content inset" contract. The `CTX-0292`
 merge commit `485fbfd` shipped the pre-CTX-0333 `4/6/2/6` set without
-`content_inset`; the unified `6/6/2/6/6` set and `content_inset` land with
-`bitty` PR #562 and are not yet in `bitty` `origin/main`.
+`content_inset`; the unified `6/6/2/6/6` set and `content_inset` shipped with
+`bitty` PR #562 (merge commit `9031b3f`) and are in `bitty` `origin/main`.
 
 - Core owns the surface: the five fields are validated through `ConfigPlan`,
   never proposed by a `LayoutProvider`, and never carried by a `View`, so no
@@ -468,7 +468,7 @@ merge commit `485fbfd` shipped the pre-CTX-0333 `4/6/2/6` set without
 Canonical config contract (CTX-0333 target set):
 
 ```lua
--- Canonical schema (CTX-0333 target; bitty PR #562, not yet in bitty origin/main).
+-- Canonical schema (shipped; CTX-0333, bitty PR #562, in bitty origin/main).
 return {
     decoration = { gaps_in = 6, gaps_out = 6, border = 2, radius = 6, content_inset = 6 },
 }
@@ -476,7 +476,7 @@ return {
 
 The `CTX-0292` merge commit `485fbfd` shipped `gaps_in = 4, gaps_out = 6,
 border = 2, radius = 6` without `content_inset`; the canonical `6/6/2/6/6` set
-and `content_inset` land with `bitty` PR #562.
+and `content_inset` shipped with `bitty` PR #562.
 
 Absent `decoration` tables (or absent keys within them) mean "this layer
 says nothing" and inherit silently.
@@ -517,9 +517,9 @@ accepted focus/idle outline color contract is the
 position, OQ-037 frame color, and OQ-038 opacity and blur remain `Open`). The
 accepted animation contract is the
 [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md)
-(accepted; OQ-040 closed 2026-09-12). Accepted keys are documented as accepted
-but are **not yet shipped**: no `init.lua` key below is supported until `bitty`
-implements it.
+(accepted; OQ-040 closed 2026-09-12). The accepted animation keys are
+documented as accepted but are **not yet shipped**: no `appearance.animations.*`
+key below is supported until `bitty` implements it.
 
 | Key                         | Default                        | Range or values                    |
 | --------------------------- | ------------------------------ | ---------------------------------- |
@@ -542,8 +542,9 @@ implements it.
   per-surface or background-only knob and blur remain design-only (OQ-038).
 - Label position (OQ-036) and frame/margin-line color (OQ-037) have no config
   key yet; do not document them as supported.
-- Focused/idle outline colors (OQ-039) and panel animations (OQ-040) are
-  **accepted but not yet shipped**. The accepted contract values are:
+- Focused/idle outline colors (OQ-039) shipped with `bitty` PR #572 (merge
+  commit `f83b1e1`, CTX-0340). Panel animations (OQ-040) are **accepted but not
+  yet shipped**. The accepted contract values are:
 
   | Accepted key                           | Accepted default | Values / bound              | Reload |
   | -------------------------------------- | ---------------- | --------------------------- | ------ |
@@ -553,8 +554,9 @@ implements it.
   | `appearance.animations.reduced_motion` | `"auto"`         | `auto` / `always` / `never` | live   |
   | `appearance.animations.duration_ms`    | see RFC-0002     | `0..=500` ms per transition | live   |
 
-  These are the contract target only; no `init.lua` implementation exists yet.
-  Do not document them as working keys until `bitty` ships them.
+  The outline-color keys are shipped and supported; the animation keys are the
+  contract target only and must not be documented as working until `bitty`
+  ships them.
 
 - Per-View/per-panel appearance overrides (`views.<selector>.*`), the
   focus/idle outline width (`decoration.border_width` / `_focused` / `_idle`),
