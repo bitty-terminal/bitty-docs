@@ -536,6 +536,10 @@ key below is supported until `bitty` implements it.
 | `decoration.*`              | see decoration reference above | logical px                         |
 | `scrollbar.mode`/`width`    | `hidden`/`8`                   | `hidden`/`always`/`auto`, `1..=32` |
 
+The built-in preset names and their dark/light categories are listed in the
+[theme preset catalog](themes.md). Only `bitty-dark` (alias `dark`) resolves
+today; the wider catalog is a candidate target, not shipped behavior.
+
 - The gap layers compose: effective gap =
   `decoration.gap * DPI_scale + layout.gap_cells * cell_axis` (CTX-0333).
 - `window.opacity` is whole-window, not per-surface or background-only; a
@@ -709,8 +713,14 @@ $XDG_RUNTIME_DIR/bitty/
 ```
 
 Installed themes belong in data; a user's own theme source may live in config.
-Cache is rebuildable. Runtime sockets and locks belong to the login session,
-while sessions and layouts intended to survive restart belong in state.
+No theme-file loading path is implemented yet: built-in presets are compiled
+into the binary and selected through `appearance.theme`, and custom/user themes
+are unsupported. The reserved `themes/` directory above is inert, so treat it
+as a candidate layout only. See the
+[theme preset catalog](themes.md) for the planned presets and the open
+questions on custom themes and category selection. Cache is rebuildable.
+Runtime sockets and locks belong to the login session, while sessions and
+layouts intended to survive restart belong in state.
 
 ## Cross-platform paths
 
