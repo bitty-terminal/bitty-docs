@@ -15,11 +15,13 @@ sidebar_order: 46
 > the PR #212 recommended defaults; independent design review APPROVE). This
 > document is the accepted contract for the bounded transition set, durations
 > and easings, reduced-motion and safe-mode behavior, and the renderer-side
-> default; it closes [OQ-040](../open-questions.md). Acceptance is a reviewed
-> contract, not implementation evidence: no product code ships and
-> `appearance.animations.*` is not a supported `init.lua` key until `bitty`
-> implements it. It adds no product code and does not weaken any normative
-> control in the [Security Overview](../../security/overview.md),
+> default; it closes [OQ-040](../open-questions.md). Acceptance itself shipped
+> no product code; the contract is now **implemented** in `bitty` PR #580 (merge
+> commit `3c5878e`, CTX-0341), so `appearance.animations.*` is a supported
+> `init.lua` key and the shipped surface is documented in
+> [Lua and XDG](../../configuration/lua-and-xdg.md). It adds no product code
+> beyond that change and does not weaken any normative control in the
+> [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Performance Budget RFC](../../specifications/performance-budget-rfc.md).
 > The decoration contract stays with the
@@ -204,7 +206,7 @@ Rules:
 Accepted schema:
 
 ```lua
--- Accepted contract only; not a shipped key until bitty implements it.
+-- Shipped schema (bitty PR #580, merge commit 3c5878e, CTX-0341).
 return {
     appearance = {
         animations = {
@@ -315,9 +317,10 @@ design review returned APPROVE. Accepted animation defaults:
 - `bitty --safe` and `always` reduced motion force `0` ms durations.
 
 This RFC is `accepted` frontmatter and [OQ-040](../open-questions.md) is
-closed. No product code ships with this acceptance, and `appearance.animations`
-remains an unimplemented, not-yet-shipped key until `bitty` implements it. The
-lifecycle is `Draft -> accepted -> normative`.
+closed. Acceptance shipped no product code; the contract is now implemented in
+`bitty` PR #580 (merge commit `3c5878e`, CTX-0341), so `appearance.animations`
+is a supported `init.lua` key. The lifecycle is
+`Draft -> accepted -> normative`.
 
 ## Recommended defaults (ratified)
 
