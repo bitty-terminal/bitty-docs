@@ -274,6 +274,59 @@ without changing it:
   context; nothing in the stack grants capability or self-accepts a review.
   Tracked as [OQ-060](../decisions/open-questions.md).
 
+### Native agent services and tool projection (candidate)
+
+Status: **direction, non-normative**. This extends the platform stack above
+with the design-reference relationship from the follow-up analysis: CarryCtx
+and `ctxctl` are references that validated useful abstractions (durable
+tasks, dependency gating, scoped worktrees, context slicing, evidence), not
+runtime dependencies Bitty should shell out to. The candidate relationship is:
+
+```text
+CarryCtx ─────┐
+              ├── design references ──> Bitty native subsystems
+ctxctl ───────┘
+```
+
+A candidate decomposition keeps each concern an in-process service rather
+than a CLI wrapper:
+
+```text
+bitty-ai-runtime
+├── Task Service        create, assign, depend, block/unblock, complete, ready query
+├── Agent Service       spawn, stop, delegate, message, inspect
+├── Workspace Service   worktree, snapshot, overlay, isolation
+├── Context Service     repository index, symbol index, memory, checkpoints
+└── Evidence Store      command execution, diff, diagnostics, agent artifacts
+```
+
+The agent-facing tools are projections of these services (`task.create`,
+`task.ready`, `agent.delegate`, `workspace.diff`, `context.symbol`,
+`exec.run`, and similar), and a CLI surface is a second projection over the
+same Rust service core (`bitty task list`, `bitty agent list`,
+`bitty workspace diff`); the AI must not call the CLI to reach a service, and
+the CLI does not own behavior the service lacks. Candidate rules:
+
+- **NAS-1 One service core, several projections.** Tool exposure and CLI
+  exposure are thin, capability-checked projections of the same services, so
+  behavior, attribution, and bounds cannot drift between them. A CLI-only
+  feature the tool surface cannot reach, or a tool-only path that bypasses the
+  CLI contract, is a design defect rather than a differentiator.
+- **NAS-2 Process boundaries exist for isolation, not for capability.** An
+  external helper process is chosen when a trust boundary or fault containment
+  requires it (per the bridge direction below), never merely to reuse a CLI;
+  the model-facing task surface remains in-process and typed.
+- **NAS-3 External managers remain integration targets.** A CarryCtx or
+  `ctxctl` adapter stays a candidate backend behind the store traits above
+  ([OQ-060](../decisions/open-questions.md)), so projects already using them
+  can project their state in, while the native services remain usable without
+  any external installation.
+
+No native task, agent, workspace, context, or evidence service exists today;
+`bitty-agent` remains a bounded message and tool-description crate with no LLM
+I/O, and the `ctxctl` measurements remain tool-level observations. Tracked as
+[OQ-067](../decisions/open-questions.md).
+
 ## Candidate runtime contracts
 
 Status: **candidate, non-normative, post-v1.0**. The following contracts
@@ -605,6 +658,19 @@ operation says so.
   (parent/root/generation), `bitty-ipc` framing and scopes, and the Panel
   Runtime identity/generation contract; it does not require a daemon or a
   second registry. No implementation exists today.
+- **SMO-5 Panels as views over IPC endpoints.** The candidate end state treats
+  every runtime object — agent, task, workspace, tool, process, model, panel —
+  as an addressable IPC endpoint, with a panel as one possible visual
+  projection (`view(endpoint)`) that may be absent, temporary, backgrounded,
+  or one of several observers. An agent can therefore have UI, no UI, run
+  headless, or be watched by multiple panels without a panel becoming the
+  session identity.
+- **SMO-6 Human participation in the same model.** A human reviewing an agent
+  request is a first-class participant on the same bounded envelope surface
+  (`ApprovalRequest` toward a human-facing projection, Allow/Deny back), not a
+  private side channel; human decisions are attributed and audited like any
+  other principal, and approval remains an explicit consented action (CRE-1,
+  SMO-2).
 - Tracked as [OQ-058](../decisions/open-questions.md).
 
 ### Agent identity separation and projection (candidate)
@@ -688,6 +754,68 @@ ParentAuthority`, further limited by the role profile; a role can never
   layer is part of the enforcement scope tracked as
   [OQ-057](../decisions/open-questions.md).
 - Tracked as [OQ-057](../decisions/open-questions.md).
+
+### Role, model, and capability orthogonality (candidate)
+
+Status: **candidate, non-normative**. The role table above binds authority, not
+the model. The follow-up analysis proposes keeping role, model, capability,
+tool, and context policy fully orthogonal, so an agent composition is:
+
+```text
+Agent = Identity + Role + Policy + Capabilities + Model Routing
+      + Memory + Workspace + Tools + Lifecycle
+```
+
+Candidate model direction:
+
+- A `models` registry is declared separately from agents (`fast`,
+  `reasoning`, `code`, and private local profiles, and similar), so the same
+  role can run on a different model without changing its authority. Prompt and
+  capability resolution stay independent (CRE-2).
+- **Within-agent model routing.** A single agent may route phases to different
+  models: status summarization to a fast model, architecture reading to a
+  reasoning model, patch generation to a coding model, and sensitive local
+  data to a local model. Candidate routing rules are declarative policy data
+  evaluated by the host; routing selects a model, never an authority tier.
+- **Non-coding agents are the same composition.** Research, operations, or
+  personal-assistant agents differ by role, tools, model routing, and policy
+  values, not by a separate mechanism; this is what can make the agent surface
+  broader than a coding agent without widening Core.
+
+Model availability, routing execution, and per-purpose model binding are
+undecided; tracked as [OQ-069](../decisions/open-questions.md).
+
+### Agent growth pipeline and proposal approval (candidate)
+
+Status: **candidate, non-normative**. A hermes-agent-style agent that improves
+over time is recorded as a host-mediated pipeline, not self-modification:
+
+```text
+Observation            -> Memory
+Repeated solution      -> Recipe
+Reusable procedure     -> Skill
+Stable behavior change -> Policy / agent-profile proposal
+```
+
+- **GR-1 Proposal, not mutation.** An agent may propose a skill, recipe, or
+  policy/profile change; the Bitty policy engine validates, versions, and
+  installs it or rejects it. An agent never edits its own security policy,
+  capability set, or role authority.
+- **GR-2 No capability gain through learning.** The invariant: an agent can
+  grow, but it cannot grow a capability the host did not grant. A learned
+  skill runs under the same role, capability, and sandbox enforcement as any
+  other tool invocation, and a proposal that needs new authority returns to
+  the consent flow.
+- **GR-3 Artifacts are reviewable data.** Memory, recipes, skills, and profile
+  proposals are versioned, attributed, and inspectable before activation, so
+  growth is auditable rather than hidden in an opaque prompt blob.
+- **GR-4 Growth composes with the existing planes.** Memories and skills map to
+  the context planes and Tool Bus contracts above; they are not a second
+  context channel and do not bypass PP-1 or the 32 KiB budget.
+
+Whether a learned skill becomes durable project data or session-scoped state,
+and which approval surface versions it, is undecided; tracked as
+[OQ-070](../decisions/open-questions.md).
 
 ### Semantic output compression for agent context
 
@@ -1025,6 +1153,8 @@ The 2026-09-13 docs `CTX-0169` direction additions are registered as cross-docum
 
 The 2026-09-13 docs `CTX-0171` consolidation of the AI-architecture research note adds the platform-stack picture and the CarryCtx-as-optional-backend caveat ([OQ-060](../decisions/open-questions.md)), agent identity separation and projection ([OQ-061](../decisions/open-questions.md)), progressive code reading and repository index ([OQ-062](../decisions/open-questions.md)), language-service integration ([OQ-063](../decisions/open-questions.md)), transactional edit and workspace overlay ([OQ-064](../decisions/open-questions.md)), evidence and provenance ([OQ-065](../decisions/open-questions.md)), and context budget profiles ([OQ-066](../decisions/open-questions.md)), together with the Warp comparison dimensions and the candidate build sequence. None of these additions changes the draft status of this document or the accepted contracts it cites.
 
+The 2026-09-13 docs `CTX-0172` consolidation of the follow-up AI-architecture research note adds the native agent-service and tool-projection direction ([OQ-067](../decisions/open-questions.md)), role/model/capability orthogonality ([OQ-069](../decisions/open-questions.md)), the agent growth pipeline ([OQ-070](../decisions/open-questions.md)), and the `.bitty/` project-directory direction ([OQ-068](../decisions/open-questions.md)) recorded with the configuration documentation. None of these additions changes the draft status of this document or the accepted contracts it cites.
+
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 
 ## Acceptance criteria and lifecycle
@@ -1043,4 +1173,4 @@ Acceptance will require:
 - Bitty topic evidence this RFC extends: [Product vision](../product/vision.md), [Architecture Overview](../architecture/overview.md), [Core and Plugin Boundaries](../architecture/core-boundaries.md), [Plugin System](../extensibility/plugin-system.md), [Rich Content](../interfaces/rich-content.md), [CLI](../interfaces/cli.md), [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md), [Technology Strategy](../project/technology-strategy.md).
 - Prior RFCs this RFC composes with: [IPC and Agent RFC](ipc-agent-rfc.md), [Rich Presentation RFC](rich-presentation-rfc.md), [Plugin Platform RFC](plugin-platform-rfc.md), [Isolation Resource RFC](isolation-resource-rfc.md), [Configuration Model RFC](configuration-model-rfc.md), [CLI Contract RFC](cli-contract-rfc.md), [DevTools RFC](devtools-rfc.md).
 - Related deferred direction: [ADR 0008](../decisions/adrs/ADR-0008-headless.md) keeps headless daemon and remote UI work post-v1.0; [Reference Project Register](../project/reference-projects.md) defines how local snapshots are used as untrusted research evidence. The panel vision is not yet present on this branch, so no link is asserted here.
-- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority. The 2026-09-13 `CTX-0171` consolidation additionally used the user's AI-architecture research note snapshot `recording/research/010.md` (workspace scratch, read-only; renamed `010.md.completed` once consolidated); its additions remain candidate direction, not authority.
+- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority. The 2026-09-13 `CTX-0171` consolidation additionally used the user's AI-architecture research note snapshot `recording/research/010.md` (workspace scratch, read-only; renamed `010.md.completed` once consolidated); its additions remain candidate direction, not authority. The 2026-09-13 `CTX-0172` consolidation used the follow-up snapshot `recording/research/011.md` (workspace scratch, read-only; renamed `011.md.completed` once consolidated) for the native-service, role/model, growth-pipeline, and `.bitty/` directions; they remain candidate direction, not authority.
