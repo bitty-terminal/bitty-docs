@@ -16,36 +16,37 @@ reviewed contract; it does not prove implementation, and evidence rules in each
 document still apply. Draft work is listed separately; Draft does not authorize
 shipped, stable, or compatibility-guaranteed behavior:
 
-| Specification                                                                           | Closes                                         | Status   |
-| --------------------------------------------------------------------------------------- | ---------------------------------------------- | -------- |
-| [Performance Budget RFC](performance-budget-rfc.md)                                     | OQ-001                                         | Accepted |
-| [Compatibility Milestone RFC](compatibility-milestone-rfc.md)                           | OQ-004                                         | Accepted |
-| [Terminal State RFC](terminal-state-rfc.md)                                             | OQ-007                                         | Accepted |
-| [Configuration Model RFC](configuration-model-rfc.md)                                   | OQ-010                                         | Accepted |
-| [Plugin Platform RFC](plugin-platform-rfc.md)                                           | OQ-011, OQ-012, OQ-013                         | Accepted |
-| [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md)                       | OQ-011 (surface spelling refinement)           | Accepted |
-| [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                   | OQ-033, OQ-034, OQ-035                         | Accepted |
-| [Package Lifecycle RFC](package-lifecycle-rfc.md)                                       | OQ-021                                         | Accepted |
-| [Lua Runtime RFC](lua-runtime-rfc.md)                                                   | OQ-009                                         | Accepted |
-| [Rich Presentation RFC](rich-presentation-rfc.md)                                       | OQ-008, OQ-015, OQ-016                         | Accepted |
-| [Isolation Resource RFC](isolation-resource-rfc.md)                                     | OQ-014                                         | Accepted |
-| [CLI Contract RFC](cli-contract-rfc.md)                                                 | OQ-017                                         | Accepted |
-| [Package Follow-up RFC](package-followup-rfc.md)                                        | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029         | Accepted |
-| [DevTools RFC](devtools-rfc.md)                                                         | OQ-019                                         | Accepted |
-| [Default Distribution RFC](default-distribution-rfc.md)                                 | OQ-002                                         | Accepted |
-| [IPC and Agent RFC](ipc-agent-rfc.md)                                                   | OQ-018                                         | Accepted |
-| [Governance RFC](governance-rfc.md)                                                     | OQ-024                                         | Accepted |
-| [Website Delivery RFC](website-delivery-rfc.md)                                         | OQ-023                                         | Accepted |
-| [Risk Evidence RFC](risk-evidence-rfc.md)                                               | OQ-025                                         | Accepted |
-| [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md)                  | OQ-011, OQ-012, OQ-013 (provider follow-up)    | Draft    |
-| [Workspace Compositor Specification](workspace-compositor.md)                           | —                                              | Accepted |
-| [Status System Specification](status-system.md)                                         | —                                              | Draft    |
-| [Input and Pointer Contract](input-pointer-rfc.md)                                      | —                                              | Draft    |
-| [Text and Rendering RFC](text-rendering-rfc.md)                                         | —                                              | Draft    |
-| [TerminalRegistry and View Lifecycle Contract](terminal-registry-view-lifecycle-rfc.md) | OQ-005, OQ-007 (lifecycle refinement)          | Accepted |
-| [Panel Runtime and Event Bus Pre-Study](panel-runtime-pre-study.md)                     | OQ-014 (panel platform follow-up, research)    | Draft    |
-| [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md)             | OQ-014 (browser and agent follow-up, research) | Draft    |
-| [Semantic Terminal RFC](semantic-terminal-rfc.md)                                       | — (interaction proposal, research)             | Draft    |
+| Specification                                                                           | Closes                                                    | Status   |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
+| [Performance Budget RFC](performance-budget-rfc.md)                                     | OQ-001                                                    | Accepted |
+| [Compatibility Milestone RFC](compatibility-milestone-rfc.md)                           | OQ-004                                                    | Accepted |
+| [Terminal State RFC](terminal-state-rfc.md)                                             | OQ-007                                                    | Accepted |
+| [Configuration Model RFC](configuration-model-rfc.md)                                   | OQ-010                                                    | Accepted |
+| [Plugin Platform RFC](plugin-platform-rfc.md)                                           | OQ-011, OQ-012, OQ-013                                    | Accepted |
+| [Plugin API v1 Lua Surface RFC](plugin-api-v1-lua-surface-rfc.md)                       | OQ-011 (surface spelling refinement)                      | Accepted |
+| [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                   | OQ-033, OQ-034, OQ-035                                    | Accepted |
+| [Package Lifecycle RFC](package-lifecycle-rfc.md)                                       | OQ-021                                                    | Accepted |
+| [Lua Runtime RFC](lua-runtime-rfc.md)                                                   | OQ-009                                                    | Accepted |
+| [Rich Presentation RFC](rich-presentation-rfc.md)                                       | OQ-008, OQ-015, OQ-016                                    | Accepted |
+| [Isolation Resource RFC](isolation-resource-rfc.md)                                     | OQ-014                                                    | Accepted |
+| [CLI Contract RFC](cli-contract-rfc.md)                                                 | OQ-017                                                    | Accepted |
+| [Package Follow-up RFC](package-followup-rfc.md)                                        | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029                    | Accepted |
+| [DevTools RFC](devtools-rfc.md)                                                         | OQ-019                                                    | Accepted |
+| [Default Distribution RFC](default-distribution-rfc.md)                                 | OQ-002                                                    | Accepted |
+| [IPC and Agent RFC](ipc-agent-rfc.md)                                                   | OQ-018                                                    | Accepted |
+| [Governance RFC](governance-rfc.md)                                                     | OQ-024                                                    | Accepted |
+| [Website Delivery RFC](website-delivery-rfc.md)                                         | OQ-023                                                    | Accepted |
+| [Risk Evidence RFC](risk-evidence-rfc.md)                                               | OQ-025                                                    | Accepted |
+| [Plugin Reuse and Provider Ecology RFC](plugin-reuse-and-providers.md)                  | OQ-011, OQ-012, OQ-013 (provider follow-up)               | Draft    |
+| [Workspace Compositor Specification](workspace-compositor.md)                           | —                                                         | Accepted |
+| [Status System Specification](status-system.md)                                         | —                                                         | Draft    |
+| [Input and Pointer Contract](input-pointer-rfc.md)                                      | —                                                         | Draft    |
+| [Text and Rendering RFC](text-rendering-rfc.md)                                         | —                                                         | Draft    |
+| [TerminalRegistry and View Lifecycle Contract](terminal-registry-view-lifecycle-rfc.md) | OQ-005, OQ-007 (lifecycle refinement)                     | Accepted |
+| [Panel Runtime and Event Bus Pre-Study](panel-runtime-pre-study.md)                     | OQ-014 (panel platform follow-up, research)               | Draft    |
+| [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md)             | OQ-014 (browser and agent follow-up, research)            | Draft    |
+| [Semantic Terminal RFC](semantic-terminal-rfc.md)                                       | — (interaction proposal, research)                        | Draft    |
+| [UI Extensibility Architecture](ui-extensibility-architecture.md)                       | OQ-041, OQ-042, OQ-043, OQ-044, OQ-045 (candidate review) | Draft    |
 
 The following drafts are under review and do not authorize shipped, stable, normative, or compatibility-guaranteed behavior; experimental implementation may exist as review evidence (`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`):
 
@@ -59,6 +60,7 @@ The following drafts are under review and do not authorize shipped, stable, norm
 | [Browser and Agent Panel Integration Pre-Study](browser-agent-pre-study.md) | browser webview MCP agent memory isolation matrix | Draft  | none (research pre-study, no implementation, CTX-0120)                                                             | P2 — browser and agent prerequisite     |
 | [AI Architecture](ai-architecture.md)                                       | post-1.0, OQ-018 contracts                        | Draft  | none                                                                                                               | P2 — deferred post-1.0, lowest priority |
 | [Semantic Terminal RFC](semantic-terminal-rfc.md)                           | command blocks, folding, hint mode, composer      | Draft  | P1-P5 `Implemented`-only at `7048139` (`4ccb771` #390, `064486b` #392, `ab1f7ab` #394, CTX-0131); P6 proposal only | P1 — post-slice interaction candidate   |
+| [UI Extensibility Architecture](ui-extensibility-architecture.md)           | OQ-041..045, appearance/panel extension review    | Draft  | none (design review, no implementation, docs CTX-0157)                                                             | P1 — panel/appearance extensibility     |
 
 The Plugin API v1 Lua Surface RFC was accepted on 2026-09-11 under
 `bitty-docs/CTX-0144` through

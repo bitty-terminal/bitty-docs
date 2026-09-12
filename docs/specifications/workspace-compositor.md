@@ -641,6 +641,13 @@ Lua and no bypass of the existing P0 gates.
   specification does not yet define their values and owns no animation
   behavior; the accepted keys are not yet shipped and this specification's
   decoration contract is unchanged.
+- A focus/idle outline **width** contract is a reviewed **candidate** in
+  [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-045):
+  `decoration.border_width` / `_focused` / `_idle` in logical px, resolving
+  per `View` and supplying the AC-2 non-color cue. It is not accepted and does
+  not change this specification's accepted `border` default or range; the
+  focused width delta is drawn inside the `View` rectangle and must not move
+  the content grid.
 - Point-in-time decoration citations in the pre-studies still spell the
   pre-CTX-0333 defaults: [Panel Runtime pre-study](panel-runtime-pre-study.md)
   `gaps_in 4` and [Browser and Agent pre-study](browser-agent-pre-study.md)
