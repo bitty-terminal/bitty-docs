@@ -321,9 +321,9 @@ lifecycle is `Draft -> accepted -> normative`.
 
 ## Recommended defaults (ratified)
 
-The defaults above in the ratification note were ratified unchanged from the PR
-#212 recommendation; no value was modified during acceptance. Subsequent
-revisions must use a new RFC per the [RFC index](README.md) rules.
+The defaults in the ratification note were ratified unchanged from the PR #212
+recommendation; no value was modified during acceptance. Subsequent revisions
+must use a new RFC per the [RFC index](README.md) rules.
 
 ## References
 
