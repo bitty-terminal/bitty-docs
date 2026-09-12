@@ -227,6 +227,16 @@ name) sit between CLI flags and probed files — CLI wins over env. A
 missing explicit `--config`/`BITTY_CONFIG` path, or a
 requested-but-missing profile, fails closed instead of falling back.
 
+Status: **shipped safe-mode override** (`bitty` `20519bc`, CTX-0346).
+`bitty --safe` short-circuits the entire layer stack above: it selects the
+built-in safe effective configuration and reads no external layer, so
+`--config`/`BITTY_CONFIG`, profiles, system/distribution layers, and CLI
+appearance overrides are all ignored. Every field is attributed to Core
+defaults, decoration is forced to `0/0/1/0/0`, and the focused/idle outline
+pair to the opaque `#FFFFFF`/`#808080` built-ins. See the safe-mode precedence
+table in the [CLI reference](../interfaces/cli.md#safe-mode-configuration-precedence)
+and [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-039).
+
 ## Merge semantics
 
 Status: **candidate contract.**
