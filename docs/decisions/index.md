@@ -139,6 +139,12 @@ the historical conversation:
   [Panel Animations and Effects RFC](rfcs/RFC-0002-panel-animations.md) —
   resolves the bitty `CTX-0340` request and closes
   [OQ-040](open-questions.md) on 2026-09-12; frontmatter `accepted`.)
+- Theme preset catalog: dark/light preset families, category selectability,
+  custom/user themes, and automatic light/dark switching. (Draft data and
+  documentation in the [theme preset catalog](../configuration/themes.md);
+  registers [OQ-046](open-questions.md), [OQ-047](open-questions.md), and
+  [OQ-048](open-questions.md); the preset data is being implemented in bitty
+  `CTX-0350` and is not yet shipped.)
 - Plugin API v1, capability/manifest model, and event phases. (Accepted:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;
