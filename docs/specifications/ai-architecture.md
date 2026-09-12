@@ -101,6 +101,15 @@ Status: **proposed contract**. Numbered for reference; none is implemented by th
 - **MP-10 API-key handling.** Provider credentials are stored in user-only storage (mode `0600`), never in `BITTY_*` environment, discovery files, trace files, or `AgentWorkspace`, are redacted by typed `SecretField` before any diagnostic, trace, or snapshot, and require a dedicated `ai.provider` consent distinct from `ai.stream` and from Tool Bus scopes. Invariant 9 and P0-AC-026 apply whole.
 - **MP-11 Failure isolation.** A fault in one ModelProvider call affects only its owning session; sibling sessions, terminals, and plugin VMs remain responsive (FS-3 containment parity with [IPC and Agent RFC](ipc-agent-rfc.md) FS-IP3).
 
+### Provider configuration and credential references (candidate)
+
+Status: **candidate, non-normative**. This subsection extends MP-10 without changing it; [OQ-054 and OQ-055](../decisions/open-questions.md) track the unresolved parts, and the storage tiers are recorded in the [Plugin Roadmap](../product/plugin-roadmap.md) secrets direction.
+
+- **MPC-1 Provider entries.** Candidate configuration shape: `ai.providers.<id>.kind = openai_compatible | anthropic | ollama`, each with an optional `base_url`, `models[]`, and privacy class. `openai_compatible` covers self-hosted and local servers, `ollama` is the local-only default, and `anthropic` is a remote provider. Provider kinds are transport adapters, never capability grants: a remote kind still requires the accepted `network.connect` grant and `ai.provider` consent, and a `local-only` provider performs no network I/O (MP-3).
+- **MPC-2 Credential references, never inline keys.** A provider declares `api_key_env` (the name of a host-allowlisted environment variable) or `api_key_cmd` (argv whose stdout is the secret, for example a password-manager lookup), never an inline key; configuration containing a literal key value fails validation. Resolution happens on the Rust host side, and Lua, plugins, diagnostics, and traces never receive the value, reusing MP-10 and ADR 0006 redaction and audit rules.
+- **MPC-3 Resolution order and project overrides.** Explicit user or CLI selection wins over profile configuration, which wins over project-level selection. A project may select among already-granted providers and models but may not introduce a credential reference, raise a `privacy_class`, or enable a provider the user has not consented to; violations fail closed with a source-attributed diagnostic.
+- **MPC-4 No implementation claim.** No provider configuration, credential reference, keyring, or `secrets.env` path is implemented today; `bitty-agent` owns no LLM I/O and no API-key handling, and `bitty-config` has no provider schema. This subsection records direction only.
+
 ## ContextProvider
 
 Status: **proposed contract**.
@@ -177,6 +186,27 @@ Streaming delivers incremental agent output into the presentation model without 
 - **RS-4 Selection, search, and a11y.** `Markdown`, `Diff`, and `ToolCard` fragments remain selectable, searchable (via the search index), and accessible (via the accessibility tree) once composited, matching the Rich Presentation guarantees for every `RichBlock`. Anchoring uses `SemanticZone` line ids where available.
 - **RS-5 Chunking and attribution.** Chunks obey RC-10 (`256 KiB` decoded bytes, `seq`/`total`/`final`). Each streamed logical turn is decomposed into these chunks; reordering or loss is detectable via `seq`. Budget accounting attributes every chunk to its `(AgentId, StreamHandle, generation)`.
 - **RS-6 No hot-path execution.** Rich streaming never runs inside the parser, render, or input hot paths synchronously. It is a cold-path composition that posts damage, preserving P0-AC-015 and invariant 4.
+
+## Comparative positioning versus existing agent harnesses
+
+Status: **direction, non-normative**. This section records the comparative positioning from the originating analysis (message m0481). External products are grouped and summarized at a high level from public product behavior; they are not audited or benchmarked here, and no claim is made about their internals. The Bitty column lists candidate differentiators to validate, not shipped capabilities.
+
+| Family                          | Examples                                   | Working shape                                                                                          | Candidate Bitty contrast                                                                                                     |
+| ------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| Terminal-stream CLIs            | Claude Code, Codex CLI, OpenCode, pi-agent | Agent loop runs in a TUI or stream attached to one project session; tools execute in the same terminal | Agents live in panels/views beside real PTYs; the terminal remains a terminal and agent surfaces are optional plugin content |
+| IDE-embedded assistants         | GitHub Copilot, Cursor, Kiro               | Agent is bound to an editor surface and its file/selection model                                       | Bitty is terminal- and compositor-native; there is no editor host dependency                                                 |
+| Autonomous or background agents | Hermes Agent, OpenClaw                     | Long-running processes act without a spatial, reviewable session surface                               | Bitty direction is spatial and reviewable: role panels, per-role capability, generation-scoped consent                       |
+| Closed cloud terminals          | Warp                                       | Block abstraction, split panes, account-coupled routing; implementation is proprietary and cloud-bound | Bitty keeps Terminal Truth local, tiles in-process, and treats model providers as replaceable plugins                        |
+
+Candidate Bitty differentiators, each needing its own evidence before any claim:
+
+- **Spatial multi-agent orchestration** — durable roles as panels connected by a bounded IPC event bus (below), instead of one transcript per task.
+- **Local-first posture** — no network call exists until a provider and grant permit it (MP-3); the terminal core has no account coupling.
+- **Terminal Truth is non-invasive** — observation and projection surfaces (semantic zones, rich blocks, hints, folds) consume committed state and never write it; only `Action` values write terminal state.
+- **Native tiling** — a working dwindle-style split baseline plus floating overlays, with scratchpad and ribbon directions tracked separately in the [UI and Compositor Gap Analysis](ui-compositor-gap-analysis.md).
+- **Open provider and tool surfaces** — `ai.model` registry, open provider kinds, and MCP as an adapter rather than an internal protocol.
+
+Honesty boundary: `bitty-agent` is a draft crate with no LLM I/O, no provider transport, and no API-key handling; `crates/bitty-runtime/src/ai_panel.rs` is bounded registry/context evidence, not a working agent. Nothing in this section is a shipped differentiator today.
 
 ## Candidate runtime contracts
 
@@ -408,6 +438,117 @@ applies target and isolation limits. A verification result is evidence, not an
 automatic approval or permission grant. Neither service claims implementation
 in Bitty today.
 
+### Spatial multi-agent orchestration
+
+Status: **candidate, non-normative**. A candidate topology maps durable roles
+to spatial panels instead of a single transcript: Commander, Implementer,
+Tester, and Reviewer panels, each backed by one `AgentSession` and presented
+as `ViewContent::Panel(PanelId)` through the Panel Runtime. The panel is a
+view of a session, never the session itself: closing or hiding a panel does
+not complete, cancel, or elevate its session unless an explicit lifecycle
+operation says so.
+
+- **SMO-1 Event bus, not shared memory.** Panels exchange bounded typed events
+  over the IPC event bus; payloads reuse the accepted framing, per-queue
+  budgets, and `DropOldest` defaults rather than introducing a new channel.
+  Every event carries `(AgentId, generation, kind)` so a reload or disposal
+  invalidates stale events.
+- **SMO-2 Presentation is not authority.** Focus, z-order, and panel
+  visibility never grant capability; server-side scope checks evaluate the
+  authenticated identity as today (AG-3).
+- **SMO-3 Candidate routing rules.** Dispatch, result handoff, review
+  request, and checkpoint notice are candidates for named event kinds; routing
+  is declarative data, and a missing or stale route fails closed rather than
+  falling back to an ambient recipient.
+- **SMO-4 Existing substrate.** The candidate reuses `AgentTree` attribution
+  (parent/root/generation), `bitty-ipc` framing and scopes, and the Panel
+  Runtime identity/generation contract; it does not require a daemon or a
+  second registry. No implementation exists today.
+- Tracked as [OQ-058](../decisions/open-questions.md).
+
+### Capability-enforced roles and subagent dispatch
+
+Status: **candidate, non-normative**. Roles are candidate capability sets
+enforced at the IPC/capability layer and the Tool Bus, never by prompt text.
+Today `Role` in `bitty-agent` is only a chat-message role, and no role
+capability map exists.
+
+| Candidate role | Candidate authority                                                            | Explicitly denied by default                            |
+| -------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Commander      | Read task/plan state, dispatch subagents, manage role panels, read terminal    | File writes, terminal input, credential reads           |
+| Implementer    | Read/write inside the scoped worktree or target, allowlisted build/test spawns | Dispatch, network, credential reads                     |
+| Tester         | Run allowlisted test commands, read terminal and `git diff`                    | Source writes outside the test scope, dispatch          |
+| Reviewer       | `terminal.read` plus `git.diff_read` only                                      | Workspace writes, process spawns, dispatch, credentials |
+
+- **CRE-1 Tightest example.** The Reviewer is deliberately the narrowest
+  profile: it reads terminal observations and diffs and can produce a verdict,
+  but it cannot edit, spawn, or delegate. A verdict is data; approval remains a
+  separate, consented action.
+- **CRE-2 Per-role prompts are data.** A role's system prompt and instruction
+  sources are frozen in the session snapshot and identified by the
+  `InstructionEpoch` (see above). Editing or replacing a prompt never changes
+  the capability set; the two are resolved independently.
+- **CRE-3 Dispatch inherits downward.** Creating a subagent uses the `Fresh
+child sessions and AgentTree` invariant `ChildAuthority subset of
+ParentAuthority`, further limited by the role profile; a role can never
+  grant a child what the parent lacks.
+- **CRE-4 Enforcement points.** Candidate checks live in the IPC scope
+  evaluation, Tool Bus validation, capability grants, and resource budgets
+  already accepted; no new bypass or prompt-only gate is introduced.
+- Tracked as [OQ-057](../decisions/open-questions.md).
+
+### Semantic output compression for agent context
+
+Status: **candidate, non-normative**. Candidate rules for compressing command
+output into agent context using OSC 133 zones and exit codes:
+
+- **SOC-1 Zone addressing first.** A command contribution is addressed by its
+  semantic zone region (`Prompt`/`Input`/`Output`) plus the recorded exit code,
+  not by scraping arbitrary terminal text. This depends on the stable anchor
+  question [OQ-050](ui-compositor-gap-analysis.md); until it is decided, no
+  row-level compression claim is possible.
+- **SOC-2 Success path is a summary.** Exit `0` contributes the command text,
+  exit code, line count, and a bounded summary (for example head/tail lines),
+  never the full build or test log by default. The full output stays
+  retrievable through an explicit resolve step.
+- **SOC-3 Failure path is error-first.** A non-zero exit contributes the exit
+  code, deterministically extracted error lines (the error pattern set is
+  policy data, not model inference), and a bounded window around each error;
+  unrelated output is omitted unless the caller resolves it.
+- **SOC-4 One budget.** Every compressed contribution counts against the
+  accepted 32 KiB Context Budget (CP-5) with per-block attribution and counted
+  truncation; error lines and exit codes are dropped last.
+- **SOC-5 Untrusted labeling is preserved.** Compressed text remains
+  `is_untrusted_surface = true` observation; compression may not launder
+  terminal output into instruction or policy channels (T-10/R-013).
+- **SOC-6 Off the hot path.** Compression runs in the cold path on committed
+  state snapshots and never in the parser or render path.
+- Tracked as [OQ-059](../decisions/open-questions.md).
+
+### CarryCtx as the durable task layer
+
+Status: **candidate, non-normative**. CarryCtx is a local-first durable
+task/worktree/checkpoint manager (SQLite state shared by linked worktrees;
+tasks, dependencies, scopes, sessions, progress, checkpoints, handoffs). The
+candidate integration treats it as the durable record for multi-agent work,
+not as an authority surface:
+
+- **DCT-1 Bounded task context.** A role may read a bounded projection of its
+  task (title, scope, dependencies, latest checkpoint) through a
+  ContextProvider-style provider; the projection counts against the 32 KiB
+  budget like any other context.
+- **DCT-2 Checkpoints as recovery pointers.** Checkpoints are candidate
+  `RecoveryPointer` targets for the `ContextEngine` (already named there as a
+  possible CarryCtx adapter) and are not context that is injected by default.
+- **DCT-3 Worktree mapping.** One task maps to one branch/worktree; the
+  worktree is the candidate target root for an Implementer `AgentWorkspace`
+  and never widens filesystem authority beyond the granted scope.
+- **DCT-4 No authority transfer.** CarryCtx state is local data with no
+  network path in the integration; it can request work but cannot grant
+  capability, bypass consent, or self-accept a review. Task completion remains
+  an independent human/commander decision.
+- Tracked as [OQ-060](../decisions/open-questions.md).
+
 ## Tool Bus
 
 Status: **proposed contract**.
@@ -612,6 +753,8 @@ These are out of this draft and remain tracked as follow-up work; they must not 
 - Whether the `all` level requires an OS-level authorization primitive on certain platforms beyond the Bitty consent ledger.
 - Retention and audit-log lifetime for agent turns, tool results, and elevated context (remains an open item; no normative retention period is set by this draft).
 - Whether `bitty-ai` repository creation, the BA-4 crate layout, and the BA-6 pressure-test gate enter acceptance with this RFC or as a separate `bitty-ai` staging decision.
+
+The 2026-09-13 docs `CTX-0169` direction additions are registered as cross-document questions: role capability mapping and enforcement ([OQ-057](../decisions/open-questions.md)), spatial panel topology and event routing ([OQ-058](../decisions/open-questions.md)), semantic output-compression rules and budget interaction ([OQ-059](../decisions/open-questions.md)), and the CarryCtx durable-task integration boundary ([OQ-060](../decisions/open-questions.md)). The `CTX-0168` provider-credential direction is registered as [OQ-054 and OQ-055](../decisions/open-questions.md). None of these additions changes the draft status of this document or the accepted contracts it cites.
 
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 

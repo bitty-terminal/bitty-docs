@@ -666,6 +666,10 @@ Lua and no bypass of the existing P0 gates.
   `gaps_in 4` / `--safe 0/0/1/0`. They cite committed snapshots, so they are
   recorded here as reference edges for a later reviewed sync rather than edited
   in place.
+- The point-in-time [UI and Compositor Gap Analysis](ui-compositor-gap-analysis.md)
+  (docs `CTX-0167`, `bitty` `b761c03`) records shipped-versus-missing panel
+  chrome, semantic-block projection, hint/composer wiring, and rich panel
+  content. It cites this accepted contract and proposes no change to it.
 
 This specification is accepted as a standalone contract per CTX-0118; it
 does not close an open question on its own beyond its standalone acceptance and
