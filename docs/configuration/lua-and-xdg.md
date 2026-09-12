@@ -778,6 +778,31 @@ Bitty asks the user to trust it once, trust it persistently, or reject it.
 Process execution and unrestricted host APIs remain unavailable to local
 configuration. This feature is deferred until the trust model is designed.
 
+Status: **candidate direction.**
+
+A project could also carry a declarative `.bitty/` project definition (for
+example `project.toml`, `agents/`, `workflows/`, `prompts/`, `policies/`,
+`tools/`, and `skills/`), portable and safe to commit to Git because it holds
+definitions only. Dynamic runtime state — current task, agent sessions,
+execution logs, token statistics, runtime locks, overlays, and any database —
+must never live in `.bitty/`; it belongs to repository-local or user runtime
+state so the project tree stays clean.
+
+`.agents/` is a compatibility adapter rather than a second source of truth,
+and candidate project discovery resolves in one order:
+
+```text
+.bitty/          native project definition (highest fidelity)
+.agents/         compatibility adapter for existing agent conventions
+AGENTS.md etc.   contextual conventions, never configuration authority
+```
+
+Candidate rules: `.bitty/` wins where both exist, a conflict is reported
+rather than merged silently, and the declarative-data-only rule for project
+content is unchanged. The directory name, schema, trust mechanics, and adapter
+scope are undecided; tracked as
+[OQ-068](../decisions/open-questions.md).
+
 ## Data, state, cache, and runtime layouts
 
 Status: **candidate layouts.**
@@ -867,6 +892,10 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - What are the native macOS and Windows directory mappings?
 - What is the trust database location and invalidation rule for local project
   configuration?
+- What is the `.bitty/` project-definition directory contract (layout, schema,
+  Git-tracked versus runtime-state split, and trust), and how does `.agents/`
+  compatibility resolve against it without becoming a competing source of
+  truth? ([OQ-068](../decisions/open-questions.md))
 - Which remaining appearance knobs beyond the shipped set (workspace/tab label
   position, frame and margin-line color, per-surface background opacity, blur)
   are adopted, and under what render/compositor contract?
