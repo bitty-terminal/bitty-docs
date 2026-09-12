@@ -556,6 +556,14 @@ implements it.
   These are the contract target only; no `init.lua` implementation exists yet.
   Do not document them as working keys until `bitty` ships them.
 
+- Per-View/per-panel appearance overrides (`views.<selector>.*`), per-panel
+  background images, per-panel animation overrides, and plugin-supplied
+  appearance are **candidate only** (OQ-041..OQ-044;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
+  amendment and
+  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)).
+  No `views.*` key is accepted or supported; do not document one as working.
+
 ## Shipped keymaps and Mod key
 
 Status: **shipped defaults** (read-only from `bitty` `origin/main`, CTX-0236,
@@ -759,5 +767,14 @@ These commands are further described in [CLI](../interfaces/cli.md).
   reduced-motion behavior? ([OQ-040](../decisions/open-questions.md);
   [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md);
   accepted. Accepted-not-shipped; not a supported `init.lua` key yet.)
+- What is the per-View/per-panel appearance override contract (selector grammar,
+  precedence, inheritance, reload, fail-closed validation, safe mode, and
+  per-View contrast), and what background-image, per-panel animation, and
+  plugin-supplied appearance contracts apply?
+  ([OQ-041/OQ-042/OQ-043/OQ-044](../decisions/open-questions.md);
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
+  amendment;
+  [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md);
+  candidate only.)
 - What are the final manifest/lock names, and how do they coexist with Lua
   plugin specifications or distribution imports?

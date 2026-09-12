@@ -1,6 +1,6 @@
 ---
 title: Appearance Configuration RFC
-description: Accepted focus and idle outline color contract and proposal scope for the remaining appearance knobs exposed through init.lua including gap sizes label position opacity and blur
+description: Accepted focus and idle outline color contract plus a proposed per-View appearance override layer and the remaining appearance knob proposals exposed through init.lua
 category: decisions
 audience: contributor
 document_type: specification
@@ -17,19 +17,29 @@ sidebar_order: 45
 > ([OQ-039](../open-questions.md)): the
 > `decoration.border_color_focused` / `decoration.border_color_idle` pair, the
 > `#RRGGBB` / `#RRGGBBAA` grammar, the resolution order, `live` reload, and the
-> `--safe` pair. It does not accept the label position
-> ([OQ-036](../open-questions.md)), base frame/margin-line color
-> ([OQ-037](../open-questions.md)), or background opacity/blur
-> ([OQ-038](../open-questions.md)) proposals, which remain `Open`. Acceptance
-> is a reviewed contract, not implementation evidence: no product code ships and
-> no key is supported until `bitty` implements it. It does not weaken any
-> normative control in the [Security Overview](../../security/overview.md),
+> `--safe` pair. A 2026-09-12 amendment adds the **per-View/per-panel appearance
+> override layer** as a reviewed candidate surface
+> ([OQ-041](../open-questions.md)): `views.<selector>.*` overrides, precedence,
+> inheritance, live reload, fail-closed validation, and safe mode. The amendment
+> is a reviewed contract, not an accepted or implemented feature; it leaves the
+> global OQ-039 pair accepted and unchanged. It does not accept the label
+> position ([OQ-036](../open-questions.md)), base frame/margin-line color
+> ([OQ-037](../open-questions.md)), background opacity/blur
+> ([OQ-038](../open-questions.md)), background images
+> ([OQ-042](../open-questions.md)), or per-panel animation overrides
+> ([OQ-043](../open-questions.md)), which remain `Open`. Acceptance is a
+> reviewed contract, not implementation evidence: no product code ships and no
+> key is supported until `bitty` implements it. It does not weaken any normative
+> control in the [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Configuration Model RFC](../../specifications/configuration-model-rfc.md).
 > The supported-knob entries below are implementation-derived reference read
 > read-only from `bitty` `origin/main` `d9f5b49`; everything else is candidate.
 > The accepted animation contract is
-> [RFC-0002](RFC-0002-panel-animations.md).
+> [RFC-0002](RFC-0002-panel-animations.md). The cross-cutting extension
+> architecture is reviewed in the
+> [UI Extensibility Architecture](../../specifications/ui-extensibility-architecture.md)
+> (candidate).
 
 ## Motivation
 
@@ -255,11 +265,161 @@ relative-luminance formula against the theme surface color at the configured
 opacity. The `3:1` value is the WCAG AA non-text threshold; `1.5:1` is a
 design-advisory floor accepted here, not a normative accessibility claim.
 
-Resolved for OQ-039: the pair is `decoration.*`; per-View-type overrides are
-deferred to a future RFC; `#RGB` shorthand is not accepted in v1; a failing
-idle contrast stays advisory; and safe mode keeps a distinct idle color
-(`#808080`). Per-View-type overrides and `#RGB` shorthand are deferred follow-up
-work for a future revision, not open questions in this RFC.
+Resolved for OQ-039: the pair is `decoration.*`; `#RGB` shorthand is not
+accepted in v1; a failing idle contrast stays advisory; and safe mode keeps a
+distinct idle color (`#808080`). The OQ-039 scope note said per-View-type
+overrides were "deferred to a future revision". That sub-question is now
+reconciled by the per-View override layer below: the _global_ pair stays as
+accepted, and a new, separately reviewed override contract
+([OQ-041](../open-questions.md)) is registered rather than retroactively
+widening OQ-039. `#RGB` shorthand remains deferred follow-up work.
+
+## Per-View and per-panel appearance overrides: reviewed candidate (OQ-041)
+
+Direction (user directive, bitty `CTX-0357` / docs `CTX-0157`, 2026-09-12):
+every `View` (leaf) and panel surface must support **independent** appearance
+properties — per-panel opacity, blur, background image, border/outline color,
+and animation options — instead of one global look, so the UI is freer and
+plugins can extend it. This is the appearance half of that directive; the
+extension-architecture half is the
+[UI Extensibility Architecture](../../specifications/ui-extensibility-architecture.md).
+
+This section is a **reviewed candidate** for a future revision. It is recorded
+here, not marked accepted, because it changes the OQ-039 contract from a single
+global pair to a resolved per-`View` value and needs its own acceptance
+(ADR/RFC update) plus renderer evidence before any key ships.
+
+### Key grammar
+
+Candidate: a `views` table keyed by a bounded selector, where each entry is an
+override of already-defined appearance fields. The selector is one of:
+
+```lua
+-- Candidate schema only; not a shipped key.
+return {
+    views = {
+        ["*"] = { opacity = 0.95 },                    -- all views (global-ish)
+        terminal = { border_color_focused = "#33CCFF" },-- per View/content type
+        rich = { opacity = 1.0 },
+        browser = { blur = 8 },
+        ["ws:2"] = { opacity = 0.8 },                  -- per Workspace label
+        ["view:7"] = { border_color_idle = "#444444AA" }, -- exact ViewId
+    },
+}
+```
+
+Candidate selector grammar, most specific wins:
+
+| Selector form     | Matches                                       | Example    |
+| ----------------- | --------------------------------------------- | ---------- |
+| `"*"`             | every `View` in every `Workspace`             | `["*"]`    |
+| view/content type | `terminal`, `rich`, `browser` (`ViewContent`) | `terminal` |
+| `"ws:<label>"`    | every `View` in the named `Workspace`         | `"ws:2"`   |
+| `"view:<ViewId>"` | exactly one `View` by stable `ViewId`         | `"view:7"` |
+
+Candidate override fields, all optional and each defaulting to the resolved
+global value:
+
+| Field                  | Source of the global default           |
+| ---------------------- | -------------------------------------- |
+| `opacity`              | `window.opacity` until OQ-038 resolves |
+| `blur`                 | unset until OQ-038 resolves            |
+| `background_image`     | unset until OQ-042 resolves            |
+| `border_color`         | `decoration.border_color` (OQ-037)     |
+| `border_color_focused` | `decoration.border_color_focused`      |
+| `border_color_idle`    | `decoration.border_color_idle`         |
+
+Animation options are part of the user directive but are **not** in this
+candidate's key set; they are deferred to [OQ-043](../open-questions.md) and
+the global `appearance.animations.*` contract is unchanged until then. Unknown
+selector forms, unknown fields, and unknown `views.*` keys fail closed with a
+source-attributed diagnostic naming the offending key; they are never silently
+ignored.
+
+### Precedence and inheritance
+
+Candidate resolution order, later wins, evaluated per field per `View`:
+
+```text
+built-in safe defaults
+  -> appearance.theme preset tokens
+  -> global decoration.* / window.* (and appearance.animations.* if OQ-043 admits it)
+  -> views["*"]
+  -> views["<content-type>"]
+  -> views["ws:<label>"]
+  -> views["view:<ViewId>"]
+```
+
+Rules:
+
+1. Resolution is per field, not per table: a later selector that sets only
+   `opacity` does not reset an inherited `border_color_focused`.
+2. Selector tiers are ordered `* < content-type < ws: < view:` regardless of
+   declaration order in `init.lua`; a `view:` entry always beats a `ws:` entry
+   for the same field, so two `init.lua` files that declare the same selectors
+   in different order resolve identically. This keeps merged layers
+   byte-comparable, matching the configuration model.
+3. A `ViewId` selector follows the `View` across workspace moves because
+   `ViewId` is stable for the `View` lifetime; a `Terminal` rebind does not
+   change the `View` selector match. `ws:` selectors follow the `Workspace`.
+4. The resolved value is presentation-only state on the `Workspace`/`View`
+   presentation record; it never enters `bitty-term-state`.
+
+### Live reload and fail-closed validation
+
+Candidate: the override table follows the existing `ConfigPlan` rules —
+typed, bounded, scalar-replace per field with source attribution, and a
+documented reload class.
+
+- A change to a value that the renderer can hot-apply is `live`; the affected
+  `View`s repaint at the next present tick with no grid damage.
+- A selector that adds or removes a `view:`/`ws:` match is also `live`; it
+  re-resolves the affected `View` set without recreating a `View` or
+  `Terminal`.
+- If a new value fails validation, the entire reload is rejected fail-closed:
+  the previous resolved appearance stays in effect and a source-attributed
+  diagnostic names the key. The renderer never applies a partial or clamped
+  override.
+- Unknown fields and malformed selectors are rejected at `ConfigPlan`
+  validation, not at paint time.
+
+### Safe-mode behavior
+
+Candidate: `bitty --safe` ignores every `views.*` override, including `"*"`,
+and forces the safe global values already defined for OQ-039
+(`#FFFFFF` focused, `#808080` idle, opaque), opacity `1.0`, no blur, and no
+background image. Safe mode never leaves an override in effect, even one that
+would otherwise pass validation.
+
+### Composition with OQ-039 and OQ-040
+
+- **OQ-039 (accepted):** the accepted global pair remains the base value. The
+  override layer only refines it per `View`; acceptance does not reopen the
+  global OQ-039 defaults, grammar, or contrast rule.
+- **Contrast:** AC-1..AC-3 must be evaluated on each resolved per-`View` pair,
+  not only the global pair. A per-`View` override that violates AC-1/AC-2 fails
+  validation; the idle-only advisory AC-3 stays advisory.
+- **OQ-040 (accepted):** per-panel animation _options_ are part of the user
+  directive but not part of this candidate; they are registered as
+  [OQ-043](../open-questions.md). Until OQ-043 resolves, `views.<selector>`
+  does not accept an `animations` table, and the global
+  `appearance.animations.*` contract is unchanged.
+- **Plugin interaction:** the override layer is Core-owned configuration. A
+  plugin may not set `views.*`, `decoration.*`, or `window.*` at runtime; the
+  authority question for plugin-supplied appearance is
+  [OQ-044](../open-questions.md) and is not granted here.
+
+### Background images: separate open contract (OQ-042)
+
+Per-panel background images are part of the user directive but are deliberately
+**not** specified in this candidate. An image path or image payload crosses the
+same trust boundary as image-file access in the
+[Security Overview](../../security/overview.md): deny by default, regular-file
+and safe-path checks, decoded-size/dimension/aggregate limits, and no ambient
+filesystem authority. The format, size limits, decoding path, cache budget,
+tiling/scaling/fit semantics, alpha/DPI interaction, and whether a plugin may
+supply an image are unresolved and tracked as
+[OQ-042](../open-questions.md).
 
 ## Background opacity and blur: proposal (OQ-038)
 
@@ -322,8 +482,10 @@ Candidate conventions for review:
 - Bounded parsing and fail-closed validation apply to every new key; a malformed
   value stops at `ConfigPlan` with a source-attributed diagnostic and never
   degrades silently to an unsafe default.
-- Core owns the frame chrome; no plugin may set decoration colors, opacity, or
-  blur at runtime, matching the existing decoration ownership rule.
+- Core owns the frame chrome; no plugin may set decoration colors, opacity,
+  blur, or a background image at runtime, matching the existing decoration
+  ownership rule. A per-View override is Core-owned configuration, not a plugin
+  hook; the plugin-supplied appearance question is OQ-044.
 
 ## Open questions
 
@@ -337,13 +499,27 @@ Candidate conventions for review:
 - **OQ-039** — focused/idle outline color contract: namespace, value format,
   theme interaction, per-surface scope, safe mode, and the AC-1..AC-3
   minimum-contrast rule. **Accepted** 2026-09-12 (see the section above).
+- **OQ-041** — per-View/per-panel appearance override contract: selector
+  grammar, precedence, inheritance, live reload, fail-closed validation,
+  safe-mode behavior, and per-`View` contrast enforcement. **Open**; the
+  amendment above is its reviewed candidate.
+- **OQ-042** — per-panel background-image contract: format, size/dimension
+  limits, decode path, cache budget, tiling/scaling, path trust, and whether a
+  plugin may supply an image. **Open**.
+- **OQ-043** — per-panel animation override contract: which transition leaves
+  may be overridden per selector, precedence, reduced-motion interaction, and
+  budget attribution. **Open**.
+- **OQ-044** — plugin-supplied appearance contract: whether and how a plugin
+  may contribute appearance for its own `View`s or content under a capability,
+  and the ownership boundary against Core-owned chrome. **Open**.
 
-OQ-036, OQ-037, and OQ-038 remain `Open` in the
+OQ-036, OQ-037, OQ-038, and OQ-041 through OQ-044 remain `Open` in the
 [open-question register](../open-questions.md) and have no acceptance evidence.
 [OQ-039](../open-questions.md) is accepted by this RFC. Panel open/close,
 focus-change, and workspace-switch animations are a separate accepted contract
 in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part of this
-RFC's key set.
+RFC's key set. The per-View override layer is a reviewed candidate amendment to
+this RFC and is not accepted; it is therefore not part of the accepted key set.
 
 ## Ratification note (2026-09-12)
 
@@ -359,6 +535,16 @@ acceptance, and no accepted key is a supported `init.lua` key until `bitty`
 implements it. Acceptance was independent of implementation; the lifecycle is
 `Draft -> accepted -> normative`.
 
+### Amendment note (2026-09-12, per-View overrides)
+
+A later 2026-09-12 amendment records the per-View/per-panel override layer as a
+reviewed candidate (the section above) and registers
+[OQ-041](../open-questions.md), [OQ-042](../open-questions.md),
+[OQ-043](../open-questions.md), and [OQ-044](../open-questions.md). It does not
+change the accepted OQ-039 defaults, does not make `views.*` a supported key,
+and is not itself accepted; acceptance requires a future revision with renderer
+and validation evidence.
+
 ## Compatibility and migration
 
 No behavior changes in this RFC. When a knob is accepted, existing configs
@@ -372,7 +558,11 @@ An accepted appearance RFC must define, at minimum: headless tests for
 fail-closed validation and bounds of every new key; geometry tests proving label
 placement reserves space without changing content grids; renderer tests for
 color parsing and contrast; and platform-gated blur tests that degrade
-gracefully. Evidence belongs in `bitty`; this RFC records the contract only.
+gracefully. For the per-View override layer specifically: tests that resolution
+is order-independent across selector tiers, that an invalid override rejects the
+whole reload fail-closed, that `--safe` ignores every `views.*` entry, and that
+AC-1/AC-2 are enforced on each resolved per-`View` pair. Evidence belongs in
+`bitty`; this RFC records the contract only.
 
 ## References
 

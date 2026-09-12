@@ -122,6 +122,15 @@ the historical conversation:
   remaining already-supported appearance knobs are recorded as reference while
   [OQ-036](open-questions.md), [OQ-037](open-questions.md), and
   [OQ-038](open-questions.md) remain `Open`; frontmatter `accepted`.)
+- Per-View/per-panel appearance overrides and the UI extension architecture:
+  selector grammar, precedence, reload, safe mode, per-panel background images,
+  per-panel animations, and plugin-supplied appearance. (Candidate: the
+  per-View override amendment in the
+  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md) and
+  the [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)
+  review; registers [OQ-041](open-questions.md), [OQ-042](open-questions.md),
+  [OQ-043](open-questions.md), and [OQ-044](open-questions.md) on 2026-09-12;
+  no acceptance, no implementation claim.)
 - Panel animations and effects: panel open/close, focus-change, and optional
   workspace-switch transitions with bounded durations/easings, reduced-motion
   and safe-mode behavior, and a present-path budget. (Accepted:
