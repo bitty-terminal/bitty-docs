@@ -415,27 +415,38 @@ Open: whether a CLI flag set grows to cover `layout.*`.
 
 ## Shipped workspace decoration (Core-owned px reference)
 
-Status: **shipped config surface, live painting deferred** (read-only from
-`bitty` `origin/main`, PR `bitty` #487 merge commit `485fbfd`, CTX-0292,
-closes `bitty` #486; merged to `bitty` origin `main`, verified read-only via
-`merge-base --is-ancestor`). This section is the reference for the shipped
-decoration surface; the accepted normative contract is the
+Status: **shipped config surface `4/6/2/6`; canonical target `6/6/2/6/6`;
+live painting deferred** (read-only from `bitty` `origin/main`, PR `bitty` #487
+merge commit `485fbfd`, CTX-0292, closes `bitty` #486; merged to `bitty` origin
+`main`, verified read-only via `merge-base --is-ancestor`). This section is the
+reference for the shipped decoration surface; the accepted normative contract is
+the
 [Workspace Compositor Specification](../specifications/workspace-compositor.md)
-section "Core-owned gaps, border, and radius" (accepted CTX-0118), and the
+section "Core-owned gaps, border, radius, and content inset" (accepted
+CTX-0118; CTX-0333 amendment target `6/6/2/6/6` + `content_inset`), and the
 merge-class instantiation stays in the
 [Configuration Model RFC](../specifications/configuration-model-rfc.md). It
 changes no normative contract above and weakens no security control.
 
 Shipped contract (`decoration.*`, logical pixels):
 
-| Field                 | Default | Valid range | Owner |
-| --------------------- | ------- | ----------- | ----- |
-| `decoration.gaps_in`  | `4` px  | `0..=32` px | Core  |
-| `decoration.gaps_out` | `6` px  | `0..=32` px | Core  |
-| `decoration.border`   | `2` px  | `0..=8` px  | Core  |
-| `decoration.radius`   | `6` px  | `0..=16` px | Core  |
+| Field                      | Default | Valid range | Owner |
+| -------------------------- | ------- | ----------- | ----- |
+| `decoration.gaps_in`       | `6` px  | `0..=32` px | Core  |
+| `decoration.gaps_out`      | `6` px  | `0..=32` px | Core  |
+| `decoration.border`        | `2` px  | `0..=8` px  | Core  |
+| `decoration.radius`        | `6` px  | `0..=16` px | Core  |
+| `decoration.content_inset` | `6` px  | `0..=32` px | Core  |
 
-- Core owns the surface: the four fields are validated through `ConfigPlan`,
+The defaults above are the canonical `CTX-0333` set (`6/6/2/6/6` +
+`content_inset`), matching the accepted
+[Workspace Compositor Specification](../specifications/workspace-compositor.md)
+"Core-owned gaps, border, radius, and content inset" contract. The `CTX-0292`
+merge commit `485fbfd` shipped the pre-CTX-0333 `4/6/2/6` set without
+`content_inset`; the unified `6/6/2/6/6` set and `content_inset` land with
+`bitty` PR #562 and are not yet in `bitty` `origin/main`.
+
+- Core owns the surface: the five fields are validated through `ConfigPlan`,
   never proposed by a `LayoutProvider`, and never carried by a `View`, so no
   plugin mutation path exists (accepted contract rules 1-4).
 - Unknown keys and out-of-range values fail closed with a source-attributed
@@ -451,17 +462,21 @@ Shipped contract (`decoration.*`, logical pixels):
   metadata. Values are logical pixels scaled by the Window DPI factor only
   at render time; an out-of-range live update is rejected fail-closed.
 - `bitty --safe` forces `gaps_in = 0`, `gaps_out = 0`, `border = 1`,
-  `radius = 0` (`0/0/1/0`) regardless of user configuration (accepted
-  contract rule 5).
+  `radius = 0`, `content_inset = 0` (`0/0/1/0/0`) regardless of user
+  configuration (accepted contract rule 6).
 
-Shipped config contract:
+Canonical config contract (CTX-0333 target set):
 
 ```lua
--- Shipped schema (CTX-0292, bitty #487).
+-- Canonical schema (CTX-0333 target; bitty PR #562, not yet in bitty origin/main).
 return {
-    decoration = { gaps_in = 4, gaps_out = 6, border = 2, radius = 6 },
+    decoration = { gaps_in = 6, gaps_out = 6, border = 2, radius = 6, content_inset = 6 },
 }
 ```
+
+The `CTX-0292` merge commit `485fbfd` shipped `gaps_in = 4, gaps_out = 6,
+border = 2, radius = 6` without `content_inset`; the canonical `6/6/2/6/6` set
+and `content_inset` land with `bitty` PR #562.
 
 Absent `decoration` tables (or absent keys within them) mean "this layer
 says nothing" and inherit silently.
@@ -478,10 +493,10 @@ described as a visible change.
 
 Two similarly named gap surfaces exist and must not be conflated:
 
-| Surface                           | Unit                 | Default   | Range    | Status                                                         |
-| --------------------------------- | -------------------- | --------- | -------- | -------------------------------------------------------------- |
-| `layout.gaps_in` / `gaps_out`     | cells (`10x22` each) | `0` / `0` | `0..=16` | shipped; painted by the single-window path (CTX-0177/CTX-0240) |
-| `decoration.gaps_in` / `gaps_out` | logical px           | `4` / `6` | `0..=32` | shipped config surface; live painting deferred (CTX-0292)      |
+| Surface                           | Unit                 | Default   | Range    | Status                                                            |
+| --------------------------------- | -------------------- | --------- | -------- | ----------------------------------------------------------------- |
+| `layout.gaps_in` / `gaps_out`     | cells (`10x22` each) | `0` / `0` | `0..=16` | shipped; painted by the single-window path (CTX-0177/CTX-0240)    |
+| `decoration.gaps_in` / `gaps_out` | logical px           | `6` / `6` | `0..=32` | canonical CTX-0333 target; live painting deferred (bitty PR #562) |
 
 Also distinct: `decoration.radius` (View frame corner radius, logical px)
 versus `window.radius_px` (window corner radius, physical px, S0 parsed no-op,
@@ -495,13 +510,16 @@ CTX-0238g stage-2 delivery owns the actual visual behavior.
 Status: **implementation reference** read-only from `bitty` `origin/main`
 `d9f5b49`. This is the lookup table for the appearance knobs `init.lua` already
 accepts; the merge/reload mechanics stay in the
-[Configuration Model RFC](../specifications/configuration-model-rfc.md), and the
-design-only proposal for not-yet-supported appearance knobs is the
+[Configuration Model RFC](../specifications/configuration-model-rfc.md). The
+accepted focus/idle outline color contract is the
 [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
-(draft; OQ-036 label position, OQ-037 frame color, OQ-038 opacity and blur,
-OQ-039 focused/idle outline colors), and the animation proposal is the
+(accepted; OQ-039 focused/idle outline colors closed 2026-09-12; OQ-036 label
+position, OQ-037 frame color, and OQ-038 opacity and blur remain `Open`). The
+accepted animation contract is the
 [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md)
-(draft; OQ-040).
+(accepted; OQ-040 closed 2026-09-12). Accepted keys are documented as accepted
+but are **not yet shipped**: no `init.lua` key below is supported until `bitty`
+implements it.
 
 | Key                         | Default                        | Range or values                    |
 | --------------------------- | ------------------------------ | ---------------------------------- |
@@ -522,12 +540,21 @@ OQ-039 focused/idle outline colors), and the animation proposal is the
   `decoration.gap * DPI_scale + layout.gap_cells * cell_axis` (CTX-0333).
 - `window.opacity` is whole-window, not per-surface or background-only; a
   per-surface or background-only knob and blur remain design-only (OQ-038).
-- Label position, frame/margin-line color, and focused/idle outline colors have
-  no config key yet (OQ-036, OQ-037, OQ-039); do not document them as
-  supported.
-- Panel animations and effects have no config key yet (OQ-040,
-  [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md));
-  do not document `appearance.animations` as supported.
+- Label position (OQ-036) and frame/margin-line color (OQ-037) have no config
+  key yet; do not document them as supported.
+- Focused/idle outline colors (OQ-039) and panel animations (OQ-040) are
+  **accepted but not yet shipped**. The accepted contract values are:
+
+  | Accepted key                           | Accepted default | Values / bound              | Reload |
+  | -------------------------------------- | ---------------- | --------------------------- | ------ |
+  | `decoration.border_color_focused`      | `#33CCFF`        | `#RRGGBB` / `#RRGGBBAA`     | live   |
+  | `decoration.border_color_idle`         | `#595959AA`      | `#RRGGBB` / `#RRGGBBAA`     | live   |
+  | `appearance.animations.enabled`        | `true`           | boolean                     | live   |
+  | `appearance.animations.reduced_motion` | `"auto"`         | `auto` / `always` / `never` | live   |
+  | `appearance.animations.duration_ms`    | see RFC-0002     | `0..=500` ms per transition | live   |
+
+  These are the contract target only; no `init.lua` implementation exists yet.
+  Do not document them as working keys until `bitty` ships them.
 
 ## Shipped keymaps and Mod key
 
@@ -722,15 +749,15 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - What are the native macOS and Windows directory mappings?
 - What is the trust database location and invalidation rule for local project
   configuration?
-- Which appearance knobs beyond the shipped set (workspace/tab label position,
-  frame and margin-line color, focused/idle outline colors, per-surface
-  background opacity, blur) are adopted, and under what render/compositor
-  contract? (OQ-036/OQ-037/OQ-038/OQ-039;
-  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md),
-  draft.)
+- Which remaining appearance knobs beyond the shipped set (workspace/tab label
+  position, frame and margin-line color, per-surface background opacity, blur)
+  are adopted, and under what render/compositor contract?
+  (OQ-036/OQ-037/OQ-038;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md);
+  OQ-039 focused/idle outline colors is accepted.)
 - Which panel transitions animate, with what bounded durations/easings and
-  reduced-motion behavior? (OQ-040;
-  [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md),
-  draft. Candidate-only; not a supported `init.lua` key.)
+  reduced-motion behavior? ([OQ-040](../decisions/open-questions.md);
+  [Panel Animations and Effects RFC](../decisions/rfcs/RFC-0002-panel-animations.md);
+  accepted. Accepted-not-shipped; not a supported `init.lua` key yet.)
 - What are the final manifest/lock names, and how do they coexist with Lua
   plugin specifications or distribution imports?

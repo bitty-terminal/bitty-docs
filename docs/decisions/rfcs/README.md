@@ -11,13 +11,15 @@ sidebar_order: 40
 
 # Requests for comments
 
-| RFC                                                                  | Status | Targets                        |
-| -------------------------------------------------------------------- | ------ | ------------------------------ |
-| [Appearance Configuration RFC](RFC-0001-appearance-configuration.md) | Draft  | OQ-036, OQ-037, OQ-038, OQ-039 |
-| [Panel Animations and Effects RFC](RFC-0002-panel-animations.md)     | Draft  | OQ-040                         |
+| RFC                                                                  | Status   | Targets                        |
+| -------------------------------------------------------------------- | -------- | ------------------------------ |
+| [Appearance Configuration RFC](RFC-0001-appearance-configuration.md) | Accepted | OQ-036, OQ-037, OQ-038, OQ-039 |
+| [Panel Animations and Effects RFC](RFC-0002-panel-animations.md)     | Accepted | OQ-040                         |
 
 Candidate mechanisms in the design corpus remain candidates until a scoped RFC
-is written and reviewed.
+is written and reviewed. Acceptance records a reviewed contract, not an
+implementation claim; accepted keys remain unsupported until `bitty` implements
+them.
 
 ## Admission criteria
 

@@ -114,20 +114,20 @@ facts before relying on them operationally.
 The following proposals have not been accepted merely because they appeared in
 the historical conversation:
 
-- Appearance configuration: workspace/tab label position, frame and margin-line
-  color, focused/idle outline colors, per-surface background opacity, and blur.
-  (Draft:
+- Appearance configuration: focused/idle outline colors, and (still open)
+  workspace/tab label position, frame and margin-line color, per-surface
+  background opacity, and blur. (Accepted:
   [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md) —
-  scopes the bitty `CTX-0335` request; already-supported appearance knobs are
-  recorded as reference while [OQ-036](open-questions.md),
-  [OQ-037](open-questions.md), [OQ-038](open-questions.md), and
-  [OQ-039](open-questions.md) remain `Open`; frontmatter `draft`.)
+  focused/idle outline color pair accepted for OQ-039 on 2026-09-12; the
+  remaining already-supported appearance knobs are recorded as reference while
+  [OQ-036](open-questions.md), [OQ-037](open-questions.md), and
+  [OQ-038](open-questions.md) remain `Open`; frontmatter `accepted`.)
 - Panel animations and effects: panel open/close, focus-change, and optional
   workspace-switch transitions with bounded durations/easings, reduced-motion
-  and safe-mode behavior, and a present-path budget. (Draft:
+  and safe-mode behavior, and a present-path budget. (Accepted:
   [Panel Animations and Effects RFC](rfcs/RFC-0002-panel-animations.md) —
-  scopes the bitty `CTX-0340` request while
-  [OQ-040](open-questions.md) remains `Open`; frontmatter `draft`.)
+  resolves the bitty `CTX-0340` request and closes
+  [OQ-040](open-questions.md) on 2026-09-12; frontmatter `accepted`.)
 - Plugin API v1, capability/manifest model, and event phases. (Accepted:
   [Plugin Platform RFC](../specifications/plugin-platform-rfc.md) — Plugin API
   v1, capability/manifest model, and event pipeline for OQ-011/OQ-012/OQ-013;

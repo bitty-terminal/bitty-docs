@@ -1,27 +1,31 @@
 ---
 title: Panel Animations and Effects RFC
-description: Candidate proposal for bounded panel open close focus and workspace transitions with reduced-motion and safe-mode behavior under the present-path budgets
+description: Accepted contract for bounded panel open close focus and workspace transitions with reduced-motion and safe-mode behavior under the present-path budgets
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 46
 ---
 
 # Panel Animations and Effects RFC
 
-> Status: **draft proposal** (RFC-0002). Not **Accepted**, not **Verified**, not
-> **normative**. It proposes a candidate contract for review and registers
-> [OQ-040](../open-questions.md); it authorizes no shipped, stable, or
-> compatibility-guaranteed behavior, adds no product code, and does not weaken
-> any normative control in the [Security Overview](../../security/overview.md),
+> Status: **accepted** on 2026-09-12 by the project initiator (ratification of
+> the PR #212 recommended defaults; independent design review APPROVE). This
+> document is the accepted contract for the bounded transition set, durations
+> and easings, reduced-motion and safe-mode behavior, and the renderer-side
+> default; it closes [OQ-040](../open-questions.md). Acceptance is a reviewed
+> contract, not implementation evidence: no product code ships and
+> `appearance.animations.*` is not a supported `init.lua` key until `bitty`
+> implements it. It adds no product code and does not weaken any normative
+> control in the [Security Overview](../../security/overview.md),
 > [Threat Model](../../security/threat-model.md), or the
 > [Performance Budget RFC](../../specifications/performance-budget-rfc.md).
 > The decoration contract stays with the
 > [Workspace Compositor Specification](../../specifications/workspace-compositor.md);
 > the focused/idle outline color that a focus transition interpolates is
-> [RFC-0001](RFC-0001-appearance-configuration.md) (OQ-039).
+> [RFC-0001](RFC-0001-appearance-configuration.md) (accepted OQ-039).
 
 ## Motivation
 
@@ -37,8 +41,8 @@ configuration syntax, curve names, or wire format.
 
 This RFC defines which transitions may animate, their bounded durations and
 easings, the present-path budget they must respect, reduced-motion and safe-mode
-behavior, the renderer/compositor split, and the `init.lua` exposure. It is a
-design proposal only and claims no implementation.
+behavior, the renderer/compositor split, and the `init.lua` exposure. It is the
+accepted contract and claims no implementation.
 
 ## Purpose and scope
 
@@ -46,7 +50,7 @@ In scope: a closed transition set (panel open/close, focus change, optional
 workspace switch), a bounded duration and easing grammar, a present-path
 performance budget that must not regress the soak and latency budgets, a
 reduced-motion and safe-mode contract, a renderer-side versus compositor-side
-split, and the candidate Lua surface.
+split, and the accepted Lua surface.
 
 Out of scope and owned elsewhere: frame decoration values and colors
 ([Workspace Compositor Specification](../../specifications/workspace-compositor.md)
@@ -78,7 +82,7 @@ Non-goals:
 
 ## Transition set
 
-Candidate transitions, all presentation-only:
+Accepted transitions, all presentation-only:
 
 | Transition       | Trigger                                              | Default effect                    | Notes                                                              |
 | ---------------- | ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------ |
@@ -102,7 +106,7 @@ Rules:
 
 ## Duration and easing: defaults and bounds
 
-Candidate defaults for ratification:
+Accepted defaults:
 
 | Transition       | `duration_ms` default | Easing default | Runtime bound |
 | ---------------- | --------------------- | -------------- | ------------- |
@@ -111,13 +115,18 @@ Candidate defaults for ratification:
 | Focus change     | `100`                 | `ease_in_out`  | `0..=500` ms  |
 | Workspace switch | `200`                 | `ease_in_out`  | `0..=500` ms  |
 
-Candidate contract:
+Accepted contract:
 
 - every duration is an integer in milliseconds in `0..=500`; `0` means instant
   and is never an error;
 - the easing set is a closed enum: `linear`, `ease_in`, `ease_out`,
   `ease_in_out`, `spring`; a custom cubic-Bézier quadruple is a candidate
-  extension left to OQ-040, not part of the v1 grammar;
+  extension left to a future revision, not part of the v1 grammar;
+- reviewer note (non-blocking note b): the `spring` enum member is accepted as
+  a reserved leaf name but its parameters (stiffness, damping, rest threshold)
+  are explicitly **deferred**; until a follow-up RFC defines them, `spring`
+  resolves to the `ease_in_out` curve and a future revision defines the
+  parameters rather than treating the name as fully specified;
 - unknown easings and out-of-range durations fail `ConfigPlan` validation with
   a source-attributed diagnostic and never clamp silently;
 - the `500` ms ceiling is a hard bound, not a default: it keeps every transition
@@ -132,7 +141,7 @@ Candidate contract:
 Animations must not regress the accepted budgets in the
 [Performance Budget RFC](../../specifications/performance-budget-rfc.md):
 PB-4 (input latency), PB-7 (idle resource usage), and the frame-on-demand rule.
-Candidate budget rules:
+Accepted budget rules:
 
 1. **Frame-on-demand only.** A frame is scheduled while at least one animation
    is active; when the last animation ends, present returns to idle with zero
@@ -157,7 +166,7 @@ Candidate budget rules:
 
 ## Reduced motion and safe mode
 
-Candidate contract for ratification:
+Accepted contract:
 
 - `appearance.animations.reduced_motion` is a bounded enum `auto` (default),
   `always`, or `never`;
@@ -192,10 +201,10 @@ Rules:
 
 ## Lua exposure and reload
 
-Candidate schema for ratification:
+Accepted schema:
 
 ```lua
--- Candidate API only; not a shipped key.
+-- Accepted contract only; not a shipped key until bitty implements it.
 return {
     appearance = {
         animations = {
@@ -234,7 +243,7 @@ Rules:
 
 ## Extensibility
 
-The user goal is a customizable, extensible appearance. Candidate direction:
+The user goal is a customizable, extensible appearance. Accepted direction:
 
 - a closed set of transition leaves, duration fields, and easings is the v1
   surface; arbitrary user functions, loops, and scripts are not admitted;
@@ -243,8 +252,8 @@ The user goal is a customizable, extensible appearance. Candidate direction:
 - new named easings or transition leaves are added by reviewed extension of
   this RFC, not by runtime registration from a plugin;
 - a future bounded custom-Bézier surface (four control points in `[0, 1]`) is
-  the natural next extension and is tracked under OQ-040 rather than promised
-  here.
+  the natural next extension and is tracked as a future revision rather than
+  promised here.
 
 ## Security review
 
@@ -275,36 +284,51 @@ proving PB-4 is unchanged; reduced-motion and `--safe` tests proving instant
 final-state application; and soak tests for allocation stability. Evidence
 belongs in `bitty`; this RFC records the contract only.
 
-## Open questions
+## Open questions and acceptance
 
 - **OQ-040** — which transitions animate, the bounded duration/easing grammar,
   the reduced-motion and safe-mode behavior, the renderer/compositor split, the
-  present-path budget, and the customization surface.
+  present-path budget, and the customization surface. **Accepted** 2026-09-12
+  (see the ratification note below).
 
-OQ-040 is `Open` in the [open-question register](../open-questions.md) and has
-no acceptance evidence. The focused/idle outline color that a focus transition
-interpolates is [OQ-039](RFC-0001-appearance-configuration.md), tracked with
+[OQ-040](../open-questions.md) is accepted by this RFC. Still deferred (not
+open blockers): the `spring` parameter definition, the exact per-frame
+microsecond ceiling, and a future bounded custom-Bézier surface. The
+focused/idle outline color that a focus transition interpolates is
+[OQ-039](RFC-0001-appearance-configuration.md), accepted with
 [RFC-0001](RFC-0001-appearance-configuration.md).
 
-## Recommended defaults for ratification
+## Ratification note (2026-09-12)
 
-The commander should request user ratification of these before any animation
-key is accepted:
+The project initiator ratified the PR #212 recommended defaults; the independent
+design review returned APPROVE. Accepted animation defaults:
 
 - transition durations: open `150` ms, close `120` ms, focus `100` ms,
   workspace switch `200` ms; hard bound `0..=500` ms;
 - easings: `ease_out` open, `ease_in` close, `ease_in_out` focus and
-  workspace; closed enum `linear | ease_in | ease_out | ease_in_out | spring`;
+  workspace; closed enum `linear | ease_in | ease_out | ease_in_out | spring`
+  (`spring` parameters deferred; see the duration/easing section);
 - `appearance.animations.enabled = true`;
 - `appearance.animations.reduced_motion = "auto"`;
 - renderer-side transitions by default, compositor-side effects best-effort and
   platform-gated;
 - `bitty --safe` and `always` reduced motion force `0` ms durations.
 
+This RFC is `accepted` frontmatter and [OQ-040](../open-questions.md) is
+closed. No product code ships with this acceptance, and `appearance.animations`
+remains an unimplemented, not-yet-shipped key until `bitty` implements it. The
+lifecycle is `Draft -> accepted -> normative`.
+
+## Recommended defaults (ratified)
+
+The defaults above in the ratification note were ratified unchanged from the PR
+#212 recommendation; no value was modified during acceptance. Subsequent
+revisions must use a new RFC per the [RFC index](README.md) rules.
+
 ## References
 
 - [Appearance Configuration RFC](RFC-0001-appearance-configuration.md)
-  (OQ-036 through OQ-039).
+  (accepted OQ-039; OQ-036 through OQ-038 remain open).
 - [Workspace Compositor Specification](../../specifications/workspace-compositor.md)
   (accepted Core-owned decoration and Hyprland import rules).
 - [Performance Budget RFC](../../specifications/performance-budget-rfc.md)
