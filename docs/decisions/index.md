@@ -124,15 +124,22 @@ the historical conversation:
   [OQ-038](open-questions.md) remain `Open`; frontmatter `accepted`.)
 - Per-View/per-panel appearance overrides and the UI extension architecture:
   selector grammar, precedence, reload, safe mode, focus/idle outline width,
-  per-panel background images, per-panel animations, and plugin-supplied
-  appearance. (Candidate: the per-View override and outline-width amendments in
-  the [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md)
+  per-panel animations, and plugin-supplied appearance. (Candidate: the per-View
+  override and outline-width amendments in the
+  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md)
   and the
   [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)
-  review; registers [OQ-041](open-questions.md), [OQ-042](open-questions.md),
+  review; registers [OQ-041](open-questions.md),
   [OQ-043](open-questions.md), [OQ-044](open-questions.md), and
   [OQ-045](open-questions.md) on 2026-09-12; no acceptance, no implementation
   claim.)
+- Per-panel background images for user configuration. (Accepted:
+  [Appearance Configuration RFC](rfcs/RFC-0001-appearance-configuration.md) —
+  resolves the Core-owned user-configuration half of
+  [OQ-042](open-questions.md) on 2026-09-12 under docs `CTX-0159`; the
+  `decoration.background_image` / `_fit` / `_image_roots` keys are a reviewed
+  contract, not shipped. Plugin-supplied images remain open as
+  [OQ-049](open-questions.md).)
 - Panel animations and effects: panel open/close, focus-change, and optional
   workspace-switch transitions with bounded durations/easings, reduced-motion
   and safe-mode behavior, and a present-path budget. (Accepted:

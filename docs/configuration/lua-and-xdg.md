@@ -574,13 +574,25 @@ today; the wider catalog is a candidate target, not shipped behavior.
 
 - Per-View/per-panel appearance overrides (`views.<selector>.*`), the
   focus/idle outline width (`decoration.border_width` / `_focused` / `_idle`),
-  per-panel background images, per-panel animation overrides, and
-  plugin-supplied appearance are **candidate only** (OQ-041..OQ-045;
+  per-panel animation overrides, and plugin-supplied appearance are **candidate
+  only** (OQ-041, OQ-043, OQ-044, OQ-045, OQ-049;
   [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
   amendments and
   [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md)).
   No `views.*` key or `decoration.border_width*` key is accepted or supported;
   do not document one as working.
+- The per-panel background-image contract
+  (`decoration.background_image` / `decoration.background_fit` /
+  `decoration.background_image_roots`) is **accepted as a contract** but **not
+  supported yet** (OQ-042 resolved 2026-09-12;
+  [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)).
+  The accepted formats are PNG/JPEG/static WebP with bounds BG-1..BG-5 reused from
+  the image-store corpus (IMG-1..IMG-5; BG-6 is a design bound, BG-7 a
+  present-path bound), deny-by-default approved roots, fit modes
+  `fill`/`fit`/`center`/`tile`/`stretch`, fail-closed whole-reload rejection,
+  and `--safe` ignoring image contributions. Do not document the keys as
+  working until `bitty` ships them; a `views.*` entry may not widen the
+  approved roots, and plugin-supplied images remain open (OQ-049).
 
 ## Shipped keymaps and Mod key
 
@@ -794,12 +806,15 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - What is the per-View/per-panel appearance override contract (selector grammar,
   precedence, inheritance, reload, fail-closed validation, safe mode, and
   per-View contrast), the focus/idle outline-width contract, and what
-  background-image, per-panel animation, and plugin-supplied appearance
-  contracts apply?
-  ([OQ-041/OQ-042/OQ-043/OQ-044/OQ-045](../decisions/open-questions.md);
+  per-panel animation and plugin-supplied appearance contracts apply?
+  ([OQ-041/OQ-043/OQ-044/OQ-045](../decisions/open-questions.md);
   [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)
   amendments;
   [UI Extensibility Architecture](../specifications/ui-extensibility-architecture.md);
   candidate only.)
+- The per-panel background-image contract is accepted
+  ([OQ-042](../decisions/open-questions.md), resolved 2026-09-12); the
+  plugin-supplied-image path remains open as
+  [OQ-049](../decisions/open-questions.md), and no image key is supported yet.
 - What are the final manifest/lock names, and how do they coexist with Lua
   plugin specifications or distribution imports?

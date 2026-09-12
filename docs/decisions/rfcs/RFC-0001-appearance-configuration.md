@@ -1,6 +1,6 @@
 ---
 title: Appearance Configuration RFC
-description: Accepted focus and idle outline color contract plus proposed per-View appearance override and outline-width candidate layers and the remaining appearance knob proposals exposed through init.lua
+description: Accepted focus and idle outline color contract and per-panel background-image contract plus proposed per-View appearance override and outline-width candidate layers and the remaining appearance knob proposals exposed through init.lua
 category: decisions
 audience: contributor
 document_type: specification
@@ -25,13 +25,21 @@ sidebar_order: 45
 > reviewed candidate ([OQ-045](../open-questions.md)): the
 > `decoration.border_width` / `_focused` / `_idle` triple, logical-px bounds,
 > live reload, DPI scaling, and the non-color cue it gives the accepted AC-2
-> rule. The amendments are reviewed contracts, not accepted or implemented
-> features; they leave the global OQ-039 pair accepted and unchanged, and the
-> width keys remain candidate and unshipped. They do not accept the label
+> rule. A third 2026-09-12 amendment adds the **per-panel background-image
+> contract** as an accepted contract
+> ([OQ-042](../open-questions.md)): PNG/JPEG/static-WebP formats, bounds BG-1..BG-5
+> reused from the accepted image-store corpus (IMG-1..IMG-5) plus the design
+> bound BG-6 and present-path bound BG-7, deny-by-default
+> path roots, the `fill`/`fit`/`center`/`tile`/`stretch` fit modes, per-`View`
+> override interaction, fail-closed whole-reload rejection, and `--safe`
+> ignoring image contributions; the plugin-supplied-image sub-question is
+> registered as [OQ-049](../open-questions.md). The per-View and width
+> amendments are reviewed candidates, not accepted or implemented features; they
+> leave the global OQ-039 pair accepted and unchanged, and the width keys remain
+> candidate and unshipped. This RFC does not accept the label
 > position ([OQ-036](../open-questions.md)), base frame/margin-line color
 > ([OQ-037](../open-questions.md)), background opacity/blur
-> ([OQ-038](../open-questions.md)), background images
-> ([OQ-042](../open-questions.md)), or per-panel animation overrides
+> ([OQ-038](../open-questions.md)), or per-panel animation overrides
 > ([OQ-043](../open-questions.md)), which remain `Open`. Acceptance is a
 > reviewed contract, not implementation evidence: no product code ships and no
 > key is supported until `bitty` implements it. It does not weaken any normative
@@ -366,8 +374,10 @@ Candidate constraints:
   allowed.
 - **OQ-041 (candidate):** the width fields join the override field set below;
   they do not alter the selector grammar, precedence tiers, or reload rules.
-- **OQ-042/OQ-043/OQ-044 (open):** unaffected; background images, per-panel
-  animations, and plugin-supplied appearance remain separate.
+- **OQ-042 (accepted):** the background-image contract accepts the image fields
+  as part of the OQ-041 override field set. **OQ-043/OQ-044/OQ-049 (open):**
+  per-panel animations, plugin-supplied appearance generally, and
+  plugin-supplied images remain separate.
 
 ## Per-View and per-panel appearance overrides: reviewed candidate (OQ-041)
 
@@ -415,17 +425,18 @@ Candidate selector grammar, most specific wins:
 Candidate override fields, all optional and each defaulting to the resolved
 global value:
 
-| Field                  | Source of the global default           |
-| ---------------------- | -------------------------------------- |
-| `opacity`              | `window.opacity` until OQ-038 resolves |
-| `blur`                 | unset until OQ-038 resolves            |
-| `background_image`     | unset until OQ-042 resolves            |
-| `border_color`         | `decoration.border_color` (OQ-037)     |
-| `border_color_focused` | `decoration.border_color_focused`      |
-| `border_color_idle`    | `decoration.border_color_idle`         |
-| `border_width`         | `decoration.border_width` (OQ-045)     |
-| `border_width_focused` | `decoration.border_width_focused`      |
-| `border_width_idle`    | `decoration.border_width_idle`         |
+| Field                  | Source of the global default                     |
+| ---------------------- | ------------------------------------------------ |
+| `opacity`              | `window.opacity` until OQ-038 resolves           |
+| `blur`                 | unset until OQ-038 resolves                      |
+| `background_image`     | `decoration.background_image` (OQ-042, accepted) |
+| `background_fit`       | `decoration.background_fit` (OQ-042, accepted)   |
+| `border_color`         | `decoration.border_color` (OQ-037)               |
+| `border_color_focused` | `decoration.border_color_focused`                |
+| `border_color_idle`    | `decoration.border_color_idle`                   |
+| `border_width`         | `decoration.border_width` (OQ-045)               |
+| `border_width_focused` | `decoration.border_width_focused`                |
+| `border_width_idle`    | `decoration.border_width_idle`                   |
 
 Animation options are part of the user directive but are **not** in this
 candidate's key set; they are deferred to [OQ-043](../open-questions.md) and
@@ -511,17 +522,192 @@ would otherwise pass validation.
   authority question for plugin-supplied appearance is
   [OQ-044](../open-questions.md) and is not granted here.
 
-### Background images: separate open contract (OQ-042)
+## Background-image contract: accepted (OQ-042)
 
-Per-panel background images are part of the user directive but are deliberately
-**not** specified in this candidate. An image path or image payload crosses the
-same trust boundary as image-file access in the
-[Security Overview](../../security/overview.md): deny by default, regular-file
-and safe-path checks, decoded-size/dimension/aggregate limits, and no ambient
-filesystem authority. The format, size limits, decoding path, cache budget,
-tiling/scaling/fit semantics, alpha/DPI interaction, and whether a plugin may
-supply an image are unresolved and tracked as
-[OQ-042](../open-questions.md).
+Status: **accepted** as a reviewed contract on 2026-09-12 (docs `CTX-0159`,
+user directives m0309/m0313/m0318). Acceptance resolves the user-configuration
+half of [OQ-042](../open-questions.md) and adds no unreviewed ceiling. Of the
+numeric bounds below, BG-1..BG-5 alias the accepted image-store limits in the
+[Rich Presentation RFC](../../specifications/rich-presentation-rfc.md)
+(IMG-1..IMG-5); BG-6 is a design choice (one background image per `View`) and
+BG-7 is inherited from present-path evidence; the remaining controls derive from
+the Graphics P0 row in the
+[Security Overview](../../security/overview.md), abuse case T-02 in the
+[Threat Model](../../security/threat-model.md), and
+[P0-AC-003/P0-AC-004](../../security/p0-acceptance-criteria.md). It is a
+reviewed contract, not implementation evidence: no product code ships and no key
+is supported until `bitty` implements it. Whether a plugin may supply an image
+remains open and is registered as [OQ-049](../open-questions.md).
+
+Direction: every panel (`View`) must support **independent** appearance,
+including a background image (m0309); because a configuration surface is only
+usable once it is documented, this contract must be explicit and bounded
+(m0313); a later live test will exercise user wallpaper files and image effects
+(m0318). The contract therefore fixes the key surface, the trust boundary, and
+the fail-closed behavior now, and defers only the plugin-supply sub-question.
+
+### Keys and scope
+
+| `init.lua` key                      | Default         | Values                                                                      | Reload | Scope                                          |
+| ----------------------------------- | --------------- | --------------------------------------------------------------------------- | ------ | ---------------------------------------------- |
+| `decoration.background_image`       | unset           | bounded path string, `<= 4096` bytes                                        | live   | global default for every `View`                |
+| `decoration.background_fit`         | `"fill"`        | `fill` / `fit` / `center` / `tile` / `stretch`                              | live   | global default for every `View`                |
+| `decoration.background_image_roots` | `[]` (deny all) | bounded list of directory paths, each `<= 4096` bytes, at most `32` entries | live   | global path policy; not overridable per `View` |
+
+Per-`View` override: `views.<selector>.background_image` and
+`views.<selector>.background_fit` join the [OQ-041](#per-view-and-per-panel-appearance-overrides-reviewed-candidate-oq-041)
+override field set. A `views.*` entry may select a path and a fit mode but may
+**not** widen the approved roots: `decoration.background_image_roots` is
+global-only and is deliberately absent from the `views.*` field set, so a
+per-`View` table can never grant a path the global policy denies. No host path
+is compiled in; the wallpaper directory a user chooses is configuration or
+environment data, never a literal in this corpus or in `bitty`.
+
+### Supported formats
+
+Accepted: **PNG**, **JPEG** (baseline and progressive), and **static WebP**.
+Rejected fail-closed, never guessed and never silently reduced to a first frame:
+SVG, GIF, AVIF, BMP, TIFF, and every animated or multi-frame container (APNG,
+animated WebP, GIF). Rejecting an animated container rather than decoding its
+first frame is stricter than the experimental Kitty path (which takes APNG's
+first frame) because a configuration surface must not silently substitute
+content; the format decision is recorded here as an OQ-042 choice, not as a
+reduction of an accepted limit.
+
+### Limits and their provenance
+
+BG-1..BG-5 each alias an accepted `IMG-*` limit; changing one requires an
+RFC revision of the source, never silent drift here. BG-6 is a design choice and
+BG-7 is inherited from present-path evidence, so neither aliases an `IMG-*`
+limit. All arithmetic is overflow-checked.
+
+| ID   | Dimension                                 | Bound                                     | Reused from           |
+| ---- | ----------------------------------------- | ----------------------------------------- | --------------------- |
+| BG-1 | Max encoded file bytes per image          | `4 MiB`                                   | IMG-1                 |
+| BG-2 | Max decoded dimensions per image          | `4096 x 4096`                             | IMG-2                 |
+| BG-3 | Max decoded bytes per image               | `64 MiB` (`width x height x 4`, checked)  | IMG-3                 |
+| BG-4 | Max aggregate decoded background bytes    | `256 MiB`                                 | IMG-4                 |
+| BG-5 | Max decoded background images resident    | `256`                                     | IMG-5                 |
+| BG-6 | Max resident background images per `View` | `1`                                       | design                |
+| BG-7 | Per-frame background blit budget          | `<= 32` blits, `<= 64 MiB` padded staging | present-path evidence |
+
+BG-4/BG-5 govern a **distinct background cache pool**; it adopts the same
+numeric ceilings as the terminal `ImageStore` but does not consume the terminal
+graphics IMG-4/IMG-5 budget, so a background image can never displace terminal
+graphics. Both pools are charged against the presentation memory budget.
+
+### Pre-allocation rejection and decode path
+
+The load pipeline checks, in order and **before any pixel allocation**:
+
+1. path syntax, canonicalization, approved-root membership, and regular-file
+   resolution (path trust below);
+2. encoded length `<= BG-1`;
+3. image header dimensions parse and satisfy BG-2;
+4. decoded byte estimate `width x height x 4` is overflow-checked and
+   `<= BG-3`;
+5. the container format is one of the accepted static formats and is not
+   animated;
+6. cache admission satisfies BG-4/BG-5/BG-6.
+
+Exceeding any bound rejects the image with a typed diagnostic naming the key and
+performs no large allocation; arithmetic is checked so a hostile header cannot
+force an over-budget allocation. Decode runs **off the hot path** (Security
+Overview invariant 4): during `ConfigPlan` reconcile or a bounded background
+load, never in PTY parse, VT, damage-to-snapshot, or render-per-frame. The cache
+is keyed by canonical path plus content identity (size and modification time, or
+a content hash); a changed file re-decodes and an unchanged file is reused.
+Admission evicts oldest-first, and eviction never removes the image currently
+displayed by a `View` without a validated replacement.
+
+### Path trust
+
+Deny by default. A resolved path must be absolute or `~`-anchored, canonicalize,
+lie under one of `decoration.background_image_roots`, and resolve to a regular
+file. Symlinks are resolved and then re-checked against the roots; devices,
+sockets, `/proc`, `/sys`, `/dev`, and non-regular files are rejected. This
+reuses the normative deny-by-default resource loader, regular-file, and
+approved-location policy in the [Security Overview](../../security/overview.md)
+P0 row and [T-03](../../security/threat-model.md), with `platform.image-file`
+remaining deny-by-default. A protocol-supplied path never authorizes deletion,
+and this contract adds no delete path.
+
+### Fit modes
+
+| `fit`     | Semantics                                                                                    |
+| --------- | -------------------------------------------------------------------------------------------- |
+| `fill`    | Cover: uniform scale to cover the `View` content rect, preserve aspect ratio, crop overflow. |
+| `fit`     | Contain: uniform scale to fit inside the content rect, preserve aspect ratio, letterbox.     |
+| `center`  | Native pixel size, centered in the content rect, cropped or letterboxed as needed.           |
+| `tile`    | Native pixel size repeated from the top-left, no scaling, clipped to the content rect.       |
+| `stretch` | Non-uniform scale to exactly fill the content rect (may distort).                            |
+
+The image paints inside the `View` content rectangle (frame inset by
+`border + content_inset`) behind content, is clipped to the `View`, and is scaled
+by the `Window` DPI factor from physical image pixels to device pixels. It never
+changes cell geometry, hit testing, selection, scroll behavior, or Terminal
+Truth (invariant 3, T-13). Alpha is composited under content through the
+accepted premultiplied renderer path (`bitty` CTX-0290); per-surface background
+opacity and blur remain separate under OQ-038.
+
+### Per-View override interaction
+
+`background_image` and `background_fit` resolve **per field per `View`** under
+the OQ-041 selector tiers (`* < content-type < ws: < view:`) and order-
+independent precedence. Setting only `background_fit` in a `views` entry does
+not reset an inherited `background_image`, and setting only
+`background_image` does not reset an inherited `background_fit`. Unknown fields,
+unknown selector forms, unknown fit values, and unknown `views.*` keys fail
+closed with a source-attributed diagnostic. `decoration.background_image_roots`
+is global policy and is not part of the override field set.
+
+### Fail-closed validation (never clamp silently)
+
+Malformed or truncated image data, an unsupported or animated format, a path
+outside the approved roots, a non-regular file, an over-BG-1/BG-2/BG-3 image, an
+aggregate over BG-4/BG-5, an unknown `fit` value, a non-string path, or an
+unknown `views.*` field rejects the **entire reload**. The previous resolved
+appearance stays active and a source-attributed diagnostic names the offending
+key; Core never clamps, downsizes, truncates, or silently drops one image while
+applying the rest. This is the Configuration Model RFC `Rejected` reload class
+([Configuration Model RFC](../../specifications/configuration-model-rfc.md))
+applied to the OQ-041 override rule.
+
+### Safe mode
+
+`bitty --safe` ignores `decoration.background_image`, `decoration.background_fit`,
+`decoration.background_image_roots`, and every `views.*` image field. It opens no
+image file and decodes no image (Security Overview invariant 10). Safe mode never
+leaves an image contribution in effect, even one that would pass validation.
+
+### Plugin supply and out of scope
+
+A plugin may not set any `decoration.*` or `views.*` background key at runtime;
+`platform.image-file` stays deny-by-default with approved-location checks. The
+plugin-supplied-image question is **not** resolved here and is registered as
+[OQ-049](../open-questions.md). Remote or URL image sources, generated or
+procedural images, gradients, and per-pixel shaders are out of scope and
+rejected for this contract.
+
+### Verification obligations (future, in `bitty`)
+
+An implementation must provide: a format acceptance/rejection matrix; a
+pre-allocation rejection test proving peak memory stays under BG-3; aggregate
+eviction holding BG-4/BG-5; a path negative matrix (outside roots, symlink
+escape, device/socket/procfs/sysfs/devfs, non-regular files) all denied; fit-mode
+geometry and DPI tests; whole-reload fail-closed rejection; a `--safe` test
+proving no file is opened and no image decoded; and clipping tests proving no
+cell-geometry or Terminal-Truth change. Evidence belongs in `bitty`; this RFC
+records the contract only.
+
+### Interaction with OQ-041 and OQ-044
+
+- **OQ-041 (candidate):** the two image fields join the override field set; the
+  selector grammar, precedence tiers, reload rules, and per-`View` contrast rule
+  are unchanged.
+- **OQ-044 (open):** plugin-supplied appearance generally remains open; this
+  contract only settles the Core-owned user-configuration path and explicitly
+  withholds the plugin image path, which OQ-049 narrows.
 
 ## Background opacity and blur: proposal (OQ-038)
 
@@ -588,6 +774,13 @@ Candidate conventions for review:
   blur, or a background image at runtime, matching the existing decoration
   ownership rule. A per-View override is Core-owned configuration, not a plugin
   hook; the plugin-supplied appearance question is OQ-044.
+- The accepted background-image contract reuses the image trust boundary:
+  deny-by-default approved roots, regular-file checks, corpus-reused bounds
+  BG-1..BG-5 (plus design bound BG-6 and present-path bound BG-7),
+  pre-allocation rejection, off-hot-path decode, a separate background cache
+  pool that cannot displace terminal graphics, whole-reload fail-closed
+  rejection, and `--safe` opening no file (Security Overview Graphics/P0,
+  T-02/T-03, P0-AC-003/004/005).
 
 ## Open questions
 
@@ -607,7 +800,10 @@ Candidate conventions for review:
   amendment above is its reviewed candidate.
 - **OQ-042** — per-panel background-image contract: format, size/dimension
   limits, decode path, cache budget, tiling/scaling, path trust, and whether a
-  plugin may supply an image. **Open**.
+  plugin may supply an image. **Accepted** 2026-09-12 for the Core-owned
+  user-configuration path (see the section above); the plugin-supply
+  sub-question is narrowed into [OQ-049](../open-questions.md) and remains
+  open.
 - **OQ-043** — per-panel animation override contract: which transition leaves
   may be overridden per selector, precedence, reduced-motion interaction, and
   budget attribution. **Open**.
@@ -619,14 +815,19 @@ Candidate conventions for review:
   non-color cue it supplies to AC-2. **Open**; the amendment above is its
   reviewed candidate.
 
-OQ-036, OQ-037, OQ-038, and OQ-041 through OQ-045 remain `Open` in the
-[open-question register](../open-questions.md) and have no acceptance evidence.
-[OQ-039](../open-questions.md) is accepted by this RFC. Panel open/close,
-focus-change, and workspace-switch animations are a separate accepted contract
+OQ-036, OQ-037, OQ-038, and OQ-041, OQ-043, OQ-044, and OQ-045 remain `Open` in
+the [open-question register](../open-questions.md) and have no acceptance
+evidence. [OQ-039](../open-questions.md) and
+[OQ-042](../open-questions.md) are accepted by this RFC; OQ-042's
+plugin-supply sub-question is registered as
+[OQ-049](../open-questions.md). Panel open/close, focus-change, and
+workspace-switch animations are a separate accepted contract
 in [RFC-0002](RFC-0002-panel-animations.md) (OQ-040); they are not part of this
 RFC's key set. The per-View override layer and the outline-width triple are
 reviewed candidate amendments to this RFC and are not accepted; they are
-therefore not part of the accepted key set.
+therefore not part of the accepted key set. The background-image contract is
+accepted, but its `decoration.background_image*` keys are not part of the
+accepted key set until `bitty` implements them.
 
 ## Ratification note (2026-09-12)
 
@@ -660,6 +861,23 @@ specifies the AC-2 non-color cue, and registers
 [OQ-045](../open-questions.md). It does not change the accepted OQ-039 color
 defaults or contrast rule, does not make any width key supported, and is not
 itself accepted.
+
+### Amendment note (2026-09-12, background images)
+
+A third 2026-09-12 amendment accepts the per-panel background-image contract
+under docs `CTX-0159` (user directives m0309/m0313/m0318), resolving the
+Core-owned user-configuration half of [OQ-042](../open-questions.md): the
+`decoration.background_image` / `decoration.background_fit` /
+`decoration.background_image_roots` keys, PNG/JPEG/static-WebP formats, bounds
+BG-1..BG-5 alias-reused from the accepted image-store corpus (IMG-1..IMG-5)
+plus the design bound BG-6 and present-path bound BG-7,
+deny-by-default path roots, the `fill`/`fit`/`center`/`tile`/`stretch` fit
+modes, the `views.*` per-`View` override interaction, fail-closed whole-reload
+rejection, and `--safe` ignoring image contributions. The plugin-supplied-image
+sub-question is registered as [OQ-049](../open-questions.md). This amendment is
+a reviewed contract, not implementation evidence: no image key is supported and
+no product code ships until `bitty` implements them. It does not change the
+accepted OQ-039 color contract or the OQ-041/OQ-045 candidate status.
 
 ## Compatibility and migration
 
