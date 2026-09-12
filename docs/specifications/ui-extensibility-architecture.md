@@ -92,25 +92,24 @@ The extension surface today is a set of accepted, bounded mechanisms. The
 inventory below is implementation-derived reference from `bitty` `origin/main`
 and the accepted contract documents; it claims no new behavior.
 
-| Extension point          | Mechanism                                                                     | Status                | Authority                                                                                                                 |
-| ------------------------ | ----------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Commands                 | `bitty.commands.register`; qualified IDs, bounded JSON Schema                 | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Events                   | `bitty.events.subscribe`; closed kind set, observation/interception           | Accepted              | [Plugin Platform RFC](plugin-platform-rfc.md)                                                                             |
-| Lifecycle                | generation-scoped `plugin.*` events; lazy activation                          | Accepted              | [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                                                     |
-| Key suggestions          | `bitty.keymaps.suggest`; user mapping wins                                    | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| UI slots                 | `bitty.ui.mount`/`update`; closed slot set, `SceneNode` subset                | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Terminal observation     | `bitty.terminal.snapshot` semantic scope only                                 | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Services                 | `bitty.services.get`/`provide`; versioned interfaces                          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Layout algorithms        | `LayoutProvider` pure geometry proposal                                       | Accepted (trait open) | [Workspace Compositor](workspace-compositor.md)                                                                           |
-| Rich/declarative content | `SceneNode`/`RichBlock` scene contract                                        | Accepted              | [Rich Presentation RFC](rich-presentation-rfc.md)                                                                         |
-| Appearance configuration | `init.lua` `ConfigPlan` keys; theme presets                                   | Accepted/partial      | [Configuration Model RFC](configuration-model-rfc.md), [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) |
-| Panel background image   | `decoration.background_image` / `_fit` / `_image_roots` (contract)            | Accepted (contract)   | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-042)                                               |
-| Per-View appearance      | `views.<selector>.*` override layer                                           | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md)                                                        |
-| Outline width            | `decoration.border_width` / `_focused` / `_idle`, per-View overridable        | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-045)                                               |
-| Panel background image   | `decoration.background_image` / `_fit` / `_image_roots`, per-View overridable | Accepted (contract)   | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-042)                                               |
-| Panel providers          | `register_panel`, `PanelId`, panel lifecycle                                  | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Protocol registration    | OSC/APC and structured-output handlers                                        | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
-| Decoration/annotation    | Level 3 presentation contributions                                            | Excluded from v1      | [Plugin system](../extensibility/plugin-system.md)                                                                        |
+| Extension point          | Mechanism                                                              | Status                | Authority                                                                                                                 |
+| ------------------------ | ---------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Commands                 | `bitty.commands.register`; qualified IDs, bounded JSON Schema          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Events                   | `bitty.events.subscribe`; closed kind set, observation/interception    | Accepted              | [Plugin Platform RFC](plugin-platform-rfc.md)                                                                             |
+| Lifecycle                | generation-scoped `plugin.*` events; lazy activation                   | Accepted              | [Plugin Host Runtime RFC](plugin-host-runtime-rfc.md)                                                                     |
+| Key suggestions          | `bitty.keymaps.suggest`; user mapping wins                             | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| UI slots                 | `bitty.ui.mount`/`update`; closed slot set, `SceneNode` subset         | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Terminal observation     | `bitty.terminal.snapshot` semantic scope only                          | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Services                 | `bitty.services.get`/`provide`; versioned interfaces                   | Accepted              | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Layout algorithms        | `LayoutProvider` pure geometry proposal                                | Accepted (trait open) | [Workspace Compositor](workspace-compositor.md)                                                                           |
+| Rich/declarative content | `SceneNode`/`RichBlock` scene contract                                 | Accepted              | [Rich Presentation RFC](rich-presentation-rfc.md)                                                                         |
+| Appearance configuration | `init.lua` `ConfigPlan` keys; theme presets                            | Accepted/partial      | [Configuration Model RFC](configuration-model-rfc.md), [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) |
+| Panel background image   | `decoration.background_image` / `_fit` / `_image_roots` (contract)     | Accepted (contract)   | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-042)                                               |
+| Per-View appearance      | `views.<selector>.*` override layer                                    | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md)                                                        |
+| Outline width            | `decoration.border_width` / `_focused` / `_idle`, per-View overridable | Candidate             | [RFC-0001](../decisions/rfcs/RFC-0001-appearance-configuration.md) (OQ-045)                                               |
+| Panel providers          | `register_panel`, `PanelId`, panel lifecycle                           | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Protocol registration    | OSC/APC and structured-output handlers                                 | Excluded from v1      | [Plugin API v1](plugin-api-v1-lua-surface-rfc.md)                                                                         |
+| Decoration/annotation    | Level 3 presentation contributions                                     | Excluded from v1      | [Plugin system](../extensibility/plugin-system.md)                                                                        |
 
 Two structural facts follow from the inventory:
 
@@ -253,7 +252,8 @@ useful test of the appearance-contribution pipeline.
 Risk: high. Crosses the image/file trust boundary (T-01, T-02,
 `platform.image-file`); unbounded decode or filesystem access would be a P0
 defect. The accepted contract mitigates this by reusing the accepted image-store
-ceilings (IMG-1..IMG-5, IMG-8) as BG-1..BG-7, denying paths by default, and
+ceilings (IMG-1..IMG-5) for BG-1..BG-5 (BG-6 is a design bound and BG-7 a
+present-path bound), denying paths by default, and
 rejecting malformed input with a whole-reload failure.
 
 Disposition: **accepted** 2026-09-12 under docs `CTX-0159` for the Core-owned

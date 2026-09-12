@@ -576,8 +576,9 @@ today; the wider catalog is a candidate target, not shipped behavior.
   `decoration.background_image_roots`) is **accepted as a contract** but **not
   supported yet** (OQ-042 resolved 2026-09-12;
   [Appearance Configuration RFC](../decisions/rfcs/RFC-0001-appearance-configuration.md)).
-  The accepted formats are PNG/JPEG/static WebP with bounds reused from the
-  image-store corpus, deny-by-default approved roots, fit modes
+  The accepted formats are PNG/JPEG/static WebP with bounds BG-1..BG-5 reused from
+  the image-store corpus (IMG-1..IMG-5; BG-6 is a design bound, BG-7 a
+  present-path bound), deny-by-default approved roots, fit modes
   `fill`/`fit`/`center`/`tile`/`stretch`, fail-closed whole-reload rejection,
   and `--safe` ignoring image contributions. Do not document the keys as
   working until `bitty` ships them; a `views.*` entry may not widen the

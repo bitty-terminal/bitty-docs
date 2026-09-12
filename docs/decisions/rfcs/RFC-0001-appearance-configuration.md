@@ -27,8 +27,9 @@ sidebar_order: 45
 > live reload, DPI scaling, and the non-color cue it gives the accepted AC-2
 > rule. A third 2026-09-12 amendment adds the **per-panel background-image
 > contract** as an accepted contract
-> ([OQ-042](../open-questions.md)): PNG/JPEG/static-WebP formats, bounds reused
-> from the accepted image-store corpus (IMG-1..IMG-5, IMG-8), deny-by-default
+> ([OQ-042](../open-questions.md)): PNG/JPEG/static-WebP formats, bounds BG-1..BG-5
+> reused from the accepted image-store corpus (IMG-1..IMG-5) plus the design
+> bound BG-6 and present-path bound BG-7, deny-by-default
 > path roots, the `fill`/`fit`/`center`/`tile`/`stretch` fit modes, per-`View`
 > override interaction, fail-closed whole-reload rejection, and `--safe`
 > ignoring image contributions; the plugin-supplied-image sub-question is
@@ -525,10 +526,12 @@ would otherwise pass validation.
 
 Status: **accepted** as a reviewed contract on 2026-09-12 (docs `CTX-0159`,
 user directives m0309/m0313/m0318). Acceptance resolves the user-configuration
-half of [OQ-042](../open-questions.md) and invents no new ceiling: every numeric
-bound below is reused from the accepted image-store limits in the
+half of [OQ-042](../open-questions.md) and adds no unreviewed ceiling. Of the
+numeric bounds below, BG-1..BG-5 alias the accepted image-store limits in the
 [Rich Presentation RFC](../../specifications/rich-presentation-rfc.md)
-(IMG-1..IMG-5, IMG-8), the Graphics P0 row in the
+(IMG-1..IMG-5); BG-6 is a design choice (one background image per `View`) and
+BG-7 is inherited from present-path evidence; the remaining controls derive from
+the Graphics P0 row in the
 [Security Overview](../../security/overview.md), abuse case T-02 in the
 [Threat Model](../../security/threat-model.md), and
 [P0-AC-003/P0-AC-004](../../security/p0-acceptance-criteria.md). It is a
@@ -571,11 +574,12 @@ first frame) because a configuration surface must not silently substitute
 content; the format decision is recorded here as an OQ-042 choice, not as a
 reduction of an accepted limit.
 
-### Limits reused from the accepted image corpus
+### Limits and their provenance
 
-Each bound is an alias of an accepted `IMG-*` limit; changing one requires an
-RFC revision of the source, never silent drift here. All arithmetic is
-overflow-checked.
+BG-1..BG-5 each alias an accepted `IMG-*` limit; changing one requires an
+RFC revision of the source, never silent drift here. BG-6 is a design choice and
+BG-7 is inherited from present-path evidence, so neither aliases an `IMG-*`
+limit. All arithmetic is overflow-checked.
 
 | ID   | Dimension                                 | Bound                                     | Reused from           |
 | ---- | ----------------------------------------- | ----------------------------------------- | --------------------- |
@@ -771,11 +775,12 @@ Candidate conventions for review:
   ownership rule. A per-View override is Core-owned configuration, not a plugin
   hook; the plugin-supplied appearance question is OQ-044.
 - The accepted background-image contract reuses the image trust boundary:
-  deny-by-default approved roots, regular-file checks, bounds BG-1..BG-7 from
-  the accepted image-store corpus, pre-allocation rejection, off-hot-path
-  decode, a separate background cache pool that cannot displace terminal
-  graphics, whole-reload fail-closed rejection, and `--safe` opening no file
-  (Security Overview Graphics/P0, T-02/T-03, P0-AC-003/004/005).
+  deny-by-default approved roots, regular-file checks, corpus-reused bounds
+  BG-1..BG-5 (plus design bound BG-6 and present-path bound BG-7),
+  pre-allocation rejection, off-hot-path decode, a separate background cache
+  pool that cannot displace terminal graphics, whole-reload fail-closed
+  rejection, and `--safe` opening no file (Security Overview Graphics/P0,
+  T-02/T-03, P0-AC-003/004/005).
 
 ## Open questions
 
@@ -864,7 +869,8 @@ under docs `CTX-0159` (user directives m0309/m0313/m0318), resolving the
 Core-owned user-configuration half of [OQ-042](../open-questions.md): the
 `decoration.background_image` / `decoration.background_fit` /
 `decoration.background_image_roots` keys, PNG/JPEG/static-WebP formats, bounds
-BG-1..BG-7 reused from the accepted image-store corpus (IMG-1..IMG-5, IMG-8),
+BG-1..BG-5 alias-reused from the accepted image-store corpus (IMG-1..IMG-5)
+plus the design bound BG-6 and present-path bound BG-7,
 deny-by-default path roots, the `fill`/`fit`/`center`/`tile`/`stretch` fit
 modes, the `views.*` per-`View` override interaction, fail-closed whole-reload
 rejection, and `--safe` ignoring image contributions. The plugin-supplied-image
