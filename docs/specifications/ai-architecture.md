@@ -206,7 +206,73 @@ Candidate Bitty differentiators, each needing its own evidence before any claim:
 - **Native tiling** — a working dwindle-style split baseline plus floating overlays, with scratchpad and ribbon directions tracked separately in the [UI and Compositor Gap Analysis](ui-compositor-gap-analysis.md).
 - **Open provider and tool surfaces** — `ai.model` registry, open provider kinds, and MCP as an adapter rather than an internal protocol.
 
+The strategic framing from the same analysis is a candidate one-line identity:
+an existing terminal-hosted coding agent is a _coding agent inside a terminal_,
+while the Bitty direction is _a terminal that natively understands agents,
+tools, executions, tasks, and context_. The candidate attributes to validate
+are execution-aware, context-efficient, spatially observable,
+capability-controlled, human-interruptible, multi-agent native, and
+evidence-preserving. No token-reduction percentage is an accepted target: the
+recorded `ctxctl` measurements are tool-level observations, and a full-pipeline
+claim needs a benchmark before any number is used.
+
+The unifying candidate principle behind the reading, compression, and evidence
+directions is stated here once and referenced below: **give the model the
+minimum sufficient context while preserving a path back to complete evidence**
+([OQ-059](../decisions/open-questions.md), [OQ-062](../decisions/open-questions.md),
+[OQ-065](../decisions/open-questions.md)).
+
+### Warp comparison dimensions (candidate)
+
+Status: **direction, non-normative**. The closed-cloud-terminal row above is
+expanded here into the dimensions that matter to this draft. The Warp
+description follows the external URL observation in the
+[Reference Project Register](../project/reference-projects.md) (public product
+behavior from [Warp documentation](https://docs.warp.dev/); no local snapshot,
+not audited) and makes no claim about its internals.
+
+| Dimension         | Warp (public product behavior)                                                  | Candidate Bitty direction                                                                                |
+| ----------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Product shape     | Terminal plus a built-in IDE surface set: agent, file tree, editor, LSP, review | Small terminal core plus capability-gated plugin surfaces; agent experiences are plugin content          |
+| Execution model   | Block abstraction with split panes                                              | Core-owned OSC 133 semantic zones over Terminal Truth; block-like views are projections                  |
+| Extension surface | Built-in surfaces, not a third-party panel/application API in the observation   | Generic Plugin API, Panel Runtime, and capability contracts; first-party and community share one surface |
+| State and account | Product-managed state with account-coupled routing                              | Local-first: Terminal Truth stays local, no account coupling, providers replaceable (MP-3)               |
+| Agent integration | Built-in agent mode                                                             | Host-owned `ai.model` registry, Tool Bus, per-role capability, frozen session snapshots                  |
+| Multi-agent shape | Not a public contract in the observation                                        | Spatial role panels over the IPC event bus as a candidate (SMO-1..SMO-4)                                 |
+| Evidence path     | Internal product behavior                                                       | Candidate evidence and provenance direction (OQ-065)                                                     |
+
 Honesty boundary: `bitty-agent` is a draft crate with no LLM I/O, no provider transport, and no API-key handling; `crates/bitty-runtime/src/ai_panel.rs` is bounded registry/context evidence, not a working agent. Nothing in this section is a shipped differentiator today.
+
+## Platform stack: Bitty, bitty-ai, and CarryCtx (candidate)
+
+Status: **direction, non-normative**. The candidate platform separates three
+concerns: CarryCtx as the durable lifecycle layer, `bitty-ai` as the agent
+runtime layer, and Bitty as the spatial execution and presentation layer.
+
+```text
+CarryCtx  (durable lifecycle layer)
+  task graph, dependencies, scopes, sessions, worktrees, checkpoints, handoffs
+        | bounded task/checkpoint projection (CLI or MCP-style adapter)
+bitty-ai  (agent runtime layer)
+  providers, context assembly, tool loop, delegation, budget and evidence records
+        | scoped IPC event bus and capability checks (Bitty host)
+Bitty terminal  (execution and presentation layer)
+  PTY and semantic zones, compositor panels, focus, human input, rich presentation
+```
+
+Three candidate rules extend
+[CarryCtx as the durable task layer](#carryctx-as-the-durable-task-layer)
+without changing it:
+
+- The stack is an architecture picture, not a dependency chain: `bitty-ai` must
+  run standalone (for example headless) with no CarryCtx installation.
+- CarryCtx integration is a candidate backend behind narrow store traits
+  (`TaskStore`, `MemoryStore`, `WorkspaceProvider`, `CheckpointStore`) with
+  in-memory, file, and CarryCtx implementations; Bitty + CarryCtx is the
+  fullest experience, not a required one.
+- The state projection flows inward only: task and checkpoint data inform
+  context; nothing in the stack grants capability or self-accepts a review.
+  Tracked as [OQ-060](../decisions/open-questions.md).
 
 ## Candidate runtime contracts
 
@@ -296,6 +362,16 @@ must remain separate so a compaction strategy cannot rewrite the source of
 record, and a storage failure cannot produce unbounded model input. Provider
 native features are selected only after capability negotiation and host
 policy checks.
+
+The accepted `CP-5` default of `32 KiB` per turn remains the draft contract. A
+candidate refinement parameterizes the budget per model profile (small-context
+through future long-context models) while keeping that default, and attaches
+per-item metadata — source, freshness, priority, token cost, trust, and hash —
+so assembly, ranking, and truncation stay deterministic and attributable at
+any budget. Whether a model profile may select a different budget from the
+accepted default is undecided and tracked as
+[OQ-066](../decisions/open-questions.md); nothing in this paragraph weakens
+`CP-5` until an amendment accepts it.
 
 ### Fresh child sessions and AgentTree
 
@@ -394,6 +470,31 @@ and retry policy. Read-only work may retry safely; idempotent work retries
 only with a stable key; uncertain or irreversible work requires status
 reconciliation or user direction and is never silently retried.
 
+### Transactional edit and workspace overlay (candidate)
+
+Status: **candidate, non-normative**. This extends the `ChangeSet`/Change
+Journal candidate above with transaction and overlay semantics.
+
+- **Base revision pinning.** A candidate edit names the base revision or hash
+  it was computed against (for example `expected_hash` per file). A target
+  that no longer matches fails closed instead of applying a stale
+  `find`/`replace`.
+- **Apply as a transaction.** Candidate flow is `APPLY -> VALIDATE -> COMMIT`,
+  all-or-nothing: apply in memory, validate parse, format, and diagnostics,
+  then commit, so one mismatched target aborts the whole edit set and the
+  workspace is never left half-modified.
+- **Workspace overlay.** An agent may work on a snapshot or overlay namespace
+  (`overlay://<task>`-style) rather than the live workspace; verification runs
+  against the overlay, then the change is merged or discarded. A Tester can
+  validate an Implementer's overlay before merge, which composes with Git
+  worktrees and CarryCtx tasks without being coupled to either: overlay names
+  are presentation-scoped handles, not new authority.
+- **No silent merge.** Merge, discard, and conflict decisions remain explicit
+  and attributed; the accepted restore-domain separation (workspace versus
+  conversation) still applies.
+
+Tracked as [OQ-064](../decisions/open-questions.md).
+
 ### Hook authority and observation labeling
 
 Future Agent-runtime lifecycle hooks may cover session, turn, instruction,
@@ -438,6 +539,46 @@ applies target and isolation limits. A verification result is evidence, not an
 automatic approval or permission grant. Neither service claims implementation
 in Bitty today.
 
+### Progressive code reading and repository index (candidate)
+
+Status: **candidate, non-normative**. This extends the `CodeContextProvider`
+candidate with the reading model from the originating analysis. Reading is a
+ladder, not a prohibition: the model starts with the smallest useful view and
+may always zoom out to the full file, which remains the escape hatch.
+
+```text
+repo_overview -> search -> outline / project map -> symbol
+              -> definition / references -> source slice -> full file
+```
+
+- **Repository index layers.** A candidate repository index separates file,
+  syntax, symbol, import, semantic, and search layers. Syntax-derived records
+  (tree-sitter style) tolerate incomplete code and never claim semantic truth;
+  semantic records come from a language service. Where either source is
+  inferred, records carry an explicit origin and a confidence signal rather
+  than presenting every row as equally reliable.
+- **Project scope beyond source directories.** A `repo_overview`-style
+  projection should cover manifests, toolchain and build files, CI workflows,
+  tests and examples, migrations, and documentation layout — not only source
+  globs. It is a bounded map, not a filesystem dump.
+- **Plain search stays first-class.** Text search remains a primary tool;
+  AST/symbol navigation complements it instead of replacing it.
+- **Language-service integration is adapter-based.** Candidate discovery
+  order: explicit project configuration, then `PATH` and toolchain, then
+  editor-managed adapters (a Mason-style adapter is one implementation, not a
+  dependency), then Nix and custom adapters behind one
+  `LanguageServerDiscovery` contract. `bitty-ai` must not depend on a specific
+  editor. Read and diagnostics tools built on the service (definition,
+  references, publish-diagnostics) remain bounded, attributed, read-only by
+  default, and are fast feedback rather than verification.
+- **Bounded and attributed.** Every read result is bounded, carries its
+  origin, and enters the context budget like any other provider; reading more
+  never bypasses capability or consent.
+
+Tracked as [OQ-062](../decisions/open-questions.md); language-service
+discovery and diagnostics are tracked as
+[OQ-063](../decisions/open-questions.md).
+
 ### Spatial multi-agent orchestration
 
 Status: **candidate, non-normative**. A candidate topology maps durable roles
@@ -465,6 +606,45 @@ operation says so.
   Runtime identity/generation contract; it does not require a daemon or a
   second registry. No implementation exists today.
 - Tracked as [OQ-058](../decisions/open-questions.md).
+
+### Agent identity separation and projection (candidate)
+
+Status: **candidate, non-normative**. A panel is a projection of agent runtime
+state, never the agent itself, and the identity domains stay separate:
+
+```text
+AgentId     runtime instance (a role embodiment; may own no UI at all)
+TaskId      durable task identity (for example a CarryCtx task)
+RunId       one logical run of an agent session
+ExecutionId one dispatch/execution inside a run
+PanelId     presentation container that may project any of the above
+WorkspaceId workspace/worktree identity the run is scoped to
+```
+
+An agent may have zero panels, one panel, or several views; it may run headless
+and be observed through a CLI; and one execution may be projected to a panel
+that did not start it. Presentation focus and visibility remain
+non-authoritative (SMO-2). Tracked as
+[OQ-061](../decisions/open-questions.md).
+
+### Multi-agent message envelope and delivery (candidate)
+
+Status: **candidate, non-normative**. The real multi-agent difficulty is
+delivery semantics, not adjacency: who sent what, whether a reply is required,
+whether the target is alive, and what happens to stale or duplicate messages.
+Candidate envelope fields extend the SMO-3 routing candidates:
+
+```text
+AgentMessage { message_id, sender, recipient, task_id, parent_run_id,
+               kind, payload, deadline, priority }
+```
+
+Candidate kinds include `DelegationRequest`, `DelegationResult`, `Observation`,
+`ApprovalRequest`, `ToolResult`, `Cancellation`, and `StatusUpdate`. Candidate
+delivery rules: bounded payloads under the accepted framing, `message_id`-based
+deduplication, deadline and expiry handling, cancellation, and fail-closed
+routing to a dead or unregistered recipient. Tracked within
+[OQ-058](../decisions/open-questions.md).
 
 ### Capability-enforced roles and subagent dispatch
 
@@ -495,6 +675,18 @@ ParentAuthority`, further limited by the role profile; a role can never
 - **CRE-4 Enforcement points.** Candidate checks live in the IPC scope
   evaluation, Tool Bus validation, capability grants, and resource budgets
   already accepted; no new bypass or prompt-only gate is introduced.
+- **CRE-5 Tool capability versus execution sandbox capability (candidate).**
+  Tool-level grants are not sufficient by themselves: a role that never
+  receives `fs.write` can still rewrite files through an allowed
+  `process.spawn` (a shell one-liner, an in-place edit command, or an
+  interpreter), unless the execution sandbox constrains what spawned processes
+  may touch. The role contract therefore needs two coordinated layers — the
+  tool capability set and an execution sandbox profile (filesystem read-only
+  or deny, network deny, restricted process family, filtered environment). A
+  role is a policy template; an agent is a runtime instance of that template,
+  so several agents can share one role without sharing state. The sandbox
+  layer is part of the enforcement scope tracked as
+  [OQ-057](../decisions/open-questions.md).
 - Tracked as [OQ-057](../decisions/open-questions.md).
 
 ### Semantic output compression for agent context
@@ -525,6 +717,47 @@ output into agent context using OSC 133 zones and exit codes:
   state snapshots and never in the parser or render path.
 - Tracked as [OQ-059](../decisions/open-questions.md).
 
+### Semantic execution results and progressive disclosure (candidate)
+
+Status: **candidate, non-normative**. This extends the SOC-1..SOC-6
+compression rules with the result shape and the retrieval path. It corrects
+one framing: the compression is **not lossless**. Exit `0` can still carry
+warnings, deprecated-API notices, ignored or skipped tests, flaky-test
+notices, resource warnings, and unexpected stderr, so those must survive at
+the diagnostics level rather than being discarded with the noisiest output.
+
+A candidate `ExecutionResult` record, produced off the hot path, would carry
+status, exit code, duration, a bounded summary, diagnostics, warnings,
+artifact references, stdout/stderr references, truncation state, and the
+parser or adapter that produced it. The agent sees a small disclosure ladder
+and can always resolve downward by reference:
+
+```text
+L0  semantic summary (status, counts, duration, reference)
+L1  diagnostics and important output (warnings, errors, ignored tests)
+L2  selected raw output (bounded range over a stream reference)
+L3  complete raw log (explicit resolve, bounded, attributed)
+```
+
+Two candidate rules make the ladder reliable:
+
+- **Structured first.** Prefer machine-readable output (compiler JSON
+  diagnostics, test-framework machine formats, linter JSON) over regex
+  scraping of human text, normalized by per-tool adapters (for example
+  `cargo`/`rustc`, `pytest`, `eslint`, `tsc`, and a generic shell adapter)
+  into typed `Diagnostic` records with severity, file, line, code, and
+  message. Regex remains a fallback, not the contract.
+- **Cheap before expensive.** Parser, formatter, and language-service
+  diagnostics are fast feedback; a real build or test run is verification.
+  The candidate pipeline escalates from edit, parser, formatter, and
+  language-service diagnostics through fast lint and targeted tests to a full
+  build or test run, and never treats a diagnostic as a passed verification
+  ([OQ-063](../decisions/open-questions.md)).
+
+Retrieval by reference is a retrieval reference, not authority: it re-reads
+committed output under the same scoping and untrusted labeling as SOC-5.
+Tracked as [OQ-059](../decisions/open-questions.md).
+
 ### CarryCtx as the durable task layer
 
 Status: **candidate, non-normative**. CarryCtx is a local-first durable
@@ -548,6 +781,40 @@ not as an authority surface:
   capability, bypass consent, or self-accept a review. Task completion remains
   an independent human/commander decision.
 - Tracked as [OQ-060](../decisions/open-questions.md).
+
+### Evidence and provenance (candidate)
+
+Status: **candidate, non-normative**. An agent claim should be traceable to
+the evidence that produced it: an execution handle plus stream and range plus
+exit code; a file revision or commit; or a language-service provider,
+workspace revision, and query. The recorded shape is a reference
+(`run -> tool execution -> stdout blob -> exit code -> commit`), consistent
+with the ContextEngine `RecoveryPointer` model: a reference is retrievable,
+not permission to read.
+
+- Verification results remain evidence, never approval; a reviewer approves
+  separately.
+- The UI direction is an evidence view that opens from an answer to the raw
+  command, source, or diff — an experience native terminals can offer better
+  than stream-only harnesses.
+- Evidence carries the same untrusted-observation labeling as its source and
+  enters any context budget as an attributed item.
+- Debug, audit, replay, and human review are the primary consumers of the
+  same reference graph.
+
+Tracked as [OQ-065](../decisions/open-questions.md).
+
+### Candidate build sequence (candidate)
+
+Status: **candidate, non-normative**. The originating analysis recommends
+earning the single-agent loop before multiplying it: semantic execution
+results, then repository index and progressive reading, then transactional
+editing, then the context engine, then a single-agent runtime, then
+capability and sandbox hardening, then multi-agent delegation, and spatial
+panel UX last. The rationale is direct: if one agent cannot read, edit, and
+verify well, ten agents only work inefficiently in parallel. This is
+sequencing advice for a future `bitty-ai` staging decision, not a roadmap
+commitment.
 
 ## Tool Bus
 
@@ -756,6 +1023,8 @@ These are out of this draft and remain tracked as follow-up work; they must not 
 
 The 2026-09-13 docs `CTX-0169` direction additions are registered as cross-document questions: role capability mapping and enforcement ([OQ-057](../decisions/open-questions.md)), spatial panel topology and event routing ([OQ-058](../decisions/open-questions.md)), semantic output-compression rules and budget interaction ([OQ-059](../decisions/open-questions.md)), and the CarryCtx durable-task integration boundary ([OQ-060](../decisions/open-questions.md)). The `CTX-0168` provider-credential direction is registered as [OQ-054 and OQ-055](../decisions/open-questions.md). None of these additions changes the draft status of this document or the accepted contracts it cites.
 
+The 2026-09-13 docs `CTX-0171` consolidation of the AI-architecture research note adds the platform-stack picture and the CarryCtx-as-optional-backend caveat ([OQ-060](../decisions/open-questions.md)), agent identity separation and projection ([OQ-061](../decisions/open-questions.md)), progressive code reading and repository index ([OQ-062](../decisions/open-questions.md)), language-service integration ([OQ-063](../decisions/open-questions.md)), transactional edit and workspace overlay ([OQ-064](../decisions/open-questions.md)), evidence and provenance ([OQ-065](../decisions/open-questions.md)), and context budget profiles ([OQ-066](../decisions/open-questions.md)), together with the Warp comparison dimensions and the candidate build sequence. None of these additions changes the draft status of this document or the accepted contracts it cites.
+
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 
 ## Acceptance criteria and lifecycle
@@ -774,4 +1043,4 @@ Acceptance will require:
 - Bitty topic evidence this RFC extends: [Product vision](../product/vision.md), [Architecture Overview](../architecture/overview.md), [Core and Plugin Boundaries](../architecture/core-boundaries.md), [Plugin System](../extensibility/plugin-system.md), [Rich Content](../interfaces/rich-content.md), [CLI](../interfaces/cli.md), [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md), [Technology Strategy](../project/technology-strategy.md).
 - Prior RFCs this RFC composes with: [IPC and Agent RFC](ipc-agent-rfc.md), [Rich Presentation RFC](rich-presentation-rfc.md), [Plugin Platform RFC](plugin-platform-rfc.md), [Isolation Resource RFC](isolation-resource-rfc.md), [Configuration Model RFC](configuration-model-rfc.md), [CLI Contract RFC](cli-contract-rfc.md), [DevTools RFC](devtools-rfc.md).
 - Related deferred direction: [ADR 0008](../decisions/adrs/ADR-0008-headless.md) keeps headless daemon and remote UI work post-v1.0; [Reference Project Register](../project/reference-projects.md) defines how local snapshots are used as untrusted research evidence. The panel vision is not yet present on this branch, so no link is asserted here.
-- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority.
+- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority. The 2026-09-13 `CTX-0171` consolidation additionally used the user's AI-architecture research note snapshot `recording/research/010.md` (workspace scratch, read-only; renamed `010.md.completed` once consolidated); its additions remain candidate direction, not authority.
