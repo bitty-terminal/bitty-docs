@@ -275,6 +275,12 @@ Rules:
 1. Enabling persistence requires `persistence.enabled = true` in `ConfigPlan` plus an explicit per-terminal `persistent_id` at creation. Absent `PersistentId` the terminal is ephemeral and its scrollback is dropped on disposal.
 2. Rehydration on next launch creates a fresh `TerminalId` and `RuntimeId` with the same `PersistentId`. The rehydrated terminal starts with the persisted scrollback as immutable history and a fresh empty visible grid. Replayed PTY output from the previous session is not synthesized.
 3. `PersistentId` reuse within one live registry requires the previous terminal with that id to be fully disposed. Attempting to create a second live terminal with the same `PersistentId` returns `PersistentIdInUse`.
+4. Restore is Core-owned and atomic. Layout geometry and persisted scrollback
+   are rehydrated before the first painted frame, so no incremental
+   plugin-side reconstruction causes window flicker, and teardown flushes the
+   snapshot natively within the short `SIGTERM`/`WM_CLOSE` budget instead of a
+   Lua event-loop path the OS may kill mid-write. Plugins own session naming,
+   selector surfaces, and import/export policy, not the persistence engine.
 
 ## Resize routing: view rectangle to PTY geometry
 

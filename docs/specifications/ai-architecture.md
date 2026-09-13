@@ -109,6 +109,8 @@ Status: **candidate, non-normative**. This subsection extends MP-10 without chan
 - **MPC-2 Credential references, never inline keys.** A provider declares `api_key_env` (the name of a host-allowlisted environment variable) or `api_key_cmd` (argv whose stdout is the secret, for example a password-manager lookup), never an inline key; configuration containing a literal key value fails validation. Resolution happens on the Rust host side, and Lua, plugins, diagnostics, and traces never receive the value, reusing MP-10 and ADR 0006 redaction and audit rules.
 - **MPC-3 Resolution order and project overrides.** Explicit user or CLI selection wins over profile configuration, which wins over project-level selection. A project may select among already-granted providers and models but may not introduce a credential reference, raise a `privacy_class`, or enable a provider the user has not consented to; violations fail closed with a source-attributed diagnostic.
 - **MPC-4 No implementation claim.** No provider configuration, credential reference, keyring, or `secrets.env` path is implemented today; `bitty-agent` owns no LLM I/O and no API-key handling, and `bitty-config` has no provider schema. This subsection records direction only.
+- **MPC-5 Canonical wire protocols and Lua provider presets (candidate).** Rust implements only three canonical wire-protocol adapters: `openai_compatible` (`POST /v1/chat/completions`, covering OpenAI, OpenRouter, DeepSeek, Groq, Ollama, vLLM, and compatible local gateways), `anthropic_messages` (`POST /v1/messages`), and `gemini_content` (`POST /v1beta/models/{model}:generateContent` and `:streamGenerateContent`). A provider entry names a protocol plus a base URL, models, and privacy class; the host must not accumulate vendor-specific branches beyond these adapters. Provider presets are declarative Lua data rather than compiled tables: a candidate official preset plugin (`bitty-ai-providers`) ships the common entries, and users may register their own (`ai.register_provider(id, entry)`) so model renames, base-URL changes, custom headers, and private gateways never require a Rust rebuild. Preset data cannot widen consent or capability (MPC-1 through MPC-3 still apply). Rust owns streaming and the hard gates: SSE parsing with present-cadence backpressure and cancellation, connection pooling and retry, credential resolution, the 32 KiB context budget, and MCP tool-bus schema and permission validation. Lua owns presets, agent and subagent roles, prompt assembly, conversation trees, slash commands, and card UI. Tracked as [OQ-080](../decisions/open-questions.md).
+- **MPC-6 `bitty-ai` distribution boundary (candidate).** `bitty-ai` is an independently installed and versioned plugin and repository (Rust workspace plus a Lua front end), not a bundled Core feature. Core keeps a neutral `bitty-agent` protocol skeleton and the `bitty-mcp` adapter so users who prefer external harnesses (for example Claude Code, Hermes Agent, or others) pay no AI weight or supply-chain surface and can still run `bitty-ai` standalone or headless. Installing the plugin yields the full experience through the same manifest, capability, and lazy-trigger path as any other plugin. Tracked as [OQ-081](../decisions/open-questions.md).
 
 ## ContextProvider
 
@@ -1231,6 +1233,72 @@ Acceptance will require:
 2. The same change synchronizes the open-question register only if an open question for AI architecture exists; this draft does not move OQ-018 from `Accepted` and instead records its reuse of the OQ-018 contracts.
 3. The specifications index records this document as `Draft` until independent review moves its frontmatter to `accepted`.
 4. Verification criteria above have headless or integration evidence before any claim of shipped behavior.
+
+## AI workspace composition (candidate)
+
+Status: **candidate, non-normative**. This records the user's workspace-platform
+analysis: an AI workspace built on Bitty panels and the inter-panel event bus
+is a native workspace platform rather than a TUI redrawn inside one grid.
+
+- **Composition.** A terminal panel, an agent panel, and a side inspector are
+  sibling Panels under the compositor (see
+  [Panel Vision](../product/panel-vision.md)). The inspector presents MCP tools
+  and call counts, active skills and prompts, the TODO tree, and the context
+  budget meter (CP-5); the agent panel owns the conversation surface.
+- **Rich rendering.** Agent output streams as Scene nodes per the
+  [Rich Presentation RFC](rich-presentation-rfc.md): headings, lists, and
+  quotes render as nodes; code blocks highlight with tree-sitter or `syntect`
+  using the active theme; diffs render as cards with apply and discard
+  actions; image artifacts render as GPU textures. Markdown is never
+  re-interpreted inside the terminal grid, preserving Terminal Truth.
+- **Inter-panel event bus.** Terminal `OSC 133` semantic zones drive
+  `terminal.command-finished` events carrying exit code and zone range; the
+  agent panel subscribes, pulls the bounded zone text through the existing
+  context-provider path, and emits task updates the inspector renders; file
+  changes notify terminal panels to re-run. Presentation stays
+  non-authoritative; delivery semantics remain the bounded panel-runtime
+  contract (see
+  [Panel Runtime Pre-Study](panel-runtime-pre-study.md)).
+- **Harness strategy reuse.** Prompt architecture, context compaction, and
+  tool-call recovery loops from existing harnesses (for example opencode,
+  oh-my-pi, Claude Code) are inputs to the Lua policy layer; their TUI shells
+  are not reused.
+- **Boundaries.** Multi-agent routing remains
+  [OQ-058](../decisions/open-questions.md); window forms and the unified `Mod`
+  contract remain [OQ-052](../decisions/open-questions.md); plugin-supplied
+  presentation stays capability-gated per the Panel Runtime pre-study.
+
+## Embodied multi-agent workspace: panels as leased workstations (candidate)
+
+Status: **candidate, non-normative**. Recorded from the user's
+"company / floor / workstation" model for multi-agent work (2026-09-13). It
+refines the spatial orchestration question in
+[OQ-058](../decisions/open-questions.md) and composes with the AI workspace
+composition above.
+
+- **Mapping.** A running Bitty process is a workspace for a team; each
+  Workspace is a floor; each Panel is a workstation with a stable id, a
+  human-readable title or description, and a lease state (`Idle` or
+  `Occupied(agent-id)`). This reuses the accepted Stable Id hierarchy
+  (`Instance -> Window -> Workspace -> View -> Terminal`) instead of inventing
+  a parallel one.
+- **Roaming and leases.** An agent acquires a panel for a bounded period, runs
+  work there, and releases it; a second agent or the human can take over an
+  idle panel. Lease transitions are inter-panel event-bus events, and
+  presentation stays non-authoritative.
+- **Suspension preserves the scene.** When an agent or human steps away, the
+  panel's PTY and presentation generation state remain intact, so a later
+  participant resumes from the visible scene instead of re-deriving it.
+- **Token economy.** Collapsed or hidden output stays in the terminal; a
+  consuming agent requests only bounded semantic-zone summaries (OSC 133
+  zones, for example a diff zone) through the existing context-provider path
+  rather than copying full buffers into its own context.
+- **Humans are co-workers.** A human occupies a panel on the same canvas, can
+  take over or hand work back, and uses the same lease vocabulary.
+- **Boundary.** The panel lease, description, and handoff contract is tracked
+  as [OQ-083](../decisions/open-questions.md); role panels, event kinds, and
+  lifecycle coupling remain [OQ-058](../decisions/open-questions.md). No
+  lease, description, roaming, or handoff mechanism is implemented today.
 
 ## References
 
