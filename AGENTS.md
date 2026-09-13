@@ -8,6 +8,21 @@
 - Do not infer sibling repository boundaries or grouping decisions; verify them
   from the owning repository and root-level guidance.
 
+## Repository structure and routing
+
+- Shared cross-project governance stays in the existing top-level directories:
+  `decisions/`, `security/`, `development/`, `sources/`, `findings/`,
+  `reviews/`, `handoff/`, `project/`, `roadmap/`, and `releases/`.
+- Per-project documentation lives under `docs/projects/<project>/`: `bitty/`
+  (terminal platform), `bitty-ai/` (independent AI core), and `plugins/`;
+  `docs/project/` (singular) stays shared project-state governance.
+- New project-specific docs go under `docs/projects/<project>/`; cross-project
+  contracts and registers stay in shared directories; OQ numbering stays
+  global; plugins use the standard page set (status, design, schemas and
+  contracts, evidence and links) under `docs/projects/plugins/<plugin>/`.
+- No existing document has moved yet; a later, scoped phase migrates the
+  terminal-platform documents into `docs/projects/bitty/`.
+
 ## Current phase
 
 - Documentation and project foundations come before product implementation.
