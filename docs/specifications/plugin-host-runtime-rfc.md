@@ -415,10 +415,10 @@ rollback, and purge have independent semantics.
 | Service provider absent            | typed resolution error before activation (`E_SERVICE_RESOLUTION`)            |
 | Bridge re-entry or invalid capture | `runtime`/`validation` diagnostic, generation disposed without partial state |
 
-## Candidate - reload/update triggers and queue drain (OQ-071)
+## Candidate - reload/update triggers and queue drain (OQ-072)
 
 Status: **candidate, not ratified** (bitty `CTX-0373`; registered as
-[OQ-071](../decisions/open-questions.md)). The accepted reload mechanics stay
+[OQ-072](../decisions/open-questions.md)). The accepted reload mechanics stay
 authoritative; this section does not revise an accepted contract and makes no
 implementation claim. It bounds what the accepted corpus leaves open after
 OQ-033/OQ-034/OQ-035:
@@ -531,7 +531,7 @@ The project initiator (user) ratified the following through
 ## References
 
 - [Open-question register](../decisions/open-questions.md) - OQ-033, OQ-034,
-  OQ-035 (Accepted); OQ-071 (Open: reload/update triggers and queue drain).
+  OQ-035 (Accepted); OQ-072 (Open: reload/update triggers and queue drain).
 - [Decision register](../decisions/index.md) - candidate queue (accepted
   entry).
 - [ADR 0010](../decisions/adrs/ADR-0010-plugin-host-runtime-acceptance.md) -
