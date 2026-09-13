@@ -105,6 +105,9 @@ allowed exception; do not invent a branch, commit, or PR that cannot yet exist.
 - Cross-link one authoritative definition instead of copying divergent wording.
 - Record unresolved questions and risks; do not silently choose across a public
   contract boundary.
+- Admit a new open question only when it blocks the current milestone or
+  implementation evidence/risk forces it; pure future ideas stay in research
+  notes until promoted (`docs/development/documentation-workflow.md`).
 - Update affected architecture, security, specification, and risk documents
   together when their shared contract changes.
 - Documentation synchronization is part of the definition of done. A product or

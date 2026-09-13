@@ -125,6 +125,44 @@ implementation evidence. No website content consumer exists yet. A future
 `bitty-website` integration must present pinned canonical content without owning
 or duplicating specifications.
 
+## Open-question admission
+
+The [open-question register](../decisions/open-questions.md) is the single
+global owner of OQ identifiers; numbering is global and monotonic, and an
+identifier is never renumbered, reused, or assigned to reserve a topic. A new
+canonical OQ is admissible only when at least one condition holds:
+
+- It blocks the current [roadmap](../roadmap/now-next-later.md) milestone: the
+  milestone cannot reach its exit criteria until the question is answered.
+- Implementation evidence or risk forces it: observed behavior, tests, audits,
+  or an open risk entry shows the corpus cannot define required behavior
+  without the answer.
+
+Opening an admissible OQ records these fields in the register entry:
+
+- the milestone gate it blocks, or the evidence or risk item that forces it;
+- a blocking link (Issue, CarryCtx task, risk ID, or failing evidence);
+- the owning team or role responsible for the answer;
+- the next review point (date or milestone event) at which it is re-checked.
+
+Not admissible: pure future ideas, speculative feature expansions, and
+explorations that no current milestone or evidence forces. Those stay in the
+workspace research notes under `recording/research/` (see [research notes
+coverage](../sources/research-notes-coverage.md)) or another provenance record
+until they satisfy an admission condition.
+
+Promotion path: a research note or provenance observation becomes a proposed OQ
+that cites the forcing evidence and carries the fields above, then is admitted
+onto the register through a reviewed change. A parked idea does not reserve an
+OQ identifier.
+
+Review and deprecation: re-check each OQ at its recorded review point. Close an
+OQ when a decision exists, citing the reviewed evidence. Mark it `Deprecated`
+when it no longer blocks a milestone or an evidence or risk item and no decision
+is pending, with the review rationale and a link to the provenance or research
+record that now carries it; its identifier remains allocated and is never
+reused.
+
 ## Required metadata
 
 Every `docs/**/*.md` file begins with YAML frontmatter containing exactly these
