@@ -1268,6 +1268,38 @@ is a native workspace platform rather than a TUI redrawn inside one grid.
   contract remain [OQ-052](../decisions/open-questions.md); plugin-supplied
   presentation stays capability-gated per the Panel Runtime pre-study.
 
+## Embodied multi-agent workspace: panels as leased workstations (candidate)
+
+Status: **candidate, non-normative**. Recorded from the user's
+"company / floor / workstation" model for multi-agent work (2026-09-13). It
+refines the spatial orchestration question in
+[OQ-058](../decisions/open-questions.md) and composes with the AI workspace
+composition above.
+
+- **Mapping.** A running Bitty process is a workspace for a team; each
+  Workspace is a floor; each Panel is a workstation with a stable id, a
+  human-readable title or description, and a lease state (`Idle` or
+  `Occupied(agent-id)`). This reuses the accepted Stable Id hierarchy
+  (`Instance -> Window -> Workspace -> View -> Terminal`) instead of inventing
+  a parallel one.
+- **Roaming and leases.** An agent acquires a panel for a bounded period, runs
+  work there, and releases it; a second agent or the human can take over an
+  idle panel. Lease transitions are inter-panel event-bus events, and
+  presentation stays non-authoritative.
+- **Suspension preserves the scene.** When an agent or human steps away, the
+  panel's PTY and presentation generation state remain intact, so a later
+  participant resumes from the visible scene instead of re-deriving it.
+- **Token economy.** Collapsed or hidden output stays in the terminal; a
+  consuming agent requests only bounded semantic-zone summaries (OSC 133
+  zones, for example a diff zone) through the existing context-provider path
+  rather than copying full buffers into its own context.
+- **Humans are co-workers.** A human occupies a panel on the same canvas, can
+  take over or hand work back, and uses the same lease vocabulary.
+- **Boundary.** The panel lease, description, and handoff contract is tracked
+  as [OQ-083](../decisions/open-questions.md); role panels, event kinds, and
+  lifecycle coupling remain [OQ-058](../decisions/open-questions.md). No
+  lease, description, roaming, or handoff mechanism is implemented today.
+
 ## References
 
 - Bitty topic evidence this RFC extends: [Product vision](../product/vision.md), [Architecture Overview](../architecture/overview.md), [Core and Plugin Boundaries](../architecture/core-boundaries.md), [Plugin System](../extensibility/plugin-system.md), [Rich Content](../interfaces/rich-content.md), [CLI](../interfaces/cli.md), [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md), [Technology Strategy](../project/technology-strategy.md).
