@@ -729,6 +729,68 @@ Open: whether the shipped set grows CLI flags or a command-palette surface;
 the candidate Leader sequences and flash-style jump remain unimplemented
 candidates in the [Input and Pointer Contract](../specifications/input-pointer-rfc.md).
 
+## Reload classification (shipped schema inventory)
+
+Status: **implementation reference** read-only from `bitty` `origin/main` at
+`828a787` (verified read-only via `merge-base --is-ancestor`). The accepted
+framework is the
+[Configuration Model RFC](../specifications/configuration-model-rfc.md)
+"Reload classification" section (OQ-010). Classification is declared by the
+schema in `bitty` `crates/bitty-config/src/reload.rs` (`classify_field`), never
+inferred at runtime, and reload reuses the startup validation and merge path.
+This section is the per-field inventory the RFC defers; it changes no normative
+contract and weakens no security control.
+
+| Class             | Meaning                                                                      |
+| ----------------- | ---------------------------------------------------------------------------- |
+| Live-reconcilable | Applied by diff-and-reconcile to running instances without restart           |
+| Restart-required  | Accepted and persisted, effective after the next process start               |
+| Rejected          | Validation failure; the previous good plan stays active, diagnostics emitted |
+
+Shipped leaf inventory:
+
+| Key                                                                                          | Class    | `bitty --safe`       |
+| -------------------------------------------------------------------------------------------- | -------- | -------------------- |
+| `font.family`, `font.size`, `font.line_height`, `font.letter_spacing`                        | live     | built-in default     |
+| `window.opacity`, `window.padding`, `window.radius_px`                                       | live     | built-in default     |
+| `decoration.gaps_in`, `decoration.gaps_out`                                                  | live     | `0`, `0`             |
+| `decoration.border`, `decoration.radius`, `decoration.content_inset`                         | live     | `1`, `0`, `0`        |
+| `decoration.border_color`                                                                    | live     | unset                |
+| `decoration.border_color_focused`, `decoration.border_color_idle`                            | live     | `#FFFFFF`, `#808080` |
+| `decoration.border_width`, `decoration.border_width_focused`, `decoration.border_width_idle` | live     | `1`, `1`, `1`        |
+| `appearance.theme`                                                                           | live     | built-in default     |
+| `appearance.animations.enabled`, `appearance.animations.reduced_motion`                      | live     | built-in default     |
+| `appearance.animations.duration_ms.*`                                                        | live     | `0` ms               |
+| `appearance.animations.easing.*`                                                             | live     | built-in default     |
+| `mod_key`, `keymaps`                                                                         | live     | built-in default     |
+| `terminal.scrollback`, `terminal.shell`                                                      | restart  | built-in default     |
+| `terminal.scroll_lines_per_notch`, `terminal.scroll_pixels_per_notch`                        | restart  | built-in default     |
+| `selection.auto_copy`                                                                        | restart  | built-in default     |
+| `layout.gaps_in`, `layout.gaps_out`                                                          | restart  | built-in default     |
+| `scrollbar.mode`, `scrollbar.width`                                                          | restart  | built-in default     |
+| `mouse.focus_follows_mouse`, `mouse.focus_follows_mouse_delay_ms`                            | restart  | built-in default     |
+| `plugins[].id`, `plugins[].enabled`                                                          | restart  | built-in default     |
+| unknown or undeclared key                                                                    | rejected | n/a                  |
+
+- `duration_ms` and `easing` are per-transition tables over the closed set
+  `open`, `close`, `focus`, `workspace`; `.*` abbreviates the four leaves.
+- The `bitty --safe` column records the pinned value where `--safe` forces one.
+  "built-in default" means the key is not force-pinned beyond normal core
+  defaults, but every external layer is skipped entirely (`fallback_builtin`,
+  R-009), so the built-in default is the value in effect.
+- Restart-required keys are accepted and persisted but need the next process
+  start: `terminal.shell` and `terminal.scrollback` are spawn-time state, and
+  `selection.auto_copy`, `layout.gaps_in`/`gaps_out`, `scrollbar.*`, and
+  `mouse.*` are adopted into the runtime configuration once at startup.
+- **Activation status.** "Live-reconcilable" is the declared class; the runtime
+  hot-swap activation path is not wired yet. `bitty ctl config reload` validates
+  the file and reports its path with `"hot_swap":"follow-up"`, and
+  `reconcile_live` has no production caller. The runtime live-adopt setters
+  (`set_decoration`, `set_outline`, `set_animations`) exist for the presentation
+  subset, but nothing drives them from the reload diff yet.
+- Unknown and undeclared keys are rejected by validation; the previous good
+  plan stays active (`should_retain_previous`).
+
 ## Starters and distributions
 
 Status: **accepted direction.**
@@ -887,8 +949,11 @@ These commands are further described in [CLI](../interfaces/cli.md).
 - Are system defaults and policy expressed in Lua or a restricted data format?
 - Which layer types may be non-overridable, and how are policy errors reported?
 - What are the final list, keymap, and plugin merge semantics?
-- How is reload classified into live-reconcilable versus restart-required
-  changes?
+- Reload classification is the accepted framework with a shipped per-field
+  inventory (see [Reload classification](#reload-classification-shipped-schema-inventory));
+  the canonical table still moves to the
+  [Configuration Model RFC](../specifications/configuration-model-rfc.md)
+  once the schema stabilizes.
 - What are the native macOS and Windows directory mappings?
 - What is the trust database location and invalidation rule for local project
   configuration?
