@@ -1,0 +1,5 @@
+# Submodule checkouts are independent repositories with their own gates;
+# never format their content from the aggregator repository.
+bitty-terminal/
+bitty-ai/
+bitty-plugins/

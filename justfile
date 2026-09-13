@@ -38,12 +38,17 @@ agents:
 hygiene:
     bun .github/scripts/check-docs.mjs hygiene
 
-# Validate architecture SVG assets are well-formed XML.
+# Validate architecture SVG assets are well-formed XML. The assets live in the
+# `bitty-terminal` docs submodule; the recipe skips when it is not initialized.
 svg:
     #!/usr/bin/env bash
     set -euo pipefail
+    if [[ ! -d bitty-terminal/architecture ]]; then
+        echo "skip: bitty-terminal docs submodule not initialized"
+        exit 0
+    fi
     command -v xmllint >/dev/null || { echo "xmllint (libxml2-utils) is required" >&2; exit 1; }
-    find docs/projects/bitty/architecture -name '*.svg' -print0 | xargs -0 xmllint --noout
+    find bitty-terminal/architecture -name '*.svg' -exec xmllint --noout {} +
 
 # Validate the machine-readable project state snapshot and its canonical summaries.
 state:

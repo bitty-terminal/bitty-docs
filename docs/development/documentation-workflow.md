@@ -11,9 +11,10 @@ sidebar_order: 20
 
 # Documentation workflow
 
-This policy defines how `bitty-docs` remains the English-language source of
-truth for maintained Bitty documentation. It applies before implementation and
-continues once product repositories ship code.
+This policy defines the English-language authoring, ownership, routing, and
+synchronization model for maintained Bitty documentation. It governs the
+shared governance corpus in `bitty-docs` and its submodule-mounted project
+documentation repositories, which follow the same workflow.
 
 ## Language policy
 
@@ -27,10 +28,11 @@ created.
 ## Repository layout and routing
 
 Documentation is partitioned into shared cross-project governance and
-per-project content. The partition was approved on 2026-09-13 ("full partition
-plus shared top level") and routes documents as follows.
+project-owned content. Shared governance stays in this repository; each project
+documentation repository is mounted at the `bitty-docs` repository root as a Git
+submodule.
 
-Shared governance stays in the existing top-level directories:
+Shared governance stays in the top-level directories:
 
 | Directory      | Owns                                                                  |
 | -------------- | --------------------------------------------------------------------- |
@@ -45,48 +47,60 @@ Shared governance stays in the existing top-level directories:
 | `roadmap/`     | Evidence-based sequencing shared across projects.                     |
 | `releases/`    | Release notes backed by published artifacts.                          |
 
-Per-project content lives under `docs/projects/<project>/`:
-
-| Project     | Scope                                                                             |
-| ----------- | --------------------------------------------------------------------------------- |
-| `bitty/`    | Terminal platform: core, VT, PTY, UI, configuration, plugin host, IPC, packaging. |
-| `bitty-ai/` | Independent AI-core project: runtime, providers, and context.                     |
-| `plugins/`  | Per-plugin documentation for first-party and featured plugin candidates.          |
-
 `docs/project/` (singular) remains shared project-state and technology
-governance; `docs/projects/` (plural) is the per-project documentation
-partition.
+governance. `docs/projects/README.md` routes to the submodule mounts.
+
+Project content lives in three independent documentation repositories:
+
+| Submodule         | Repository            | Scope                                                                                                      |
+| ----------------- | --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `bitty-terminal/` | `bitty-terminal-docs` | Terminal platform: architecture, specifications, interfaces, product, user guide, and the terminal corpus. |
+| `bitty-ai/`       | `bitty-ai-docs`       | Independent AI core: AI architecture, IPC/Agent contract, Browser and Agent panel pre-study.               |
+| `bitty-plugins/`  | `bitty-plugins-docs`  | Plugin platform, SDK, lifecycle, package, isolation, and per-plugin pages (standard page set below).       |
+
+Each submodule pins the owning repository's merged `main` revision. Project
+content is mounted into the owning code repository at `<code-repo>/docs`, which
+consumes the same content at the pinned revision.
 
 Routing rules:
 
-1. New project-specific documents go under `docs/projects/<project>/`.
+1. New project-specific documents go to the owning project documentation
+   repository, not to `bitty-docs`.
 2. Cross-project contracts, registers, policies, and the security corpus stay
-   in the shared top-level directories; a project tree links to them instead
-   of copying them.
+   in the shared top-level directories; a project repository links to them
+   instead of copying them.
 3. Open-question and ADR/RFC numbering stay global; the single
    [open-question register](../decisions/open-questions.md) owns every OQ.
-4. Each plugin gets `docs/projects/plugins/<plugin>/` with the standard page
-   set defined below.
+4. Each plugin uses the standard page set defined below under
+   `docs/plugins/<plugin>/` in `bitty-plugins-docs`.
 
-### Migration plan
+### Submodule pointer updates
 
-Phase 1 added the partition, index pages, and skeletons only; no existing file
-moved. Phase 2 (CTX-0185) migrated the existing terminal-platform documents
-(`architecture/`, `specifications/`, `configuration/`, `product/`,
-`interfaces/`, `user-guide/`, `tutorials/`, `how-to/`, `reference/`,
-`examples/`, `extensibility/`, `requirements/`, `troubleshooting/`,
-`migrations/`) into `docs/projects/bitty/` with `git mv`, rewriting relative
-and absolute links and preserving each document's `website_publish` flag plus
-the deprecation and redirect policy in this document. It also updated
-path-sensitive consumers (navigation indexes, the project-state snapshot and
-its canonical summary checks) and kept `just check` green. Phase 3 lands
-`bitty-ai/` and per-plugin content as their owning repositories produce it.
+1. Land and merge the content change in the owning project documentation
+   repository.
+2. In a scoped `bitty-docs` task, check out the merged revision inside the
+   submodule and verify the recorded gitlink matches the merged `main`.
+3. Re-run `just check` and open a reviewable pull request that bumps only the
+   intended pointer(s); never bump a pointer as a side effect of an unrelated
+   change. `.gitmodules` is committed at the repository root.
+4. CI checks out submodules recursively; the local gates also pass when they
+   are absent, so submodule-owned checks (project state summary and SVG
+   validation) skip unmaterialized files instead of failing.
+
+### Migration outcome
+
+Phase 1 added the local partition, index pages, and skeletons. Phase 2
+(CTX-0185) migrated the terminal-platform documents into `docs/projects/bitty/`.
+Phase 3 split all three project partitions into their own repositories and
+CTX-0188 removed the local copies from `bitty-docs`, retargeted shared-corpus
+references to absolute URLs in the owning repository, and replaced the local
+trees with root submodules pinned to each repository's merged `main`.
 
 ## Per-plugin documentation page set
 
-Each documented plugin gets `docs/projects/plugins/<plugin>/` following the
-standard page set. The set separates candidate intent, accepted contracts, and
-evidence so no page implies shipped behavior it cannot support.
+Each documented plugin gets `docs/plugins/<plugin>/` in `bitty-plugins-docs`
+following the standard page set. The set separates candidate intent, accepted
+contracts, and evidence so no page implies shipped behavior it cannot support.
 
 | Page          | Typical `document_type`   | Purpose                                                              |
 | ------------- | ------------------------- | -------------------------------------------------------------------- |
@@ -98,7 +112,7 @@ evidence so no page implies shipped behavior it cannot support.
 Rules:
 
 - Start from the template at
-  [`../projects/plugins/TEMPLATE.md`](../projects/plugins/TEMPLATE.md).
+  [`docs/plugins/TEMPLATE.md`](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/docs/plugins/TEMPLATE.md).
 - Cross-project contracts and registers stay in the shared directories; a
   plugin page links to them instead of restating them.
 - Use only the allowed metadata values; "candidate" and "planned" are prose,
@@ -267,16 +281,18 @@ after repository initialization and must not become the normal delivery path.
 ## Deprecation and versioning
 
 A deprecated document or public path names its replacement, affected versions,
-transition period, and removal condition. `bitty-docs` owns canonical content
-identity and redirect requirements; a future `bitty-website` integration must
-own routing implementation. Deletion without a reviewed replacement/redirect
-decision is not allowed for published material.
+transition period, and removal condition. Each documentation repository owns
+the canonical content identity and redirect requirements for the content it
+owns; a future `bitty-website` integration must own routing implementation.
+Deletion without a reviewed replacement/redirect decision is not allowed for
+published material.
 
 Once releases exist, reference and user guidance must state or derive the
 supported product version. Any future website build that publishes canonical
-documentation must consume an immutable pinned `bitty-docs` revision so the
-published build can be reproduced. The strategy for simultaneously hosted
-historical versions remains an open cross-repository decision.
+documentation must consume immutable pinned revisions of the aggregator and its
+project documentation submodules so the published build can be reproduced. The
+strategy for simultaneously hosted historical versions remains an open
+cross-repository decision.
 
 ## Project state snapshot
 
@@ -321,13 +337,14 @@ CarryCtx task with independent review, CI green (`just check` includes
 provenance record. The snapshot records state; it must not auto-accept risks
 or replace CarryCtx and security-auditor review. Risk state transitions still
 require the per-risk RS-1..RS-7 checklist and auditor sign-off per the
-[risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md).
+[risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md).
 
 Canonical human-readable summaries in `README.md`, `TODO.md`,
 `docs/README.md`, `docs/security/risk-register.md`,
-`docs/security/evidence-matrix.md`, and `docs/projects/bitty/product/release-ladder.md` are
-derived from the snapshot and validated deterministically by
-`bun .github/scripts/check-state.mjs` (also `just state` and CI). Divergence
-is a defect. Test counts remain in audit and implementation evidence and are
-not duplicated in the snapshot unless generated via an authoritative command
-such as `cargo test`.
+`docs/security/evidence-matrix.md`, and the submodule-mounted
+`bitty-terminal/product/release-ladder.md` are derived from the snapshot and
+validated deterministically by `bun .github/scripts/check-state.mjs` (also
+`just state` and CI). Divergence is a defect; the submodule summary is checked
+when the submodule is materialized and skipped otherwise. Test counts remain in
+audit and implementation evidence and are not duplicated in the snapshot unless
+generated via an authoritative command such as `cargo test`.

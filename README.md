@@ -27,7 +27,7 @@ requirements, and the implementation lifecycle
 UX wave through `29772a3`, semantic-terminal P1-P5 `Implemented`-only at
 `4ccb771`/`064486b`/`ab1f7ab`, scrollbar overlay `Implemented`-only at `c49ead1` (`bitty` #405), workspace rename plus panel gaps `abde197` (`bitty` #415), `mod_key` `2a5e451` (`bitty` #411), measured font defaults `308687d` (`bitty` #413), `radius_px` S0 `84aa580` (`bitty` #417), `frameHash` digest `3f5ed24` (`bitty` #421), V1-V3 gates `29772a3` (`bitty` #423), plus the `v0.0.20` wave: plugin runtime Gap A, ctl correctness, end-to-end Kitty graphics, workspace decoration, config matrix, plugin CLI, Windows ConPTY, and in-repo CarryCtx publication) but not yet independently
 verified; `Verified` requires security-auditor and P0-AC evidence per the
-[risk evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/risk-evidence-rfc.md).
+[risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md).
 `R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
 remediation, baseline `19`) remains `Open` with residual platform-backend,
 real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`;
@@ -72,15 +72,15 @@ repository snapshot documentation below.
 
 - [Documentation map](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/README.md) — topic-oriented navigation and authority
   rules.
-- [User guide](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/user-guide/README.md) — an honest Pre-alpha plan
+- [User guide](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/user-guide/README.md) — an honest Pre-alpha plan
   for future user tasks, without invented commands before verification.
 - [Development](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/README.md) — contributor entry point and
   delivery expectations.
-- [Reference](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/reference/README.md) — planned factual interface reference,
+- [Reference](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/reference/README.md) — planned factual interface reference,
   clearly separated from design proposals.
-- [Product vision](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/product/vision.md) — the user problem, scope, and
+- [Product vision](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/vision.md) — the user problem, scope, and
   product principles.
-- [Architecture overview](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/architecture/overview.md) — current system model
+- [Architecture overview](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/architecture/overview.md) — current system model
   and architectural status.
 - [Security overview](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/security/overview.md) — normative security
   requirements for future implementation.
@@ -88,16 +88,16 @@ repository snapshot documentation below.
   normative contracts, and candidate decisions.
 - [Open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) — unresolved work
   that must not be silently treated as decided.
-- [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/isolation-resource-rfc.md) — accepted isolation boundaries, resource ceilings, and failure semantics with adversarial tests for OQ-014 (2026-08-28).
-- [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/package-followup-rfc.md) — accepted resolver, yank, prerelease, registry, and key-management contracts for OQ-022 and OQ-026 through OQ-029 (2026-08-28).
-- [Default Distribution RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/default-distribution-rfc.md) — accepted default plugin bundle, enabled-by-default set, and disable mechanisms for OQ-002 (2026-08-29).
+- [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/isolation-resource-rfc.md) — accepted isolation boundaries, resource ceilings, and failure semantics with adversarial tests for OQ-014 (2026-08-28).
+- [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-followup-rfc.md) — accepted resolver, yank, prerelease, registry, and key-management contracts for OQ-022 and OQ-026 through OQ-029 (2026-08-28).
+- [Default Distribution RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/default-distribution-rfc.md) — accepted default plugin bundle, enabled-by-default set, and disable mechanisms for OQ-002 (2026-08-29).
 - [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0008-headless.md) — accepted deferral to post-v1.0 with trust-boundary gate for OQ-020 (2026-08-28).
-- [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/ipc-agent-rfc.md) — accepted bounded framing, wire, auth, scopes, and Agent bounded messages, auth, consent, and streaming for OQ-018 (2026-08-29).
-- [CLI Contract RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/cli-contract-rfc.md) — accepted top-level commands, dynamic `bitty x` namespace, action/output schemas, aliases, and exit codes 0-8 for OQ-017 (2026-08-28).
-- [Governance RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
-- [Website Delivery RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
-- [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
-- [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/bitty/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
+- [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md) — accepted bounded framing, wire, auth, scopes, and Agent bounded messages, auth, consent, and streaming for OQ-018 (2026-08-29).
+- [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — accepted top-level commands, dynamic `bitty x` namespace, action/output schemas, aliases, and exit codes 0-8 for OQ-017 (2026-08-28).
+- [Governance RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
+- [Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
+- [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
+- [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
 - [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha status
   reconciliation and remaining hardening work (see `TODO.md` 2026-09-14).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
@@ -106,39 +106,46 @@ repository snapshot documentation below.
 
 ## Repository structure
 
-`bitty-docs` separates shared cross-project governance from per-project
-documentation:
+`bitty-docs` is the aggregator and shared-governance repository for the Bitty
+ecosystem. Shared cross-project governance lives in the top-level directories;
+project documentation lives in three project repositories mounted here as Git
+submodules at the repository root:
 
-- **Shared governance** stays in the existing top-level directories:
-  `decisions/` (ADRs and the single global open-question register),
+| Submodule         | Repository                                                                   | Owns                                                                                                                   |
+| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `bitty-terminal/` | [bitty-terminal-docs](https://github.com/bitty-terminal/bitty-terminal-docs) | Terminal platform: architecture, specifications, interfaces, product, user guide, and the rest of the terminal corpus. |
+| `bitty-ai/`       | [bitty-ai-docs](https://github.com/bitty-terminal/bitty-ai-docs)             | AI core: AI architecture, IPC and Agent RFC, Browser and Agent panel pre-study.                                        |
+| `bitty-plugins/`  | [bitty-plugins-docs](https://github.com/bitty-terminal/bitty-plugins-docs)   | Plugin platform, SDK, lifecycle, package, isolation, and per-plugin content.                                           |
+
+Shared governance stays in the top-level directories:
+
+- `decisions/` (ADRs and the single global open-question register),
   `security/`, `development/`, `sources/`, `findings/`, `reviews/`,
   `handoff/`, `project/`, `roadmap/`, and `releases/`.
-- **Per-project content** lives under
-  [`docs/projects/`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/README.md):
-  `bitty/` for the terminal platform, `bitty-ai/` for the independent AI core,
-  and `plugins/` for per-plugin documentation.
 
-`docs/project/` (singular) remains the shared project-state and
-technology-governance area; `docs/projects/` (plural) is the per-project
-documentation partition.
+The [project documentation routing page](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/README.md)
+indexes the submodule mounts. Project content is mounted into the owning code
+repositories at `<code-repo>/docs` (for example `bitty/docs`,
+`bitty-ai/docs`, or `bitty-plugins/<plugin>/docs`), which consume the same
+repository content at the pinned revision.
 
 Routing rules:
 
-- New project-specific documents go under `docs/projects/<project>/`.
+- New project-specific documents go to the owning project documentation
+  repository, not to this repository.
 - Cross-project contracts, registers, policies, and the security corpus stay
   in the shared top-level directories; project pages link to them instead of
   copying them.
 - Open-question and ADR/RFC numbering stay global; the single
   [open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md)
   owns every OQ.
-- Each plugin gets `docs/projects/plugins/<plugin>/` with the standard page set
-  (status, design, schemas and contracts, evidence and links) defined by the
-  [documentation workflow](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md).
+- Each submodule pointer pins an exact project-docs revision; update a pointer
+  in a scoped review when the owning repository lands new content (see
+  [submodule pointer updates](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md#submodule-pointer-updates)).
 
-Phase 1 added this partition, its index pages, and its skeletons. Phase 2
-(CTX-0185) migrated the terminal-platform documents into `docs/projects/bitty/`
-with rewritten links and preserved publication status; Phase 3 lands
-`bitty-ai/` and per-plugin content as their owning repositories produce it.
+Phases 1 and 2 added and populated the local `docs/projects/` partition. The
+final model removed that duplicated content and replaced it with the three
+root submodules pinned to each repository's merged `main`.
 
 ## Documentation system
 
@@ -156,8 +163,10 @@ OQ-023, 2026-08-29) and Governance RFC (OQ-024, 2026-08-29) with pinned
 `bitty-docs` revision consumption (`sync:docs --pin`). A future independent
 integration must consume only eligible documents from an immutable pinned
 revision and must present canonical content without copying specifications.
-The ownership, validation, link, redirect, and cross-repository rules live in
-the
+With project content in submodules, pinned-revision consumption must also
+resolve the aggregator's recorded submodule pointers; the loader update is a
+website follow-up, not yet implemented. The ownership, validation, link,
+redirect, and cross-repository rules live in the
 [website content contract](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/website-content-contract.md).
 
 ## CarryCtx snapshot publication
@@ -194,7 +203,7 @@ for crates):
   [open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) as of 2026-09-14.
 - **Candidate** / **Draft**: a proposal retained for evaluation, not a decision;
   5 `Draft` specs remain (Status/Input/Text vs AI Arch plus Plugin Reuse — see
-  `docs/projects/bitty/specifications/README.md` prioritization).
+  `bitty-terminal/specifications/README.md` prioritization).
 - **Experimental Implementation**: code exists at `c0aadd2`/`7e3104d`/`a8735d0`
   as reviewable evidence (one window/PTY/view, `winit`/`wgpu`, bounded reply
   loop, dogfood plugins) but not yet `Accepted`/`Verified`; do not cite as

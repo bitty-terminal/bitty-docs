@@ -10,8 +10,14 @@ const CANONICAL_FILES = [
   "docs/README.md",
   "docs/security/risk-register.md",
   "docs/security/evidence-matrix.md",
-  "docs/projects/bitty/product/release-ladder.md",
+  "bitty-terminal/product/release-ladder.md",
 ];
+
+// Project documentation lives in submodule repositories. Their canonical
+// summaries are validated when the submodule is checked out and skipped
+// otherwise, so `just check` passes with and without initialized submodules;
+// CI initializes them recursively.
+const SUBMODULE_FILES = new Set(["bitty-terminal/product/release-ladder.md"]);
 
 function fail(message) {
   console.error(`error: ${message}`);
@@ -266,6 +272,7 @@ function validateSnapshot(data) {
 
 async function checkCanonicalSummaries(data) {
   const failures = [];
+  let checked = 0;
   const requiredTokens = [
     data.maturity.label,
     data.implementation.short,
@@ -281,9 +288,14 @@ async function checkCanonicalSummaries(data) {
     try {
       content = await readFile(path, "utf8");
     } catch {
+      if (SUBMODULE_FILES.has(rel)) {
+        console.log(`skipped ${rel}: project docs submodule not initialized`);
+        continue;
+      }
       failures.push(`${rel}: cannot read canonical file`);
       continue;
     }
+    checked += 1;
 
     for (const token of requiredTokens) {
       if (!content.includes(token)) {
@@ -325,7 +337,7 @@ async function checkCanonicalSummaries(data) {
     }
   }
 
-  return failures;
+  return { failures, checked };
 }
 
 function generateSummary(data) {
@@ -381,10 +393,10 @@ async function main() {
       console.error("self-test: generated summary missing expected tokens");
       process.exit(1);
     }
-    const canonicalFailures = await checkCanonicalSummaries(data);
-    if (canonicalFailures.length) {
+    const canonical = await checkCanonicalSummaries(data);
+    if (canonical.failures.length) {
       console.error("self-test: canonical summaries drift");
-      for (const f of canonicalFailures) console.error(`  - ${f}`);
+      for (const f of canonical.failures) console.error(`  - ${f}`);
       process.exit(1);
     }
     // Validate fixtures deterministically: valid must pass, invalid must fail
@@ -424,22 +436,22 @@ async function main() {
     process.exitCode = 1;
   }
 
-  const canonicalFailures = await checkCanonicalSummaries(data);
-  if (canonicalFailures.length) {
-    for (const f of canonicalFailures)
+  const canonical = await checkCanonicalSummaries(data);
+  if (canonical.failures.length) {
+    for (const f of canonical.failures)
       console.error(`error: canonical summary: ${f}`);
     process.exitCode = 1;
   }
 
   if (process.exitCode) {
     console.error(
-      `\nChecked snapshot at docs/project/project-state.json and ${CANONICAL_FILES.length} canonical files`,
+      `\nChecked snapshot at docs/project/project-state.json and ${canonical.checked} canonical files`,
     );
     process.exit(process.exitCode);
   }
 
   console.log(
-    `Validated snapshot ${data.snapshot_date} at ${data.implementation.short} and ${CANONICAL_FILES.length} canonical summaries without drift`,
+    `Validated snapshot ${data.snapshot_date} at ${data.implementation.short} and ${canonical.checked} canonical summaries without drift`,
   );
 }
 

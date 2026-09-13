@@ -19,7 +19,7 @@ per RS-1..RS-7 and independent review; `R-004` remains
 `Open` at `7a4ee41` (audit 2026-08-31); all other rows remain `Open` because
 implementation is `Implemented` (headless hardening through `bea338d`)
 plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
-not yet `Verified` per [risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md)
+not yet `Verified` per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
 RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
 (spec) and `Open -> Mitigated -> Accepted` (risk) and
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
@@ -124,7 +124,7 @@ soak point: 16 crates, ~808 headless soaking tests (904 `cargo test
 | R-021 | P0-AC-010                       | `bitty-rich` markdown-to-constrained-AST/scene pipeline: `rich-presentation.md` `RichBlock::Markdown` -> `Scene` semantic-zone no `WebView` scripts, `hyperlink.rs` + `image.rs` shared `resource/URI` deny-by-default loader reusing P0-AC-005, `RichCanvas` bounded `SceneItem` count + `Selection` zone clipping                                                                                                                                                                                                                                                                                                                                                                                                                         | Render pipeline review `no-script-execution` vector test + constrained-AST only path assert, local-resource loader reuse tests share policy with R-003 negative suite                                                                                                                                                                                                                                                                                                                                                                                                 | `cargo test -p bitty-rich`, `just check`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Hostile Markdown embedding `script`/`HTML`/`local-resource` references rendered inert constrained scene; no WebView script execution path `rg -n script` audit zero in render path                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | pending manual-audit `rich-constrained-ast-2026-xx`                                                                                                                                                                                                                                        | Open                                                                                                             |
 | R-022 | P0-AC-027                       | `bitty-package` supply chain: `integrity::verify_pipeline` 7-stage ordered enum `VerificationStage` fan-in, `package-lifecycle.md` no `postinstall` install-time execution, `install` is download + `sha256_hex` H-A + manifest validation + `verify_manifest_hash_binding` H-B + content-addressed store `verify_store_commit` H-C with zero code exec, first execution only after `grant` authorization                                                                                                                                                                                                                                                                                                                                   | Instrumented install zero plugin/script invocation, hostile-manifest fixture with hooks executes nothing, `verify_pipeline` before `Generation::new` gate                                                                                                                                                                                                                                                                                                                                                                                                             | `cargo test -p bitty-package`, `just check`, `cargo clippy`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `postinstall` hook presence adversarial: tampered manifest declaring hook `store` verifies but `activate` still requires `grant`; no package-supplied code executed at `verify_pipeline` stage                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | pending auditor `install-no-exec-2026-xx`                                                                                                                                                                                                                                                  | Open                                                                                                             |
 
-<!-- markdownlint-enable MD013 MD018 MD038 MD056 -->
+<!-- markdownlint-enable MD018 MD038 MD056 -->
 
 ## FIND-0002 remediation wave (`Implemented`-only, 2026-09-07)
 
@@ -153,11 +153,11 @@ in the ledger only and carry no matrix row.
 | R-001        | P0-AC-001, P0-AC-002            | `38973a0` (`CTX-0205`, PR #355/#356) cursor-right and tab-forward loops break at the right margin; `2d36084` (`CTX-0208`, PR #360) zero-width and combining scalars attach to a bounded per-cell buffer (the text-rendering contract already specified combining support, so the code caught up). Parser bound/resynchronization contract unchanged. | Open  |
 | R-007        | P0-AC-013, P0-AC-014, P0-AC-015 | `58e488a` (`CTX-0210`, PR #362) fuel capped per `Executor` step slice rather than only at slice boundaries. Per-plugin VM, queue-budget, and attribution contract unchanged.                                                                                                                                                                         | Open  |
 
-<!-- markdownlint-enable MD013 MD018 MD038 MD056 -->
+<!-- markdownlint-enable MD018 MD038 MD056 -->
 
 ## Review gates and lifecycle
 
-Per [risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md) RS-1..RS-7:
+Per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) RS-1..RS-7:
 
 - `Open -> Mitigated` requires, for the risk's linked P0-AC set, all of
   unit/integration green, adversarial corpus zero crashes/hangs, negative/limit
@@ -224,7 +224,7 @@ Per [risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md) R
   `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139) per
   RS-1..RS-7.
 
-<!-- markdownlint-enable MD013 MD018 MD038 MD056 -->
+<!-- markdownlint-enable MD018 MD038 MD056 -->
 
 ## References
 
@@ -232,9 +232,9 @@ Per [risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md) R
 - [Threat model](threat-model.md)
 - [Risk register](risk-register.md)
 - [P0 acceptance criteria](p0-acceptance-criteria.md)
-- [Risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md)
-- [Isolation resource RFC](../projects/bitty/specifications/isolation-resource-rfc.md)
-- [Rich presentation RFC](../projects/bitty/specifications/rich-presentation-rfc.md)
-- [IPC and Agent RFC](../projects/bitty/specifications/ipc-agent-rfc.md)
-- [Package lifecycle RFC](../projects/bitty/specifications/package-lifecycle-rfc.md)
+- [Risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
+- [Isolation resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/isolation-resource-rfc.md)
+- [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md)
+- [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md)
+- [Package lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md)
 - [P0 review checklist](../reviews/p0-review-checklist.md)

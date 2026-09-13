@@ -1,0 +1,9 @@
+[submodule "bitty-terminal"]
+	path = bitty-terminal
+	url = https://github.com/bitty-terminal/bitty-terminal-docs
+[submodule "bitty-ai"]
+	path = bitty-ai
+	url = https://github.com/bitty-terminal/bitty-ai-docs
+[submodule "bitty-plugins"]
+	path = bitty-plugins
+	url = https://github.com/bitty-terminal/bitty-plugins-docs

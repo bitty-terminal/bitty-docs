@@ -10,19 +10,21 @@
 
 ## Repository structure and routing
 
-- Shared cross-project governance stays in the existing top-level directories:
+- Shared cross-project governance stays in the top-level directories:
   `decisions/`, `security/`, `development/`, `sources/`, `findings/`,
   `reviews/`, `handoff/`, `project/`, `roadmap/`, and `releases/`.
-- Per-project documentation lives under `docs/projects/<project>/`: `bitty/`
-  (terminal platform), `bitty-ai/` (independent AI core), and `plugins/`;
-  `docs/project/` (singular) stays shared project-state governance.
-- New project-specific docs go under `docs/projects/<project>/`; cross-project
-  contracts and registers stay in shared directories; open-question and
-  ADR/RFC numbering stay global; plugins use the standard page set (status,
-  design, schemas and contracts, evidence and links) under
-  `docs/projects/plugins/<plugin>/`.
-- The terminal-platform documents migrated into `docs/projects/bitty/` in
-  Phase 2 (CTX-0185); `bitty-ai/` and per-plugin content land in later phases.
+- Project documentation lives in three root Git submodules: `bitty-terminal/`
+  (bitty-terminal-docs), `bitty-ai/` (bitty-ai-docs), and `bitty-plugins/`
+  (bitty-plugins-docs), each pinned to the owning repository's merged `main`.
+  Never edit submodule content here; change the owning repository and bump the
+  pointer in a scoped review. Materialize with `git submodule update --init`;
+  never update pointers as a side effect of an unrelated task.
+- Project content is mounted into code repositories at `<code-repo>/docs`.
+- New project-specific documents go to the owning project docs repository;
+  `docs/projects/README.md` routes to the submodule mounts.
+- Cross-project contracts and registers stay in the shared directories;
+  open-question and ADR/RFC numbering stay global; plugins use the standard
+  page set (`docs/plugins/<plugin>/`) in bitty-plugins-docs.
 
 ## Current phase
 
@@ -83,7 +85,6 @@ allowed exception; do not invent a branch, commit, or PR that cannot yet exist.
 
 - Before pushing any branch: run the repository justfile gates locally and ensure 0 issues: `just check` (fmt-check + markdownlint + links + metadata + language + agents + hygiene + actionlint) and validate `.github/workflows/ci.yml` with `act -n` (or `act --dry-run`). All must pass. `act` only checks workflow syntax, not runtime, so `just check` must still pass locally; do not rely on `act` alone. Never push with known local failures. No cargo or CodeQL gate is required for this Markdown-only repository; local `just check` and the Docs quality workflow are the merge gates.
 - Also run `actionlint -color` and `act -n -W .github/workflows/ci.yml` explicitly when the Docs workflow changes; install `act` if missing (`which act` else note absence) but do not skip `just check`. CodeQL is intentionally not configured for this documentation-only repository.
-- Verify no `TODO/FIXME` and frontmatter/links valid for docs.
 
 ### Remote monitoring and merge (bitty-docs)
 
@@ -145,5 +146,4 @@ allowed exception; do not invent a branch, commit, or PR that cannot yet exist.
   artifacts.
 - Run repository-specific formatting, link, schema, and test gates in proportion
   to the change; record exact evidence in CarryCtx.
-- Report changed files, verification, unresolved risks, and remaining work. A
-  partial or pre-feature check is not evidence that the broader project is done.
+- Report changed files, verification, unresolved risks, and remaining work; a partial or pre-feature check is not evidence that the broader project is done.
