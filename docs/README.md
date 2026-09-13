@@ -114,16 +114,17 @@ precedence over source summaries and non-security design suggestions.
 
 ## Decisions, work, and provenance
 
-| Document                                                                                             | Purpose                                                                                |
-| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [Decision register](decisions/index.md)                                                              | Accepted directions, normative contracts, verified facts, and ADR/RFC queue.           |
-| [Open-question register](decisions/open-questions.md)                                                | Unresolved choices with a canonical owner document and next artifact.                  |
-| [Architecture decision records](decisions/adrs/README.md)                                            | Catalog and maintenance rules for durable accepted architecture decisions.             |
-| [ADR 0001 - Repository Bootstrap Baseline](decisions/adrs/ADR-0001-repository-bootstrap-baseline.md) | Accepted minimal Core and website initialization boundary without product behavior.    |
-| [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions; currently an explicit empty state.        |
-| [Findings](findings/README.md)                                                                       | Durable reviewed evidence; internal and excluded from website publication.             |
-| [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents. |
-| [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-08, `29772a3`).            |
+| Document                                                                                             | Purpose                                                                                 |
+| ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Decision register](decisions/index.md)                                                              | Accepted directions, normative contracts, verified facts, and ADR/RFC queue.            |
+| [Open-question register](decisions/open-questions.md)                                                | Unresolved choices with a canonical owner document and next artifact.                   |
+| [Architecture decision records](decisions/adrs/README.md)                                            | Catalog and maintenance rules for durable accepted architecture decisions.              |
+| [ADR 0001 - Repository Bootstrap Baseline](decisions/adrs/ADR-0001-repository-bootstrap-baseline.md) | Accepted minimal Core and website initialization boundary without product behavior.     |
+| [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions; currently an explicit empty state.         |
+| [Findings](findings/README.md)                                                                       | Durable reviewed evidence; internal and excluded from website publication.              |
+| [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents.  |
+| [Research notes coverage](sources/research-notes-coverage.md)                                        | Traceability from the twelve local research notes (`001`-`012`) to canonical documents. |
+| [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-08, `29772a3`).             |
 
 ## Interpretation rules
 
