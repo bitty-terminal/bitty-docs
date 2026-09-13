@@ -10,7 +10,7 @@ const CANONICAL_FILES = [
   "docs/README.md",
   "docs/security/risk-register.md",
   "docs/security/evidence-matrix.md",
-  "docs/product/release-ladder.md",
+  "docs/projects/bitty/product/release-ladder.md",
 ];
 
 function fail(message) {

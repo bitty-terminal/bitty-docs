@@ -17,11 +17,12 @@
   (terminal platform), `bitty-ai/` (independent AI core), and `plugins/`;
   `docs/project/` (singular) stays shared project-state governance.
 - New project-specific docs go under `docs/projects/<project>/`; cross-project
-  contracts and registers stay in shared directories; OQ numbering stays
-  global; plugins use the standard page set (status, design, schemas and
-  contracts, evidence and links) under `docs/projects/plugins/<plugin>/`.
-- No existing document has moved yet; a later, scoped phase migrates the
-  terminal-platform documents into `docs/projects/bitty/`.
+  contracts and registers stay in shared directories; open-question and
+  ADR/RFC numbering stay global; plugins use the standard page set (status,
+  design, schemas and contracts, evidence and links) under
+  `docs/projects/plugins/<plugin>/`.
+- The terminal-platform documents migrated into `docs/projects/bitty/` in
+  Phase 2 (CTX-0185); `bitty-ai/` and per-plugin content land in later phases.
 
 ## Current phase
 

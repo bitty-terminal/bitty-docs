@@ -63,22 +63,23 @@ Routing rules:
 2. Cross-project contracts, registers, policies, and the security corpus stay
    in the shared top-level directories; a project tree links to them instead
    of copying them.
-3. Open-question numbering and ADR/RFC numbering stay global.
+3. Open-question and ADR/RFC numbering stay global; the single
+   [open-question register](../decisions/open-questions.md) owns every OQ.
 4. Each plugin gets `docs/projects/plugins/<plugin>/` with the standard page
    set defined below.
 
 ### Migration plan
 
-Phase 1 adds the partition, index pages, and skeletons only; no existing file
-moves. Phase 2 migrates the existing terminal-platform documents
+Phase 1 added the partition, index pages, and skeletons only; no existing file
+moved. Phase 2 (CTX-0185) migrated the existing terminal-platform documents
 (`architecture/`, `specifications/`, `configuration/`, `product/`,
 `interfaces/`, `user-guide/`, `tutorials/`, `how-to/`, `reference/`,
 `examples/`, `extensibility/`, `requirements/`, `troubleshooting/`,
 `migrations/`) into `docs/projects/bitty/` with `git mv`, rewriting relative
 and absolute links and preserving each document's `website_publish` flag plus
-the deprecation and redirect policy in this document. Phase 2 also updates
+the deprecation and redirect policy in this document. It also updated
 path-sensitive consumers (navigation indexes, the project-state snapshot and
-its canonical summary checks) and keeps `just check` green. Phase 3 lands
+its canonical summary checks) and kept `just check` green. Phase 3 lands
 `bitty-ai/` and per-plugin content as their owning repositories produce it.
 
 ## Per-plugin documentation page set
@@ -259,11 +260,11 @@ CarryCtx task with independent review, CI green (`just check` includes
 provenance record. The snapshot records state; it must not auto-accept risks
 or replace CarryCtx and security-auditor review. Risk state transitions still
 require the per-risk RS-1..RS-7 checklist and auditor sign-off per the
-[risk evidence RFC](../specifications/risk-evidence-rfc.md).
+[risk evidence RFC](../projects/bitty/specifications/risk-evidence-rfc.md).
 
 Canonical human-readable summaries in `README.md`, `TODO.md`,
 `docs/README.md`, `docs/security/risk-register.md`,
-`docs/security/evidence-matrix.md`, and `docs/product/release-ladder.md` are
+`docs/security/evidence-matrix.md`, and `docs/projects/bitty/product/release-ladder.md` are
 derived from the snapshot and validated deterministically by
 `bun .github/scripts/check-state.mjs` (also `just state` and CI). Divergence
 is a defect. Test counts remain in audit and implementation evidence and are
