@@ -1,6 +1,6 @@
 ---
 title: Semantic Terminal RFC
-description: Semantic command blocks, folding, Hint Mode, command composer status (P1-P5 Implemented-only, P6 proposal) plus cross-panel hint API
+description: Semantic command blocks, folding, Hint Mode, command composer status (P1-P5 Implemented-only, P6/P7 proposal) plus cross-panel hint API
 category: specifications
 audience: contributor
 document_type: specification
@@ -19,8 +19,8 @@ sidebar_order: 29
 > origin `main` at `7048139` via `merge-base --is-ancestor`. Implemented-only
 > evidence authorizes no further implementation, closes no open question
 > (OQ-S1..S7 stay open), weakens no normative control, moves no risk, and
-> implies nothing `Verified`/`Compatible`/`Release-ready`. P6 plus the
-> packaging sketch remain proposal-only.
+> implies nothing `Verified`/`Compatible`/`Release-ready`. P6, the P7 Beacon
+> candidate, and the packaging sketch remain proposal-only.
 
 ## Problem
 
@@ -88,7 +88,8 @@ untouched.
 The recommended order is P1 through P6. Each step is useful alone; no step
 requires the later ones. As of CTX-0131, P1 through P5 are Implemented-only
 evidence in `bitty` origin `main` at `7048139` (see each section); P6 stays
-proposal-only.
+proposal-only, and P7 is the candidate extension recorded below (also
+proposal-only).
 
 ### P1: CommandBlock semantic anchoring (Implemented-only)
 
@@ -224,8 +225,63 @@ bitty.hints.register({
 })
 ```
 
-P6 is deliberately last: it is only meaningful once P1 anchors and the P3
-engine exist.
+P6 closes the P1-P6 route: it is only meaningful once P1 anchors and the P3
+engine exist. The candidate P7 below builds on P3 and P6 and stays
+proposal-only.
+
+### P7: Bitty Beacon spatial action engine (candidate)
+
+> Candidate-only as of 2026-09-13: no merged implementation exists, and this
+> subsection claims nothing beyond the P1-P5 Implemented-only slices above.
+> Bitty Beacon is a working name recorded from the local research note
+> `016.md`; the note is provenance, not evidence. Tracked as
+> [OQ-089](../decisions/open-questions.md).
+
+P3 labels addressable targets inside the visible grid; P6 generalizes target
+registration. The candidate P7 direction applies the same engine to the whole
+tiled workspace ([Workspace Compositor](workspace-compositor.md)): pressing
+the Leader enters a short-lived action mode that labels panels, workspaces,
+command blocks, interactive controls, and user-registered script actions, and
+typing a label performs the associated action.
+
+- **Action matrix (candidate).** Four action families over one label engine:
+  1. _Spatial focus_: label every panel and workspace and switch focus with
+     one keystroke, complementing the shipped `alt+h/j/k/l` spatial chords.
+  2. _Semantic output folding_: label visible command blocks (P1 anchors, P2
+     fold state) and toggle fold/expand in place, reusing the P3 target model.
+  3. _Focus routing_: label interactive controls (AI composer, search and
+     filter fields, forms) and route focus plus IME there directly, reusing
+     the deterministic focus routing in the
+     [Panel Runtime Pre-Study](panel-runtime-pre-study.md).
+  4. _Script and workflow dispatch_: Lua registers named actions with a
+     description and callback, and their labels participate in the same
+     allocation. Registration grants no authority: the callback runs under the
+     registering plugin's existing capabilities and consent, and a dispatch
+     that maps to a process or terminal operation still passes the accepted
+     scopes and the candidate command audit
+     ([AI Architecture](ai-architecture.md), OQ-087).
+- **Label allocation (candidate).** Single-key labels are the default while
+  the target count is small; beyond a threshold the allocator extends to
+  two-character labels. Labels are drawn from a handedness-scoped pool (left
+  pool first by default) so one hand can type every label without leaving the
+  home region, and overflow never crosses hands. The P3 bounds (candidate: at
+  most 256 targets and 8 KiB of label text per frame) apply unchanged.
+- **Mechanism and policy.** Rust owns capture, target scan, label allocation,
+  overlay rendering, and dispatch routing; Lua owns which targets register and
+  what their callbacks do. The mode is a command namespace, not a new input
+  path: `Esc`, the idle timeout, and keys that are not labels fall back to
+  normal terminal input, and the mode never runs on the input hot path
+  ([Input and Pointer Contract](input-pointer-rfc.md),
+  [Performance Budget RFC](performance-budget-rfc.md) PB-4).
+- **Presentation.** Badges are one ephemeral annotation layer over the scene,
+  not one overlay per target, and obey the bounded overlay rules of the
+  [Panel Runtime Pre-Study](panel-runtime-pre-study.md); they mutate no
+  Terminal Truth and grant no capability.
+
+Open until OQ-089 resolves: the exact action taxonomy, whether focus routing
+covers only Bitty-owned controls or also terminal content, the label pool and
+handoff rules, the script-dispatch authority model, and the configuration
+surface next to the OQ-088 Leader strategy.
 
 ## Proposed packaging
 
