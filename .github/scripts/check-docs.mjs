@@ -22,6 +22,11 @@ const WALK_IGNORES = new Set([
   "_site",
   "target",
   "coverage",
+  // Project documentation is owned by the submodule repositories and checked
+  // by their own CI; the aggregator only checks its shared governance corpus.
+  "bitty-terminal",
+  "bitty-ai",
+  "bitty-plugins",
 ]);
 const POLLUTION_DIRECTORIES = new Set([
   ".trash",

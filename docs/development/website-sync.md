@@ -12,7 +12,7 @@ sidebar_order: 25
 # Website Sync Contract
 
 This guide translates the accepted
-[Website Delivery RFC](../projects/bitty/specifications/website-delivery-rfc.md)
+[Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md)
 and [Website content contract](../project/website-content-contract.md)
 into the developer command surface. It does not invent product code,
 does not authorize shipped behavior, and does not weaken the normative
@@ -23,10 +23,19 @@ consumes the pinned revision. This guide records the developer command
 surface and the operator procedure; the canonical prose remains in this
 repository and is never hand-copied into the website.
 
+> **Repository split (2026-09-14).** Shared governance prose remains in this
+> repository; project content moved to `bitty-terminal-docs`, `bitty-ai-docs`,
+> and `bitty-plugins-docs`, mounted here as root submodules pinned to their
+> merged `main`. The pinned-revision consumption described below must
+> additionally resolve the aggregator's recorded submodule pointers; that
+> loader update is a follow-up and this guide does not claim it is
+> implemented.
+
 ## Source of truth
 
-`bitty-docs` owns canonical prose, metadata, source paths, and internal
-links. `bitty-website` is a static presentation shell. It must not fork,
+The owning repository owns canonical prose: `bitty-docs` for shared governance
+and metadata, and the project documentation repositories for project content.
+`bitty-website` is a static presentation shell. It must not fork,
 copy-paste, or silently rewrite a specification. Any file outside
 `bitty-website/src/content/docs/` that is a verbatim copy of a docs body
 is a non-duplication violation (LD-6) and must be removed in favor of the

@@ -40,7 +40,7 @@ project-state refresh plus refresh automation (CTX-0180).
       and every recorded route item of the second source, whose phase plan,
       version ladder, and daemon staging remain unaccepted draft deposits
       ([coverage matrix](docs/sources/chatgpt-share-coverage.md),
-      [draft proposals](docs/projects/bitty/product/proposed-delivery-sequence.md)).
+      [draft proposals](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md)).
 - [x] Add corpus navigation, decision status, and open-question registers.
 - [x] Define user, contributor, reference, and website-consumption entry points
       without inventing pre-release product behavior.
@@ -151,7 +151,7 @@ project-state refresh plus refresh automation (CTX-0180).
 ## Candidate vertical slice acceptance — Draft spec + Experimental Implementation (CTX-0109 draft, CTX-0095/0098 Implemented)
 
 - [x] Draft single-window vertical slice acceptance plan
-      ([Single-Window Vertical Slice Acceptance Plan](docs/projects/bitty/product/vertical-slice-acceptance.md),
+      ([Single-Window Vertical Slice Acceptance Plan](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/vertical-slice-acceptance.md),
       CTX-0109, draft, depends on CTX-0107 Input/Pointer and CTX-0108
       Text/Rendering): one process/window/workspace/terminal, end-to-end
       `shell -> PTY -> VT -> state -> text/atlas -> GPU/window -> input -> PTY`,
@@ -185,7 +185,7 @@ check` 0). `bitty` `a8735d0` closes PTY reply loop (`Runtime::write_replies`
 ## Candidate registry and view lifecycle — Accepted spec + Experimental Implementation (CTX-0110 draft, CTX-0117 accepted, c0aadd2/a8735d0)
 
 - [x] Draft TerminalRegistry and View lifecycle contract
-      ([TerminalRegistry and View Lifecycle Contract](docs/projects/bitty/specifications/terminal-registry-view-lifecycle-rfc.md),
+      ([TerminalRegistry and View Lifecycle Contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/terminal-registry-view-lifecycle-rfc.md),
       CTX-0110, draft, depends on CTX-0109, reconciles with ADR 0003, Terminal
       State, Workspace Compositor, Input/Pointer, Text/Rendering, and Vertical
       Slice): `TerminalId` vs `ViewId` strict separation, `RuntimeId` vs
@@ -214,7 +214,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 ## Workspace Compositor — Accepted spec (CTX-0118, no experimental implementation)
 
 - [x] Draft Workspace Compositor Specification
-      ([Workspace Compositor Specification](docs/projects/bitty/specifications/workspace-compositor.md),
+      ([Workspace Compositor Specification](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/workspace-compositor.md),
       draft, Hyprland-inspired tiling H/V `LayoutTree`, View types
       `Terminal`/`Rich`/`Browser`, Core-owned `gaps_in`/`gaps_out`/`border`/`radius`,
       `LayoutProvider` `dwindle`/`master`/`grid`, drag/resize/move/scratchpad)
@@ -230,12 +230,12 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Panel Runtime and Event Bus — Draft research pre-study (CTX-0119, P2)
 
-- [x] Survey Panel Runtime/Event Bus ([Pre-Study](docs/projects/bitty/specifications/panel-runtime-pre-study.md), `Draft` no impl, CTX-0119 depends CTX-0118): lifecycle `PanelId` vs `ViewId`/`TerminalId` with generation, command `owner.name:command`, overlay `4+1`, focus MRU no Lua hot path, bus `owner.name:topic` `8 KiB`/`32`/`64`/`1024`/`8192` `DropOldest`, isolation `panel.*`; reconciled with `6f30c2f`/`c3a2928`; bounded PR-1..PR-12, typed errors, exclusions deferred; `sidebar_order 27`, indexes updated.
+- [x] Survey Panel Runtime/Event Bus ([Pre-Study](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/panel-runtime-pre-study.md), `Draft` no impl, CTX-0119 depends CTX-0118): lifecycle `PanelId` vs `ViewId`/`TerminalId` with generation, command `owner.name:command`, overlay `4+1`, focus MRU no Lua hot path, bus `owner.name:topic` `8 KiB`/`32`/`64`/`1024`/`8192` `DropOldest`, isolation `panel.*`; reconciled with `6f30c2f`/`c3a2928`; bounded PR-1..PR-12, typed errors, exclusions deferred; `sidebar_order 27`, indexes updated.
 - [ ] Independent docs-reviewer review; research until future Panel RFC.
 
 ## Browser and Agent Panel Integration — Draft research pre-study (CTX-0120, P2)
 
-- [x] Survey Browser and Agent via Panel Runtime ([Pre-Study](docs/projects/bitty/specifications/browser-agent-pre-study.md), `Draft` no impl, CTX-0120 depends CTX-0119): WebView via `View Browser` plus `Panel` host, MCP via Tool Bus `256 KiB` `8 KiB` `32` `64`/`1024`/`8192` `DropOldest`, Agent memory `32 KiB` `64`/`2 MiB` `32`/`64 KiB`, isolation `browser.*` `agent.*` `mcp.*` plus first-party matrix `5` bundled-disabled plus `browser` `agent` candidate-not-bundled; reconciled with Panel Runtime `9032d1e` / requested `05e8803` PR-1..PR-12 and Project plugin `bitty-terminal.project`; bounded BA-1..BA-12, typed failure, exclusions deferred; `sidebar_order 28`, indexes updated.
+- [x] Survey Browser and Agent via Panel Runtime ([Pre-Study](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/browser-agent-pre-study.md), `Draft` no impl, CTX-0120 depends CTX-0119): WebView via `View Browser` plus `Panel` host, MCP via Tool Bus `256 KiB` `8 KiB` `32` `64`/`1024`/`8192` `DropOldest`, Agent memory `32 KiB` `64`/`2 MiB` `32`/`64 KiB`, isolation `browser.*` `agent.*` `mcp.*` plus first-party matrix `5` bundled-disabled plus `browser` `agent` candidate-not-bundled; reconciled with Panel Runtime `9032d1e` / requested `05e8803` PR-1..PR-12 and Project plugin `bitty-terminal.project`; bounded BA-1..BA-12, typed failure, exclusions deferred; `sidebar_order 28`, indexes updated.
 - [ ] Independent docs-reviewer review; research until future Browser and Agent RFC.
 
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
@@ -274,12 +274,12 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 -> Compatible`); update `TODO.md` to mark CTX-0095/0096/0098 completed as
       experimental, keep spec `Draft` vs code `Experimental Implementation`
       distinct; update `docs/roadmap/now-next-later.md`, `docs/README.md`,
-      `README.md`, `docs/projects/bitty/product/vertical-slice-acceptance.md`,
-      `docs/projects/bitty/specifications/input-pointer-rfc.md`,
-      `docs/projects/bitty/specifications/text-rendering-rfc.md`,
-      `docs/projects/bitty/specifications/terminal-registry-view-lifecycle-rfc.md` with
+      `README.md`, `bitty-terminal/product/vertical-slice-acceptance.md`,
+      `bitty-terminal/specifications/input-pointer-rfc.md`,
+      `bitty-terminal/specifications/text-rendering-rfc.md`,
+      `bitty-terminal/specifications/terminal-registry-view-lifecycle-rfc.md` with
       implementation evidence links and correct `Draft`/`Experimental`
-      wording; update `docs/projects/bitty/specifications/README.md` prioritization for 7
+      wording; update `bitty-terminal/specifications/README.md` prioritization for 7
       `Draft`s (Workspace Compositor/Status/Input/Text/Registry vs AI Arch);
       English only, flat frontmatter, `just check` + `actionlint` + `act -n` +
       `bun .github/scripts/check-state.mjs` pass, `git diff --check` 0.

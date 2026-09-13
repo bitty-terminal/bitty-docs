@@ -10,6 +10,9 @@
   "ignores": [
     ".git",
     ".worktrees",
+    "bitty-terminal",
+    "bitty-ai",
+    "bitty-plugins",
     ".trash",
     "tmp",
     "node_modules",

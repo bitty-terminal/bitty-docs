@@ -12,20 +12,27 @@ sidebar_order: 50
 # Website content contract
 
 This contract defines how the independent `bitty-website` repository consumes
-canonical documentation from `bitty-docs`. It defines content ownership and
-validation, not a website theme, deployment platform, or synchronization
-implementation.
+canonical documentation from the Bitty documentation corpus: the shared
+governance corpus in `bitty-docs` and the project documentation repositories
+mounted there as submodules. It defines content ownership and validation, not
+a website theme, deployment platform, or synchronization implementation.
 
 ## Ownership boundary
 
 `bitty-docs` owns:
 
-- canonical documentation prose, metadata, source paths, and internal links;
+- the shared governance prose, metadata, source paths, and internal links;
 - the metadata schema and English-only language policy;
 - document status, publication eligibility, content identity, deprecation, and
-  redirect requirements;
+  redirect requirements for shared governance documents;
 - reviewed changes to architecture, security, reference, user, developer, and
-  governance contracts.
+  governance contracts;
+- the root submodule pointers that record the consumed project documentation
+  revision.
+
+Each project documentation repository (`bitty-terminal-docs`, `bitty-ai-docs`,
+`bitty-plugins-docs`) owns its project prose, metadata, source paths, internal
+links, and move or deprecation decisions under the same workflow.
 
 `bitty-website` owns:
 
@@ -41,15 +48,17 @@ the source document.
 
 ## Pinned input
 
-Every website build that publishes canonical docs must identify an immutable
-`bitty-docs` revision, such as a full commit SHA or immutable release tag. It
-must not publish from an unpinned moving branch. The pinned revision is recorded
-in website build or release evidence so the published corpus is reproducible.
+Every website build that publishes canonical docs must identify immutable
+revisions for `bitty-docs` and for each consumed project documentation
+submodule (the aggregator's recorded gitlinks), such as full commit SHAs or
+immutable release tags. It must not publish from an unpinned moving branch.
+The pinned revisions are recorded in website build or release evidence so the
+published corpus is reproducible.
 
-Only files under `docs/` with `website_publish: true` are eligible for
-publication. A consumer must parse and validate all required frontmatter before
-filtering or rendering; malformed metadata, CJK content, unresolved local links,
-or an unknown enum fails closed.
+Only documents with `website_publish: true` are eligible for publication. A
+consumer must parse and validate all required frontmatter before filtering or
+rendering; malformed metadata, CJK content, unresolved local links, or an
+unknown enum fails closed.
 
 The [Astro content collections guide](https://docs.astro.build/en/guides/content-collections/)
 documents that collections can load Markdown with a shared schema for
@@ -64,8 +73,9 @@ mechanism in `bitty-website`.
 
 - A source-relative documentation path is the default content identity. Any
   public-route mapping must be deterministic and reviewed in both repositories.
-- `bitty-docs` owns internal link targets and the decision that a published
-  content identity moves or is deprecated.
+- Each documentation repository owns its internal link targets and the decision
+  that a published content identity moves or is deprecated; `bitty-docs` owns
+  the submodule pointer record for project content.
 - `bitty-website` owns router configuration and redirect implementation.
 - A move of published content declares the old identity, new identity,
   replacement guidance, and redirect requirement in the docs pull request.
@@ -77,10 +87,12 @@ mechanism in `bitty-website`.
 
 Changes that affect both repositories use linked GitHub Issues or pull requests:
 
-1. The `bitty-docs` change updates content, metadata, links, and redirect
-   requirements and passes repository checks.
-2. The `bitty-website` change references the exact docs revision it consumes
-   and implements presentation or routing changes.
+1. The owning documentation repository updates content, metadata, and links
+   and passes its repository checks; a project content change is then recorded
+   by bumping the submodule pointer in `bitty-docs`.
+2. The `bitty-website` change references the exact `bitty-docs` revision and
+   submodule revisions it consumes and implements presentation or routing
+   changes.
 3. Each pull request links the other and names ordering constraints.
 4. Independent review and CI pass in both repositories before publication.
 5. The website revision pin is advanced only to a reviewed docs revision.
