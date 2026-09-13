@@ -711,20 +711,48 @@ RFC revision of the source, never silent drift here. BG-6 is a design choice and
 BG-7 is inherited from present-path evidence, so neither aliases an `IMG-*`
 limit. All arithmetic is overflow-checked.
 
-| ID   | Dimension                                 | Bound                                     | Reused from           |
-| ---- | ----------------------------------------- | ----------------------------------------- | --------------------- |
-| BG-1 | Max encoded file bytes per image          | `4 MiB`                                   | IMG-1                 |
-| BG-2 | Max decoded dimensions per image          | `4096 x 4096`                             | IMG-2                 |
-| BG-3 | Max decoded bytes per image               | `64 MiB` (`width x height x 4`, checked)  | IMG-3                 |
-| BG-4 | Max aggregate decoded background bytes    | `256 MiB`                                 | IMG-4                 |
-| BG-5 | Max decoded background images resident    | `256`                                     | IMG-5                 |
-| BG-6 | Max resident background images per `View` | `1`                                       | design                |
-| BG-7 | Per-frame background blit budget          | `<= 32` blits, `<= 64 MiB` padded staging | present-path evidence |
+| ID   | Dimension                                 | Bound                                                       | Reused from           |
+| ---- | ----------------------------------------- | ----------------------------------------------------------- | --------------------- |
+| BG-1 | Max encoded file bytes per image          | `4 MiB`                                                     | IMG-1                 |
+| BG-2 | Max decoded dimensions per image          | `4096 x 4096`                                               | IMG-2                 |
+| BG-3 | Max decode peak memory per image          | `64 MiB` (`width x height x peak_bytes_per_pixel`, checked) | IMG-3                 |
+| BG-4 | Max aggregate decoded background bytes    | `256 MiB`                                                   | IMG-4                 |
+| BG-5 | Max decoded background images resident    | `256`                                                       | IMG-5                 |
+| BG-6 | Max resident background images per `View` | `1`                                                         | design                |
+| BG-7 | Per-frame background blit budget          | `<= 32` blits, `<= 64 MiB` padded staging                   | present-path evidence |
 
 BG-4/BG-5 govern a **distinct background cache pool**; it adopts the same
 numeric ceilings as the terminal `ImageStore` but does not consume the terminal
 graphics IMG-4/IMG-5 budget, so a background image can never displace terminal
 graphics. Both pools are charged against the presentation memory budget.
+
+BG-3 is a **peak-memory ceiling**, not a resident-decoded-bytes count. The
+pre-decode charge is the overflow-checked formula
+`width x height x peak_bytes_per_pixel`, with bounded fixed codec overhead
+(the encoded input and row/upsampler scratch) outside the formula. The
+per-format factor follows the decoder the accepted format selects:
+
+| Decode path                                                                                               | `peak_bytes_per_pixel` |
+| --------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Direct RGBA8 output (PNG, baseline JPEG, WebP lossless with alpha)                                        | `4`                    |
+| Full-size decoder scratch (lossy `VP8` without alpha, lossless `VP8L` without alpha, conservative `VP8X`) | `8`                    |
+| Progressive JPEG (SOF2) 4:2:0 or grayscale                                                                | `8`                    |
+| Progressive JPEG 4:4:4                                                                                    | `10`                   |
+| Progressive JPEG with four full-resolution components                                                     | `12`                   |
+| Lossy WebP with alpha (`ALPH` chunk plus lossy `VP8`)                                                     | `11`                   |
+
+Progressive JPEG charges `4 + 2 x ceil(sum(h_i x v_i) / (h_max x v_max))`,
+floored at `8`, from the SOF2 component table. This tightens the accepted set:
+a `4096 x 4096` non-alpha WebP is rejected pre-allocation (largest accepted
+square side `2896`; `3840 x 2160` lossy WebP still fits at about `63.3 MiB`),
+progressive 4:2:0 `2896 x 2896` and 4:4:4 `2590 x 2590` are accepted, and
+lossy-alpha WebP `2469 x 2469` is accepted (`2470 x 2470` is rejected). The
+sniff also fails closed on a `VP8X` chunk that crosses the declared RIFF
+container and on PNG sample depths outside `{1, 2, 4, 8}`; `16`-bit PNG is
+already rejected at sniff. `bitty` PR #656 (merge `af913ee`, CTX-0395,
+`crates/bitty-rich/src/background.rs`) implements the charge and pins the real
+decode peak per accepted subformat in
+`crates/bitty-rich/tests/background_peak_memory.rs`.
 
 ### Pre-allocation rejection and decode path
 
@@ -734,8 +762,9 @@ The load pipeline checks, in order and **before any pixel allocation**:
    resolution (path trust below);
 2. encoded length `<= BG-1`;
 3. image header dimensions parse and satisfy BG-2;
-4. decoded byte estimate `width x height x 4` is overflow-checked and
-   `<= BG-3`;
+4. the peak-memory charge `width x height x peak_bytes_per_pixel` is
+   overflow-checked and `<= BG-3`, using the per-format factor above (bounded
+   fixed codec overhead sits outside the charge);
 5. the container format is one of the accepted static formats and is not
    animated;
 6. cache admission satisfies BG-4/BG-5/BG-6.
@@ -822,7 +851,8 @@ rejected for this contract.
 ### Verification obligations (future, in `bitty`)
 
 An implementation must provide: a format acceptance/rejection matrix; a
-pre-allocation rejection test proving peak memory stays under BG-3; aggregate
+pre-allocation rejection test proving the charged peak memory stays under BG-3
+for every accepted subformat; aggregate
 eviction holding BG-4/BG-5; a path negative matrix (outside roots, symlink
 escape, device/socket/procfs/sysfs/devfs, non-regular files) all denied; fit-mode
 geometry and DPI tests; whole-reload fail-closed rejection; a `--safe` test
@@ -1043,6 +1073,17 @@ no product code ships until `bitty` implements them. It does not change the
 accepted OQ-039 color contract or the accepted OQ-041/OQ-045 override and width
 contracts.
 
+### Amendment note (2026-09-14, BG-3 peak charge)
+
+`bitty` PR #656 (merge `af913ee`, CTX-0395) implemented BG-3 as the
+overflow-checked peak-memory charge recorded in the
+[BG-3 contract](#limits-and-their-provenance), replacing the earlier
+`width x height x 4` estimate, which undercharged a codec whose decoder
+materializes a full-size internal scratch buffer (or, for progressive JPEG, a
+full-image coefficient store). The note records the per-format factors and the
+tightened accepted set; the `64 MiB` ceiling itself and BG-1/BG-2/BG-4..BG-7
+are unchanged.
+
 ## Compatibility and migration
 
 No behavior changes in this RFC. When a knob is accepted, existing configs
@@ -1086,5 +1127,7 @@ this RFC records the contract only.
   OQ-045 contract.
 - `bitty` `CTX-0347`: per-`View` background image, unblocked by the accepted
   OQ-041 + OQ-042 contracts.
+- `bitty` `CTX-0395` / PR #656: BG-3 peak-memory charge formula and per-format
+  factors.
 - Hyprland `border_size` / `active_border` / `inactive_border`: read-only
   semantics reference for the base/focused/idle width distinction.
