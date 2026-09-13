@@ -905,6 +905,15 @@ questions on custom themes and category selection. Cache is rebuildable.
 Runtime sockets and locks belong to the login session, while sessions and
 layouts intended to survive restart belong in state.
 
+A candidate live-reload path for wallpaper-derived palettes extends
+[OQ-047](../decisions/open-questions.md): a generator such as Matugen writes
+`~/.config/bitty/theme.lua` returning `background`, `foreground`, and
+`palette[0..15]`, then runs `bitty ctl theme reload`; Core applies the new
+palette in a single render pass with no tearing, black frame, or PTY reset.
+Dynamic palette sequences (`OSC 4`) and dynamic foreground/background
+(`OSC 10`/`OSC 11`) remain separate follow-up work, and the file schema,
+reload class, and generated-file ownership are undecided.
+
 ## Cross-platform paths
 
 Status: **candidate contract.**
@@ -927,6 +936,15 @@ Linux/BSD can use XDG; macOS and Windows should use a documented native mapping
 with an explicitly designed XDG-compatibility option if desired. Plugins query
 semantic host paths rather than concatenate `HOME` with `/.config/bitty`.
 
+Candidate Windows mapping: `%APPDATA%\bitty` for roaming configuration and the
+plugin lock file, `%LOCALAPPDATA%\bitty` for data, state, and cache so roaming
+profiles never sync rebuildable caches or session state, a named pipe
+`\\.\pipe\bitty-<username>-<instance-id>` for IPC, per-user NTFS ACLs scoped to
+the current user SID, and secrets through Windows Credential Manager or DPAPI.
+macOS uses its standard Application Support and Caches directories. An
+XDG-compatibility override is explicit and opt-in, never implicit; the exact
+mapping, precedence, and migration rules remain open.
+
 Candidate discovery commands include:
 
 ```sh
@@ -938,6 +956,25 @@ bitty config diff
 ```
 
 These commands are further described in [CLI](../interfaces/cli.md).
+
+## Credential sources and secret storage (candidate)
+
+Status: **candidate.** API keys and comparable secrets are never hardcoded in
+`init.lua`, committed, or written to world-readable files. Candidate sources,
+in preference order:
+
+1. Environment bridge: configuration declares the variable name
+   (`api_key_env = "ANTHROPIC_API_KEY"`); the value is read at request time and
+   never persisted by Bitty.
+2. OS keyring: an async host API requests the secret from Secret Service,
+   Keychain, or Windows Credential Manager.
+3. Dedicated store: an owner-only (`0600`) file opened only after explicit
+   `ai.provider` authorization, with the access audited.
+
+The host reports source and presence, never the value. Rotation, revocation,
+and redaction follow [ADR 0006](../decisions/adrs/ADR-0006-os-env-policy.md)
+and the security corpus, and diagnostics redact secret-shaped values.
+Precedence, keyring-unavailable fallback, and headless behavior remain open.
 
 ## Open questions
 
