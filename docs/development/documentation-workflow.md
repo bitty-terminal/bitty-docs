@@ -246,13 +246,36 @@ historical versions remains an open cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`7a4ee41` at `2026-08-31`, baseline `de134ec`, previous `be3bdb4`),
-maturity and release status (`Pre-alpha / M1 Hardening` at `2026-08-29`, 32
-OQs Accepted, 16 crates), per-risk state and evidence revision and audit
-references (all `Open` at M1 Hardening; `R-004` remains `Open` at `7a4ee41`
-with residual platform, UX, and `8192`-byte bound-scope limits per `bitty`
-`docs/security/audits/clipboard-2026-09.md` CTX-0097), and explicit sync
-provenance (`CTX-0113` / Issue 120, previous `CTX-0112` / Issue 122).
+`bea338d` at `2026-09-14`, baseline `de134ec`, previous `29772a3`), maturity
+and release status (`Pre-alpha / Engineering Milestones M1-M8`, 40 OQs
+`Accepted`, 19 crates, release `v0.0.20`), per-risk state and evidence
+revision and audit references (`R-004` remains `Open` at `7a4ee41` with
+residual platform, UX, and `8192`-byte bound-scope limits per `bitty`
+`docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-005`/`R-006`/`R-007`
+`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0180`, previous
+`CTX-0133`).
+
+Mechanical fields (synchronized revision, snapshot date, crate count, latest
+release tag/commit/date, and the provenance chain) are regenerated
+deterministically from a local `bitty` checkout:
+
+```sh
+git -C ../bitty fetch origin   # read a current origin/main
+just state-refresh             # write mechanical fields; review curated prose
+just state-refresh-check       # no-op verification; exit 1 when stale
+```
+
+The generator (`.github/scripts/refresh-state.mjs`) reads only git metadata,
+never fetches, and preserves every curated field: engineering milestones,
+subsystem assessments, risk state, `latest_release.summary`, and notes.
+Refresh curated prose in the same CarryCtx task and record provenance with
+`just state-refresh --task CTX-XXXX --by <agent>`. The repository path
+defaults to `$BITTY_REPO`, then `$BITTY_WORKSPACE/bitty`, then `../bitty`. A
+scheduled [state freshness workflow](../../.github/workflows/state-refresh.yml)
+(also `workflow_dispatch`) runs `state-refresh-check` against the public
+implementation repository and derives its URL from the snapshot; a red run
+signals that a refresh task must land. It has no pull-request trigger and is
+not a required check.
 
 Ownership is `docs-curator` plus `security-auditor`. Updates require a
 CarryCtx task with independent review, CI green (`just check` includes

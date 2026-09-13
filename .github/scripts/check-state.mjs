@@ -76,8 +76,10 @@ function validateSnapshot(data) {
     if (!/^[0-9a-f]{40}$/.test(impl.previous_revision ?? "")) {
       failures.push("implementation.previous_revision must be 40-char hex");
     }
-    if (typeof impl.crates !== "number" || impl.crates !== 18) {
-      failures.push("implementation.crates must be 18");
+    if (!Number.isInteger(impl.crates) || impl.crates < 1 || impl.crates > 64) {
+      failures.push(
+        "implementation.crates must be an integer between 1 and 64",
+      );
     }
   }
 
@@ -119,11 +121,19 @@ function validateSnapshot(data) {
       'maturity.label must be "Pre-alpha / Engineering Milestones M1-M8"',
     );
   }
-  if (maturity?.date !== "2026-09-08") {
-    failures.push('maturity.date must be "2026-09-08"');
+  // maturity.date is refreshed in lockstep with snapshot_date by
+  // refresh-state.mjs; validate shape and ordering instead of freezing a date.
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(maturity?.date ?? "")) {
+    failures.push("maturity.date must be YYYY-MM-DD");
+  } else if (maturity.date > (data.snapshot_date ?? "")) {
+    failures.push("maturity.date must not be after snapshot_date");
   }
-  if (maturity?.oqs_accepted !== 32) {
-    failures.push("maturity.oqs_accepted must be 32");
+  if (
+    !Number.isInteger(maturity?.oqs_accepted) ||
+    maturity.oqs_accepted < 0 ||
+    maturity.oqs_accepted > 200
+  ) {
+    failures.push("maturity.oqs_accepted must be an integer between 0 and 200");
   }
 
   if (!Array.isArray(data.risks) || data.risks.length !== 22) {
@@ -201,15 +211,28 @@ function validateSnapshot(data) {
   }
 
   const provenance = data.sync_provenance;
-  if (!provenance || provenance.synchronized_revision !== "29772a3") {
-    failures.push("sync_provenance.synchronized_revision must be 29772a3");
-  }
-  if (!provenance || provenance.carryctx_task !== "CTX-0133") {
-    failures.push("sync_provenance.carryctx_task must be CTX-0133");
-  }
-  if (!provenance || !provenance.github_issue?.includes("bitty-docs/issues")) {
+  // Mechanical provenance moves with each refresh; require internal
+  // consistency instead of a frozen revision so refresh-state.mjs can update it.
+  if (
+    !provenance ||
+    provenance.synchronized_revision !== data.implementation?.short
+  ) {
     failures.push(
-      "sync_provenance.github_issue must reference bitty-docs/issues",
+      "sync_provenance.synchronized_revision must equal implementation.short",
+    );
+  }
+  if (!provenance || !/^CTX-\d{4}$/.test(provenance.carryctx_task ?? "")) {
+    failures.push("sync_provenance.carryctx_task must look like CTX-0000");
+  }
+  // github_issue is null when no owning Issue exists (for example a chore
+  // refresh); when present it must reference a bitty-docs Issue.
+  if (
+    provenance?.github_issue !== null &&
+    provenance?.github_issue !== undefined &&
+    !provenance.github_issue.includes("bitty-docs/issues")
+  ) {
+    failures.push(
+      "sync_provenance.github_issue must reference bitty-docs/issues or be null",
     );
   }
 
@@ -351,9 +374,9 @@ async function main() {
     }
     const summary = generateSummary(data);
     if (
-      !summary.includes("29772a3") ||
-      !summary.includes("Pre-alpha / Engineering Milestones M1-M8") ||
-      !summary.includes("v0.0.19")
+      !summary.includes(data.implementation.short) ||
+      !summary.includes(data.maturity.label) ||
+      !summary.includes(data.latest_release.tag)
     ) {
       console.error("self-test: generated summary missing expected tokens");
       process.exit(1);
