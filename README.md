@@ -101,6 +101,41 @@ repository snapshot documentation below.
   traceability from the 20-turn historical design conversation to canonical
   documents.
 
+## Repository structure
+
+`bitty-docs` separates shared cross-project governance from per-project
+documentation:
+
+- **Shared governance** stays in the existing top-level directories:
+  `decisions/` (ADRs and the single global open-question register),
+  `security/`, `development/`, `sources/`, `findings/`, `reviews/`,
+  `handoff/`, `project/`, `roadmap/`, and `releases/`.
+- **Per-project content** lives under
+  [`docs/projects/`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/projects/README.md):
+  `bitty/` for the terminal platform, `bitty-ai/` for the independent AI core,
+  and `plugins/` for per-plugin documentation.
+
+`docs/project/` (singular) remains the shared project-state and
+technology-governance area; `docs/projects/` (plural) is the per-project
+documentation partition.
+
+Routing rules:
+
+- New project-specific documents go under `docs/projects/<project>/`.
+- Cross-project contracts, registers, policies, and the security corpus stay
+  in the shared top-level directories; project pages link to them instead of
+  copying them.
+- Open-question numbering stays global; every OQ stays in the single
+  [open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md).
+- Each plugin gets `docs/projects/plugins/<plugin>/` with the standard page set
+  (status, design, schemas and contracts, evidence and links) defined by the
+  [documentation workflow](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md).
+
+Phase 1 adds this partition, its index pages, and its skeletons only; no
+existing document has moved. A later, separately scoped phase migrates the
+existing terminal-platform documents into `docs/projects/bitty/` with
+rewritten links and preserved publication status.
+
 ## Documentation system
 
 English is the only canonical documentation language. Internationalization,
