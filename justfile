@@ -49,6 +49,18 @@ svg:
 state:
     bun .github/scripts/check-state.mjs
 
+# Refresh the mechanical fields of docs/project/project-state.json (synchronized
+# revision, snapshot date, crate count, latest release, provenance) from a local
+# `bitty` checkout; curated prose is preserved for review. The checkout defaults
+# to $BITTY_REPO, then $BITTY_WORKSPACE/bitty, then ../bitty.
+state-refresh *args:
+    bun .github/scripts/refresh-state.mjs {{args}}
+
+# Verify project-state.json matches the derived snapshot (no writes); exit 1
+# when a newer `bitty` revision or release makes the snapshot stale.
+state-refresh-check *args:
+    bun .github/scripts/refresh-state.mjs --check {{args}}
+
 # Validate GitHub Actions syntax using the locally installed actionlint.
 actionlint:
     @installed="$(actionlint --version | head -n 1)"; test "$installed" = "{{actionlint_version}}" || { echo "actionlint {{actionlint_version}} required; found $installed" >&2; exit 1; }

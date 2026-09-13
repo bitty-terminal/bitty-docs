@@ -1,8 +1,8 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
 This list sequences project-definition and hardening work at the **Pre-alpha /
-Engineering Milestones M1-M8** stage (2026-09-08, `bitty` `29772a3` previous
-`c49ead1` baseline `de134ec`, 18 crates, 32 OQs Accepted, release `v0.0.19`;
+Engineering Milestones M1-M8** stage (2026-09-14, `bitty` `bea338d` previous
+`29772a3` baseline `de134ec`, 19 crates, 40 OQs Accepted, release `v0.0.20`;
 experimental slice `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` not `Verified`;
 `R-004` re-audited at `7a4ee41` baseline `de134ec` per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -13,18 +13,20 @@ milestone frame and subsystem assessments live in the
 [roadmap](docs/roadmap/now-next-later.md) and
 [`docs/project/project-state.json`](docs/project/project-state.json).
 Canonical choices live in the [open-question register](docs/decisions/open-questions.md)
-(OQ-001..032 all `Accepted` per CTX-0083); lifecycle is
+(40 `Accepted` at this snapshot); lifecycle is
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate maturity); experimental code is review evidence, not acceptance.
 Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `29772a3`, `2026-09-08`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
+(synchronized `bea338d`, `2026-09-14`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
 `Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`, release `v0.0.19`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`
+and refreshed mechanically by `just state-refresh` from a local `bitty` checkout.
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
-flip (CTX-0132), and the workspace/frameHash sync bundle (CTX-0133).
+flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), and the
+project-state refresh plus refresh automation (CTX-0180).
 
 ## Documentation foundation
 
@@ -284,15 +286,13 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [ ] Obtain independent docs-curator + security-auditor review for CTX-0116
       sync before closing; `Verified`/`Compatible` remain gated on RS-1..RS-7.
 
-## Documentation synchronization — prior syncs (2026-09-07/08)
+## Documentation synchronization — prior syncs (2026-09-07/08, CTX-0130..CTX-0133)
 
 - [x] CTX-0130 post-0223 reconciliation (`1835175` previous `e8a7b76`): verified-only subsystem rows, M1-M8 frame, Draft semantic-terminal RFC; no risk-state or normative changes.
 - [x] CTX-0131 scrollbar Draft plus semantic-terminal P1-P5 (`7048139` previous `1835175`): scrollbar Draft pending #405 (`f1caedf`); P1-P2 `4ccb771`, P3 `064486b`, P4-P5 `ab1f7ab` Implemented-only; wave refresh; no risk-state or normative changes.
 - [x] CTX-0132 scrollbar flip to shipped (`c49ead1` previous `7048139`): scrollbar shipped defaults (#405 merged); snapshot touch-up; no risk-state or normative changes.
-
-## Documentation synchronization — CTX-0133 sync (2026-09-08)
-
-- [x] Sync workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults, plus snapshot refresh (CTX-0133, `bitty` `29772a3` previous `c49ead1`, 18 crates, release `v0.0.19`): record canonical `bitty-terminal.workspace` with deprecated `tabs` shim (removal at or after `v0.2.0`, grant hash-binding rationale) in panel-vision plus roadmap; add shipped layout-gaps reference (`gaps_in`/`gaps_out` `0..=16`, stack inset-only) to lua-and-xdg; record `window.radius_px` S0 parsed no-op (`0..=24` default `0`, window-level rounding with the compositor) and `mod_key` leader setting (default `alt`, `super` allowed, `ctrl`/`shift` rejected) in the configuration-model shipped snapshot; update font defaults to `1.375`/`2.0` with live cell `10x22` in the configuration-model and text-rendering shipped notes; add DevTools RFC Amendment A2 (`frameHash` digest method, `FrameDigest` family, 120 s TTL, 2/s, local-only, pixel channel deferred, P0-AC-026 unchanged; V1-V3 panel-live gates Implemented-only, not Verified); refresh `project-state.json` to `29772a3` with validator, fixture, and summaries in lockstep; no risk-state or normative changes.
+- [x] CTX-0133 sync bundle to `29772a3` previous `c49ead1` (release `v0.0.19`): workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults; snapshot, validator, fixture, and summaries in lockstep; no risk-state or normative changes (PR #164).
+- [x] CTX-0180 refresh to `bea338d` previous `29772a3` (release `v0.0.20`, 19 crates, 40 OQs Accepted): add `refresh-state.mjs` with `just state-refresh`/`just state-refresh-check` and the scheduled State freshness workflow; the validator now derives revision/date/count consistency instead of freezing literals; no risk-state or normative changes.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

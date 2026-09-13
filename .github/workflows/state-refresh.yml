@@ -1,0 +1,60 @@
+name: State freshness
+
+# Scheduled staleness check for docs/project/project-state.json against the
+# public implementation repository's main branch, using the same offline
+# validator as `just state-refresh-check`. The snapshot's implementation URL is
+# read from the snapshot itself (no hardcoded repository URL).
+#
+# Triggers:
+#   - schedule: daily check; a red run is the signal that a refresh task must
+#     land (`just state-refresh` with a current local `bitty` checkout).
+#   - workflow_dispatch: manual re-run during merge closeout.
+# Pull requests are unaffected: there is no pull_request trigger, so this is
+# not a required check and it never blocks documentation PRs.
+#
+# The check needs only read access to the public implementation repository; it
+# uses no secrets and writes no state.
+
+on:
+  schedule:
+    # Daily at 06:41 UTC (off the hour to avoid top-of-hour scheduler load).
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: state-freshness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  state-freshness:
+    name: Snapshot matches implementation main
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.0
+
+      - name: Clone implementation repository
+        env:
+          IMPL_REPO_DIR: ${{ runner.temp }}/bitty
+        run: |
+          set -euo pipefail
+          repo="$(bun -e 'console.log((await Bun.file("docs/project/project-state.json").json()).implementation.repository)')"
+          # Partial clone keeps tags and history for release derivation while
+          # fetching blobs on demand; the URL comes from the snapshot.
+          git clone --filter=blob:none --branch main "$repo" "$IMPL_REPO_DIR"
+
+      - name: Check snapshot freshness
+        env:
+          IMPL_REPO_DIR: ${{ runner.temp }}/bitty
+        run: bun .github/scripts/refresh-state.mjs --check --bitty-repo "$IMPL_REPO_DIR"

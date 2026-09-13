@@ -11,7 +11,7 @@ sidebar_order: 11
 
 # Now / Next / Later
 
-> Status: **draft planning horizon** as of 2026-09-08. This document is a
+> Status: **draft planning horizon** as of 2026-09-14. This document is a
 > roadmap communication, not shipped behavior or a release promise. It links
 > accepted requirements, dependencies, owners, success evidence, and an explicit
 > confidence and horizon per the [Roadmap index](README.md) admission criteria.
@@ -19,8 +19,8 @@ sidebar_order: 11
 > security control, and does not authorize website publication. Website
 > publication remains gated on a pinned immutable `bitty-docs` revision per the
 > [Website Delivery RFC](../projects/bitty/specifications/website-delivery-rfc.md). Current
-> snapshot is `bitty` `29772a3` (previous `c49ead1`, baseline `de134ec`,
-> 18 crates, release `v0.0.19`) at **Pre-alpha / Engineering Milestones M1-M8**;
+> snapshot is `bitty` `bea338d` (previous `29772a3`, baseline `de134ec`,
+> 19 crates, 40 OQs `Accepted`, release `v0.0.20`) at **Pre-alpha / Engineering Milestones M1-M8**;
 > the retired `a8735d0` / 16-crate / M1 baseline no longer describes the head.
 
 ## Admission criteria mapping
@@ -75,7 +75,7 @@ daemon deferral, or any security evidence gate.
 
 One label can no longer describe the workspace, so the snapshot carries an
 explicit milestone frame with honest per-milestone statuses (all verified
-read-only against `bitty` origin `main` at `29772a3`; subsystem detail lives
+read-only against `bitty` origin `main` at `bea338d`; subsystem detail lives
 in [`project-state.json`](../project/project-state.json)):
 
 | Milestone               | Status                    | Honest reading                                                                                 |
@@ -96,14 +96,15 @@ the Risk Evidence RFC checklist plus auditor review says otherwise.
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](../projects/bitty/product/release-ladder.md) stage
-  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `29772a3` (`18 crates`, `32 OQs`
-  `Accepted`, release `v0.0.19`, compat-lab/perf hardening and UX wave through
+  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `bea338d` (`19 crates`, `40 OQs`
+  `Accepted`, release `v0.0.20`, compat-lab/perf hardening and UX wave through
   `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay
   `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font
-  `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, and V1-V3 gates
-  `Implemented`-only plus experimental
+  `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, V1-V3 gates
+  `Implemented`-only and the `v0.0.20` plugin-runtime, Kitty-graphics,
+  decoration, config-matrix, and plugin-CLI wave plus experimental
   `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
-  baseline `de134ec` previous `c49ead1`) mapped to the candidate `v0.1` through
+  baseline `de134ec` previous `29772a3`) mapped to the candidate `v0.1` through
   `v1.0` maturity ladder. The ladder does not weaken any normative control in
   the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
@@ -216,6 +217,13 @@ only (`0cc82de`, `bd15d94`, `227ca3a`, `3d45924`, `bc1fbba`, `6d4aa2f`,
 `Verified`, and none moves a risk, acceptance, milestone, crate count, release
 label, or the overall `Pre-alpha` maturity stated above.
 
+Post-`29772a3` `bitty` origin `main` advanced to `bea338d` (previous `29772a3`,
+CTX-0180 refresh): the `v0.0.20` release (`d9f5b49`, 2026-09-11) plus
+post-release hardening added the 19th crate `bitty-test-support` (CTX-0267) and
+the plugin-runtime Gap A, ctl-correctness, Kitty-graphics, workspace-decoration,
+config-matrix, and plugin-CLI waves. Every change is `Implemented` not
+`Verified`; no risk or acceptance moved.
+
 ## Now — Verified and Mitigated hardening with attributable evidence
 
 Confidence: **high** for the five items below because each has a merged `bitty`
@@ -223,7 +231,7 @@ commit with independent security-auditor and docs-curator review, full matrix
 evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`).
 Experimental slice `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
-(`29772a3` head, `de134ec` baseline `c49ead1` previous);
+(`bea338d` head, `de134ec` baseline `29772a3` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
@@ -760,7 +768,7 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
 ## References
 
 - [Roadmap index](README.md) — admission criteria and authority.
-- [Release Ladder](../projects/bitty/product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `29772a3` to `v0.1`..`v1.0`.
+- [Release Ladder](../projects/bitty/product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `bea338d` to `v0.1`..`v1.0`.
 - [Proposed Delivery Sequence](../projects/bitty/product/proposed-delivery-sequence.md) — candidate spine and ladders, draft research record from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
 - [Shared-conversation coverage](../sources/chatgpt-share-coverage.md) — provenance matrices for both historical conversations.
 - [Security Risk Register](../security/risk-register.md) — R-001..R-022, severity and stage.
