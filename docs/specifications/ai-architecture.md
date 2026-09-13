@@ -502,6 +502,56 @@ availability check into a provider hint. Regex or command-pattern detection
 may provide risk signals, but never replaces structured capability, scope,
 consent, policy, and resource enforcement.
 
+### Tool-call batching and round-trip economy (candidate)
+
+Status: **candidate, non-normative**. This records a batching direction for
+the tool loop: the number of tool calls and the number of model API round
+trips are different units, and independent calls can share one assistant
+turn. It extends **Tool Bus programmatic calls and availability** above and
+does not change `TB-6` or any other accepted cap.
+
+- **BTR-1 One turn may carry a bounded batch.** A single assistant message may
+  carry several `ToolCall` values; the batch may execute concurrently, and
+  results are reinserted in call order so the transcript stays deterministic.
+  The result sequence (`Assistant(tool_calls)` -> `Tool` -> `Tool` -> ...) is
+  consumed by one follow-up model request. Batching reduces round trips, not
+  enforcement: every call still passes registry validation, capability,
+  consent, quota, and untrusted-observation labeling, and the batch remains
+  bounded by `TB-6` (`8` tool calls per assistant turn). Whether the `TB-6`
+  bound is the right batch bound is part of the tracked question.
+- **BTR-2 Some round trips are unavoidable.** Data-dependent calls (call B
+  consumes call A's result) are serial, and interactive or consent-bearing
+  tools (for example clarification) are forced serial. Provider and API-mode
+  parallel-tool-call support differs, and a model that emits one tool call per
+  turn degrades to serial. Even a fully independent batch still needs one
+  request to consume its results, so N files cost at least two round trips,
+  not one.
+- **BTR-3 Round-trip economy is a request-cost model, not a token model.**
+  Every model request re-sends the conversation, so input tokens accumulate
+  across turns; prompt caching mitigates but does not remove that cost, and
+  cache stability stays subordinate to host policy and revocation. Batching
+  lowers latency and request cost; it does not by itself lower the tokens a
+  result contributes to context, which remain governed by the context budget
+  (`CP-5`) and the semantic compression rules (`SOC-1`..`SOC-6`).
+- **BTR-4 Choose the mechanism by call shape.** Independent calls with no data
+  dependency belong in one turn. A mechanical loop over N files belongs in a
+  bounded programmatic call (the section above), so only the aggregate returns
+  to context. One logical edit spanning several files belongs in one
+  transactional multi-file edit (the `ChangeSet`/overlay direction below), not
+  N sequential writes. Exploration and judgment stay with direct calls or a
+  delegated fresh child session (`AgentTree`), where the parent receives a
+  bounded summary while the child's own calls still count in the total.
+- **BTR-5 Provenance is a single-harness observation.** The originating
+  analysis measured a local Hermes `state.db` snapshot: roughly 29,900 tool
+  calls across roughly 22,400 assistant messages, about one in five messages
+  carrying a parallel batch (largest observed batch: thirty reads), and
+  roughly 7,600 round trips avoided relative to strictly serial calls. This is
+  one harness's local observation, not a benchmark; parallel emission is
+  model- and provider-dependent, and one legacy session in the same snapshot
+  was entirely serial. No Bitty batching mechanism exists today.
+
+Tracked as [OQ-071](../decisions/open-questions.md).
+
 ### Changes, outcomes, and restore boundaries
 
 Agent file mutations may be represented by a candidate `ChangeSet` containing
@@ -621,9 +671,21 @@ repo_overview -> search -> outline / project map -> symbol
   editor-managed adapters (a Mason-style adapter is one implementation, not a
   dependency), then Nix and custom adapters behind one
   `LanguageServerDiscovery` contract. `bitty-ai` must not depend on a specific
-  editor. Read and diagnostics tools built on the service (definition,
-  references, publish-diagnostics) remain bounded, attributed, read-only by
-  default, and are fast feedback rather than verification.
+  editor.
+- **Language tools stay user-provisioned.** Bitty ships the discovery and
+  consumption interfaces, not the language servers or linters themselves:
+  installation, configuration, and version policy remain user- or
+  project-owned, as in an editor that consumes the user's existing setup. A
+  missing server degrades to plain search instead of blocking a project, and
+  nothing is silently provisioned.
+- **Diagnostics and formatting are fast feedback, not verification.** Read
+  tools built on the service (definition, references, publish-diagnostics,
+  formatting, and bounded code actions) remain bounded, attributed, and
+  read-only by default; any write routes through the transactional edit
+  direction below. None of them replaces accepted build or test verification;
+  presenting their results as first-class attributed UI (a diagnostics or
+  evidence view) is a candidate native advantage
+  ([OQ-063](../decisions/open-questions.md)).
 - **Bounded and attributed.** Every read result is bounded, carries its
   origin, and enters the context budget like any other provider; reading more
   never bypasses capability or consent.
@@ -1155,6 +1217,8 @@ The 2026-09-13 docs `CTX-0171` consolidation of the AI-architecture research not
 
 The 2026-09-13 docs `CTX-0172` consolidation of the follow-up AI-architecture research note adds the native agent-service and tool-projection direction ([OQ-067](../decisions/open-questions.md)), role/model/capability orthogonality ([OQ-069](../decisions/open-questions.md)), the agent growth pipeline ([OQ-070](../decisions/open-questions.md)), and the `.bitty/` project-directory direction ([OQ-068](../decisions/open-questions.md)) recorded with the configuration documentation. None of these additions changes the draft status of this document or the accepted contracts it cites.
 
+The 2026-09-13 docs `CTX-0173` consolidation of the batching research note adds the tool-call batching and round-trip economy direction ([OQ-071](../decisions/open-questions.md)) and extends the language-service direction with user-provisioned language tools and formatting/code-action fast feedback (still [OQ-063](../decisions/open-questions.md)). None of these additions changes the draft status of this document or the accepted contracts it cites.
+
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 
 ## Acceptance criteria and lifecycle
@@ -1173,4 +1237,4 @@ Acceptance will require:
 - Bitty topic evidence this RFC extends: [Product vision](../product/vision.md), [Architecture Overview](../architecture/overview.md), [Core and Plugin Boundaries](../architecture/core-boundaries.md), [Plugin System](../extensibility/plugin-system.md), [Rich Content](../interfaces/rich-content.md), [CLI](../interfaces/cli.md), [Security Overview](../security/overview.md), [Threat Model](../security/threat-model.md), [P0 Acceptance Criteria](../security/p0-acceptance-criteria.md), [Technology Strategy](../project/technology-strategy.md).
 - Prior RFCs this RFC composes with: [IPC and Agent RFC](ipc-agent-rfc.md), [Rich Presentation RFC](rich-presentation-rfc.md), [Plugin Platform RFC](plugin-platform-rfc.md), [Isolation Resource RFC](isolation-resource-rfc.md), [Configuration Model RFC](configuration-model-rfc.md), [CLI Contract RFC](cli-contract-rfc.md), [DevTools RFC](devtools-rfc.md).
 - Related deferred direction: [ADR 0008](../decisions/adrs/ADR-0008-headless.md) keeps headless daemon and remote UI work post-v1.0; [Reference Project Register](../project/reference-projects.md) defines how local snapshots are used as untrusted research evidence. The panel vision is not yet present on this branch, so no link is asserted here.
-- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority. The 2026-09-13 `CTX-0171` consolidation additionally used the user's AI-architecture research note snapshot `recording/research/010.md` (workspace scratch, read-only; renamed `010.md.completed` once consolidated); its additions remain candidate direction, not authority. The 2026-09-13 `CTX-0172` consolidation used the follow-up snapshot `recording/research/011.md` (workspace scratch, read-only; renamed `011.md.completed` once consolidated) for the native-service, role/model, growth-pipeline, and `.bitty/` directions; they remain candidate direction, not authority.
+- Provenance, non-normative: `tmp/research/chatgpt-2026-08-30-3.md` (research snapshot read 2026-08-30) supplied the candidate runtime directions; the local Hermes Agent snapshot at revision `dce2ecb8a9428aedf69e959bd15d7a9fa15eae01` (MIT) supplied corroborating observations from `README.md`, `AGENTS.md`, `agent/context_engine.py`, `agent/memory_provider.py`, `agent/memory_manager.py`, `hermes_state_search.py`, and `hermes_state_portability.py`. These sources are not Bitty dependencies or authority. The 2026-09-13 `CTX-0171` consolidation additionally used the user's AI-architecture research note snapshot `recording/research/010.md` (workspace scratch, read-only; renamed `010.md.completed` once consolidated); its additions remain candidate direction, not authority. The 2026-09-13 `CTX-0172` consolidation used the follow-up snapshot `recording/research/011.md` (workspace scratch, read-only; renamed `011.md.completed` once consolidated) for the native-service, role/model, growth-pipeline, and `.bitty/` directions; they remain candidate direction, not authority. The 2026-09-13 `CTX-0173` consolidation used the follow-up snapshot `recording/research/012.md` (workspace scratch, read-only; renamed `012.md.completed` once consolidated) for the tool-call batching and round-trip economy direction and the user-provisioned language-tool direction; they remain candidate direction, not authority.
