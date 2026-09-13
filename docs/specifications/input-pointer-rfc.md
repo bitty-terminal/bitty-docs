@@ -182,6 +182,13 @@ through an explicit encoder or command path.
   workspaces), because it reads as a window-manager modifier and collides
   less with the terminal-critical `Ctrl+C/D/Z/L` family than `Ctrl` would.
   The default is a configuration value, not a hardcoded constant.
+- **Why not the other modifiers**: `Ctrl` is bound to shell and TUI line
+  editing and process signals (`Ctrl+A/E/K/R`, `Ctrl+C/D/Z`); taking it for
+  the host breaks CLI muscle memory. `Super`/`Win` is the operating-system and
+  window-manager namespace, unavailable or inconsistent across desktops and
+  platforms. `Shift` cannot form a distinct chord on its own. `Alt`/Meta has
+  the least collision and matches the browser `Alt+1..9` intuition; users may
+  still select `super` through `mod_key`.
 - **Only registered chords are consumed**: Bitty consumes exactly the `Alt`
   chords bound in the keymap registry; every unregistered `Alt` chord
   continues to the terminal input encoder (legacy `ESC`-prefix Meta
@@ -227,6 +234,22 @@ emergency, overlay, and terminal-fallthrough ordering around it.
   sequence namespace (`w` workspace, `p` panel, `a` AI, `g` git, `?` help),
   in the spirit of tmux prefix and Neovim leader. This avoids shortcut
   namespace explosion as plugin count grows.
+- **Leader versus Mod split**: Mod chords remain immediate single presses for
+  high-frequency actions; the Leader opens a short-lived command namespace for
+  the long tail, so the namespace grows with plugins without multi-modifier
+  chords. Candidate default `Alt+Space`; `Esc` cancels; a bounded idle timeout
+  (candidate ~1 s, configurable) returns input to the terminal instead of
+  trapping keystrokes, so timeout and cancel fail open to normal input.
+- **Cross-platform Leader strategy**: `Alt+Space` is the candidate Tier-1
+  Linux default; on Windows the combination is historically reserved by the
+  system or launcher tools, so candidate fallbacks are `Alt+backtick`,
+  double-`Alt`, and `Alt+q`, with the final choice left to configuration.
+  Neither the binding nor the timeout is a constant; both are configuration
+  values, and registration grants no authority because the Leader dispatches
+  through the same keymap registry. Tracked as OQ-088; the Beacon engine that
+  consumes this namespace is recorded in the
+  [Semantic Terminal RFC](semantic-terminal-rfc.md#p7-bitty-beacon-spatial-action-engine-candidate)
+  (P7, OQ-089).
 - **Which-key help**: after the Leader prefix, a floating overlay lists the
   available next keys and narrows per keystroke, so the Help panel doubles
   as a which-key menu. Dismissal is `Esc` or the same shortcut; the overlay
@@ -714,7 +737,9 @@ architecture and security-auditor review.
   remains a configuration knob.
 - Whether the `Alt`-default Mod, only-registered-chords-consumed rule,
   dispatch priority, Leader sequences, and which-key/flash discoverability
-  enter acceptance together or as separate follow-ups.
+  enter acceptance together or as separate follow-ups; the cross-platform
+  Leader strategy is registered as OQ-088 and the Beacon spatial action engine
+  as OQ-089.
 
 These are tracked as candidate follow-ups; they do not block the rest of the
 contract.

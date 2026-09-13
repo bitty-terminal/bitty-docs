@@ -728,6 +728,12 @@ return {
 Open: whether the shipped set grows CLI flags or a command-palette surface;
 the candidate Leader sequences and flash-style jump remain unimplemented
 candidates in the [Input and Pointer Contract](../specifications/input-pointer-rfc.md).
+Candidate configuration surfaces are not accepted and have no schema yet, so
+none of them may be documented as working: a Leader binding plus bounded modal
+timeout ([OQ-088](../decisions/open-questions.md)), and the Bitty Beacon label
+pools, handedness preference, and script-action registrations
+([OQ-089](../decisions/open-questions.md),
+[Semantic Terminal RFC](../specifications/semantic-terminal-rfc.md#p7-bitty-beacon-spatial-action-engine-candidate)).
 
 ## Reload classification (shipped schema inventory)
 

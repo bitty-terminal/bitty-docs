@@ -1025,6 +1025,46 @@ The Tool Bus is the host-owned dispatch surface where agent tool calls are valid
 - **TB-6 Budgets and backpressure.** Tool Bus dispatch reuses RC-9/RC-10 sharing: at most `8` tool calls per assistant turn, each result `<= 16 KiB`, per-connection rate and concurrency caps apply, and observation streams drop oldest with counted metrics. Long tool outputs are chunked at RC-10.
 - **TB-7 Host execution only.** The `bitty-agent` crate never executes a tool. `ToolRegistry::stub_invoke` exists only for deterministic tests. Real execution happens in the host/runtime that mediates capability-checked dispatch, rate limits, per-client scopes, consent prompts, and audit — matching the separation already accepted for `bitty-agent`.
 
+### Command risk classification and syntax-level audit (candidate)
+
+Status: **candidate, non-normative**. This extends Tool Bus validation (TB-3)
+and consent (TB-4) with the command-side risk model recorded from the local
+research note `015.md`; the note is provenance, not evidence. It changes no
+accepted TB rule, adds no capability, and claims no implementation. Tracked as
+[OQ-087](../decisions/open-questions.md); the terminal-side interlock is
+specified in the [IPC and Agent RFC](ipc-agent-rfc.md#candidate-sensitive-input-interlock-and-interaction-policy-oq-086)
+candidate sensitive-input interlock ([OQ-086](../decisions/open-questions.md)).
+
+- **CRA-1 Risk tiers.** Every agent-initiated command is classified before
+  dispatch: read-only inspection proceeds under the caller's existing scopes;
+  ordinary local development commands proceed under the accepted scope;
+  state-resetting commands (working state checkout/reset, temporary-file
+  removal, signalling a known child) notify and are audited; destructive or
+  network-egress commands (recursive force deletion of broad roots, filesystem
+  creation, raw block-device writes, pipe-to-interpreter, privilege
+  escalation) block pending explicit consent.
+- **CRA-2 Syntax-level inspection.** Classification uses a structural parse of
+  the command (a shell-AST-class parser, tree-sitter style), not string
+  blacklists, so quoting, escaping, pipelines, command substitution, and
+  simple encodings cannot hide the actual operation. A decoded or constructed
+  command is resolved before classification whenever a decoding step is
+  statically visible.
+- **CRA-3 Hard-deny classes.** Candidate hard-deny classes: piping fetched or
+  decoded content into a shell interpreter; privilege escalation; writes to
+  system configuration or user credential directories; recursive force
+  deletion of broad roots; and raw block-device writes. A hard-deny hit blocks
+  the dispatch and routes to the consent surface instead of executing.
+- **CRA-4 Consent, not authority.** Releasing a blocked command requires an
+  explicit human decision recorded in the consent ledger (PP-3); approval is
+  per-command and time-bounded, never a blanket escalation, and it cannot
+  widen the client's scopes. The deny classes are policy data with a
+  conservative default, not a replacement for least privilege.
+- **CRA-5 Evidence.** Candidate acceptance evidence: an adversarial corpus of
+  obfuscated destructive commands (encoding, substitution, pipelines) must be
+  classified correctly, benign look-alike commands must not be blocked, and
+  denial and consent outcomes must be attributed. Until then the tiers and
+  deny classes are design candidates.
+
 ### Tool Bus scrubbing implementation evidence (bitty #370)
 
 Status: **experimental review evidence only.** The milestone merged in `bitty`

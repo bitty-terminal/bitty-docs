@@ -634,6 +634,73 @@ Numbered for reference; none is implemented by this RFC alone:
   start or is detected disabled, the endpoint refuses to serve rather than
   serving unbounded.
 
+## Candidate sensitive-input interlock and interaction policy (OQ-086)
+
+> Status: **candidate addendum**, non-normative. This section records direction
+> from the local research note `015.md`; the note is provenance, not evidence.
+> It does not reopen [OQ-018](../decisions/open-questions.md), does not change
+> `frontmatter.status: accepted`, changes no accepted scope, and claims no
+> implementation. It tightens — never relaxes — the accepted rule that
+> `terminal.input` requires a separate per-client consent grant. Tracked as
+> [OQ-086](../decisions/open-questions.md).
+
+The accepted contract treats inspect, input, and manage as different scopes
+([Authorization and scopes](#authorization-and-scopes)). This candidate adds a
+state-triggered denial on input dispatch that applies even where a grant
+exists, for the case where a terminal program is reading a secret without echo.
+
+- **SI-1 Kernel-state detection.** Bitty owns the PTY master side and can
+  observe the slave device's `termios` state. When a program clears the `ECHO`
+  flag (`termios.c_lflag & ECHO == 0`) to read a secret without echo, a
+  `PtyModeChanged`-class state change is the candidate detection signal. Output
+  text matching for prompts is explicitly rejected as the primary signal:
+  prompts are locale-dependent, false-positive prone, and spoofable by crafted
+  output. A text heuristic, if ever used, may only add conservative suspicion;
+  it may never authorize automation. How the state change is observed (a
+  poller on the mode bits, kernel notification, or another mechanism) is part
+  of OQ-086 and is not decided.
+- **SI-2 Interaction classes.** Candidate policy per class:
+  1. _Secret input_ (no-echo): no automated input of any kind; human typing
+     only.
+  2. _Destructive or privileged confirmation_ (echo on, command classified at
+     high risk by the [AI Architecture](ai-architecture.md#command-risk-classification-and-syntax-level-audit-candidate)
+     candidate command audit, [OQ-087](../decisions/open-questions.md)): no
+     automatic reply; an explicit human decision is required.
+  3. _Safe interactive prompt_ (echo on, no risk classification): an agent may
+     auto-reply only under the accepted authority of its own dispatch and a
+     non-destructive classification, with the reply attributed in the audit
+     record.
+- **SI-3 Fail-closed interlock.** While the target PTY is in no-echo mode,
+  dispatch for `terminal.input`-scoped methods (for example `terminal.send`)
+  to that terminal fails closed with a typed denial even when the client holds
+  the scope: the grant itself is unchanged, while dispatch is suspended only
+  for the duration of that state. The human keyboard path is unaffected.
+  Candidate error shape: a typed `TargetTerminalInSecureInputMode`-class
+  error, never a silent drop and never a queue-and-replay.
+- **SI-4 No capture.** No-echo input bytes are not recorded into the grid,
+  scrollback, snapshots, traces, or agent observations; a snapshot read sees
+  no content for that span. This extends the invariant-9 minimization posture
+  to the live input path and composes with PP-2 and P0-AC-026; it grants no new
+  data access and does not weaken the accepted recording rules.
+- **SI-5 Ownership seam.** Core owns PTY observation, the input lockout, and
+  the human path; the AI stack owns the command audit and redaction
+  ([AI Architecture](ai-architecture.md)); Lua policy decides which
+  interactions may be automated within that envelope. No layer can upgrade an
+  observation into authority, matching the observation-labeling rule in the
+  AI Architecture (hook authority and observation labeling).
+- **SI-6 Acceptance evidence (candidate).** Detection claims require fixtures
+  in both directions: no-echo programs (`sudo`, `ssh`, `gpg`,
+  `getpass`-class) enter the interlock, while echo-on prompts and spoofed
+  prompt-looking output do not; automation is denied in the no-echo window;
+  and the no-capture assertion holds across every snapshot surface. Until that
+  evidence and independent security review exist, the interlock is a design
+  candidate only.
+
+Reconciliation: this candidate reuses the accepted scope families, per-client
+consent, typed-error, and attribution rules, and adds no method, capability,
+or ambient authority. The accepted contract remains authoritative wherever the
+two differ.
+
 <!-- markdownlint-disable MD013 -->
 
 ## Programmable workspace IPC advantages
