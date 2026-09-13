@@ -20,8 +20,10 @@ English-only, metadata, or link gates.
 
 The pipeline is owned by `bitty-website` under CarryCtx `CTX-0017` and
 consumes the pinned revision. This guide records the developer command
-surface and the operator procedure; the canonical prose remains in this
-repository and is never hand-copied into the website.
+surface and the operator procedure; the canonical prose remains in the Bitty
+documentation corpus (shared governance in this repository, project content in
+the project documentation repositories) and is never hand-copied into the
+website.
 
 > **Repository split (2026-09-14).** Shared governance prose remains in this
 > repository; project content moved to `bitty-terminal-docs`, `bitty-ai-docs`,
@@ -174,9 +176,9 @@ route:  /docs/<version>/<category>/<slug>/
   otherwise preserved case-sensitively (RM-1).
 - Source-relative path is the authoritative content identity (RM-3).
 - If two distinct eligible sources would map to the same public route,
-  validation rejects the build. The fix belongs in `bitty-docs` by
-  renaming the source and declaring a redirect, not by patching the
-  mapper (RM-4).
+  validation rejects the build. The fix belongs in the owning documentation
+  repository by renaming the source and declaring a redirect, not by patching
+  the mapper (RM-4).
 
 The function lives in exactly one module,
 `bitty-website/src/lib/docsRoutes.ts` (RM-6), with collision fixtures
@@ -264,8 +266,9 @@ remains configuration only.
 
 ## Operator: refreshing documentation into the website
 
-The canonical corpus stays in `bitty-docs`; the website is a pinned,
-generated mirror. To publish a docs change:
+The canonical corpus stays in the Bitty documentation repositories
+(aggregated by `bitty-docs`); the website is a pinned, generated mirror. To
+publish a docs change:
 
 1. Merge the `bitty-docs` change (content, metadata, links, and
    `docs/project/redirects.json` when a published identity moves) after

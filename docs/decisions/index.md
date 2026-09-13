@@ -105,6 +105,14 @@ product implementation evidence:
   `bitty-plugins/bitty-mcp`. `bitty-ai/` is empty, reserved for future
   AI-core subsystems.
 
+> **Archival note (2026-09-14).** `bitty-mcp` was archived and is no longer a
+> live repository; its MCP tool-surface functionality is covered by `bitty-ai`.
+> The public estate now also includes `bitty-ai`, `bitty-plugins`, and the
+> project documentation repositories `bitty-terminal-docs`, `bitty-ai-docs`,
+> and `bitty-plugins-docs`. The bullets above record the earlier inventory; the
+> current topology and observation dates are in the
+> [repository map](../project/repository-map.md).
+
 Current topology and observation dates belong in the
 [repository map](../project/repository-map.md); re-verify drift-prone remote
 facts before relying on them operationally.
