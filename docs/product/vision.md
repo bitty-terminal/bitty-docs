@@ -76,6 +76,17 @@ View/Layout/Panel; Plugin API dogfood; then Rich, IPC, Agent, browser, and the
 wider ecosystem. This is sequencing guidance, not an implementation claim or
 date promise.
 
+### Differentiation: height customizability (candidate)
+
+Status: **candidate, non-normative**. Bitty's identity is not benchmark
+leadership or out-of-the-box completeness; performance and protocol
+compatibility are baseline expectations in this category, not a moat. The
+intended distinction is how far the terminal can be reshaped by its user:
+`PTY -> Panel`, plugin-owned experience, a Lua-first configuration surface,
+and Core-owned mechanisms with modern isolation. In lineage terms this is
+Emacs-like platform building with Rust crash isolation and bounded
+capabilities; the accepted directions below remain the normative layer.
+
 ## Accepted directions
 
 ### Small core, plugin extensions
