@@ -190,7 +190,7 @@ Known CarryCtx-family unpinned actions (subject to the pinning task):
 ### Rust channel anti-pattern
 
 `rust-toolchain.toml` must pin an explicit channel (for example
-`channel = "1.97.1"`). `channel = "stable"` (currently used by
+`channel = "1.98.1"`). `channel = "stable"` (currently used by
 `Xuepoo/carryctx`) is prohibited: it makes builds non-reproducible and lets the
 toolchain drift without a reviewed change. Do not let a CI
 `setup-rust-toolchain` action override the file; the file is the single source

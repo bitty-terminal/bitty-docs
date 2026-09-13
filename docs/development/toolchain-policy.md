@@ -57,7 +57,7 @@ sidebar_order: 15
 
 `bitty/Cargo.toml` sets `edition = "2024"`, `resolver = "3"`,
 `rust-version = "1.85"` (MSRV), and `publish = false`; `rust-toolchain.toml`
-pins `channel = "1.97.1"` with `rustfmt` and `clippy` (minimum 1.85 for
+pins `channel = "1.98.1"` with `rustfmt` and `clippy` (minimum 1.85 for
 edition 2024). Third-party pins below are per-crate; workspace inheritance
 keeps lints (`unsafe_code = "deny"`) uniform. Crates marked std-only carry
 no third-party runtime dependencies and are headless, `forbid(unsafe_code)`:

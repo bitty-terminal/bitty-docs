@@ -160,7 +160,7 @@ are `Implemented` (headless `Implemented`, not yet `Verified`):
 bitty/
 ├── Cargo.toml            # eighteen members, edition 2024, resolver 3, rust-version 1.85
 ├── Cargo.lock
-├── rust-toolchain.toml   # channel 1.97.1, components rustfmt+clippy
+├── rust-toolchain.toml   # channel 1.98.1, components rustfmt+clippy
 ├── justfile
 ├── crates/
 │   ├── bitty-agent/       # Implemented: bounded Agent messages/side queue (std-only)
