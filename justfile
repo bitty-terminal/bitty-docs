@@ -43,7 +43,7 @@ svg:
     #!/usr/bin/env bash
     set -euo pipefail
     command -v xmllint >/dev/null || { echo "xmllint (libxml2-utils) is required" >&2; exit 1; }
-    find docs/architecture -name '*.svg' -print0 | xargs -0 xmllint --noout
+    find docs/projects/bitty/architecture -name '*.svg' -print0 | xargs -0 xmllint --noout
 
 # Validate the machine-readable project state snapshot and its canonical summaries.
 state:

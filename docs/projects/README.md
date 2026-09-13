@@ -21,7 +21,7 @@ on 2026-09-13 and is recorded in the
 
 | Project  | Directory                       | Scope                                                                             | Stage                                                                 |
 | -------- | ------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Bitty    | [bitty/](bitty/README.md)       | Terminal platform: core, VT, PTY, UI, configuration, plugin host, IPC, packaging. | Skeleton; existing terminal docs migrate here in a later phase.       |
+| Bitty    | [bitty/](bitty/README.md)       | Terminal platform: core, VT, PTY, UI, configuration, plugin host, IPC, packaging. | Active; terminal-platform docs migrated here in Phase 2.              |
 | Bitty AI | [bitty-ai/](bitty-ai/README.md) | Independent AI-core project: runtime, providers, and context.                     | Placeholder; content lands as the AI-core project produces it.        |
 | Plugins  | [plugins/](plugins/README.md)   | Per-plugin documentation for first-party and featured plugin candidates.          | Skeleton plus a [page template](plugins/TEMPLATE.md); no content yet. |
 
@@ -38,8 +38,8 @@ Cross-project material remains in the existing top-level directories:
 2. Cross-project contracts, registers, policies, and the security corpus stay
    in the shared top-level directories; project pages link to them instead of
    copying them.
-3. Open-question numbering stays global; the single register in
-   [`decisions/`](../decisions/open-questions.md) owns every OQ.
+3. Open-question and ADR/RFC numbering stay global; the single
+   [open-question register](../decisions/open-questions.md) owns every OQ.
 4. Each plugin gets `docs/projects/plugins/<plugin>/` with the standard page
    set (status, design, schemas and contracts, evidence and links).
 
@@ -48,7 +48,7 @@ shared project-state and technology-governance area.
 
 ## Current stage
 
-Phase 1 created this partition and its index pages; no existing document has
-moved. A later, separately scoped phase migrates the existing
-terminal-platform documents into [`bitty/`](bitty/README.md) with rewritten
-links and preserved publication status.
+Phase 1 created this partition and its index pages. Phase 2 (CTX-0185)
+migrated the existing terminal-platform documents into
+[`bitty/`](bitty/README.md) with rewritten links and preserved publication
+status. Later phases land `bitty-ai/` and per-plugin content.
