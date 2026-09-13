@@ -11,7 +11,7 @@ sidebar_order: 23
 
 # AI Architecture
 
-> Status: **draft** (frontmatter `draft`) for post-1.0 AI architecture covering ModelProvider, ContextProvider, Tool Bus, and Agent layers. This document proposes the ModelProvider (`ai.model` `list_models`/`complete`/`stream`/`cancel`), ContextProvider (workspace, project, git, diagnostics, terminal) with Stable Id hierarchy Instance/Window/Workspace/View/Terminal, Context Budget 32 KiB, and semantic zones, Agent four levels (inspect/self/workspace/all), ephemeral AgentWorkspace, Rich streaming (Markdown/Diff/ToolCard), Tool Bus via MCP, and privacy-first controls. It does not describe implemented behavior, does not authorize shipped, stable, normative, or compatibility-guaranteed behavior, and does not close [OQ-018](../decisions/open-questions.md) which remains closed by [IPC and Agent RFC](ipc-agent-rfc.md) on 2026-08-29. Experimental implementation may exist as review evidence but carries no compatibility promise and does not constitute acceptance. Acceptance requires independent category-owner, docs-curator, and security-reviewer evidence. Lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
+> Status: **draft** (frontmatter `draft`) for post-1.0 AI architecture covering ModelProvider, ContextProvider, Tool Bus, and Agent layers. This document proposes the ModelProvider (`ai.model` `list_models`/`complete`/`stream`/`cancel`), ContextProvider (workspace, project, git, diagnostics, terminal) with Stable Id hierarchy Instance/Window/Workspace/View/Terminal, a token-first context budget and request contract (OQ-066), and semantic zones, Agent four levels (inspect/self/workspace/all), ephemeral AgentWorkspace, Rich streaming (Markdown/Diff/ToolCard), Tool Bus via MCP, and privacy-first controls. It does not describe implemented behavior, does not authorize shipped, stable, normative, or compatibility-guaranteed behavior, and does not close [OQ-018](../decisions/open-questions.md) which remains closed by [IPC and Agent RFC](ipc-agent-rfc.md) on 2026-08-29. Experimental implementation may exist as review evidence but carries no compatibility promise and does not constitute acceptance. Acceptance requires independent category-owner, docs-curator, and security-reviewer evidence. Lifecycle is `Draft -> experimental review evidence -> Accepted -> normative`.
 
 ## Purpose and scope
 
@@ -24,7 +24,7 @@ In scope:
 - **ModelProvider** (`ai.model`): provider registry, model capability negotiation, `list_models`, `complete`, `stream`, and `cancel` operations, budgets, and privacy handling.
 - **ContextProvider**: discrete providers for workspace, project, git, diagnostics, and terminal snapshot sources, their Stable Id addressing, Context Budget, and semantic-zone awareness.
 - **Stable Id hierarchy**: `Instance` / `Window` / `Workspace` / `View` / `Terminal` identity model and its use for selection, attribution, and consent scoping.
-- **Context Budget**: 32 KiB budgeted context assembly per agent turn, with attribution, truncation, and chunking rules.
+- **Context contract**: token-first context requests and artifacts per agent turn, with attribution, truncation, chunking, provenance, and drill-down rules. The `32 KiB` byte default stays a candidate profile (OQ-066), not a core bound.
 - **Semantic zones** as context boundaries derived from shell-integration OSC 7/133.
 - **Agent**: four levels `inspect` / `self` / `workspace` / `all`, their capability implications, and generation-scoped ownership.
 - **AgentWorkspace**: ephemeral, capability-scoped working directory and its lifecycle.
@@ -62,20 +62,20 @@ Where this RFC picks a threshold or encoding, it refines those sources. It does 
 
 ## Terminology
 
-| Term               | Meaning                                                                                                                                              |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ModelProvider      | Host-owned registry of LLM providers and models exposed via `ai.model`, with per-model capability and budget metadata.                               |
-| ContextProvider    | Host-owned source of bounded context for an agent turn, one of workspace, project, git, diagnostics, or terminal.                                    |
-| Stable Id          | Persistent, cross-restart identifier for one of Instance, Window, Workspace, View, or Terminal, used for attribution and scoping.                    |
-| SemanticZone       | Core-owned boundary record (prompt, input, command, output) derived from OSC 7/133, owned by terminal state and consumed by rich and context layers. |
-| Context Budget     | Per-turn byte ceiling for assembled context, 32 KiB in this RFC, with counted truncation and chunking to Rich streaming.                             |
-| Agent level        | Attenuated authority tier: `inspect`, `self`, `workspace`, or `all`, each implying a distinct capability set.                                        |
-| AgentWorkspace     | Ephemeral, per-session working directory scoped to one `AgentId` and one generation, disposed at session close.                                      |
-| Rich streaming     | Incremental delivery of agent output as Markdown, Diff, or ToolCard `Scene` fragments with damage tracking.                                          |
-| Tool Bus           | Capability-checked dispatch surface where agent tool calls are validated, consented, and forwarded via the MCP adapter.                              |
-| bitty-ai           | Candidate independent AI sub-platform repository (Rust workspace plus Lua AI plugins) built only on generic Bitty primitives; not Core.              |
-| Bridge             | Candidate scoped-IPC process boundary between the Bitty host and the bitty-ai runtime; never an in-process native load.                              |
-| Pressure-test gate | Candidate architecture rule: bitty-ai must build on generic primitives, so a new Core AI-specific API demand signals a Plugin API abstraction gap.   |
+| Term               | Meaning                                                                                                                                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ModelProvider      | Host-owned registry of LLM providers and models exposed via `ai.model`, with per-model capability and budget metadata.                                                                                |
+| ContextProvider    | Host-owned source of bounded context for an agent turn, one of workspace, project, git, diagnostics, or terminal.                                                                                     |
+| Stable Id          | Persistent, cross-restart identifier for one of Instance, Window, Workspace, View, or Terminal, used for attribution and scoping.                                                                     |
+| SemanticZone       | Core-owned boundary record (prompt, input, command, output) derived from OSC 7/133, owned by terminal state and consumed by rich and context layers.                                                  |
+| Context Budget     | Per-turn context ceiling resolved from the CP-5 request contract (token-first; the `32 KiB` byte default is a candidate profile) with counted truncation, provenance, and chunking to Rich streaming. |
+| Agent level        | Attenuated authority tier: `inspect`, `self`, `workspace`, or `all`, each implying a distinct capability set.                                                                                         |
+| AgentWorkspace     | Ephemeral, per-session working directory scoped to one `AgentId` and one generation, disposed at session close.                                                                                       |
+| Rich streaming     | Incremental delivery of agent output as Markdown, Diff, or ToolCard `Scene` fragments with damage tracking.                                                                                           |
+| Tool Bus           | Capability-checked dispatch surface where agent tool calls are validated, consented, and forwarded via the MCP adapter.                                                                               |
+| bitty-ai           | Candidate independent AI sub-platform repository (Rust workspace plus Lua AI plugins) built only on generic Bitty primitives; not Core.                                                               |
+| Bridge             | Candidate scoped-IPC process boundary between the Bitty host and the bitty-ai runtime; never an in-process native load.                                                                               |
+| Pressure-test gate | Candidate architecture rule: bitty-ai must build on generic primitives, so a new Core AI-specific API demand signals a Plugin API abstraction gap.                                                    |
 
 ## ModelProvider
 
@@ -90,7 +90,7 @@ Status: **proposed contract**. Numbered for reference; none is implemented by th
 ### Operations
 
 - **MP-4 `list_models`.** `ai.model.list_models()` returns the registry snapshot filtered to models whose capability set is compatible with the caller's granted scopes. No secret material is returned; API keys, if any, are never inline in the list.
-- **MP-5 `complete`.** `ai.model.complete({ model, messages, context_refs, tools })` executes one synchronous turn. `model` must name a registry-known model, `messages` is bounded `<= 32 KiB` combined, `context_refs` enumerates Stable Ids resolved server-side, and `tools` enumerates Tool Bus names validated against the caller's Tool Bus consent. A request that would exceed the Context Budget fails at the boundary with a typed `BudgetExceeded` before provider I/O.
+- **MP-5 `complete`.** `ai.model.complete({ model, messages, context_refs, tools })` executes one synchronous turn. `model` must name a registry-known model, `messages` is bounded by the resolved CP-5 context budget (the `32 KiB` candidate default) combined, `context_refs` enumerates Stable Ids resolved server-side, and `tools` enumerates Tool Bus names validated against the caller's Tool Bus consent. A request that would exceed the Context Budget fails at the boundary with a typed `BudgetExceeded` before provider I/O.
 - **MP-6 `stream`.** `ai.model.stream({ model, messages, context_refs, tools })` returns a chunked `StreamHandle` where each chunk is a Rich streaming fragment (`Markdown`, `Diff`, or `ToolCard`) at most `256 KiB` decoded bytes, carrying `seq`/`total`/`final`, matching RC-10 chunking and the framing discipline from [IPC and Agent RFC](ipc-agent-rfc.md). Backpressure sheds oldest buffered chunks with a countable metric; there is no silent loss for request/response acknowledgement.
 - **MP-7 `cancel`.** `ai.model.cancel(handle)` is idempotent and fail-closed: it abandons the provider request, drops buffered chunks, increments a cancellation metric, and leaves no partial tool dispatch. Cancellation may be invoked at any chunk boundary.
 - **MP-8 Deterministic timeouts.** Every provider call carries `now_ms` from the caller and observes `DEFAULT_REQUEST_TIMEOUT_MS = 5 s`, `DEFAULT_MCP_TIMEOUT_MS = 10 s` for tool-mediated streaming, and hard ceiling `MAX_REQUEST_TIMEOUT_MS = 30 s`, checked deterministically, reusing the timeout discipline already accepted for IPC.
@@ -109,7 +109,7 @@ Status: **candidate, non-normative**. This subsection extends MP-10 without chan
 - **MPC-2 Credential references, never inline keys.** A provider declares `api_key_env` (the name of a host-allowlisted environment variable) or `api_key_cmd` (argv whose stdout is the secret, for example a password-manager lookup), never an inline key; configuration containing a literal key value fails validation. Resolution happens on the Rust host side, and Lua, plugins, diagnostics, and traces never receive the value, reusing MP-10 and ADR 0006 redaction and audit rules.
 - **MPC-3 Resolution order and project overrides.** Explicit user or CLI selection wins over profile configuration, which wins over project-level selection. A project may select among already-granted providers and models but may not introduce a credential reference, raise a `privacy_class`, or enable a provider the user has not consented to; violations fail closed with a source-attributed diagnostic.
 - **MPC-4 No implementation claim.** No provider configuration, credential reference, keyring, or `secrets.env` path is implemented today; `bitty-agent` owns no LLM I/O and no API-key handling, and `bitty-config` has no provider schema. This subsection records direction only.
-- **MPC-5 Canonical wire protocols and Lua provider presets (candidate).** Rust implements only three canonical wire-protocol adapters: `openai_compatible` (`POST /v1/chat/completions`, covering OpenAI, OpenRouter, DeepSeek, Groq, Ollama, vLLM, and compatible local gateways), `anthropic_messages` (`POST /v1/messages`), and `gemini_content` (`POST /v1beta/models/{model}:generateContent` and `:streamGenerateContent`). A provider entry names a protocol plus a base URL, models, and privacy class; the host must not accumulate vendor-specific branches beyond these adapters. Provider presets are declarative Lua data rather than compiled tables: a candidate official preset plugin (`bitty-ai-providers`) ships the common entries, and users may register their own (`ai.register_provider(id, entry)`) so model renames, base-URL changes, custom headers, and private gateways never require a Rust rebuild. Preset data cannot widen consent or capability (MPC-1 through MPC-3 still apply). Rust owns streaming and the hard gates: SSE parsing with present-cadence backpressure and cancellation, connection pooling and retry, credential resolution, the 32 KiB context budget, and MCP tool-bus schema and permission validation. Lua owns presets, agent and subagent roles, prompt assembly, conversation trees, slash commands, and card UI. Tracked as [OQ-080](../decisions/open-questions.md).
+- **MPC-5 Canonical wire protocols and Lua provider presets (candidate).** Rust implements only three canonical wire-protocol adapters: `openai_compatible` (`POST /v1/chat/completions`, covering OpenAI, OpenRouter, DeepSeek, Groq, Ollama, vLLM, and compatible local gateways), `anthropic_messages` (`POST /v1/messages`), and `gemini_content` (`POST /v1beta/models/{model}:generateContent` and `:streamGenerateContent`). A provider entry names a protocol plus a base URL, models, and privacy class; the host must not accumulate vendor-specific branches beyond these adapters. Provider presets are declarative Lua data rather than compiled tables: a candidate official preset plugin (`bitty-ai-providers`) ships the common entries, and users may register their own (`ai.register_provider(id, entry)`) so model renames, base-URL changes, custom headers, and private gateways never require a Rust rebuild. Preset data cannot widen consent or capability (MPC-1 through MPC-3 still apply). Rust owns streaming and the hard gates: SSE parsing with present-cadence backpressure and cancellation, connection pooling and retry, credential resolution, the CP-5 context budget, and MCP tool-bus schema and permission validation. Lua owns presets, agent and subagent roles, prompt assembly, conversation trees, slash commands, and card UI. Tracked as [OQ-080](../decisions/open-questions.md).
 - **MPC-6 `bitty-ai` distribution boundary (candidate).** `bitty-ai` is an independently installed and versioned plugin and repository (Rust workspace plus a Lua front end), not a bundled Core feature. Core keeps a neutral `bitty-agent` protocol skeleton and the `bitty-mcp` adapter so users who prefer external harnesses (for example Claude Code, Hermes Agent, or others) pay no AI weight or supply-chain surface and can still run `bitty-ai` standalone or headless. Installing the plugin yields the full experience through the same manifest, capability, and lazy-trigger path as any other plugin. Tracked as [OQ-081](../decisions/open-questions.md).
 
 ## ContextProvider
@@ -135,10 +135,10 @@ No other provider exists in v1. Adding a provider requires a reviewed amendment 
 - **CP-3 Attribution.** Every context record carries `owner` (Stable Id path), `generation`, `collected_at` (`now_ms`), and `provider` name, so enforcement, consent revocation, and traces can attribute exactly which terminal or workspace contributed which bytes.
 - **CP-4 Cross-level consent.** Terminal-scoped context requires `agent.context.terminal` consent scoped to that `Terminal`; workspace-scoped assembly requires `agent.context.workspace`; cross-window or cross-instance assembly requires the target scope plus an explicit per-target grant. There is no bundled `all` grant that silently implies sibling terminals.
 
-### Context Budget 32 KiB
+### Context budget and request contract
 
-- **CP-5 Budget.** Each agent turn assembles at most `32 KiB` of context bytes combined across all providers. The host computes the budget before any provider I/O leaves the machine. Excess is truncated per provider in declared priority order (diagnostics and terminal semantic-zone text truncate first, project and git last), with a counted `truncated_bytes` and `truncated_providers[]` record.
-- **CP-6 Chunking.** If the assembled budget exceeds what fits in one logical message, it is delivered as RC-10 chunks (`256 KiB` ceiling, but practically the 32 KiB budget fits in one chunk; chunking is retained for forward compatibility as `seq`/`total`/`final`). A benign peer's context assembly is not blocked by a hostile peer's large request because quotas are per-client (RC-9 sharing).
+- **CP-5 Budget.** Context is bounded token-first. The caller states `ContextRequest { max_tokens: Option<u32>, max_bytes: Option<u64>, priority: ContextPriority, detail: DetailLevel }`; the host resolves it against the model context window, the per-turn token and cost budget, freshness, and priority before any provider I/O leaves the machine. Byte counts alone are not a sound universal bound because equal byte budgets differ widely in tokens across scripts, code, JSON, and base64; the `32 KiB` default therefore remains a candidate profile under OQ-066 rather than a core contract. Excess truncates per provider in declared priority order (diagnostics and terminal semantic-zone text truncate first, project and git last), with counted `truncated_tokens`/`truncated_bytes` and `truncated_providers[]`.
+- **CP-6 Artifacts.** Providers return `ContextArtifact { summary, structured metadata, references, chunks, provenance }`. A caller may drill down with `expand(context_id, section)` under the same consent, budget, attribution, and untrusted-surface rules rather than receiving an unbounded dump by default. Delivery stays RC-10 chunked (`256 KiB` ceiling) for forward compatibility as `seq`/`total`/`final`; a benign peer's context assembly is not blocked by a hostile peer's large request because quotas are per-client (RC-9 sharing).
 - **CP-7 Determinism and testability.** Context assembly is deterministic for a given `now_ms`, provider snapshot, and Stable Id set. Headless tests supply a seeded `now_ms` and in-memory provider snapshots; no wall-clock, filesystem, or network I/O enters the `bitty-agent` budget computation.
 
 ### Semantic zones
@@ -146,6 +146,7 @@ No other provider exists in v1. Adding a provider requires a reviewed amendment 
 - **CP-8 Zone source.** Semantic zones are the authoritative terminal-state boundaries already accepted in [Rich Presentation RFC](rich-presentation-rfc.md) and produced by the terminal state machine under OQ-007, derived from OSC 7 (cwd) / OSC 133 (prompt/input/command/output) marks, each with `line_id` anchoring and ordering. The ContextProvider does not parse PTY bytes to invent zones; it consumes the core-owned `SemanticZone` records derived from OSC 7 (cwd) / OSC 133 (prompt/input/command/output) marks.
 - **CP-9 Zone-scoped context.** Terminal context may be requested as `zone: Prompt | Input | Command | Output` with optional `line_id` range. The provider returns only bytes within that zone, truncated at zone boundaries, so a model never receives unbounded scrollback as an implicit default. Full-scrollback or alternate-screen scraping is denied unless the caller holds an explicit `terminal.inspect` plus a per-generation `terminal.raw` elevation and an attributed consent record.
 - **CP-10 Rendering separation.** Zone-scoped text is delivered as bounded `TerminalSnapshot` or `TerminalOutput` with `is_untrusted_surface = true` per [IPC and Agent RFC](ipc-agent-rfc.md), preserving the untrusted-observation labeling and T-10/R-013 defenses. The host policy enforces that this data never mixes into instruction or policy channels; string-sniffing inside the agent crate is not relied upon.
+- **CP-11 Command store, not render residency.** Command blocks, stdout/stderr text, OSC 133 metadata, timestamps, exit status, and zone records are core-owned semantic state held in CPU or persistent storage; the GPU holds only visible glyph caches, atlases, vertex buffers, and render surfaces and is never the state store. Terminal context is served from a bounded command-store API (`terminal.commands.list/get/output/summary/errors`) under the same consent and budgets, which is the intended agent surface instead of scraping a whole buffer or a render target.
 
 ## Agent
 
@@ -168,6 +169,7 @@ Rules:
 - **AG-2 Generation binding.** Agent levels are bound to `(PluginId, generation)` or `(AgentId, generation)` per [Plugin Platform RFC](plugin-platform-rfc.md) generations. A suspend/dispose/reload invalidates prior elevation; re-grant requires a fresh prompt.
 - **AG-3 No ambient trust.** Level checks are server-side on every request from the authenticated identity. A client that inserts a `level` field cannot escalate; the server ignores it and evaluates the real consent ledger.
 - **AG-4 Least privilege at dispatch.** Each `ToolCall` is authorized against both the caller's Agent level and the tool's required scope. A `workspace` level does not imply `terminal.input.all` / `terminal.manage`, `debug.control`, `config.modify`, `plugin.manage`, or `process.spawn`; `terminal.input.all` / `terminal.manage` remain separate scopes requiring their own consent grant. Those each require their own scope plus consent.
+- **AG-5 Orchestration versus execution.** Lua policy owns orchestration: model choice, strategy, tool list, and turn limits. The host owns execution semantics: cancellation, timeouts, token and cost accounting, tool-permission enforcement, concurrency, backpressure, retry, streaming lifecycle, resource quotas, audit logging, and the execution state machine. A plugin loop that repeatedly drives generation cannot escape host control.
 
 ### AgentWorkspace
 
@@ -418,7 +420,8 @@ record, and a storage failure cannot produce unbounded model input. Provider
 native features are selected only after capability negotiation and host
 policy checks.
 
-The accepted `CP-5` default of `32 KiB` per turn remains the draft contract. A
+The `CP-5` budget resolves token-first; the `32 KiB` byte default remains a
+candidate profile (OQ-066). A
 candidate refinement parameterizes the budget per model profile (small-context
 through future long-context models) while keeping that default, and attaches
 per-item metadata — source, freshness, priority, token cost, trust, and hash —
@@ -875,7 +878,7 @@ Stable behavior change -> Policy / agent-profile proposal
   growth is auditable rather than hidden in an opaque prompt blob.
 - **GR-4 Growth composes with the existing planes.** Memories and skills map to
   the context planes and Tool Bus contracts above; they are not a second
-  context channel and do not bypass PP-1 or the 32 KiB budget.
+  context channel and do not bypass PP-1 or the CP-5 budget.
 
 Whether a learned skill becomes durable project data or session-scoped state,
 and which approval surface versions it, is undecided; tracked as
@@ -900,7 +903,7 @@ output into agent context using OSC 133 zones and exit codes:
   policy data, not model inference), and a bounded window around each error;
   unrelated output is omitted unless the caller resolves it.
 - **SOC-4 One budget.** Every compressed contribution counts against the
-  accepted 32 KiB Context Budget (CP-5) with per-block attribution and counted
+  CP-5 context budget with per-block attribution and counted
   truncation; error lines and exit codes are dropped last.
 - **SOC-5 Untrusted labeling is preserved.** Compressed text remains
   `is_untrusted_surface = true` observation; compression may not launder
@@ -960,7 +963,7 @@ not as an authority surface:
 
 - **DCT-1 Bounded task context.** A role may read a bounded projection of its
   task (title, scope, dependencies, latest checkpoint) through a
-  ContextProvider-style provider; the projection counts against the 32 KiB
+  ContextProvider-style provider; the projection counts against the CP-5
   budget like any other context.
 - **DCT-2 Checkpoints as recovery pointers.** Checkpoints are candidate
   `RecoveryPointer` targets for the `ContextEngine` (already named there as a
@@ -1077,17 +1080,17 @@ Numbered for reference; none is implemented by this RFC alone.
 
 ## Security alignment and traceability
 
-| Draft element                                | Normative gate it refines                                     | Threat / Risk IDs             |
-| -------------------------------------------- | ------------------------------------------------------------- | ----------------------------- |
-| ModelProvider `ai.model` registry and scopes | P0-AC-024, P0-AC-026, invariant 6, private transport auth     | T-10, R-013, R-014            |
-| ContextProvider and Stable Id hierarchy      | Dispatcher scoping, per-client attribution                    | T-09, R-011                   |
-| Context Budget 32 KiB and RC-10 chunking     | Bounded inputs, invariant 7, RC-9/RC-10                       | T-01                          |
-| Semantic zones as provider boundary          | Terminal Truth preservation, presentation-only rule           | T-02, R-008                   |
-| Agent four levels with per-level consent     | Least privilege, no ambient authority, invariant 5/6          | T-09, T-10, R-011, R-013      |
-| AgentWorkspace ephemerality and scoping      | Per-plugin isolation, containment FS-3, capability-checked FS | R-006, R-007                  |
-| Rich streaming via `bitty-rich` scene        | Presentation never Terminal Truth, no hot-path execution      | invariant 3/4, T-05           |
-| Tool Bus MCP adapter and host-only execution | Confused-deputy defense, untrusted labeling, P0-AC-024        | T-10, R-013                   |
-| Privacy-first and No self-accept             | Necessity of independent review lifecycle                     | R-014, Documentation workflow |
+| Draft element                                                      | Normative gate it refines                                     | Threat / Risk IDs             |
+| ------------------------------------------------------------------ | ------------------------------------------------------------- | ----------------------------- |
+| ModelProvider `ai.model` registry and scopes                       | P0-AC-024, P0-AC-026, invariant 6, private transport auth     | T-10, R-013, R-014            |
+| ContextProvider and Stable Id hierarchy                            | Dispatcher scoping, per-client attribution                    | T-09, R-011                   |
+| Context budget and request contract (CP-5/CP-6) and RC-10 chunking | Bounded inputs, invariant 7, RC-9/RC-10                       | T-01                          |
+| Semantic zones as provider boundary                                | Terminal Truth preservation, presentation-only rule           | T-02, R-008                   |
+| Agent four levels with per-level consent                           | Least privilege, no ambient authority, invariant 5/6          | T-09, T-10, R-011, R-013      |
+| AgentWorkspace ephemerality and scoping                            | Per-plugin isolation, containment FS-3, capability-checked FS | R-006, R-007                  |
+| Rich streaming via `bitty-rich` scene                              | Presentation never Terminal Truth, no hot-path execution      | invariant 3/4, T-05           |
+| Tool Bus MCP adapter and host-only execution                       | Confused-deputy defense, untrusted labeling, P0-AC-024        | T-10, R-013                   |
+| Privacy-first and No self-accept                                   | Necessity of independent review lifecycle                     | R-014, Documentation workflow |
 
 No draft element weakens a normative P0 gate. Any discovered conflict returns the conflicting clause to revision rather than downgrading the gate.
 
@@ -1101,11 +1104,11 @@ All criteria are **proposed** and become acceptance gates only when the implemen
 
 ### ContextProvider and Stable Ids
 
-- Given workspace/project/git/diagnostics/terminal fixtures across Instance/Window/Workspace/View/Terminal, context assembly at `32 KiB` respects the Stable Id set, zone-scoped terminal requests return only the declared zone bytes, and attribution carries the full Stable Id path and generation. Forged Stable Ids without transport auth gain no authority. Verification: `integration` + `adversarial` (hierarchy enumeration, forged-id probes, cross-workspace grant matrix).
+- Given workspace/project/git/diagnostics/terminal fixtures across Instance/Window/Workspace/View/Terminal, context assembly at the CP-5 budget respects the Stable Id set, zone-scoped terminal requests return only the declared zone bytes, and attribution carries the full Stable Id path and generation. Forged Stable Ids without transport auth gain no authority. Verification: `integration` + `adversarial` (hierarchy enumeration, forged-id probes, cross-workspace grant matrix).
 
 ### Context Budget and semantic zones
 
-- Given maximal provider outputs and overflow, truncation honors declared priority, emits counted `truncated_bytes` and `truncated_providers[]`, and never exceeds `32 KiB` delivered; zone-scoped terminal scrapes never silently expand to full scrollback. Verification: `unit` with budget-boundary sweep and zone-scoped snapshot matrix.
+- Given maximal provider outputs and overflow, truncation honors declared priority, emits counted `truncated_bytes` and `truncated_providers[]`, and never exceeds the resolved CP-5 budget delivered; zone-scoped terminal scrapes never silently expand to full scrollback. Verification: `unit` with budget-boundary sweep and zone-scoped snapshot matrix.
 
 ### Agent levels
 
@@ -1193,7 +1196,7 @@ implemented by this RFC alone.
 | Alternative                                              | Why rejected or deferred                                                                                                                                                                                                      |
 | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Core-owned model client with ambient network authority   | Binds the terminal core to a vendor and widens the network attack surface beyond per-provider consent. The host-owned registry with per-provider `privacy_class` and `network.connect` consent preserves the plugin boundary. |
-| Implicit context gathering from working directory        | Would send unbounded files by default and bypass minimization and 32 KiB budgeting. Explicit Stable Id addressing plus provider enumeration keeps collection intentional and auditable.                                       |
+| Implicit context gathering from working directory        | Would send unbounded files by default and bypass minimization and CP-5 budgeting. Explicit Stable Id addressing plus provider enumeration keeps collection intentional and auditable.                                         |
 | Bundled `all` level for agents                           | Violates least privilege by silently granting cross-workspace and cross-window authority when only local assistance was intended. Separate per-target grants keep elevation narrow and revokable.                             |
 | AgentWorkspace as persistent project subdirectory        | Creates durable ambient state and widens traversal risk. The ephemeral per-session directory disposed at session close limits the blast radius and keeps the project tree the system of record.                               |
 | Bypassing Rich Presentation for agent output             | Would fork the renderer and lose selection, search, accessibility, and damage guarantees. Rich streaming through `bitty-rich` `Scene` composition reuses the single scene path and its contracts.                             |
@@ -1221,6 +1224,8 @@ The 2026-09-13 docs `CTX-0172` consolidation of the follow-up AI-architecture re
 
 The 2026-09-13 docs `CTX-0173` consolidation of the batching research note adds the tool-call batching and round-trip economy direction ([OQ-071](../decisions/open-questions.md)) and extends the language-service direction with user-provisioned language tools and formatting/code-action fast feedback (still [OQ-063](../decisions/open-questions.md)). None of these additions changes the draft status of this document or the accepted contracts it cites.
 
+The 2026-09-13 `014.md` review consolidation adds the token-first context request and artifact contract (extends [OQ-066](../decisions/open-questions.md)), the Panel/Execution separation and core ontology ([OQ-084](../decisions/open-questions.md)), the Lua-orchestration/host-execution boundary, the semantic command store, and the sandbox trust-level model ([OQ-085](../decisions/open-questions.md)); the provider-convention and opaque-capability refinements are recorded in [Plugin reuse and providers](plugin-reuse-and-providers.md) and the widget-level RichSurface refinement in the [Rich Presentation RFC](rich-presentation-rfc.md). None of these additions changes the draft status of this document or the accepted contracts it cites.
+
 These are not blockers for this draft; they will be decided in a follow-up Agent or Tool Bus amendment with independent review.
 
 ## Acceptance criteria and lifecycle
@@ -1229,7 +1234,7 @@ This RFC is **draft**. It does not self-accept and does not close an open questi
 
 Acceptance will require:
 
-1. Independent review by the security-reviewer, a category-owner for `architecture` or `agent`, and the docs-curator accepts the ModelProvider (`list_models`/`complete`/`stream`/`cancel`), ContextProvider providers and 32 KiB budget, Stable Id hierarchy, semantic-zone integration, four Agent levels with per-level consent, ephemeral AgentWorkspace, Rich streaming (Markdown/Diff/ToolCard), Tool Bus MCP, and privacy-first controls without weakening any normative P0 gate.
+1. Independent review by the security-reviewer, a category-owner for `architecture` or `agent`, and the docs-curator accepts the ModelProvider (`list_models`/`complete`/`stream`/`cancel`), ContextProvider providers and the token-first context-budget contract, Stable Id hierarchy, semantic-zone integration, four Agent levels with per-level consent, ephemeral AgentWorkspace, Rich streaming (Markdown/Diff/ToolCard), Tool Bus MCP, and privacy-first controls without weakening any normative P0 gate.
 2. The same change synchronizes the open-question register only if an open question for AI architecture exists; this draft does not move OQ-018 from `Accepted` and instead records its reuse of the OQ-018 contracts.
 3. The specifications index records this document as `Draft` until independent review moves its frontmatter to `accepted`.
 4. Verification criteria above have headless or integration evidence before any claim of shipped behavior.
@@ -1268,13 +1273,16 @@ is a native workspace platform rather than a TUI redrawn inside one grid.
   contract remain [OQ-052](../decisions/open-questions.md); plugin-supplied
   presentation stays capability-gated per the Panel Runtime pre-study.
 
-## Embodied multi-agent workspace: panels as leased workstations (candidate)
+## Workspace-anchored multi-agent runtime: panels as leased workstations (candidate)
 
 Status: **candidate, non-normative**. Recorded from the user's
 "company / floor / workstation" model for multi-agent work (2026-09-13). It
 refines the spatial orchestration question in
 [OQ-058](../decisions/open-questions.md) and composes with the AI workspace
-composition above.
+composition above. Technically this is a workspace-anchored (spatially
+anchored) multi-agent runtime: agent context is anchored in a persistent
+execution environment rather than only in conversation memory, and humans and
+agents share that environment state instead of relaying tokens.
 
 - **Mapping.** A running Bitty process is a workspace for a team; each
   Workspace is a floor; each Panel is a workstation with a stable id, a
@@ -1286,6 +1294,11 @@ composition above.
   work there, and releases it; a second agent or the human can take over an
   idle panel. Lease transitions are inter-panel event-bus events, and
   presentation stays non-authoritative.
+- **Panel is a view, not the execution.** The underlying model is
+  `Agent --owns/observes--> ExecutionContext {TerminalExecution, BrowserExecution, TaskExecution, ToolExecution} <--presents/interacts-- Panel`.
+  One agent may hold many panels, one panel may present several executions,
+  and a background agent may hold no panel. The lease and roaming vocabulary
+  above remains a UX metaphor over that model, never the core agent ontology.
 - **Suspension preserves the scene.** When an agent or human steps away, the
   panel's PTY and presentation generation state remain intact, so a later
   participant resumes from the visible scene instead of re-deriving it.
@@ -1297,8 +1310,10 @@ composition above.
   take over or hand work back, and uses the same lease vocabulary.
 - **Boundary.** The panel lease, description, and handoff contract is tracked
   as [OQ-083](../decisions/open-questions.md); role panels, event kinds, and
-  lifecycle coupling remain [OQ-058](../decisions/open-questions.md). No
-  lease, description, roaming, or handoff mechanism is implemented today.
+  lifecycle coupling remain [OQ-058](../decisions/open-questions.md); the
+  execution model and identifier relationships are tracked as
+  [OQ-084](../decisions/open-questions.md). No lease, description, roaming, or
+  handoff mechanism is implemented today.
 
 ## References
 

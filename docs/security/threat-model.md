@@ -72,6 +72,13 @@ must not be precluded by P0 APIs.
 The origin `Unknown` uses the restrictive policy. Detection that a shell is
 remote is advisory only and must never be the sole security boundary.
 
+A candidate trust-level model for plugin, helper, and tool boundaries — level 0
+Core, 1 bundled Lua, 2 third-party Lua, 3 native sidecar, 4 external
+tools/MCP/network — is registered as
+[OQ-085](../decisions/open-questions.md). It records allowed capability domains
+per level and does not change any current boundary, policy, or P0 gate until it
+is accepted.
+
 ## Principal data flows and controls
 
 ### PTY to terminal state

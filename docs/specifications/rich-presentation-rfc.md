@@ -797,6 +797,12 @@ require a follow-up decision:
    re-derived from the reattached stream.
 8. Search ranking between terminal and rich results and whether plugins may
    influence ranking.
+9. Widget-level `RichSurface` composition above `SceneNode` (Text, RichText,
+   CodeBlock, Image, Stack, Grid, ScrollView, Button, Input, Canvas) so plugins
+   never depend on raw scene or GPU objects. This is a candidate refinement
+   from the 2026-09-13 `014.md` review; the raw `SceneNode` contribution must
+   not be treated as a frozen plugin ABI, and adoption needs a follow-up RFC
+   revision.
 
 ## Acceptance criteria
 
