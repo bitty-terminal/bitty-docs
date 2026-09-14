@@ -49,7 +49,7 @@ sidebar_order: 15
 | `bitty-terminal-docs`   | Bun 1.4.0                                                                                | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12, commitlint 21.2.2, and lefthook 2.1.10 via bunx pins                                                                                                                |
 | `bitty-ai-docs`         | Bun 1.4.0                                                                                | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12, commitlint 21.2.2, and lefthook 2.1.10 via bunx pins                                                                                                                |
 | `bitty-plugins-docs`    | Bun 1.4.0                                                                                | bun             | `just check` | prettier 3.9.6, markdownlint-cli2 0.23.1, actionlint 1.7.12, commitlint 21.2.2, and lefthook 2.1.10 via bunx pins                                                                                                                |
-| `bitty-website`         | Bun 1.4.0                                                                                | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.1, commitlint 21.2.2 pinned in package.json/bun.lock                                                                                         |
+| `bitty-website`         | Bun 1.4.0                                                                                | bun             | `just check` | frozen lockfile install; Astro static build; prettier 3.9.6, markdownlint-cli2 0.23.2, commitlint 21.2.2 pinned in package.json/bun.lock                                                                                         |
 | `bitty`                 | Rust stable (rust-toolchain.toml); Bun for tooling without an in-repository pin          | cargo / bun     | `just check` | rustfmt, Clippy, tests, actionlint (docker `rhysd/actionlint:1.7.12` in CI); commitlint 21.2.2 provisioned into `target/dev-tools`; markdownlint-cli2 0.23.1 via bunx                                                            |
 | `bitty-ai`              | Rust stable (`rust-toolchain.toml` 1.98.1); Bun for tooling without an in-repository pin | cargo / bun     | `just check` | rustfmt, Clippy, workspace tests, actionlint; markdownlint-cli2 0.23.1 via bunx; commitlint 21.2.2 provisioned into `target/dev-tools` through `just tools`                                                                      |
 | `bitty-devtools`        | Bun 1.4.0                                                                                | bun             | `just check` | prettier 3.9.6 and markdownlint-cli2 0.23.1 via bunx pins; commitlint 21.2.2 pinned in package.json/bun.lock                                                                                                                     |
@@ -96,8 +96,9 @@ Any new upstream for the remaining draft tail requires an ADR 0004 revision.
 
 ## Local gate tools and hook wiring
 
-The bootstrap wiring of each repository records these shared local gate tool
-versions:
+The bootstrap wiring of each repository targets these shared local gate tool
+versions as the intended-sync baseline (per-repository justfiles and manifests
+remain the authoritative truth per normative rule 3):
 
 | Tool                              | Pinned version |
 | --------------------------------- | -------------- |
@@ -161,7 +162,10 @@ Known drift at recording time (report it; do not silently fix it here):
   (`bitty`, `bitty-ai`, `bitty-website`, `bitty-devtools`) resolve the lefthook
   binary from `PATH` without a version pin, unlike the pinned 2.1.10 installs
   in `bitty-docs`, the three project documentation repositories,
-  `bitty-plugins`, `bitty-plugin-template`, and `bitty-plugin-sdk`.
+  `bitty-plugins`, and `bitty-plugin-sdk`.
+- `bitty-plugin-template` pins lefthook 2.1.12 and markdownlint-cli2 0.23.2,
+  and `bitty-website` pins markdownlint-cli2 0.23.2, ahead of the shared
+  2.1.10 / 0.23.1 baseline above; reconciliation stays with the owning tasks.
 
 ## Canonical commands
 
