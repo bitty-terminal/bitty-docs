@@ -101,6 +101,35 @@ A content change is not done when the website would publish stale or duplicated
 contracts. A website integration is not done when it bypasses the metadata,
 language, link, revision-pin, or publication gates.
 
+## Content policy and deferred surfaces
+
+The website is docs-first: canonical documentation is the first and currently
+only committed website content, and every published page is sourced from this
+corpus — the shared governance documents in `bitty-docs` and the pinned
+project documentation submodules — through the revision pin and synchronization
+pipeline accepted in the
+[Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md).
+Content is never authored in `bitty-website`, and a website page must not
+become a second source of truth for canonical documentation. Website work is
+currently deprioritized.
+
+The following page classes are deferred and are not website content today;
+each requires a scoped task and its owning decision artifact before any
+content is written:
+
+- plugin marketplace and plugin registry browsing surfaces;
+- a plugin catalog of discovery, listing, or comparison pages for plugins;
+- a theme gallery or theme marketplace;
+- landing or marketing pages outside presentation of canonical documentation.
+
+The deferral follows recorded sequencing rather than creating a new decision.
+The [roadmap](../roadmap/now-next-later.md#later-4-post-v10-deferred-horizon)
+carries the plugin registry and marketplace surface and the theme marketplace
+as Later-4 candidates, and the
+[Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md)
+records the plugin store or marketplace distribution surface and the theme
+marketplace in its candidate early-deferral list.
+
 ## Deferred decisions
 
 This contract intentionally does not choose a theme, renderer, loader, content
