@@ -64,6 +64,7 @@ records a reviewed contract, not implementation evidence:
 | [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/lua-runtime-rfc.md)                          | OQ-009                                 | Accepted |
 | [Rich Presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md)             | OQ-008, OQ-015, OQ-016                 | Accepted |
 | [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/isolation-resource-rfc.md)            | OQ-014                                 | Accepted |
+| [Panel Runtime RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/panel-runtime-rfc.md)                     | OQ-014 (panel platform follow-up)      | Accepted |
 | [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md)                       | OQ-017                                 | Accepted |
 | [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-followup-rfc.md)               | OQ-022, OQ-026, OQ-027, OQ-028, OQ-029 | Accepted |
 | [DevTools RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/devtools-rfc.md)                               | OQ-019                                 | Accepted |
