@@ -1,50 +1,27 @@
 # bitty-docs
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
-terminal project. The project is currently in **Pre-alpha / Engineering
-Milestones M1-M8** (2026-09-14, `bitty` `bea338d`, previous `29772a3`,
-baseline `de134ec`; `R-004` clipboard re-audited at `bitty`
-`7a4ee41` baseline `de134ec` per
-[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
-`d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139, baseline
-`de134ec`) are `Mitigated` per RS-1..RS-7; experimental
-implementations `c0aadd2` (vertical slice, CTX-0095 PR #148) + `7e3104d`
-(plugin dogfood, CTX-0096 PR #149) + `a8735d0` (PTY reply fix, CTX-0098 PR #151)
-are `Implemented` (experimental) not `Verified`/`Compatible`/`Release-ready`,
-overall not `Verified`/`Compatible`/`Release-ready`): these documents describe
-intent, accepted working directions (40 OQs `Accepted` per the
-[open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md)), normative
-requirements, and the implementation lifecycle
+terminal project. Project state at a glance (snapshot `2026-09-14`):
+
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `bea338d`,
+  baseline `de134ec`, previous `29772a3`, 19 crates).
+- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11).
+- Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
+  `R-005`/`R-006`/`R-007` are `Mitigated`.
+- Full project state: [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json),
+  the single machine fact source. This summary is derived from it and checked
+  by `just state` (`bun .github/scripts/check-state.mjs`); generate the
+  canonical wording with `bun .github/scripts/check-state.mjs --generate`.
+
+These documents describe intent, accepted working directions (see the
+[open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md)
+for the current `Accepted` count), normative requirements, and the
+implementation lifecycle
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-(crate maturity); experimental code is review evidence, not acceptance. The
-`bitty` workspace is now 19 crates (`vt`, `pty`, `platform`, `config`,
-`package`, `lua`, `term-state`, `ui`, `render`, `plugin-host`, `rich`, `ipc`,
-`agent`, `runtime`, `app`, `core`, plus verification crates `compat-lab` and
-`perf` and harness crate `test-support`) with IPC/rich/resolver `Implemented`
-(experimental evidence retained from `a8735d0`, compat-lab/perf hardening and
-UX wave through `29772a3`, semantic-terminal P1-P5 `Implemented`-only at
-`4ccb771`/`064486b`/`ab1f7ab`, scrollbar overlay `Implemented`-only at `c49ead1` (`bitty` #405), workspace rename plus panel gaps `abde197` (`bitty` #415), `mod_key` `2a5e451` (`bitty` #411), measured font defaults `308687d` (`bitty` #413), `radius_px` S0 `84aa580` (`bitty` #417), `frameHash` digest `3f5ed24` (`bitty` #421), V1-V3 gates `29772a3` (`bitty` #423), plus the `v0.0.20` wave: plugin runtime Gap A, ctl correctness, end-to-end Kitty graphics, workspace decoration, config matrix, plugin CLI, Windows ConPTY, and in-repo CarryCtx publication) but not yet independently
-verified; `Verified` requires security-auditor and P0-AC evidence per the
+(crate maturity); experimental code is review evidence, not acceptance.
+`Verified` requires security-auditor and P0-AC evidence per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md).
-`R-004` at `7a4ee41` (`23` `suspicious_paste` + `13` `paste` unit + `4`
-remediation, baseline `19`) remains `Open` with residual platform-backend,
-real-window UX, and `8192`-byte bound-scope limits — not `Mitigated`/`Verified`;
-`R-005` at `5bdcdbd`, `R-006` at `0afc94d`, `R-007` at `d4d75e9` are `Mitigated` with
-residual UX and grant/budget soak gaps per independent review (see evidence
-matrix). Experimental slice `c0aadd2` implements real single-window terminal
-(`winit` 0.30/`wgpu` 25.0/`crossfont` 0.9, bounded PTY reply, Kitty `7727`) and
-`a8735d0` closes reply loop via `Runtime::write_replies` (bounded `4`KiB); `7e3104d`
-dogfoods public Plugin API with five bundled-disabled plugins. Release
-`v0.0.20` (`d9f5b49`, 2026-09-11, first workspace Cargo bump since `0.0.1`)
-ships cross-platform `bitty` binaries with
-packaging (Homebrew, Scoop, AUR, deb/rpm/apk) alongside the `v0.0.19` (`c2aabee`,
-2026-09-03) packaging baseline. Canonical snapshot:
-[`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json)
-(synchronized `bea338d`, `2026-09-14`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`) validated by `bun .github/scripts/check-state.mjs`.
 
 ## See the project workflow (CarryCtx)
 
@@ -198,9 +175,10 @@ for crates):
 
 - **Normative requirement**: a constraint future implementations must satisfy.
 - **Accepted working direction**: current intent, still subject to an ADR or RFC
-  where the mechanism or compatibility contract is not settled; 40 OQs
-  are `Accepted` per the
-  [open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) as of 2026-09-14.
+  where the mechanism or compatibility contract is not settled; see the
+  [open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md)
+  for the current `Accepted` count (the register, not this list, owns OQ
+  numbers).
 - **Candidate** / **Draft**: a proposal retained for evaluation, not a decision;
   5 `Draft` specs remain (Status/Input/Text vs AI Arch plus Plugin Reuse — see
   `bitty-terminal/specifications/README.md` prioritization).
@@ -245,12 +223,7 @@ The normal delivery lifecycle is Issue, CarryCtx task, branch/worktree, commit,
 pull request, independent review plus CI, merge, and final task checkpoint.
 Documentation synchronization is part of the definition of done for every
 affected product or governance change. Current stage is **Pre-alpha /
-Engineering Milestones M1-M8** (2026-09-14, `bitty` `bea338d`, 19 crates,
-release `v0.0.20`, experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` (experimental) but not
-yet `Verified`; `R-004` remains `Open` at `bitty` `7a4ee41` baseline `de134ec`
-per 2026-08-31 clipboard audit with residual platform-backend, real-window UX,
-and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007` `Mitigated` at
-`bitty` `d4d75e9` baseline `de134ec` previous `7e3104d` (Issues #137/#138/#139)
-per RS-1..RS-7; `Draft` -> `Experimental Implementation` -> `Accepted` ->
-`Verified` -> `Compatible`; overall product not
-`Verified`/`Compatible`/`Release-ready`).
+Engineering Milestones M1-M8**; see the project-state summary at the top of
+this file and the
+[full project state](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json) for the synchronized
+revision, release, and risk state.

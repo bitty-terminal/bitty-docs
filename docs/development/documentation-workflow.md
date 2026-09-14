@@ -87,6 +87,13 @@ Routing rules:
    are absent, so submodule-owned checks (project state summary and SVG
    validation) skip unmaterialized files instead of failing.
 
+What each pin means is defined once in
+[submodule pin semantics](../project/repository-map.md#submodule-pin-semantics):
+docs-repo `main` is the latest canonical docs, the code-repo `docs/` mount is
+the docs matching that implementation, and the aggregator mount is the
+governance-reviewed snapshot. Pins are reproducibility anchors and are
+expected to differ; never force them equal.
+
 ### Migration outcome
 
 Phase 1 added the local partition, index pages, and skeletons. Phase 2
@@ -122,22 +129,43 @@ Rules:
 
 ## Document types and authority
 
-| Type                    | Purpose                                                                         | Authority rule                                                    |
-| ----------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Guide                   | Helps a reader complete a supported task.                                       | Must cite verified behavior for the documented release.           |
-| Reference               | Enumerates stable commands, fields, APIs, protocols, errors, and compatibility. | Must match the owning implementation and version.                 |
-| Specification           | Defines a proposed or accepted technical contract.                              | Status and unresolved details must be explicit.                   |
-| Policy or contract      | Defines normative project, security, or cross-repository obligations.           | Changes require the named owners and affected reviewers.          |
-| Overview or explanation | Provides orientation and rationale.                                             | Links to authoritative specifications instead of redefining them. |
-| Register                | Tracks decisions, questions, risks, or evidence.                                | Entries close only with cited reviewable evidence.                |
-| Research                | Preserves provenance and observations.                                          | Never becomes a decision or implementation claim by implication.  |
-| Index                   | Routes readers to canonical documents.                                          | Must stay complete and avoid duplicate normative prose.           |
+| Type                    | Purpose                                                                         | Authority rule                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Guide                   | Helps a reader complete a supported task.                                       | Shipped-factual guides must cite the documented release with a version qualifier (see user-doc maturity tiers below); compatibility or verified-security claims still require `Verified` evidence. |
+| Reference               | Enumerates stable commands, fields, APIs, protocols, errors, and compatibility. | Must match the owning implementation and version.                                                                                                                                                  |
+| Specification           | Defines a proposed or accepted technical contract.                              | Status and unresolved details must be explicit.                                                                                                                                                    |
+| Policy or contract      | Defines normative project, security, or cross-repository obligations.           | Changes require the named owners and affected reviewers.                                                                                                                                           |
+| Overview or explanation | Provides orientation and rationale.                                             | Links to authoritative specifications instead of redefining them.                                                                                                                                  |
+| Register                | Tracks decisions, questions, risks, or evidence.                                | Entries close only with cited reviewable evidence.                                                                                                                                                 |
+| Research                | Preserves provenance and observations.                                          | Never becomes a decision or implementation claim by implication.                                                                                                                                   |
+| Index                   | Routes readers to canonical documents.                                          | Must stay complete and avoid duplicate normative prose.                                                                                                                                            |
 
 The maintained topic document is the source of truth. Historical conversations
 and external references are provenance. Product repositories are the source of
 implementation evidence. No website content consumer exists yet. A future
 `bitty-website` integration must present pinned canonical content without owning
 or duplicating specifications.
+
+## User-doc maturity tiers
+
+User documentation distinguishes three claims (DIR-015, research note 024
+§11). The old blanket rule that installation and getting-started pages wait
+for `Verified` was over-strict against shipped reality (`bitty` documents AUR
+recipes, GitHub Releases, `bitty init`, and `bitty doctor` as shipped):
+
+- Shipped-factual docs describe behavior that ships in a named release. They
+  are allowed before `Verified` when every page carries an explicit version
+  qualifier such as "Available in `v0.0.20`, pre-alpha, API and behavior may
+  change".
+- Compatibility guarantees promise stable behavior across releases. They
+  require `Verified` plus the semver and compatibility matrix, and remain
+  deferred.
+- Verified security claims assert audited trust boundaries or closed risks.
+  They require security-auditor and P0-AC evidence per the risk evidence RFC,
+  and remain deferred.
+
+A version qualifier never upgrades a shipped-factual page into a
+compatibility or security claim.
 
 ## Open-question admission
 

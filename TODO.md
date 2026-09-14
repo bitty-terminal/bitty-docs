@@ -1,32 +1,24 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-This list sequences project-definition and hardening work at the **Pre-alpha /
-Engineering Milestones M1-M8** stage (2026-09-14, `bitty` `bea338d` previous
-`29772a3` baseline `de134ec`, 19 crates, 40 OQs Accepted, release `v0.0.20`;
-experimental slice `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` not `Verified`;
-`R-004` re-audited at `7a4ee41` baseline `de134ec` per
-[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` `Mitigated`
-at `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) per
-RS-1..RS-7, overall not `Verified`/`Compatible`/`Release-ready`). The M1-M8
-milestone frame and subsystem assessments live in the
-[roadmap](docs/roadmap/now-next-later.md) and
-[`docs/project/project-state.json`](docs/project/project-state.json).
-Canonical choices live in the [open-question register](docs/decisions/open-questions.md)
-(40 `Accepted` at this snapshot); lifecycle is
-`Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
-(spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-(crate maturity); experimental code is review evidence, not acceptance.
-Canonical snapshot: [`docs/project/project-state.json`](docs/project/project-state.json)
-(synchronized `bea338d`, `2026-09-14`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`
-and refreshed mechanically by `just state-refresh` from a local `bitty` checkout.
+Project state at a glance (snapshot `2026-09-14`):
+
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `bea338d`,
+  baseline `de134ec`, previous `29772a3`, 19 crates).
+- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11).
+- Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
+  `R-005`/`R-006`/`R-007` are `Mitigated`.
+- Full project state: [`docs/project/project-state.json`](docs/project/project-state.json),
+  the single machine fact source. This summary is derived from it and checked
+  by `just state` (`bun .github/scripts/check-state.mjs`).
+
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
 flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), and the
-project-state refresh plus refresh automation (CTX-0180).
+project-state refresh plus refresh automation (CTX-0180). OQ counts live in
+the [open-question register](docs/decisions/open-questions.md) and milestone
+detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
+summary.
 
 ## Documentation foundation
 
@@ -141,9 +133,14 @@ project-state refresh plus refresh automation (CTX-0180).
 - [ ] Publish first-party plugins, SDK examples, or compatibility releases
       (still deferred: `Compatible`/`Release-ready` requires `Verified` plus
       semver and compatibility matrix).
-- [ ] Add installation, getting-started, daily-use, troubleshooting, and factual
-      reference pages only after verified product behavior exists
-      (`Verified` gate per risk-evidence RFC).
+- [ ] Add compatibility guarantees and factual reference pages that promise
+      stable behavior only after verified product behavior exists (`Verified`
+      gate per risk-evidence RFC). Shipped-factual user docs are different:
+      per DIR-015, installation, getting-started, daily-use, and
+      troubleshooting pages that describe shipped behavior with an explicit
+      version qualifier ("Available in `v0.0.20`, pre-alpha, API and behavior
+      may change") do not wait for `Verified`; they must never claim
+      compatibility or verified security.
 - [ ] Decide internationalization ownership, locale structure, translation
       synchronization, and multilingual routing before adding localized files
       (English-only remains normative).
@@ -258,31 +255,11 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Documentation synchronization — CTX-0111 sync (2026-08-31)
 
-- [x] Synchronize docs with vertical-slice decisions and evidence (CTX-0111, depends on CTX-0109, cross-repo link to `bitty` CTX-0095 `in_progress` as of 2026-08-31; no implementation/verification/compatibility claims; docs stay `Draft` candidate until independent review; `just check` + `actionlint` + `act -n` pass; specs index verified at 7 `Draft`s, CTX-0107/0108/0109/0110 sections documentation-only, no stale `6 drafts` counts).
-- [x] Independent docs review for CTX-0111 sync recorded; closed per PR #134.
+- [x] Synchronize docs with vertical-slice decisions and evidence (CTX-0111, depends CTX-0109; docs stay `Draft` until independent review; gates pass; no stale counts). Independent review recorded; closed per PR #134.
 
 ## Documentation synchronization — CTX-0116 sync (2026-08-31)
 
-- [x] Reconcile post-vertical-slice implementation state (CTX-0116, depends on
-      CTX-0111, `bitty` `c0aadd2` vertical slice + `7e3104d` plugin dogfood +
-      `a8735d0` PTY reply fix, all `Implemented` (experimental) not `Verified`):
-      update `docs/project/project-state.json` to `a8735d0` (chain
-      `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`, baseline `de134ec` previous
-      `7e3104d`, `R-004` `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` `Mitigated`
-      at `d4d75e9`, experimental `c0aadd2`/`7e3104d`/`a8735d0` not `Verified`,
-      lifecycle `Draft -> Experimental Implementation -> Accepted -> Verified
--> Compatible`); update `TODO.md` to mark CTX-0095/0096/0098 completed as
-      experimental, keep spec `Draft` vs code `Experimental Implementation`
-      distinct; update `docs/roadmap/now-next-later.md`, `docs/README.md`,
-      `README.md`, `bitty-terminal/product/vertical-slice-acceptance.md`,
-      `bitty-terminal/specifications/input-pointer-rfc.md`,
-      `bitty-terminal/specifications/text-rendering-rfc.md`,
-      `bitty-terminal/specifications/terminal-registry-view-lifecycle-rfc.md` with
-      implementation evidence links and correct `Draft`/`Experimental`
-      wording; update `bitty-terminal/specifications/README.md` prioritization for 7
-      `Draft`s (Workspace Compositor/Status/Input/Text/Registry vs AI Arch);
-      English only, flat frontmatter, `just check` + `actionlint` + `act -n` +
-      `bun .github/scripts/check-state.mjs` pass, `git diff --check` 0.
+- [x] Reconcile post-vertical-slice state (CTX-0116, depends CTX-0111; snapshot to `a8735d0` with chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`, baseline `de134ec`, risks unchanged, specs stay `Draft` vs code `Experimental Implementation`; summaries and gates in lockstep).
 - [ ] Obtain independent docs-curator + security-auditor review for CTX-0116
       sync before closing; `Verified`/`Compatible` remain gated on RS-1..RS-7.
 
@@ -293,6 +270,20 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [x] CTX-0132 scrollbar flip to shipped (`c49ead1` previous `7048139`): scrollbar shipped defaults (#405 merged); snapshot touch-up; no risk-state or normative changes.
 - [x] CTX-0133 sync bundle to `29772a3` previous `c49ead1` (release `v0.0.19`): workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults; snapshot, validator, fixture, and summaries in lockstep; no risk-state or normative changes (PR #164).
 - [x] CTX-0180 refresh to `bea338d` previous `29772a3` (release `v0.0.20`, 19 crates, 40 OQs Accepted): add `refresh-state.mjs` with `just state-refresh`/`just state-refresh-check` and the scheduled State freshness workflow; the validator now derives revision/date/count consistency instead of freezing literals; no risk-state or normative changes.
+
+## Follow-ups recorded by CTX-0199 (research note 024)
+
+- [ ] Write the shipped-factual installation and getting-started guides for
+      `v0.0.20` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`,
+      `bitty doctor`) with the DIR-015 version qualifier, in the owning
+      project docs repository. This task only opens the policy gate; it does
+      not write the guides.
+- [ ] Add an optional `just docs-status` helper that prints the three
+      submodule-pin positions against their upstreams (docs-repo `main`,
+      code-repo `docs/` mount, aggregator mount) with behind-counts. Only land
+      it if it stays cheap and gated; the pin semantics definition in the
+      [repository map](docs/project/repository-map.md#submodule-pin-semantics)
+      is normative with or without the helper.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

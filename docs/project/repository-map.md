@@ -123,6 +123,35 @@ repositories; `bitty-plugins` (registry/store) and `bitty-ai` are independent
 repositories and are separate CarryCtx projects. This is an intentional routing
 and grouping boundary, not an omission.
 
+## Submodule pin semantics
+
+Three different revisions can each be the newest documentation for their own
+purpose. Pins are reproducibility anchors, not required-equal values: they are
+expected to differ, and no gate forces them to match.
+
+| Position                | Meaning                                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------- |
+| Docs-repo `main`        | Latest canonical docs: the owning documentation repository's merged `main` HEAD.                   |
+| Code-repo `docs/` mount | Docs matching that implementation: the code repository's `docs` submodule pin at its own HEAD.     |
+| Aggregator mount        | Governance-reviewed snapshot: the `bitty-docs` root submodule pin, bumped only in a scoped review. |
+
+Verified example for `bitty-terminal-docs` (2026-09-14):
+
+| Position                | Pin       | Full revision                              | Subject                                                    |
+| ----------------------- | --------- | ------------------------------------------ | ---------------------------------------------------------- |
+| Docs-repo `main`        | `77b538d` | `77b538d23aa9f5b3a84975e11671cec5e95da8b5` | [CTX-0006] XDG/Windows mapping plus credential tiers (#22) |
+| Code-repo `docs/` mount | `56f70bc` | `56f70bc9b98bf7585d97ccafde33c81c5d69ac9d` | [CTX-0189] `bitty-mcp` archival note (#4)                  |
+| Aggregator mount        | `bcb65a4` | `bcb65a4b1e5279e37b0aad0452582bde555a4052` | [CTX-0181] Panel Runtime pre-study promotion (#15)         |
+
+Both mounts are ancestors of docs-repo `main` here (`bcb65a4` is 4 commits
+behind, `56f70bc` is 11 commits behind), and that lag is normal. A pin moves
+only when its owner acts: the docs repository lands new content, the code
+repository cuts a matching implementation, or a scoped `bitty-docs` review
+accepts a new snapshot. The bump procedure lives in the
+[documentation workflow](../development/documentation-workflow.md#submodule-pointer-updates);
+a `just docs-status` helper that prints all three positions with behind-counts
+is a recorded follow-up, not a prerequisite.
+
 ## Repository responsibilities
 
 | Repository or directory | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -254,7 +283,7 @@ conflict with the candidate use of TOML for plugin metadata.
 ## Documentation and website publishing relationship
 
 ```text
-bitty-docs shared governance + submodule pointers (19 crates, 40 OQs Accepted)
+bitty-docs shared governance + submodule pointers (19 crates; OQ counts live in the open-question register)
       |-- bitty-terminal/ -> bitty-terminal-docs @ pinned main
       |-- bitty-ai/       -> bitty-ai-docs       @ pinned main
       `-- bitty-plugins/  -> bitty-plugins-docs  @ pinned main

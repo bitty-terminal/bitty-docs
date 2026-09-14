@@ -11,31 +11,27 @@ sidebar_order: 1
 
 # Documentation map
 
-This index is the entry point for Bitty's canonical design corpus. The corpus
-is **Pre-alpha / Engineering Milestones M1-M8** (2026-09-14, `bitty` `bea338d`
-previous `29772a3` baseline `de134ec`, 19 crates,
-40 OQs `Accepted`; `R-004` clipboard re-audited at `bitty` `7a4ee41` baseline
-`de134ec` per
-[`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
-(2026-08-31, CTX-0097) and remains `Open`; `R-005`/`R-006`/`R-007` at `bitty`
-`d4d75e9` baseline `de134ec` (`5bdcdbd`/`0afc94d`/`d4d75e9`,
-Issues #137/#138/#139) are `Mitigated` per RS-1..RS-7; experimental
-implementations `c0aadd2` (vertical slice, CTX-0095) + `7e3104d` (dogfood,
-CTX-0096) + `a8735d0` (PTY fix, CTX-0098) are `Implemented` (experimental) not
-`Verified`/`Compatible`/`Release-ready`, overall not `Verified`): it records
-what the project intends, what it requires, what it is considering, what is
-`Implemented` (compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, and V1-V3 gates `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, config-matrix, and plugin-CLI wave plus experimental single-window slice)
-but not yet `Verified`, and what remains `Open`/`Mitigated` (including `R-004`
-with residual platform-backend, real-window UX, and `8192`-byte bound-scope
-limits) and `Experimental Implementation` (reviewable code at `a8735d0`). Lifecycle is
+This index is the entry point for Bitty's canonical design corpus. Project
+state at a glance (snapshot `2026-09-14`):
+
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `bea338d`,
+  baseline `de134ec`, previous `29772a3`, 19 crates).
+- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11).
+- Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
+  `R-005`/`R-006`/`R-007` are `Mitigated`.
+- Full project state: [`project-state.json`](project/project-state.json),
+  the single machine fact source. This summary is derived from it and checked
+  by `just state` (`bun .github/scripts/check-state.mjs`).
+
+It records what the project intends, what it requires, what it is considering,
+what is `Implemented` but not yet `Verified`, and what remains
+`Open`/`Mitigated`. Lifecycle is
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
 (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (crate) per the [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md).
-Canonical snapshot: [`project-state.json`](project/project-state.json)
-(synchronized `bea338d`, `2026-09-14`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004`
-`Open`, `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`
-and refreshed mechanically by `just state-refresh` from a local `bitty` checkout.
+`project-state.json` is refreshed mechanically by `just state-refresh` from a
+local `bitty` checkout; OQ counts live in the
+[open-question register](decisions/open-questions.md), not in this summary.
 
 ## Product
 
@@ -55,19 +51,19 @@ and refreshed mechanically by `just state-refresh` from a local `bitty` checkout
 
 ## User and contributor documentation
 
-| Document                                                                                                     | Purpose                                                                                                                                                                    |
-| ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [User guide](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/user-guide/README.md)           | Honest Pre-alpha index for future installation, onboarding, daily-use, and troubleshooting guides (installation still deferred until `Verified`).                          |
-| [Tutorials](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/tutorials/README.md)             | Future verified end-to-end learning paths; currently an explicit empty state.                                                                                              |
-| [How-to guides](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/how-to/README.md)            | Future focused procedures for one supported task.                                                                                                                          |
-| [Troubleshooting](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/troubleshooting/README.md) | Future verified diagnosis, recovery, and escalation guidance.                                                                                                              |
-| [Migrations](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/migrations/README.md)           | Future tested version transitions, rollback, and compatibility guidance.                                                                                                   |
-| [Examples](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/examples/README.md)               | Future minimal, versioned, mechanically verified illustrations.                                                                                                            |
-| [Development](development/README.md)                                                                         | Contributor entry point and current delivery expectations.                                                                                                                 |
-| [Documentation workflow](development/documentation-workflow.md)                                              | Normative taxonomy, metadata, ownership, review, synchronization, deprecation, and versioning policy.                                                                      |
-| [Repository bootstrap](development/repository-bootstrap.md)                                                  | Accepted zero-functionality Core and website scaffold contract plus implementation validation gates (19 crates `bea338d` now `Implemented` but not yet `Verified`).        |
-| [Toolchain and tooling policy](development/toolchain-policy.md)                                              | Pinned per-repository toolchains and canonical gate commands all agents must use.                                                                                          |
-| [Repository metadata and GitHub baseline](development/repository-metadata-baseline.md)                       | Proposed classification of shared-verbatim, parameterized, and per-repository `.github/` and root metadata, with required-check naming, action-pinning, and rollout rules. |
+| Document                                                                                                     | Purpose                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [User guide](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/user-guide/README.md)           | Honest Pre-alpha index for installation, onboarding, daily-use, and troubleshooting guides (shipped-factual pages allowed with a version qualifier per DIR-015; compatibility guarantees still require `Verified`). |
+| [Tutorials](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/tutorials/README.md)             | Future verified end-to-end learning paths; currently an explicit empty state.                                                                                                                                       |
+| [How-to guides](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/how-to/README.md)            | Future focused procedures for one supported task.                                                                                                                                                                   |
+| [Troubleshooting](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/troubleshooting/README.md) | Future verified diagnosis, recovery, and escalation guidance.                                                                                                                                                       |
+| [Migrations](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/migrations/README.md)           | Future tested version transitions, rollback, and compatibility guidance.                                                                                                                                            |
+| [Examples](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/examples/README.md)               | Future minimal, versioned, mechanically verified illustrations.                                                                                                                                                     |
+| [Development](development/README.md)                                                                         | Contributor entry point and current delivery expectations.                                                                                                                                                          |
+| [Documentation workflow](development/documentation-workflow.md)                                              | Normative taxonomy, metadata, ownership, review, synchronization, deprecation, and versioning policy.                                                                                                               |
+| [Repository bootstrap](development/repository-bootstrap.md)                                                  | Accepted zero-functionality Core and website scaffold contract plus implementation validation gates (19 crates `bea338d` now `Implemented` but not yet `Verified`).                                                 |
+| [Toolchain and tooling policy](development/toolchain-policy.md)                                              | Pinned per-repository toolchains and canonical gate commands all agents must use.                                                                                                                                   |
+| [Repository metadata and GitHub baseline](development/repository-metadata-baseline.md)                       | Proposed classification of shared-verbatim, parameterized, and per-repository `.github/` and root metadata, with required-check naming, action-pinning, and rollout rules.                                          |
 
 ## Architecture and interfaces
 
@@ -139,7 +135,7 @@ crate):
 | Label                                 | Meaning                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Normative requirement                 | A future implementation gate. Mechanism details may remain open.                                                                                                                                                                                                                                                                                                     |
-| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. 40 OQs are `Accepted` as of 2026-09-14.                                                                                                                                                                                                                                                 |
+| Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. See the [open-question register](decisions/open-questions.md) for the current `Accepted` count (the register owns OQ numbers).                                                                                                                                                          |
 | Candidate / Draft                     | A proposal to investigate, compare, or prototype. Spec remains `Draft` until reviewed `Accepted`; 7 `Draft` specs remain (see `bitty-terminal/specifications/README.md` prioritization).                                                                                                                                                                             |
 | Experimental Implementation           | Code exists at `c0aadd2`/`7e3104d`/`a8735d0` (`Implemented` experimental, not `Verified`): single-window slice, PTY reply loop, dogfood plugins — reviewable evidence distinct from `Draft` (no code) and `Accepted`.                                                                                                                                                |
 | Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated` at `d4d75e9`.                                                                                                                                                          |
@@ -147,15 +143,17 @@ crate):
 | Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed; experimental code does not imply `Verified`.                                                                                                                                                                                           |
 
 At the 2026-09-14 snapshot (`bea338d`, baseline `de134ec` previous `29772a3`),
-some product behavior is `Implemented` (`vt`/`term-state`/`pty`/`render`/`ui`/`runtime`/`config`/`lua`/`rich`/`ipc`/`agent`/`package`/`compat-lab`/`perf` plus experimental
-`c0aadd2`/`7e3104d`/`a8735d0`) but not yet `Verified`; repository existence, remote visibility, and initialization state remain project facts, and `Verified`
-requires risk-evidence matrix. `R-004` clipboard was re-audited at `bitty` `7a4ee41`
-(baseline `de134ec`) with `23` `suspicious_paste` + `13` `paste` unit + `4`
-remediation tests and remains `Open` (not `Mitigated`/`Verified`) due to residual
-platform-backend, real-window UX, and `8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007`
-at `bitty` `d4d75e9` (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues #137/#138/#139) are `Mitigated`
-per RS-1..RS-7; experimental implementations `c0aadd2`/`7e3104d`/`a8735d0` are `Implemented` not
-`Verified`/`Compatible`, overall product remains not `Verified`/`Compatible`/`Release-ready`.
+some product behavior is `Implemented` but not yet `Verified`; repository
+existence, remote visibility, and initialization state remain project facts,
+and `Verified` requires risk-evidence matrix. `R-004` clipboard was re-audited
+at `bitty` `7a4ee41` (baseline `de134ec`) and remains `Open` (not
+`Mitigated`/`Verified`) due to residual platform-backend, real-window UX, and
+`8192`-byte bound-scope limits; `R-005`/`R-006`/`R-007` at `bitty` `d4d75e9`
+are `Mitigated` per RS-1..RS-7; overall product remains not
+`Verified`/`Compatible`/`Release-ready`. Detail lives in
+[`project-state.json`](project/project-state.json), the
+[risk register](security/risk-register.md), and the
+[evidence matrix](security/evidence-matrix.md), not in this index.
 
 ## Language, metadata, and publication
 
