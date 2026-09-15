@@ -1,0 +1,8 @@
+# bitty-docs: workspace identity descriptor (kind/lang/role mirror workspace.toml).
+[repo]
+name = "bitty-docs"
+kind = "docs"
+lang = "md"
+role = "canonical shared governance: decisions, security, project state"
+owner = "TBD"
+docs = "self"
