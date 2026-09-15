@@ -14,7 +14,6 @@
     "bitty-ai",
     "bitty-plugins",
     ".trash",
-    "tmp",
     "node_modules",
     "build",
     "dist",
