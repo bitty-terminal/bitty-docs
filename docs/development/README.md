@@ -44,6 +44,12 @@ or test workflow exists.
   research record 043: the three-tier native, VM, and physical test
   architecture, the VM matrix, the E2E test protocol, and the benchmark VM
   direction.
+- [Agent authority and hard-safety boundary](agent-authority-boundary.md) is a
+  draft capture of research record 045: the `bitty`/`bitty-ai`/Lua authority
+  split, the four-layer policy stack, and the Core-enforced hard-safety
+  mechanisms for capabilities, resources, panel leases, secrets, and
+  privilege (bitty-upstream mechanisms only; `bitty-ai` and Lua-harness
+  semantics stay owner-pending).
 - [Reference projects](../project/reference-projects.md) records untrusted,
   read-only research snapshots.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
