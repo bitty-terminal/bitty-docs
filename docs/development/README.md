@@ -36,6 +36,14 @@ or test workflow exists.
   verbatim, parameterized, or per-repository.
 - [Technology strategy](../project/technology-strategy.md) separates accepted
   language/platform direction from candidate tools.
+- [Platform compatibility and dependency governance](platform-compatibility.md)
+  is a draft capture of research record 042: compatibility layers, the
+  release-responsibility split, and the dependency-boundary direction for the
+  Rust workspace.
+- [Testing infrastructure](testing-infrastructure.md) is a draft capture of
+  research record 043: the three-tier native, VM, and physical test
+  architecture, the VM matrix, the E2E test protocol, and the benchmark VM
+  direction.
 - [Reference projects](../project/reference-projects.md) records untrusted,
   read-only research snapshots.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
