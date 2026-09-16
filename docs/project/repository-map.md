@@ -39,10 +39,11 @@ Core Cargo workspace for initialization; the expanded crate graph is now
   but not yet `Verified`; `Website Delivery` (OQ-023) and `Governance` (OQ-024)
   are `Accepted` 2026-08-29.
 - `bitty-plugins` is the plugin-ecosystem entry repository (registry, store
-  frontend, and official plugin submodules). The umbrella `bitty-plugins/`
-  directory is only a local grouping directory, not a Git repository; its
-  children (`activity`, `bitty-plugin-sdk`, `bitty-plugin-template`, and
-  future plugins) are independent repositories.
+  frontend, and official plugin submodules). The workspace mirrors the GitHub
+  organization flatly: every repository, including `bitty-plugins` and each
+  official plugin (`activity`, `palette`, `statusline`, `file-manager`,
+  `git-panel`), is a direct child of the workspace root. There is no grouping
+  directory.
 - `bitty-ai` is an independent repository (AI-core runtime, providers, and
   context), checked out at the umbrella root `bitty-ai/`. The `bitty-ai/` path
   inside `bitty-docs` is the project-documentation submodule described below,
@@ -65,28 +66,42 @@ describe an empty directory as an initialized repository.
 ## Local workspace
 
 ```text
-bitty-terminal/                     # local umbrella, not a Git repo
-├── .agents/                        # workspace-level agent skills/instructions
-├── .trash/                         # recoverable removal target
+bitty-terminal/                     # local umbrella workspace, not a Git repo
+├── AGENTS.md                       # cross-repository operating contract
+├── workspace.toml                  # machine-readable directory tags (kind/lang/role)
+├── research/                       # research archive: discussion records and reviews
 ├── recording/
 │   └── references/                 # persistent local research clones
-├── AGENTS.md                       # cross-repository operating contract
+├── script/                         # workspace-wide helper scripts
+├── .agents/                        # agent session state
+├── .targets/                       # shared build-cache targets
+├── .trash/                         # recoverable removal target
 │
-├── bitty/                          # independent repo: Rust core workspace
+│   # every repository is a direct child (org-flat mirror); no grouping directories
+├── activity/                       # independent repo: first official plugin
+├── bitty/                          # independent repo: Rust core workspace (19 crates)
+├── bitty-ai/                       # independent repo: AI core (runtime, providers, context)
+├── bitty-ai-docs/                  # independent repo: AI-core documentation
+├── bitty-devtools/                 # independent repo: debug UI/client
 ├── bitty-docs/                     # independent repo: shared governance + docs aggregator
 │   ├── bitty-terminal/             # submodule: bitty-terminal-docs project content
 │   ├── bitty-ai/                   # submodule: bitty-ai-docs project content
 │   └── bitty-plugins/              # submodule: bitty-plugins-docs project content
-├── bitty-ai/                       # independent repo: AI core (runtime, providers, context)
+├── bitty-plugin-sdk/               # independent repo: plugin SDK
+├── bitty-plugin-template/          # independent repo: plugin scaffold
+├── bitty-plugins/                  # independent repo: plugin registry, store, official plugins
+├── bitty-plugins-docs/             # independent repo: plugin-ecosystem documentation
+├── bitty-terminal-docs/            # independent repo: terminal-platform documentation
 ├── bitty-website/                  # independent repo: Astro public website
-├── bitty-devtools/                 # independent repo: debug UI/client
-│
-└── bitty-plugins/                  # local grouping only, never parent Git repo
-    ├── activity/                   # independent repo: first official plugin
-    ├── bitty-plugin-sdk/           # independent repo
-    ├── bitty-plugin-template/      # independent repo
-    └── <plugin-name>/              # one independent repo per plugin
+├── file-manager/                   # independent repo: file-manager plugin
+├── git-panel/                      # independent repo: git-panel plugin
+├── palette/                        # independent repo: command-palette plugin
+└── statusline/                     # independent repo: statusline plugin
 ```
+
+Every repository is a direct child of the workspace root. The only nesting in
+this map is documentation mounted as Git submodules inside `bitty-docs/` and
+inside the code repositories at `<code-repo>/docs`.
 
 `recording/` is inside the workspace and holds temporary material that must survive
 restarts. Do not place project research assets in the system `/tmp`. Prefer
@@ -103,25 +118,25 @@ distribution taps are recorded in the
 [repository metadata baseline](../development/repository-metadata-baseline.md).
 The `bitty-mcp` remote is archived and read-only.
 
-| Local directory                        | Public remote                                             | Current state                                                                 | Required `main` status checks                                                                                                                                                                                 |
-| -------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty/`                               | `https://github.com/bitty-terminal/bitty`                 | Initial snapshot pushed; `main` protected (squash-only)                       | `Quality gates`, `MSRV 1.85 check`, `Windows check and test`, `macOS ARM64 check and test`, `Linux Wayland`, `Linux X11 (xvfb)`, `Analyze (rust)`, `Supply chain (deny/audit)`, `Analyze (actions)`, `CodeQL` |
-| `bitty-ai/`                            | `https://github.com/bitty-terminal/bitty-ai`              | Initial snapshot pushed; `main` protected (merge, squash, and rebase enabled) | `Quality gates`, `MSRV 1.85 check`, `Linux`, `Windows`, `macOS`, `Supply chain`                                                                                                                               |
-| `bitty-docs/`                          | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only)                       | `Docs quality`                                                                                                                                                                                                |
-| `bitty-docs/bitty-terminal/`           | `https://github.com/bitty-terminal/bitty-terminal-docs`   | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
-| `bitty-docs/bitty-ai/`                 | `https://github.com/bitty-terminal/bitty-ai-docs`         | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
-| `bitty-docs/bitty-plugins/`            | `https://github.com/bitty-terminal/bitty-plugins-docs`    | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
-| `bitty-website/`                       | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only)                       | `Website quality`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                                                           |
-| `bitty-devtools/`                      | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only)                       | `Lint GitHub Actions workflows`, `Quality gates`, `Analyze (javascript-typescript, actions)`, `CodeQL`                                                                                                        |
-| `bitty-plugins` (registry/store)       | `https://github.com/bitty-terminal/bitty-plugins`         | Initial snapshot pushed; `main` protected; no umbrella checkout               | `Plugin integration`, `Lint GitHub Actions workflows`, `Analyze (javascript-typescript, actions)`                                                                                                             |
-| `bitty-plugins/activity/`              | `https://github.com/bitty-terminal/activity`              | Initial snapshot pushed; `main` protected (merge, squash, and rebase enabled) | `Quality gates`, `Lint GitHub Actions workflows`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                            |
-| `bitty-plugins/bitty-plugin-sdk/`      | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only)                       | `Actionlint`, `Quality gates`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                                               |
-| `bitty-plugins/bitty-plugin-template/` | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only)                       | `Lint GitHub Actions workflows`, `Quality gates`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                            |
+| Local directory                  | Public remote                                             | Current state                                                                 | Required `main` status checks                                                                                                                                                                                 |
+| -------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty/`                         | `https://github.com/bitty-terminal/bitty`                 | Initial snapshot pushed; `main` protected (squash-only)                       | `Quality gates`, `MSRV 1.85 check`, `Windows check and test`, `macOS ARM64 check and test`, `Linux Wayland`, `Linux X11 (xvfb)`, `Analyze (rust)`, `Supply chain (deny/audit)`, `Analyze (actions)`, `CodeQL` |
+| `bitty-ai/`                      | `https://github.com/bitty-terminal/bitty-ai`              | Initial snapshot pushed; `main` protected (merge, squash, and rebase enabled) | `Quality gates`, `MSRV 1.85 check`, `Linux`, `Windows`, `macOS`, `Supply chain`                                                                                                                               |
+| `bitty-docs/`                    | `https://github.com/bitty-terminal/bitty-docs`            | Initial snapshot pushed; `main` protected (squash-only)                       | `Docs quality`                                                                                                                                                                                                |
+| `bitty-docs/bitty-terminal/`     | `https://github.com/bitty-terminal/bitty-terminal-docs`   | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
+| `bitty-docs/bitty-ai/`           | `https://github.com/bitty-terminal/bitty-ai-docs`         | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
+| `bitty-docs/bitty-plugins/`      | `https://github.com/bitty-terminal/bitty-plugins-docs`    | Content split merged; submodule mount; not yet protected                      | (none yet)                                                                                                                                                                                                    |
+| `bitty-website/`                 | `https://github.com/bitty-terminal/bitty-website`         | Initial snapshot pushed; `main` protected (squash-only)                       | `Website quality`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                                                           |
+| `bitty-devtools/`                | `https://github.com/bitty-terminal/bitty-devtools`        | Initial snapshot pushed; `main` protected (squash-only)                       | `Lint GitHub Actions workflows`, `Quality gates`, `Analyze (javascript-typescript, actions)`, `CodeQL`                                                                                                        |
+| `bitty-plugins` (registry/store) | `https://github.com/bitty-terminal/bitty-plugins`         | Initial snapshot pushed; `main` protected; no umbrella checkout               | `Plugin integration`, `Lint GitHub Actions workflows`, `Analyze (javascript-typescript, actions)`                                                                                                             |
+| `activity/`                      | `https://github.com/bitty-terminal/activity`              | Initial snapshot pushed; `main` protected (merge, squash, and rebase enabled) | `Quality gates`, `Lint GitHub Actions workflows`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                            |
+| `bitty-plugin-sdk/`              | `https://github.com/bitty-terminal/bitty-plugin-sdk`      | Initial snapshot pushed; `main` protected (squash-only)                       | `Actionlint`, `Quality gates`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                                               |
+| `bitty-plugin-template/`         | `https://github.com/bitty-terminal/bitty-plugin-template` | Initial snapshot pushed; `main` protected (squash-only)                       | `Lint GitHub Actions workflows`, `Quality gates`, `Analyze (actions)`, `Analyze (javascript-typescript)`, `CodeQL`                                                                                            |
 
-The umbrella root and the `bitty-plugins/` grouping directory are not Git
-repositories; `bitty-plugins` (registry/store) and `bitty-ai` are independent
-repositories and are separate CarryCtx projects. This is an intentional routing
-and grouping boundary, not an omission.
+The umbrella root is not a Git repository;
+`bitty-plugins` (registry/store), `bitty-ai`, `bitty-docs`, and every
+code or plugin repository are independent repositories and separate CarryCtx
+projects. This is an intentional routing boundary, not an omission.
 
 ## Submodule pin semantics
 
@@ -215,7 +230,7 @@ are `Implemented` (headless `Implemented`, not yet `Verified`):
 
 ```text
 bitty/
-├── Cargo.toml            # eighteen members, edition 2024, resolver 3, rust-version 1.85
+├── Cargo.toml            # nineteen members, edition 2024, resolver 3, rust-version 1.85
 ├── Cargo.lock
 ├── rust-toolchain.toml   # channel 1.98.1, components rustfmt+clippy
 ├── justfile
@@ -235,6 +250,7 @@ bitty/
 │   ├── bitty-rich/        # Implemented: rich presentation helpers (vt+term-state)
 │   ├── bitty-vt/          # vte 0.15 parser -> TerminalAction
 │   ├── bitty-term-state/  # Terminal Truth + damage + image store
+│   ├── bitty-test-support/ # shared test-harness helpers (live-PTY gating)
 │   ├── bitty-render/      # wgpu 25.0, crossfont 0.9, snapshot-only
 │   ├── bitty-runtime/     # orchestration (vt/term-state/pty/render/platform/ui/plugin-host)
 │   └── bitty-ui/          # view/layout/focus/selection primitives
@@ -249,8 +265,8 @@ bitty/
 ```
 
 The earlier candidate expansion list that included `bitty-terminal`,
-`bitty-input`, `bitty-font`, `bitty-image`, `bitty-lua`,
-`bitty-plugin-api`, `bitty-debug-protocol`, and `bitty-test-support` was the
+`bitty-input`, `bitty-font`, `bitty-image`,
+`bitty-plugin-api`, and `bitty-debug-protocol` was the
 discussion sketch before ADR 0003; those names are not crates today.
 Crate boundaries still follow architecture boundaries, not source-file
 boundaries. `Cell`, `Grid`, and `Cursor` remain internal modules of
@@ -325,14 +341,15 @@ database exists. Therefore:
   bump and its review.
 - Split cross-repository work into explicit tasks and record dependencies or
   external links between them.
-- The non-Git `bitty-plugins/` grouping directory cannot be a CarryCtx project
-  root; the `bitty-plugins` registry/store repository is a separate CarryCtx
-  project.
+- The non-Git umbrella root cannot be a CarryCtx project root; every
+  repository, including the `bitty-plugins` registry/store, is a separate
+  CarryCtx project.
 
 ## Pending decisions (engineering milestones)
 
-- Creation order for later official plugin repositories; the public estate now
-  spans twelve formal repositories and two distribution taps, and protection
+- Creation order for later official plugin repositories; the public estate
+  spans the flat repository set recorded in `workspace.toml` plus two
+  distribution taps, and protection
   and required-check state varies by repository (the three project
   documentation repositories are not yet protected); licenses accepted as MIT
   per Governance RFC OQ-024 (2026-08-29).
