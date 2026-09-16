@@ -313,11 +313,12 @@ Not captured here; owned by `bitty-ai-docs` / the Lua harness work:
 - the `agent.spawn`/team/composition Lua API surface and its UX;
 - `DelegationBudget` (children, depth, parallelism, token, cost, execution)
   enforcement and recursive-span limits;
-- subagent authority attenuation as a runtime guarantee — the accepted
+- subagent authority attenuation as a runtime guarantee — the
   [Agent Coordination](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/agent-coordination.md)
-  direction already states child authority is attenuated, never inherited
-  wholesale, and the R5 task-lifecycle admission rules already check depth,
-  fan-out, and profile;
+  direction is draft and owner-pending: it states child authority is
+  attenuated, never inherited wholesale, and the draft R5 task-lifecycle
+  admission rules keep depth, fan-out, and profile checks with the authority
+  while the bounds stay open;
 - role and organization models (Commander/Planner/Researcher/Reviewer and
   team shapes such as manager-worker, debate, MapReduce, pair programming);
 - the user-hygiene split (what the system cannot technically prevent, such as
