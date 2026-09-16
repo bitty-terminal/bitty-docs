@@ -96,10 +96,10 @@ vendor driver defects: NVIDIA proprietary, Intel Mesa, AMD RADV, Windows
 D3D12, and macOS Metal bugs need physical runners. Physical runs are therefore
 scheduled on a nightly cadence rather than every pull request.
 
-IME and compositor variation is modeled as separate VM images (Arch + Hyprland
-
-- fcitx5, Ubuntu + GNOME + IBus, KDE Plasma + fcitx5, X11 + i3) because IME
-  defects depend on compositor, display server, and IME implementation together.
+IME and compositor variation is modeled as separate VM images (Arch with
+Hyprland and fcitx5; Ubuntu with GNOME and IBus; KDE Plasma with fcitx5; X11
+with i3), because IME defects depend on compositor, display server, and IME
+implementation together.
 
 ## E2E test protocol
 
