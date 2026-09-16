@@ -18,6 +18,11 @@ Accepted on 2026-08-26 by the project initiator, closing open question
 observation evidence at authoring time; the implementing task pins exact
 versions in a lockfile. No dependency is added to any repository by this ADR.
 
+Amended on 2026-09-16 (CTX-0214, bitty#835 review follow-up): the rule-5
+license policy is restated by the dated amendment in the Decision section
+below. The accepted text is preserved and the deviation is recorded
+explicitly rather than rewritten.
+
 ## Context
 
 [ADR 0001](ADR-0001-repository-bootstrap-baseline.md) left every dependency
@@ -47,7 +52,61 @@ This ADR applies that governance to the first candidate library set.
    hot path must be replaced or forked under rule 3.
 5. Licenses must be MIT, Apache-2.0, BSD, ISC, Zlib, or dual Apache-2.0/MIT;
    copyleft (GPL/AGPL/MPL/EUPL) dependencies are prohibited anywhere in the
-   dependency graph of shipped binaries. Each row below records its check.
+   dependency graph of shipped binaries. Each row below records its check. As
+   amended on 2026-09-16, the canonical allowlist and the single per-crate
+   `MPL-2.0` exception are recorded in [License policy amendment
+   (2026-09-16)](#license-policy-amendment-2026-09-16); the copyleft
+   prohibition stands everywhere outside that named exception.
+
+### License policy amendment (2026-09-16)
+
+Rule 5's original text stands as accepted history; this dated amendment is the
+explicit deviation record. The source of truth is the merged `bitty` gate
+(`deny.toml` plus the `Supply chain (deny/audit)` job in
+`.github/workflows/ci.yml`; bitty#835 / CTX-0505, merge commit `d4b091e`),
+which runs `cargo deny check` 0.20.2 and `cargo audit` 0.22.2.
+
+Canonical license allowlist, exactly as implemented in `deny.toml`
+(`[licenses].allow`, confidence threshold `0.8`; workspace-private crates are
+skipped by `[licenses.private].ignore`):
+
+- Rule-5 core set: MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception,
+  BSD-3-Clause, BSD-2-Clause, ISC, Zlib.
+- Additional permissive licenses required by unavoidable transitive
+  dependencies: Unicode-3.0 (`unicode-ident`), CC0-1.0 (`hexf-parse` via
+  `naga`), BSL-1.0 (`clipboard-win` and `error-code` via `arboard` on
+  Windows).
+- `Apache-2.0 WITH LLVM-exception` is the LLVM exception variant offered
+  alongside plain Apache-2.0/MIT by `linux-raw-sys`, `rustix`, `wasi`,
+  `wasip2`, and `wit-bindgen`; only permissive alternatives are relied on.
+- The list is kept to licenses actually encountered; allowed-but-unused
+  entries are pruned (bitty#835 removed `CDLA-Permissive-2.0` and
+  `Unicode-DFS-2016` for this reason).
+
+MPL-2.0 exception (the rule-5 deviation):
+
+- The only copyleft node in the shipped dependency graph is `dwrote` 0.11.5,
+  used by `crossfont` for the Windows-only DirectWrite backend; it has no
+  permissive alternative today. `deny.toml` scopes `MPL-2.0` per crate
+  (`exceptions = [{ allow = ["MPL-2.0"], crate = "dwrote" }]`) instead of a
+  blanket allowance, so the prohibition stays enforced everywhere else.
+- Revisit trigger: remove the exception when `crossfont` drops `dwrote` or a
+  permissive replacement exists. Any other copyleft node requires a new dated
+  revision of this ADR, never an extension of this exception.
+
+Advisory-ignore policy (mirrors the same CI job):
+
+- `RUSTSEC-2026-0192` (`ttf-parser`, unmaintained, winit/Metal paths) and
+  `RUSTSEC-2024-0436` (`paste`, unmaintained) are enumerated as ignores in
+  both `deny.toml` (`[advisories].ignore`) and the `cargo audit --ignore`
+  step until upstream replacements land, composing with rule 4.
+- Ignore entries are visible enumerations, not standing waivers: they are
+  re-checked as part of rule-4 maintenance and removed when a replacement
+  lands.
+
+Gate status: `cargo audit` remains the active advisory gate under rule 1
+until `cargo vet` review capacity exists; `cargo deny` plus `cargo audit` is
+the implemented supply-chain gate today.
 
 ### Decisions per candidate
 
@@ -69,6 +128,11 @@ the implementing task re-verifies and pins exact versions.
   keeping the replaceability goal of the technology strategy.
 - Supply-chain surface is bounded to a short allowlist; anything outside these
   rows needs its own ADR revision.
+- The 2026-09-16 amendment binds the ADR to the shipped gate: `deny.toml` is
+  the implementation source of truth, the amendment enumerates the canonical
+  allowlist, the single per-crate `MPL-2.0` exception, and the ignored
+  informational advisories. Any new license or ignore requires a dated
+  revision of this ADR rather than a silent allowlist edit.
 - `skia-safe` and `crossterm` rejections can be revisited cheaply since neither
   enters any crate today.
 - The `mlua` choice creates a future migration consideration toward `piccolo`
