@@ -12,7 +12,7 @@ sidebar_order: 18
 # Execution Host and Supervisor Boundary
 
 > Status: **draft**. This page is a critical capture of research record 044
-> (Execution Supervisor / Job Service, 2026-09-16) held in the `research`
+> (Execution Supervisor / Job Service, 2026-09-17) held in the `research`
 > archive. It accepts nothing, adopts no crate, fixes no wire protocol, and
 > authorizes no implementation. It refines the implications of DIR-018 (host
 > capability gateway), the identity separation tracked by OQ-061, and the
@@ -118,9 +118,9 @@ Consequences recorded:
   execution generation, a mode (`Graceful`, `Immediate`,
   `GracefulThenKill`), and a grace period; the host owns `SIGINT`, wait,
   `SIGTERM`, wait, `SIGKILL`, process-group kill, and descendant reaping, and
-  returns a typed cancel outcome that can honestly report `AlreadyExited`,
-  `PermissionDenied`, `StaleGeneration`, or `Unknown`. An agent must never
-  infer "I sent Ctrl+C, therefore it stopped".
+  returns a typed cancel outcome including `CancelledGracefully`, `Killed`,
+  `AlreadyExited`, `PermissionDenied`, `StaleGeneration`, and `Unknown`. An
+  agent must never infer "I sent Ctrl+C, therefore it stopped".
 - **Two generations**: an assignment generation (task/agent ownership, owned
   by `bitty-ai`) is not an execution generation (host handle, owned by
   `bitty`). A stale execution handle must be rejected by the host itself, not
@@ -203,9 +203,10 @@ ADR-0008 rather than bypass it.
   `Execution`) including bindings, claims, subscriptions, progress, results,
   retry, and handoff.
 - The IPC contract uses generic execution verbs (spawn, get, cancel, signal,
-  read, subscribe, attach, transfer shapes), not `agent.job.*`: Terminal Core
-  must not learn Agent ontology. The current generic bridge and bounded
-  execution surface are the base this direction would extend.
+  read, subscribe, attach; `transfer` is a shape rather than one of the
+  committed verbs), not `agent.job.*`: Terminal Core must not learn Agent
+  ontology. The current generic bridge and bounded execution surface are the
+  base this direction would extend.
 - Borrowing is at the design level: pueue's supervisor states and queue
   mechanics, Cursor's event stream/resume cursor/subscription wake-up,
   OpenCode's PTY operations and exit notification, Claude Code's background
@@ -229,8 +230,11 @@ The following belong to `bitty-ai` semantics and are not captured here: the
 Task lifecycle authority, `JobBinding` between tasks and executions, agent
 claims and leases, watcher/subscriber policy, mailbox delivery semantics,
 `JobResult` summaries and progress notes, retry policy, timeout policy
-selection, commander/reviewer orchestration, and the multi-agent role
-contract tracked by OQ-057. Their owner repository records them separately.
+selection, the agent-finalization Quiescence Gate from the record (an agent
+winding down must resolve its live owned jobs by wait, detach, handoff, or
+cancel — enforced as a harness invariant, not a prompt reminder),
+commander/reviewer orchestration, and the multi-agent role contract tracked
+by OQ-057. Their owner repository records them separately.
 
 ## Open items
 
