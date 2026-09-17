@@ -88,11 +88,14 @@ local `bitty` checkout; OQ counts live in the
 
 ## Security
 
-| Document                                   | Authority                                                                                                                                                                                                 |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Security overview](security/overview.md)  | Normative security contract and capability taxonomy (Pre-alpha, `Implemented` not yet `Verified`).                                                                                                        |
-| [Threat model](security/threat-model.md)   | Normative trust boundaries, threats, and required controls (engineering milestones).                                                                                                                      |
-| [Risk register](security/risk-register.md) | Security risks and evidence-based closure criteria (`R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004` `Open` at `7a4ee41`, others `Open` until `Verified`, matrix Phase E per Risk Evidence RFC). |
+| Document                                                     | Authority                                                                                                                                                                                                 |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Security](security/README.md)                               | Index route to the normative corpus and evidence registers; states no control status.                                                                                                                     |
+| [Security overview](security/overview.md)                    | Normative security contract and capability taxonomy (Pre-alpha, `Implemented` not yet `Verified`).                                                                                                        |
+| [Threat model](security/threat-model.md)                     | Normative trust boundaries, threats, and required controls (engineering milestones).                                                                                                                      |
+| [Risk register](security/risk-register.md)                   | Security risks and evidence-based closure criteria (`R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004` `Open` at `7a4ee41`, others `Open` until `Verified`, matrix Phase E per Risk Evidence RFC). |
+| [P0 acceptance criteria](security/p0-acceptance-criteria.md) | Testable acceptance criteria for every normative P0 control.                                                                                                                                              |
+| [Evidence matrix](security/evidence-matrix.md)               | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                                                                |
 
 Security controls are not optional candidates merely because their exact
 mechanisms or thresholds still need an RFC. The security corpus takes
@@ -103,6 +106,7 @@ precedence over source summaries and non-security design suggestions.
 | Document                                                        | Purpose                                                                                                                                                                |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Repository map](project/repository-map.md)                     | Local/remote topology, repository ownership, and current initialization state (19 crates `bea338d`, Website Delivery OQ-023 and Governance OQ-024 `Accepted`).         |
+| [Project governance](project/README.md)                         | Index route to shared project-state and technology governance; states no topology or pin value.                                                                        |
 | [Project documentation routing](projects/README.md)             | Root submodule mounts (`bitty-terminal`, `bitty-ai`, `bitty-plugins`) for the three project documentation repositories, separate from shared cross-project governance. |
 | [Technology strategy](project/technology-strategy.md)           | Accepted language/platform direction and implementation choices (19 crates, `bitty-lua` `piccolo` 0.3.3 `Accepted`).                                                   |
 | [Reference projects](project/reference-projects.md)             | Untrusted, read-only research snapshots and study questions.                                                                                                           |
@@ -120,7 +124,9 @@ precedence over source summaries and non-security design suggestions.
 | [ADR 0001 - Repository Bootstrap Baseline](decisions/adrs/ADR-0001-repository-bootstrap-baseline.md) | Accepted minimal Core and website initialization boundary without product behavior.      |
 | [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions; currently an explicit empty state.          |
 | [Findings](findings/README.md)                                                                       | Durable reviewed evidence; internal and excluded from website publication.               |
+| [Reviews](reviews/README.md)                                                                         | Index route to independent review coordination checklists.                               |
 | [Handoff records](handoff/README.md)                                                                 | Cross-session ownership handoffs, created on first use; currently empty.                 |
+| [Sources](sources/README.md)                                                                         | Index route to historical provenance records; states no row status or record range.      |
 | [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents.   |
 | [Research notes coverage](sources/research-notes-coverage.md)                                        | Traceability from the forty-three research records (`001`-`043`) to canonical documents. |
 | [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-14, `bea338d`).              |
