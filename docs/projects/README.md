@@ -44,6 +44,29 @@ repository: `decisions/` (ADRs and the global open-question register),
    `bitty-plugins-docs`, starting from the
    [plugin documentation template](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/docs/plugins/TEMPLATE.md).
 
+## Canonical cross-repository pointers
+
+Two documentation requests are owned by the project documentation
+repositories above, so this repository records pointers instead of copies:
+
+- XDG/Windows directory topology and credential storage tiers are owned by
+  [Lua and XDG](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/configuration/lua-and-xdg.md)
+  in `bitty-terminal-docs`: the config/data/state/cache/runtime/bin mapping
+  table, the OS keyring and `0600` headless-store credential tiers, and the
+  os.getenv/Config-VM policy cross-reference to
+  [ADR 0006](../decisions/adrs/ADR-0006-os-env-policy.md). The `BittyDirs`
+  abstraction, the native macOS/Windows mappings, and the credential tiers
+  are candidate contracts and unimplemented; only the configuration-root
+  probe is shipped. No in-repo page duplicates this material.
+- Lua-glue external-CLI integration patterns and bat/glow rendering status
+  are owned by the [Plugin Reuse and Providers draft](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-reuse-and-providers.md)
+  in `bitty-plugins-docs`: manifest-declared tools with `doctor`
+  diagnostics, the host-managed async runner with tree kill on unload, the
+  provider pattern, and native PTY hosting with the `terminal.spawn` flow;
+  truecolor and emoji width shipped, ZWJ shaping and BiDi unsupported, and
+  the Markdown/highlighting/shaping crates named as candidates with no
+  adoption implied. No in-repo page duplicates this material.
+
 ## Working with the submodules
 
 ```sh
