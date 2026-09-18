@@ -80,6 +80,9 @@ repository snapshot documentation below.
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
   traceability from the 20-turn historical design conversation to canonical
   documents.
+- Research-archive record-to-document mappings live in the `research`
+  repository, not in this corpus, per the
+  [self-containment rule](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md#docs-self-containment).
 
 ## Repository structure
 

@@ -38,7 +38,7 @@ repository.
 - Coverage: mapped by route item; every recorded route item appears exactly
   once below
 - Role: historical sequencing input and provenance; recorded 2026-08-25 from a
-  workspace-local research snapshot of the shared conversation
+  workspace-local snapshot of the shared conversation
 
 This conversation proposes an eleven-step phase plan (Phase 0 through Phase 10)
 plus a version-maturity ladder and build-order guidance. It carries the same

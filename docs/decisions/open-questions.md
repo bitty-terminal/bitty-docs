@@ -22,7 +22,8 @@ New entries must satisfy the [open-question admission
 rule](../development/documentation-workflow.md#open-question-admission): a new
 OQ blocks the current milestone or is forced by implementation evidence or
 risk, and it records its gate, blocking link, owner, and next review point.
-Pure future ideas stay in research notes until they qualify. Identifiers are
+Pure future ideas stay in non-canonical provenance notes until they qualify.
+Identifiers are
 global and are never renumbered or reused.
 
 Close an item only by linking its reviewed ADR, RFC, specification, test, or

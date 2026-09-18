@@ -1,6 +1,6 @@
 ---
 title: Plugin Contract and Manager Boundary
-description: Draft capture of research records 053 and 054 - core-side plugin contract shapes and plugin manager boundaries
+description: Draft capture of core-side plugin contract shapes and plugin manager boundaries
 category: development
 audience: contributor
 document_type: policy
@@ -11,11 +11,9 @@ sidebar_order: 21
 
 # Plugin Contract and Manager Boundary
 
-> Status: **draft**. This page is a critical capture of research record 053
-> (Public Plugin Contracts and Layered Lua Frameworks) and research record 054
-> (Bitty Plugin Package Management with Lux for Lua Dependencies) held in the
-> `research` archive ([summary 053](https://github.com/bitty-terminal/research/blob/main/summary/053.md),
-> [summary 054](https://github.com/bitty-terminal/research/blob/main/summary/054.md)).
+> Status: **draft**. This page is a critical capture of two directions: public
+> plugin contracts with layered Lua frameworks and Bitty plugin package
+> management with Lux for Lua dependencies.
 > It accepts nothing, adopts no SDK, fixes no manifest schema, and authorizes
 > no implementation. It refines the implications of DIR-001 (small core),
 > DIR-016/DIR-017 (Core network boundary), DIR-024 (dependency governance),
@@ -34,26 +32,26 @@ sidebar_order: 21
 
 ## Problem statement
 
-The two records each resolve one conflation at the plugin boundary:
+The two directions each resolve one conflation at the plugin boundary:
 
-- Record 053 asks how Lua plugins in separate repositories should call each
+- One asks how Lua plugins in separate repositories should call each
   other. Importing another plugin's source by relative path or adjusting the
   module search path couples consumers to repository layout and implementation
   details, which undermines versioning, replacement, lazy loading, permission
   mediation, and potential process separation.
-- Record 054 asks where the Bitty plugin system ends and the Lux Lua package
+- The other asks where the Bitty plugin system ends and the Lux Lua package
   manager begins. Bitty plugins carry lifecycle, permissions, services,
   panels, UI, and compatibility concerns; plain Lua packages carry only
   sources, resolution, semver, and lockfiles. Equating the two systems merges
   two package kinds with different lifecycles and dependency graphs.
 
-The records conclude that cross-plugin composition runs through declared,
+The directions conclude that cross-plugin composition runs through declared,
 versioned public contracts, and that Bitty owns its plugin manager while Lux
 serves only the Lua dependency layer at development and packaging time.
 
 ## The boundary principle
 
-The records fix two splits that this capture records as direction:
+The directions fix two splits that this capture records as direction:
 
 | Split           | Core side owns                                            | Other side owns                                                        |
 | --------------- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -79,7 +77,7 @@ isolation live in the
 
 ## Publication boundaries versus architectural boundaries
 
-Record 053 separates private composition from public composition:
+The contract direction separates private composition from public composition:
 
 - Ordinary `require()` is appropriate for private modules inside one plugin.
 - Cross-plugin consumers use declared public services or mediated proxies;
@@ -88,12 +86,12 @@ Record 053 separates private composition from public composition:
   depend on the interface, never on the provider's repository layout or
   implementation language.
 
-The record's later framework-import sketches do not establish an exception
+The framework-import sketches do not establish an exception
 for private cross-plugin imports.
 
 ## SDK contract shapes relevant to core
 
-The Core-relevant direction from record 053:
+The Core-relevant contract direction:
 
 - **Typed, schema-backed contracts.** Request, response, and event shapes,
   versioning, and Lua tooling and type hints should make contracts checkable
@@ -101,28 +99,28 @@ The Core-relevant direction from record 053:
 - **Small core and narrow SDK.** The SDK retains only justified, stable
   public abstractions. There is no heavy second "Lua Core", and ordinary
   plugins do not bind to raw Rust internal APIs. Frameworks evolve separately
-  while public contracts insulate consumers from host internals; the record
-  states this as a design aim, not an unconditional compatibility guarantee.
+  while public contracts insulate consumers from host internals; this is
+  stated as a design aim, not an unconditional compatibility guarantee.
 - **Authority and lifecycle take precedence.** Accepted security requirements
-  and lifecycle schemas override the record's speculative service methods,
+  and lifecycle schemas override the speculative service methods,
   coroutine and stream interfaces, custom event vocabulary, and sample SDK
   facility lists. Process execution, agent spawning, IPC, networking, and
-  credentials appear in the record as illustrative mechanism needs, never as
+  credentials appear as illustrative mechanism needs, never as
   ambient access or authorization. Framework wrappers cannot bypass host
   enforcement.
 - **Async-first is a proposal, not fake synchrony.** A common service-facing
   abstraction could mediate same-runtime and cross-process calls, but local
   shortcuts must not bypass enforcement or pretend remote calls are ordinary
-  synchronous calls that can block the UI or event loop. The record proposes
+  synchronous calls that can block the UI or event loop. The direction proposes
   async-first calls and standardized streaming; any accepted contract must
-  also explicitly define cancellation and lifecycle behavior. The record's
+  also explicitly define cancellation and lifecycle behavior. The
   await, promise, coroutine, callback, and stream-iteration spellings are
   discussion alternatives, not accepted SDK methods.
 
 ## Dependency declarations versus service requirements
 
-Record 053 keeps two declaration kinds distinct, in a shape that matters to
-Core because substitution and authorization cross the host boundary:
+The contract direction keeps two declaration kinds distinct, in a shape that
+matters to Core because substitution and authorization cross the host boundary:
 
 - A **package dependency** requires installation of a particular plugin.
 - A **service requirement** needs a compatible provider of an interface, so
@@ -138,7 +136,7 @@ this capture records only the Core-side shape above.
 
 ## Bitty-owned plugin manager
 
-Record 054 assigns ownership: Bitty implements the Plugin Manager
+The package direction assigns ownership: Bitty implements the Plugin Manager
 (lifecycle, permissions, services, compatibility) and the host-controlled Lua
 resolver, plus a Service Registry for plugin wiring over the Lua runtime.
 Lux is a reference and build-time backend (manifest, lockfile with integrity,
@@ -170,7 +168,7 @@ Further direction recorded:
 
 ## Manifest split
 
-Record 054 defines a Bitty-owned plugin manifest separately from the Lua
+The package direction defines a Bitty-owned plugin manifest separately from the Lua
 dependency manifest, with no mega-manifest across abstraction levels:
 
 - The **Bitty manifest** covers identity, entrypoint, host and harness
@@ -195,7 +193,7 @@ The host owns the runtime module loader. Recorded direction:
 - Only a defined sandbox-compatible Lua dependency subset is admitted: pure
   Lua with no native code, no arbitrary process execution, and no dynamic
   native loading. Native dependencies are rejected at the manager level, and
-  native needs (storage is the record's example) route through host Rust
+  native needs (storage is the example) route through host Rust
   services.
 - Plugins ship as self-contained artifacts (manifest, Lua sources, vendored
   pure-Lua dependencies, assets) with dependencies pre-resolved, favoring
@@ -212,7 +210,7 @@ The host owns the runtime module loader. Recorded direction:
 
 ## Registry and index role
 
-The record positions the plugin registry and index as the distribution point
+The direction positions the plugin registry and index as the distribution point
 behind the manager, keeping host network dependencies out of the
 install and resolve paths. Registry service boundaries, attestation, bundled
 generation, key directory, rotation, and freshness stay with the accepted
@@ -232,7 +230,7 @@ Wheel owners:
   and index scope.
 - AI halves (pointers to `bitty-ai-docs`): model and provider abstraction,
   normalized streaming across providers, tool schemas and registries,
-  context and memory, workflows, and multi-agent orchestration. The record's
+  context and memory, workflows, and multi-agent orchestration. The
   model, provider, tool, streaming, and agent illustrations do not establish
   Wheel ownership of model infrastructure, accepted tool or provider
   interfaces, or a new agent lifecycle.

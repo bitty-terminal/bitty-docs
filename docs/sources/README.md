@@ -1,6 +1,6 @@
 ---
 title: Sources and provenance
-description: Historical conversation and research provenance records with interpretation rules index
+description: Historical conversation provenance records with interpretation rules index
 category: provenance
 audience: contributor
 document_type: index
@@ -11,17 +11,19 @@ sidebar_order: 10
 
 # Sources and provenance
 
-Provenance records only: historical conversations and research notes are
+Provenance records only: historical conversations are
 design input and evidence of earlier direction, never normative contracts and
 never implementation evidence. When a record and the maintained corpus
-disagree, the corpus wins. Ledger row content is owned by CTX-0221 and
-CTX-0223; this index routes only and restates no row
+disagree, the corpus wins. This index routes only; it restates no row
 status, record range, or capture label.
 
-| Document                                                  | Purpose                                                                           |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Shared conversation coverage](chatgpt-share-coverage.md) | Traceability from both historical design conversations to canonical documents.    |
-| [Research notes coverage](research-notes-coverage.md)     | Traceability from the numbered research records to the documents that carry them. |
+Record-to-document mappings for the workspace research archive live in the
+`research` repository, not in this corpus, per the
+[self-containment rule](../development/documentation-workflow.md#docs-self-containment).
+
+| Document                                                  | Purpose                                                                        |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [Shared conversation coverage](chatgpt-share-coverage.md) | Traceability from both historical design conversations to canonical documents. |
 
 ## Related
 

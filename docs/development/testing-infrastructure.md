@@ -1,6 +1,6 @@
 ---
 title: Testing Infrastructure
-description: Draft capture of research record 043 - the three-tier native, VM, and physical test architecture and benchmark direction for Bitty
+description: Draft capture of the three-tier native, VM, and physical test architecture and benchmark direction
 category: development
 audience: contributor
 document_type: policy
@@ -11,14 +11,14 @@ sidebar_order: 17
 
 # Testing Infrastructure
 
-> Status: **draft**. This page is a critical capture of research record 043
-> (platform testing infrastructure and benchmarks) held in the `research`
-> archive. It accepts nothing, creates no test infrastructure, and claims no
-> working pipeline. It refines the CI expectations of
+> Status: **draft**. This page is a critical capture of the platform testing
+> infrastructure and benchmark direction. It accepts nothing, creates no test
+> infrastructure, and claims no working pipeline. It refines the CI
+> expectations of
 > [ADR 0002](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0002-platform-support-tiers.md)
 > (platform tiers and gate policy) and must not weaken the security corpus or
-> any accepted contract. The ISO-based local VM plan discussed in the record is
-> recorded below as a deferred, far-future item; no ISO infrastructure task is
+> any accepted contract. The ISO-based local VM plan discussed below is
+> recorded as a deferred, far-future item; no ISO infrastructure task is
 > opened.
 
 ## Why VMs are needed
@@ -37,13 +37,13 @@ keep the feed-forward fast.
 | VM       | QEMU guests over libvirt                       | ConPTY/PTY, Wayland/X11, distributions, install behavior  |
 | Physical | Dedicated machines, nightly or release cadence | GPU drivers, IME/compositor reality, macOS, power/latency |
 
-The record frames the long-term flow as: pull request -> `bitty-test-runner` ->
+The direction frames the long-term flow as: pull request -> `bitty-test-runner` ->
 `cargo test` plus QEMU/KVM (libvirt) plus a native runner; nightly adds ARM64
 under TCG and physical AMD/Intel/NVIDIA plus macOS Metal runners.
 
 ## Linux VM stack
 
-The recorded stack for a Linux host is QEMU plus KVM plus libvirt:
+The direction records a Linux host stack of QEMU plus KVM plus libvirt:
 
 - QEMU provides virtual hardware; KVM accelerates same-architecture guests.
 - libvirt owns VM lifecycle, domain XML, storage pools, networks, snapshots,
@@ -66,7 +66,7 @@ ARM64 under TCG on an x86_64 host is usable but explicitly not per-commit.
 
 ### Base images and overlays
 
-Guests must never be installed from an ISO per run. The recorded model keeps a
+Guests must never be installed from an ISO per run. The recommended model keeps a
 prepared base image (VirtIO drivers, SSH, Git, PowerShell, VC runtime, test
 agent, Bitty test dependencies) and creates a disposable qcow2 overlay per
 test, which is deleted afterwards. This is described as more convenient for CI
@@ -74,7 +74,7 @@ than snapshot-based restore.
 
 ### Test controller and guest access
 
-The record proposes a Bitty-owned controller rather than scattered shell:
+The direction proposes a Bitty-owned controller rather than scattered shell:
 `cargo xtask vm list/start/test` (optionally a `bitty-test-runner` crate)
 driving libvirt over its API, automating overlay creation, domain definition,
 boot, guest readiness, artifact upload, test execution, stdout/stderr and
@@ -104,7 +104,7 @@ implementation together.
 ## E2E test protocol
 
 Instead of fragile mouse/keyboard simulation and screenshot diffing, the
-record proposes a first-class test surface: `bitty --test-mode` exposing a test
+direction proposes a first-class test surface: `bitty --test-mode` exposing a test
 IPC socket with commands such as spawn terminal, send keys, create panel, split
 panel, resize, query screen, query cursor, query render state, screenshot, and
 exit. This reuses the existing IPC and Panel architecture and is recorded as
@@ -115,14 +115,14 @@ more stable than UI click automation.
 Unit tests (parser, grid, ECS, config) are the largest tier; integration tests
 (renderer, parser, IPC) sit above them; QEMU VMs cover OS integration at medium
 volume; physical hardware covers GPU/IME/macOS with the fewest runs. The
-record explicitly rejects routing all tests through QEMU.
+direction explicitly rejects routing all tests through QEMU.
 
 ## Benchmarks
 
 A fixed benchmark VM is proposed for repeatable CPU, RAM, startup, parser, and
 throughput measurements, with a fixed VM XML, pinned vCPUs, fixed guest image
 and QEMU version, an idle host, performance governor, multiple iterations, and
-median/p95/stddev reporting instead of single runs. Recorded metric rules:
+median/p95/stddev reporting instead of single runs. Metric rules:
 
 - Cold start and warm start are measured separately; a single `time bitty` is
   not sufficient.

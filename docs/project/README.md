@@ -33,4 +33,4 @@ not here. `docs/project/` (singular) is shared governance; `docs/projects/`
 - [Decision register](../decisions/index.md)
 - Shared governance: [`decisions/`](../decisions/index.md),
   [`security/`](../security/overview.md),
-  [`sources/`](../sources/research-notes-coverage.md)
+  [`sources/`](../sources/README.md)

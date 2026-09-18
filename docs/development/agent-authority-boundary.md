@@ -1,6 +1,6 @@
 ---
 title: Agent Authority and Hard-Safety Boundary
-description: Draft capture of research record 045 - the bitty/bitty-ai/Lua authority split, the four-layer policy stack, and Core-enforced hard-safety mechanisms
+description: Draft capture of the bitty/bitty-ai/Lua authority split, the four-layer policy stack, and Core-enforced hard-safety mechanisms
 category: development
 audience: contributor
 document_type: policy
@@ -11,12 +11,13 @@ sidebar_order: 19
 
 # Agent Authority and Hard-Safety Boundary
 
-> Status: **draft**. This page is a critical capture of research record 045
-> (Lua and agent authority, 2026-09-17) held in the `research` archive. It
-> accepts nothing, adopts no crate, fixes no policy schema, and authorizes no
+> Status: **draft**. This page is a critical capture of the Lua and agent
+> authority direction (2026-09-17). It accepts nothing, adopts no crate, fixes
+> no policy schema, and authorizes no
 > implementation. It is the authority-boundary companion to the execution host
-> and supervisor boundary capture (research record 044, `bitty-docs` PR #321,
-> open) and refines the implications of DIR-018 (host
+> and supervisor boundary capture (see the
+> [Execution Host and Supervisor Boundary](execution-host-boundary.md)) and
+> refines the implications of DIR-018 (host
 > capability gateway), the accepted
 > [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md),
 > and ADR-0006/ADR-0009 without rewriting them. The security corpus
@@ -51,7 +52,7 @@ fail in predictable ways:
 - A Lua plugin declares `filesystem = "all"`, `root = true`,
   `max_agents = 100` and effectively grants itself those powers.
 
-The record concludes that Bitty should implement **agent runtime primitives**
+The direction concludes that Bitty should implement **agent runtime primitives**
 under bitty/bitty-ai ownership and let Lua compose workflows on top, so that
 unbounded swarms, malicious plugins, buggy plugins, runaway agents, and
 incorrect delegation cannot cross the Core boundaries for capability, budget,
@@ -59,7 +60,7 @@ resource, secret, filesystem, privilege, execution, and lease.
 
 ## The boundary principle
 
-The record fixes a four-level layering and one sentence of policy:
+The direction fixes a four-level layering and one sentence of policy:
 
 | Layer               | Owns                                                                    | Direction                                     |
 | ------------------- | ----------------------------------------------------------------------- | --------------------------------------------- |
@@ -70,7 +71,7 @@ The record fixes a four-level layering and one sentence of policy:
 
 > **Lua decides "how"; Lua never decides "whether it is allowed".**
 
-The record's closing formulation is the same split from the other side:
+The closing formulation is the same split from the other side:
 agent _behavior norms_ largely belong to Lua; agent _impassable boundaries_
 must never belong to Lua. The upstream deliverable is a set of primitives
 (agent runtime, task, delegation, capability, budget, execution, panel lease,
@@ -80,8 +81,7 @@ harnesses compose the same primitives.
 
 ## Rule classification: Hard Safety, Policy, Strategy
 
-The record's central classification, condensed (source: research record 045
-section 7):
+The central classification, condensed:
 
 | Rule                                      | Class                    | Implementation location                   |
 | ----------------------------------------- | ------------------------ | ----------------------------------------- |
@@ -110,7 +110,7 @@ by convention in the AI layer.
 
 ## Four-layer policy stack
 
-The record fixes a four-layer stack whose layers **intersect**: the effective
+The direction fixes a four-layer stack whose layers **intersect**: the effective
 value is the most restrictive result, never an override.
 
 ```text
@@ -140,7 +140,7 @@ load order.
 
 ## Capability intersection and self-grant prohibition
 
-A Lua declaration is a **request**, never a grant. The record's model:
+A Lua declaration is a **request**, never a grant. The model:
 
 ```text
 EffectiveCapability =
@@ -171,8 +171,8 @@ and grant intersection in the
 [Plugin Platform RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-platform-rfc.md)
 (the `bitty-plugin-host` grant check already intersects declared, granted, and
 hash, tracked as R-006 in the [risk register](../security/risk-register.md)),
-and the host tool-dispatch consent gate delivered by CTX-0421. What is new in
-the record is the _multi-layer intersection for agent-spawned work_ (user,
+and the host tool-dispatch consent gate delivered by CTX-0421. What this
+direction adds is the _multi-layer intersection for agent-spawned work_ (user,
 project, parent delegation, task grant) and the explicit no-self-grant rule at
 the agent-spawn surface.
 
@@ -197,16 +197,17 @@ receive typed failures — `ResourceLimitExceeded`, `ExecutionBudgetExhausted`,
 `ConcurrencyLimitReached` — from Core, instead of taking the machine down.
 
 This direction extends the execution host and supervisor boundary capture
-(research record 044, `bitty-docs` PR #321, open): the record's job model
+(see the [Execution Host and Supervisor Boundary](execution-host-boundary.md)):
+its job model
 already separates `hard_timeout`, `idle_timeout`, and `retention_ttl`, asserts
 `OomKilled` only when the host can determine it, and keeps resource usage as an
 `ExecutionResult` field. Resource _enforcement_ (memory/CPU/disk/GPU ceilings
-and the concurrency ceiling) is the part this record adds; token/cost budgets
+and the concurrency ceiling) is the part this direction adds; token/cost budgets
 and delegation fan-out remain `bitty-ai` semantics.
 
 ## Panel write-lease
 
-"Please do not fight over panels" is not a control. The record defines a Core
+"Please do not fight over panels" is not a control. The direction defines a Core
 lease on a panel (illustrative shape):
 
 ```text
@@ -218,7 +219,7 @@ Panel P7
 A write attempt by B (`panel.write(P7)`) is denied by Core with a typed reason
 ("interactive writer lease belongs to Agent A"), and a handoff is a
 generation-fenced transfer (`handoff P7 A -> B`, generation 12 fenced,
-generation 13 assigned to B). This prevents the recorded corruption pattern of
+generation 13 assigned to B). This prevents the corruption pattern of
 two agents and a human writing to one PTY concurrently.
 
 Division of labor: **discipline is expressed by Lua; mutual exclusion is
@@ -236,7 +237,7 @@ in `bitty-ai-docs`; this capture records only the Core mechanism direction.
 
 ## Secret isolation
 
-The record fixes the invariant **use ≠ read** for credentials: an agent may
+The direction fixes the invariant **use ≠ read** for credentials: an agent may
 execute with a credential while never receiving its value.
 
 ```text
@@ -267,13 +268,13 @@ semantics remain with `bitty-ai`.
 
 ## Hard-safety authorization points
 
-**Sensitive paths.** "Never read `.env`" must not be a prompt rule. The record
-requires a real authorization layer in the filesystem path, default-deny for
+**Sensitive paths.** "Never read `.env`" must not be a prompt rule. The
+direction requires a real authorization layer in the filesystem path, default-deny for
 sensitive locations such as `.env` and `.env.*` variants, `~/.ssh/**`,
 `~/.gnupg/**`, `~/.aws/credentials`, token stores, and browser credential
 stores, with an explicit user-consent escape rather than silent access.
 Because names alone are insufficient (`secret.txt`, `credentials.json`,
-`prod-config.yaml` can all carry secrets), the record proposes composing
+`prod-config.yaml` can all carry secrets), the direction proposes composing
 `FilesystemScope` + `SensitivePathPolicy` + secret detection/redaction, so a
 request returns deny, consent prompt, or a redacted result. Lua plugins must
 not be able to bypass this check. This composes with threat T-03 (deny-by-default
@@ -284,7 +285,7 @@ it adds the content-detection layer and the default sensitive-path set.
 
 **Privilege escalation.** Default is denial: an agent running
 `sudo pacman -S ...` is not executed because the model judged it reasonable.
-The record proposes a typed request (`reason`, `command`, `target`) through
+The direction proposes a typed request (`reason`, `command`, `target`) through
 host policy to explicit user approval and then **one scoped privileged
 execution**. There is no permanent sudo session and the agent never knows the
 sudo password. Bitty provides the elevation _mechanism_; whether elevation is
@@ -295,7 +296,7 @@ allowed at all is user/project policy.
 The Lua surface should be declarations and requests
 (`agent.spawn`, `execution.run`, `panel.acquire`, `fs.read`), each entering the
 same authorization path — not raw escape hatches (`os.execute`, `io.open`).
-The record's acceptance criterion is that even a pathological harness
+The acceptance criterion is that even a pathological harness
 (`while true do agent.spawn(...) end`) produces a stream of
 `BudgetExceeded`/`ConcurrencyLimitReached` responses instead of a broken
 machine.
@@ -326,7 +327,7 @@ Not captured here; owned by `bitty-ai-docs` / the Lua harness work:
 
 ## Open items
 
-- The v0.1 boundary for these mechanisms is not scheduled; the record's
+- The v0.1 boundary for these mechanisms is not scheduled; the
   hard-safety set is a direction, not a milestone commitment.
 - OQ-057 (capability-enforced role contract, including the execution-sandbox
   layer), OQ-061 (identity domains and panel projection), and OQ-083 (panel

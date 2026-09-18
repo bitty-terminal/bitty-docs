@@ -130,11 +130,11 @@ the Risk Evidence RFC checklist plus auditor review says otherwise.
 Terminal -> Config -> Command/Event -> Plugin Runtime -> Plugin Manager ->
 DevTools -> Rich Presentation -> IPC -> Agent` and version ladder `v0.1`
   through `v1.0` with trust-boundary notes including `bittyd` after `v1.0`.
-  Status is **draft research record** retained from the second historical
+  Status is **draft** retained from the second historical
   ChatGPT conversation
   [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531)
   per [Shared-conversation coverage](../sources/chatgpt-share-coverage.md).
-  Nothing in that record is accepted direction or a roadmap commitment until
+  Nothing in that draft is accepted direction or a roadmap commitment until
   an RFC or ADR accepts it with independent review.
 - **Authority:** CarryCtx tasks are the execution record; requirements and
   specifications remain the authority for what completion means. This roadmap
@@ -769,7 +769,7 @@ at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
 
 - [Roadmap index](README.md) — admission criteria and authority.
 - [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 `bea338d` to `v0.1`..`v1.0`.
-- [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md) — candidate spine and ladders, draft research record from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
+- [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md) — candidate spine and ladders, draft deposit from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
 - [Shared-conversation coverage](../sources/chatgpt-share-coverage.md) — provenance matrices for both historical conversations.
 - [Security Risk Register](../security/risk-register.md) — R-001..R-022, severity and stage.
 - [Security Evidence Matrix](../security/evidence-matrix.md) — Phase E `R-001`..`R-022` vs `P0-AC-001`..`P0-AC-034` with implementation, test, CI, adversarial, and audit columns.

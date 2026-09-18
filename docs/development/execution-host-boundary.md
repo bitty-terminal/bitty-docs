@@ -1,6 +1,6 @@
 ---
 title: Execution Host and Supervisor Boundary
-description: Draft capture of research record 044 - the bitty/bitty-ai execution boundary, job supervision mechanisms, and the phased long-running process direction
+description: Draft capture of the bitty/bitty-ai execution boundary, job supervision mechanisms, and the phased long-running process direction
 category: development
 audience: contributor
 document_type: policy
@@ -11,10 +11,10 @@ sidebar_order: 18
 
 # Execution Host and Supervisor Boundary
 
-> Status: **draft**. This page is a critical capture of research record 044
-> (Execution Supervisor / Job Service, 2026-09-17) held in the `research`
-> archive. It accepts nothing, adopts no crate, fixes no wire protocol, and
-> authorizes no implementation. It refines the implications of DIR-018 (host
+> Status: **draft**. This page is a critical capture of the Execution
+> Supervisor / Job Service direction (2026-09-17). It accepts nothing, adopts
+> no crate, fixes no wire protocol, and authorizes no implementation. It
+> refines the implications of DIR-018 (host
 > capability gateway), the identity separation tracked by OQ-061, and the
 > deferred headless/daemon direction of ADR-0008 without rewriting them. The
 > accepted [Panel Runtime RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/panel-runtime-rfc.md),
@@ -47,14 +47,14 @@ not survive the objects Bitty is building around them:
   dependencies, pause/resume, restart, durable logs, environment snapshots),
   but it understands nothing about agents, capabilities, panels, or handoff.
 
-The record concludes that Bitty should not ship a stronger `pty_spawn`. It
+The direction concludes that Bitty should not ship a stronger `pty_spawn`. It
 should make the **Job / Execution a first-class object** managed by an
 Execution Supervisor that is independent of Agent, Panel, and Conversation,
 with a PTY as one execution backend rather than the core abstraction.
 
 ## The boundary principle
 
-The record fixes a responsibility split that this capture records as
+The direction fixes a responsibility split that this capture records as
 direction:
 
 | Side                 | Role                        | Owns                                                                                                                                              |
@@ -63,7 +63,7 @@ direction:
 | `bitty-ai`           | Agent Runtime / semantics   | Task model, agent ownership, job-to-task association, claims, subscriptions, handoff, mailbox, progress notes, retry and timeout policy selection |
 | `bitty` ↔ `bitty-ai` | Typed execution protocol    | Generic execution verbs and typed results; the terminal side never learns agent ontology                                                          |
 
-The record fixes four objects and their lifetimes:
+The direction fixes four objects and their lifetimes:
 
 | Object              | Meaning                                    |
 | ------------------- | ------------------------------------------ |
@@ -141,7 +141,7 @@ Consequences recorded:
 
 ## Result and output contract
 
-The record separates two layers that must not be conflated:
+The direction separates two layers that must not be conflated:
 
 - **`ExecutionResult` is the authoritative host fact**: execution id, typed
   outcome, start/end timestamps, stdout/stderr references, artifact
@@ -160,7 +160,7 @@ The record separates two layers that must not be conflated:
   not its implementation.
 - **Event delivery is at-least-once with stable ids**: completion events carry
   an id, are deduplicated by the consumer, and are not dropped silently. The
-  record keeps three states distinct — accepted into a mailbox, delivered to a
+  states stay distinct — accepted into a mailbox, delivered to a
   live recipient, and processed/acknowledged — and retains events across an
   IPC disconnect, resuming by sequence so that work continues while the AI
   side is away.
@@ -177,7 +177,7 @@ The record separates two layers that must not be conflated:
 
 ## Persistence and phasing
 
-The record keeps durability out of v0.1 (aligned with the ephemeral v0.1
+The direction keeps durability out of v0.1 (aligned with the ephemeral v0.1
 boundary already recorded) and stages growth:
 
 | Phase   | Scope                                                                                                                                         |
@@ -218,9 +218,9 @@ ADR-0008 rather than bypass it.
 Panels are optional projections of executions, and multi-agent visibility is
 capability-gated: an owner plus subscribers model with per-operation grants,
 so a team lead or reviewer may observe while control stays scoped. The
-record's console layout, attach/tail interactions, and job list are
+console layout, attach/tail interactions, and job list are
 illustrative UI direction only. The terminal side already owns the folding
-direction for command output (see the semantic terminal folding records); job
+direction for command output (see the semantic terminal folding direction); job
 views must compose with that presentation model rather than inventing a
 second folding mechanism.
 
@@ -230,7 +230,7 @@ The following belong to `bitty-ai` semantics and are not captured here: the
 Task lifecycle authority, `JobBinding` between tasks and executions, agent
 claims and leases, watcher/subscriber policy, mailbox delivery semantics,
 `JobResult` summaries and progress notes, retry policy, timeout policy
-selection, the agent-finalization Quiescence Gate from the record (an agent
+selection, the agent-finalization Quiescence Gate (an agent
 winding down must resolve its live owned jobs by wait, detach, handoff, or
 cancel — enforced as a harness invariant, not a prompt reminder),
 commander/reviewer orchestration, and the multi-agent role contract tracked
@@ -249,7 +249,7 @@ by OQ-057. Their owner repository records them separately.
   undecided.
 - The job-visibility console and needs-input surfacing have no accepted
   terminal-side contract yet; folding composition is noted without duplicating
-  the semantic terminal records.
+  the semantic terminal direction.
 - No new open question is opened here; OQ-061 (identity domains and panel
   projection), OQ-057 (capability-enforced role contract), OQ-059 (semantic
   output compression), and OQ-065 (evidence references) remain the contract

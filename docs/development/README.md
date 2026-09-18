@@ -42,31 +42,32 @@ or test workflow exists.
 - [Technology strategy](../project/technology-strategy.md) separates accepted
   language/platform direction from candidate tools.
 - [Platform compatibility and dependency governance](platform-compatibility.md)
-  is a draft capture of research record 042: compatibility layers, the
+  is a draft capture of the cross-platform dependency and compatibility
+  direction: compatibility layers, the
   release-responsibility split, and the dependency-boundary direction for the
   Rust workspace.
 - [Testing infrastructure](testing-infrastructure.md) is a draft capture of
-  research record 043: the three-tier native, VM, and physical test
+  the three-tier native, VM, and physical test
   architecture, the VM matrix, the E2E test protocol, and the benchmark VM
   direction.
 - [Execution host and supervisor boundary](execution-host-boundary.md) is a
-  draft capture of research record 044: the `bitty`/`bitty-ai` execution
+  draft capture of the `bitty`/`bitty-ai` execution
   split, the job supervision mechanisms, and the phased long-running process
   direction (bitty-owned mechanisms only; `bitty-ai` semantics stay
   owner-pending).
 - [Agent authority and hard-safety boundary](agent-authority-boundary.md) is a
-  draft capture of research record 045: the `bitty`/`bitty-ai`/Lua authority
+  draft capture of the `bitty`/`bitty-ai`/Lua authority
   split, the four-layer policy stack, and the Core-enforced hard-safety
   mechanisms for capabilities, resources, panel leases, secrets, and
   privilege (bitty-upstream mechanisms only; `bitty-ai` and Lua-harness
   semantics stay owner-pending).
 - [Plugin contract and manager boundary](plugin-contract-and-manager-boundary.md)
-  is a draft capture of research records 053 and 054: the Core-side plugin
+  is a draft capture of the Core-side plugin
   contract shapes, the Bitty-owned plugin manager, the manifest split, and
   the resolver and loader boundary (core slice only; plugin, terminal, AI,
   and Wheel halves stay owner-pending).
 - [Reference projects](../project/reference-projects.md) records untrusted,
-  read-only research snapshots.
+  read-only reference snapshots.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
   and [risk register](../security/risk-register.md) define the security review
   baseline.

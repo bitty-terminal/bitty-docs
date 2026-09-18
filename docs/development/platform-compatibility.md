@@ -1,6 +1,6 @@
 ---
 title: Platform Compatibility and Dependency Governance
-description: Draft capture of research record 042 - compatibility layers, release-responsibility split, and dependency-boundary direction for the Rust workspace
+description: Draft capture of the cross-platform dependency and release-compatibility direction
 category: development
 audience: contributor
 document_type: policy
@@ -11,10 +11,10 @@ sidebar_order: 16
 
 # Platform Compatibility and Dependency Governance
 
-> Status: **draft**. This page is a critical capture of research record 042
-> (cross-platform dependencies and release compatibility) held in the `research`
-> archive. It accepts nothing, adopts no dependency, changes no release process,
-> and authorizes no compatibility promise. It refines the implications of
+> Status: **draft**. This page is a critical capture of the cross-platform
+> dependency and release-compatibility direction. It accepts nothing, adopts no
+> dependency, changes no release process, and authorizes no compatibility
+> promise. It refines the implications of
 > [ADR 0002](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0002-platform-support-tiers.md),
 > [ADR 0004](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0004-upstream-dependencies.md),
 > and decision-register directions DIR-016/DIR-017 (Core network boundary) and
@@ -24,7 +24,7 @@ sidebar_order: 16
 
 ## Source, build, and runtime dependencies
 
-The record separates three meanings of "reusing a dependency" that must not be
+The capture separates three meanings of "reusing a dependency" that must not be
 conflated:
 
 1. **Source/download reuse** — Cargo's resolver selects one crate version per
@@ -51,7 +51,7 @@ Consequences recorded:
 ## Dependency governance direction
 
 The workspace already concentrates external dependencies in clearly owned
-crates at the time of the record; with `bitty-ai` entering, the record proposes
+crates at the time of writing; with `bitty-ai` entering, the direction proposes
 writing that ownership down as policy:
 
 | Policy                   | Direction                                                                                                                        |
@@ -73,7 +73,7 @@ Two supporting directions:
 
 ### Candidate dependency firewall
 
-The record proposes an explicit layer model so a review can recognize a
+The direction proposes an explicit layer model so a review can recognize a
 boundary violation from a dependency diff alone:
 
 | Layer | Crates                                                     | Allowed                                      |
@@ -100,7 +100,7 @@ boundary violation from a dependency diff alone:
 
 ## Compatibility layers and responsibility split
 
-The record distinguishes source portability (one API across platforms, largely
+The capture distinguishes source portability (one API across platforms, largely
 solved by winit/wgpu), binary portability (what release engineering must
 deliver), and runtime compatibility (OS, driver, distribution, and support
 policy). It proposes a three-layer compatibility model with an explicit owner
@@ -120,7 +120,7 @@ real-machine testing of Wayland/X11 and Vulkan/Metal/DX12 paths.
 
 ### Release pipeline observations
 
-The record observed three concrete defects in the release pipeline, all
+Three concrete defects were observed in the release pipeline, all
 consistent with DIR-020 items 1, 2, and 4, and therefore tracked by the
 existing DIR-020 execution tasks rather than newly opened:
 
@@ -134,7 +134,7 @@ existing DIR-020 execution tasks rather than newly opened:
 
 ## Platform difference funnel
 
-The record endorses a funnel shape: features see a platform-neutral API, and
+The direction endorses a funnel shape: features see a platform-neutral API, and
 the platform boundary lives in `bitty-platform` (winit), `bitty-render`
 (wgpu), and `bitty-pty` (portable-pty). Direction:
 
@@ -142,7 +142,7 @@ the platform boundary lives in `bitty-platform` (winit), `bitty-render`
   stays confined to boundary crates and a few native integration points.
 - Abstract common semantics instead of flattening differences. The existing
   `bitty-pty` split (shared contract with `unix.rs`/`windows.rs`, `None` where
-  a platform lacks a concept) is the recorded example to follow for PTY, agent
+  a platform lacks a concept) is the example to follow for PTY, agent
   process control, clipboard, notifications, window effects, global shortcuts,
   and credential storage.
 - Wayland policy (compositor owns placement, no global coordinates) can make
