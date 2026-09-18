@@ -16,11 +16,11 @@ This page routes to project documentation that previously lived under
 and is mounted at the `bitty-docs` repository root as Git submodules pinned to
 each repository's merged `main`:
 
-| Submodule         | Repository                                                                   | Scope                                                                                                                  | Code-repository mount         |
-| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `bitty-terminal/` | [bitty-terminal-docs](https://github.com/bitty-terminal/bitty-terminal-docs) | Terminal platform: architecture, specifications, interfaces, product, user guide, and the rest of the terminal corpus. | `bitty/docs`                  |
-| `bitty-ai/`       | [bitty-ai-docs](https://github.com/bitty-terminal/bitty-ai-docs)             | Independent AI core: AI architecture, IPC and Agent RFC, Browser and Agent panel pre-study.                            | `bitty-ai/docs`               |
-| `bitty-plugins/`  | [bitty-plugins-docs](https://github.com/bitty-terminal/bitty-plugins-docs)   | Plugin platform, SDK, lifecycle, package, isolation, and per-plugin pages.                                             | `bitty-plugins/<plugin>/docs` |
+| Submodule         | Repository                                                                   | Scope                                                                                                                  | Code-repository mount |
+| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `bitty-terminal/` | [bitty-terminal-docs](https://github.com/bitty-terminal/bitty-terminal-docs) | Terminal platform: architecture, specifications, interfaces, product, user guide, and the rest of the terminal corpus. | `bitty/docs`          |
+| `bitty-ai/`       | [bitty-ai-docs](https://github.com/bitty-terminal/bitty-ai-docs)             | Independent AI core: AI architecture, IPC and Agent RFC, Browser and Agent panel pre-study.                            | `bitty-ai/docs`       |
+| `bitty-plugins/`  | [bitty-plugins-docs](https://github.com/bitty-terminal/bitty-plugins-docs)   | Plugin platform, SDK, lifecycle, package, isolation, and per-plugin pages.                                             | `bitty-plugins/docs`  |
 
 ## What stays shared
 
