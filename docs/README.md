@@ -116,7 +116,6 @@ precedence over source summaries and non-security design suggestions.
 
 ## Decisions, work, and provenance
 
-
 | Document                                                                                             | Purpose                                                                                |
 | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | [Decision register](decisions/index.md)                                                              | Accepted directions, normative contracts, verified facts, and ADR/RFC queue.           |
