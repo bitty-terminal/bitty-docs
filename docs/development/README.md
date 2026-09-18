@@ -55,6 +55,11 @@ or test workflow exists.
   mechanisms for capabilities, resources, panel leases, secrets, and
   privilege (bitty-upstream mechanisms only; `bitty-ai` and Lua-harness
   semantics stay owner-pending).
+- [Plugin contract and manager boundary](plugin-contract-and-manager-boundary.md)
+  is a draft capture of research records 053 and 054: the Core-side plugin
+  contract shapes, the Bitty-owned plugin manager, the manifest split, and
+  the resolver and loader boundary (core slice only; plugin, terminal, AI,
+  and Wheel halves stay owner-pending).
 - [Reference projects](../project/reference-projects.md) records untrusted,
   read-only research snapshots.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
