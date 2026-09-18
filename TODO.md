@@ -285,5 +285,13 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       [repository map](docs/project/repository-map.md#submodule-pin-semantics)
       is normative with or without the helper.
 
+## Follow-up recorded by CTX-0231 (governance corpus)
+
+- [ ] Bump the three root submodule pointers (`bitty-terminal`, `bitty-ai`,
+      `bitty-plugins`) once the sibling alignment pull requests land
+      (bitty-ai-docs#134, bitty-plugins-docs#61). CTX-0231 deliberately does not
+      bump pins; the pointer change is a separate scoped chore per the
+      [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates).
+
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

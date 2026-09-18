@@ -26,8 +26,8 @@ The shared conversation records early questions, preferences, and design
 suggestions. It is **not implementation evidence**, a release record, or an
 authority that overrides the maintained corpus. Assistant suggestions remain
 candidates unless the user explicitly accepted them or a later canonical
-document establishes a normative requirement. The local transcript in `recording/`
-is temporary source material and is intentionally not copied into this
+document establishes a normative requirement. The local transcript is
+temporary workspace scratch material and is intentionally not copied into this
 repository.
 
 ## Second source: phased delivery roadmap
@@ -38,7 +38,7 @@ repository.
 - Coverage: mapped by route item; every recorded route item appears exactly
   once below
 - Role: historical sequencing input and provenance; recorded 2026-08-25 from a
-  local research snapshot under `recording/research/chatgpt-6a8dae4b/`
+  workspace-local research snapshot of the shared conversation
 
 This conversation proposes an eleven-step phase plan (Phase 0 through Phase 10)
 plus a version-maturity ladder and build-order guidance. It carries the same

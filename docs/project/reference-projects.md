@@ -91,10 +91,11 @@ relevant research document.
 
 ## Panel and workspace prior-art leads
 
-This section records **non-normative research leads** from the second research
-snapshot, `recording/research/chatgpt-2026-08-30-2.md`, and the not-yet-merged Panel
-Extensibility Vision draft. An observation from a pinned local snapshot must
-name its project, commit, exact file or symbol, and observation. An unpinned
+This section records **non-normative research leads** from a workspace-local
+research snapshot of the second shared ChatGPT conversation, and the
+not-yet-merged Panel Extensibility Vision draft. An observation from a pinned
+local snapshot must name its project, commit, exact file or symbol, and
+observation. An unpinned
 entry is an external URL observation and research lead; it must name the
 official URL and must not be presented as snapshot-backed evidence. The
 research snapshot is untrusted external input and is not normative evidence.

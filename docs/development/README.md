@@ -31,6 +31,11 @@ or test workflow exists.
 
 - [Repository map](../project/repository-map.md) describes independent
   repository boundaries and current initialization state.
+- [Repository bootstrap](repository-bootstrap.md) is the accepted
+  zero-functionality Core and website scaffold contract with its implementation
+  validation gates.
+- [Website sync contract](website-sync.md) is the draft developer guide to the
+  pinned docs-to-website mirror, route mapping, and parity gates.
 - [Repository metadata and GitHub baseline](repository-metadata-baseline.md)
   classifies which repository metadata and `.github/` files are shared
   verbatim, parameterized, or per-repository.
