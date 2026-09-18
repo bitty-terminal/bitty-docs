@@ -63,6 +63,7 @@ local `bitty` checkout; OQ counts live in the
 | [Documentation workflow](development/documentation-workflow.md)                                              | Normative taxonomy, metadata, ownership, review, synchronization, deprecation, and versioning policy.                                                                                                               |
 | [Repository bootstrap](development/repository-bootstrap.md)                                                  | Accepted zero-functionality Core and website scaffold contract plus implementation validation gates (19 crates `bea338d` now `Implemented` but not yet `Verified`).                                                 |
 | [Toolchain and tooling policy](development/toolchain-policy.md)                                              | Pinned per-repository toolchains and canonical gate commands all agents must use.                                                                                                                                   |
+| [Website sync contract](development/website-sync.md)                                                         | Draft developer guide to the pinned docs-to-website mirror, route mapping, and parity gates.                                                                                                                        |
 | [Repository metadata and GitHub baseline](development/repository-metadata-baseline.md)                       | Proposed classification of shared-verbatim, parameterized, and per-repository `.github/` and root metadata, with required-check naming, action-pinning, and rollout rules.                                          |
 
 ## Architecture and interfaces
@@ -118,17 +119,18 @@ precedence over source summaries and non-security design suggestions.
 
 | Document                                                                                             | Purpose                                                                                |
 | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [Decisions](decisions/README.md)                                                                     | Index route to the decision corpus and its registers.                                  |
 | [Decision register](decisions/index.md)                                                              | Accepted directions, normative contracts, verified facts, and ADR/RFC queue.           |
 | [Open-question register](decisions/open-questions.md)                                                | Unresolved choices with a canonical owner document and next artifact.                  |
 | [Architecture decision records](decisions/adrs/README.md)                                            | Catalog and maintenance rules for durable accepted architecture decisions.             |
 | [ADR 0001 - Repository Bootstrap Baseline](decisions/adrs/ADR-0001-repository-bootstrap-baseline.md) | Accepted minimal Core and website initialization boundary without product behavior.    |
-| [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions; currently an explicit empty state.        |
+| [Requests for comments](decisions/rfcs/README.md)                                                    | Reviewable proposals and final dispositions.                                           |
 | [Findings](findings/README.md)                                                                       | Durable reviewed evidence; internal and excluded from website publication.             |
 | [Reviews](reviews/README.md)                                                                         | Index route to independent review coordination checklists.                             |
 | [Handoff records](handoff/README.md)                                                                 | Cross-session ownership handoffs, created on first use; currently empty.               |
 | [Sources](sources/README.md)                                                                         | Index route to historical provenance records; states no row status or record range.    |
 | [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents. |
-| [Research notes coverage](sources/research-notes-coverage.md)                                        | Traceability from the research records (`001`-`054`) to canonical documents.           |
+| [Research notes coverage](sources/research-notes-coverage.md)                                        | Traceability from the research records (`001`-`055`) to canonical documents.           |
 | [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-14, `bea338d`).            |
 
 ## Interpretation rules
