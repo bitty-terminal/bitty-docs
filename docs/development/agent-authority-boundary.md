@@ -117,7 +117,7 @@ value is the most restrictive result, never an override.
 ┌─────────────────────────────────────┐
 │ Lua harness policy                  │  team shape / workflow / strategy
 ├─────────────────────────────────────┤
-│ Project policy (.bitty)             │  allowed paths / task constraints
+│ Project policy (.wheel)             │  allowed paths / task constraints
 ├─────────────────────────────────────┤
 │ User policy                         │  max agents / root / network / etc.
 ├─────────────────────────────────────┤
