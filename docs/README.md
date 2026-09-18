@@ -130,7 +130,6 @@ precedence over source summaries and non-security design suggestions.
 | [Handoff records](handoff/README.md)                                                                 | Cross-session ownership handoffs, created on first use; currently empty.               |
 | [Sources](sources/README.md)                                                                         | Index route to historical provenance records; states no row status or record range.    |
 | [Shared-conversation coverage](sources/chatgpt-share-coverage.md)                                    | Traceability from both historical ChatGPT design conversations to canonical documents. |
-| [Research notes coverage](sources/research-notes-coverage.md)                                        | Traceability from the research records (`001`-`055`) to canonical documents.           |
 | [Phase A TODO](../TODO.md)                                                                           | Pre-alpha status reconciliation and hardening work (2026-09-14, `bea338d`).            |
 
 ## Interpretation rules
@@ -180,7 +179,7 @@ revision under the
 or duplicate normative prose; with project content in submodules it must also
 resolve the aggregator's recorded submodule pointers.
 
-Internal workspace inventories, research snapshots, the website integration
+Internal workspace inventories, reference snapshots, the website integration
 contract, and findings use `website_publish: false`. Public-facing category
 indexes remain eligible even while empty because they explicitly state the
 admission gate and do not invent product behavior.

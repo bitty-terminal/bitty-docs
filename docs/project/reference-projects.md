@@ -25,7 +25,7 @@ These clones are **reproducible research snapshots**, not:
 - commitments to begin a fork;
 - Bitty compatibility guarantees for the reference projects.
 
-Technical conclusions must enter a research note, RFC, or ADR with the observed
+Technical conclusions must enter a provenance note, RFC, or ADR with the observed
 commit recorded. “Another project does it this way” cannot replace Bitty's own
 constraints and validation.
 
@@ -43,7 +43,7 @@ The `2026-08-25` registration date applies only to the original four snapshots;
 registration metadata is recorded per entry above. The clones have shallow
 history, and each commit provides an exact reference for current observations.
 Updating a clone requires updating this table or pinning the old commit in the
-relevant research document.
+relevant provenance document.
 
 ## Research questions
 
@@ -92,13 +92,13 @@ relevant research document.
 ## Panel and workspace prior-art leads
 
 This section records **non-normative research leads** from a workspace-local
-research snapshot of the second shared ChatGPT conversation, and the
+snapshot of the second shared ChatGPT conversation, and the
 not-yet-merged Panel Extensibility Vision draft. An observation from a pinned
 local snapshot must name its project, commit, exact file or symbol, and
 observation. An unpinned
 entry is an external URL observation and research lead; it must name the
 official URL and must not be presented as snapshot-backed evidence. The
-research snapshot is untrusted external input and is not normative evidence.
+snapshot is untrusted external input and is not normative evidence.
 The primary-source URLs below are review leads, not dependency or product
 commitments. They are prompts for source-level research and future RFC or ADR
 work.
@@ -359,7 +359,7 @@ minus forbidden_delegated_capabilities` an explicit invariant, including
   approval identity in context-local session/turn/tool-call state and freezes
   YOLO mode at import time; `tools/write_approval.py` stages writes when
   approval is required. The README describes agent-curated memory and skill
-  creation, but the research note recommends proposal and review gates for
+  creation, but the captured direction recommends proposal and review gates for
   `memory.write`, `skill.write`, and instruction changes. Research question:
   should Bitty permit observation and proposal by default while requiring
   separate, auditable consent for durable memory, skills, instructions,
@@ -405,7 +405,7 @@ snapshot is reviewed and pinned.
 
 - Prefer `rg` and `ctxctl outline/symbol/read/deps` for narrow research.
   Never dump an entire file or repository into Agent context.
-- Pinned-snapshot research notes must include the project name, commit, exact
+- Pinned-snapshot provenance notes must include the project name, commit, exact
   file or symbol, and observation, not merely a second-hand conclusion.
   Unpinned leads must instead be explicitly marked as external URL observations
   and research leads, include the official URL, and must not imply local file or

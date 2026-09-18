@@ -271,7 +271,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [x] CTX-0133 sync bundle to `29772a3` previous `c49ead1` (release `v0.0.19`): workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults; snapshot, validator, fixture, and summaries in lockstep; no risk-state or normative changes (PR #164).
 - [x] CTX-0180 refresh to `bea338d` previous `29772a3` (release `v0.0.20`, 19 crates, 40 OQs Accepted): add `refresh-state.mjs` with `just state-refresh`/`just state-refresh-check` and the scheduled State freshness workflow; the validator now derives revision/date/count consistency instead of freezing literals; no risk-state or normative changes.
 
-## Follow-ups recorded by CTX-0199 (research note 024)
+## Follow-ups recorded by CTX-0199 (DIR-015)
 
 - [ ] Write the shipped-factual installation and getting-started guides for
       `v0.0.20` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`,
@@ -285,13 +285,16 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       [repository map](docs/project/repository-map.md#submodule-pin-semantics)
       is normative with or without the helper.
 
+## Follow-up recorded by CTX-0232 (self-containment)
+
+- [ ] Export the removed record-to-document mappings into the `research` repository ([rule](docs/development/documentation-workflow.md#docs-self-containment)).
+
 ## Follow-up recorded by CTX-0231 (governance corpus)
 
 - [ ] Bump the three root submodule pointers (`bitty-terminal`, `bitty-ai`,
       `bitty-plugins`) once the sibling alignment pull requests land
-      (bitty-ai-docs#134, bitty-plugins-docs#61). CTX-0231 deliberately does not
-      bump pins; the pointer change is a separate scoped chore per the
-      [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates).
+      (bitty-ai-docs#134, bitty-plugins-docs#61), as a separate scoped chore per
+      the [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates).
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

@@ -25,6 +25,29 @@ translated URL routing, and synchronization between languages are deferred.
 They require a future cross-repository decision before any localized tree is
 created.
 
+## Docs self-containment
+
+Canonical documentation is self-contained: a reader must be able to use every
+document with the workspace research archive absent. A canonical document must
+not cite the research repository or its contents in any form, including:
+
+- research record numbers or titles;
+- `summary/`, `origin/`, or `.md.completed` paths and their URLs;
+- record-to-document coverage or provenance ledgers;
+- `recording/research/NNN` companion references.
+
+Record-to-document mappings, coverage ledgers, and research-archive provenance
+belong in the research repository itself, never in a canonical document. The
+generic provenance workflow in this policy remains valid: it defines how an
+observation becomes a decision or an open question and does not cite a specific
+record. External, non-archive sources may still be named by their own URL when
+they are the actual evidence.
+
+This rule applies to every canonical corpus, including `bitty-docs` and its
+project documentation submodules. A review that finds a research-repository
+reference, record number, coverage ledger, or provenance mapping in a canonical
+document returns `NEEDS-FIX`.
+
 ## Repository layout and routing
 
 Documentation is partitioned into shared cross-project governance and
@@ -39,7 +62,7 @@ Shared governance stays in the top-level directories:
 | `decisions/`   | ADRs and the single global open-question register.                    |
 | `security/`    | Normative security corpus, threat model, risk register, and evidence. |
 | `development/` | Contributor policy, workflow, toolchain, and repository baseline.     |
-| `sources/`     | Historical conversation and research provenance records.              |
+| `sources/`     | Historical conversation provenance records.                           |
 | `findings/`    | Durable reviewed findings and evidence.                               |
 | `reviews/`     | Review records and dispositions.                                      |
 | `handoff/`     | Cross-session handoff records.                                        |
@@ -148,10 +171,10 @@ or duplicating specifications.
 
 ## User-doc maturity tiers
 
-User documentation distinguishes three claims (DIR-015, research note 024
-§11). The old blanket rule that installation and getting-started pages wait
-for `Verified` was over-strict against shipped reality (`bitty` documents AUR
-recipes, GitHub Releases, `bitty init`, and `bitty doctor` as shipped):
+User documentation distinguishes three claims (DIR-015). The old blanket rule
+that installation and getting-started pages wait for `Verified` was over-strict
+against shipped reality (`bitty` documents AUR recipes, GitHub Releases,
+`bitty init`, and `bitty doctor` as shipped):
 
 - Shipped-factual docs describe behavior that ships in a named release. They
   are allowed before `Verified` when every page carries an explicit version
@@ -188,22 +211,19 @@ Opening an admissible OQ records these fields in the register entry:
 - the next review point (date or milestone event) at which it is re-checked.
 
 Not admissible: pure future ideas, speculative feature expansions, and
-explorations that no current milestone or evidence forces. Those stay in the
-workspace research notes under `recording/research/` (see [research notes
-coverage](../sources/research-notes-coverage.md)) or another provenance record
-until they satisfy an admission condition.
+explorations that no current milestone or evidence forces. Those stay in a
+non-canonical provenance record until they satisfy an admission condition.
 
-Promotion path: a research note or provenance observation becomes a proposed OQ
-that cites the forcing evidence and carries the fields above, then is admitted
-onto the register through a reviewed change. A parked idea does not reserve an
-OQ identifier.
+Promotion path: a provenance observation becomes a proposed OQ that cites the
+forcing evidence and carries the fields above, then is admitted onto the
+register through a reviewed change. A parked idea does not reserve an OQ
+identifier.
 
 Review and deprecation: re-check each OQ at its recorded review point. Close an
 OQ when a decision exists, citing the reviewed evidence. Mark it `Deprecated`
 when it no longer blocks a milestone or an evidence or risk item and no decision
-is pending, with the review rationale and a link to the provenance or research
-record that now carries it; its identifier remains allocated and is never
-reused.
+is pending, with the review rationale and a link to the provenance record that
+now carries it; its identifier remains allocated and is never reused.
 
 ## Required metadata
 

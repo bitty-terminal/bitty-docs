@@ -31,4 +31,4 @@ and states no control status of its own.
 - [P0 review checklist](../reviews/p0-review-checklist.md)
 - Shared governance: [`decisions/`](../decisions/index.md),
   [`project/`](../project/repository-map.md),
-  [`sources/`](../sources/research-notes-coverage.md)
+  [`sources/`](../sources/README.md)
