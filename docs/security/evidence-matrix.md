@@ -11,13 +11,14 @@ sidebar_order: 34
 
 # Security Evidence Matrix
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-14, `bitty` `bea338d` previous `29772a3` baseline `de134ec`, 19 crates,
-40 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`).
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-17, `bitty` `eb321f7` previous `bea338d` baseline `de134ec`, 21 crates,
+40 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`).
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`)
 per RS-1..RS-7 and independent review; `R-004` remains
 `Open` at `7a4ee41` (audit 2026-08-31); all other rows remain `Open` because
-implementation is `Implemented` (headless hardening through `bea338d`)
+implementation is `Implemented` (headless hardening through `eb321f7`;
+prior snapshot text cited `bea338d`)
 plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
 not yet `Verified` per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
 RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`

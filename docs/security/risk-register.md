@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (19 crates bea338d, 40 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates eb321f7, 40 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,12 +11,14 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-14, `bitty` `bea338d` previous `29772a3` baseline `de134ec`, 19 crates,
-40 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`).
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-17, `bitty` `eb321f7` previous `bea338d` baseline `de134ec`, 21 crates,
+40 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`).
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), all others
-remain `Open` because evidence is `Implemented` (IPC/rich/resolver hardening,
+remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
+hardening through `eb321f7` — including a 21-crate workspace and bounded VT
+payload types `crates/bitty-vt/src/bounded.rs` — plus
 experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md): lifecycle is
 `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
