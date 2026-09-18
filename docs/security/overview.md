@@ -11,12 +11,19 @@ sidebar_order: 30
 
 # Security Overview
 
-Status: pre-implementation design contract.
+Status: normative design contract; implementation status lives per-control in
+the evidence matrix.
 
-This document defines the security posture that future Bitty implementations
-must preserve. It does **not** claim that any control described here exists in
-code today. When implementation begins, each control needs tests and review
-evidence before its status may change.
+This document defines the security posture that Bitty implementations must
+preserve. It states requirements, not shipped behavior: whether a control is
+absent, proposed, or implemented is tracked per-control in the
+[evidence matrix](evidence-matrix.md) against the
+[risk register](risk-register.md). Several controls already have
+`Implemented`-only mechanism evidence in the `bitty` workspace (for example
+bounded VT payload types in `crates/bitty-vt/src/bounded.rs`); only
+`R-005`/`R-006`/`R-007` are `Mitigated`, and nothing is `Verified` yet.
+Mechanism presence alone never closes a risk or satisfies a P0 acceptance
+criterion — closure requires the independent `Verified` gate per RS-1..RS-7.
 
 ## Security objective
 
@@ -102,7 +109,10 @@ same capability model as community plugins.
 ## P0 security baseline
 
 The following controls are required before Bitty is considered safe for normal
-use. All are currently **unimplemented**.
+use. Their per-control status (absent, proposed, or implemented) is tracked in
+the [evidence matrix](evidence-matrix.md): most rows are `Open` with
+`Implemented`-only mechanism evidence, `R-005`/`R-006`/`R-007` are `Mitigated`,
+and no control is `Verified` yet.
 
 <!-- markdownlint-disable MD013 -->
 
