@@ -18,9 +18,9 @@ Accepted on 2026-08-26 by the project initiator, closing open question
 graph below. As of 2026-08-29 (`bitty` `be3bdb4`, 16 crates, soak ~808 tests)
 the `bitty` workspace additionally contains `bitty-package` with lifecycle and
 integrity model accepted
-([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md),
+([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md),
 OQ-021, 2026-08-27), `bitty-lua` accepted
-([Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/lua-runtime-rfc.md), OQ-009, plus
+([Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md), OQ-009, plus
 ADR-0005/0006/0007 OQ-030/031/032, 2026-08-29), and tail crates (`bitty-rich`
 OQ-008/015/016, `bitty-ipc`/`bitty-agent` OQ-018) `Implemented` (headless
 `Implemented` at `be3bdb4`) ahead of `Verified`; they remain governed by
@@ -86,7 +86,7 @@ pinned in `bitty/Cargo.toml` and `Cargo.lock`: the Phase A sixteen
 `app`) plus the verification and harness crates `bitty-compat-lab`,
 `bitty-perf`, and `bitty-test-support`. `bitty-package` implements the tail of the candidate build-order
 spine (`Proposed Delivery Sequence`) with lifecycle and integrity model accepted
-([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md),
+([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md),
 OQ-021, 2026-08-27), `bitty-lua` (`piccolo` 0.3.3) accepted (OQ-009/030-032,
 2026-08-29), and `bitty-rich`, `bitty-ipc`, `bitty-agent` as `Implemented`
 (headless `Implemented` at `be3bdb4`, soak ~808 tests, `forbid(unsafe_code)`).

@@ -25,8 +25,8 @@ just check
 ```
 
 `just check` is read-only: it verifies Prettier formatting, markdownlint,
-repository-local links, frontmatter metadata, English-only content, agent-file
-line budgets, hygiene, and Actions syntax.
+repository-local links, offline cross-repository links, frontmatter metadata,
+English-only content, agent-file line budgets, hygiene, and Actions syntax.
 
 ## Development loop
 
@@ -34,6 +34,8 @@ line budgets, hygiene, and Actions syntax.
 just fmt-check           # verify formatting without changing files
 just fmt                 # format every supported file type
 just links               # validate repository-local Markdown links
+just docs-check-cross-repo --offline  # validate cross-repo links without network
+just docs-status         # submodule pins vs sibling docs-repo mains
 just metadata            # validate the flat docs/ frontmatter schema
 just language            # keep repository-owned Markdown English-only
 just check               # full local gate pipeline (same logical gates as CI)
@@ -52,6 +54,9 @@ just check               # full local gate pipeline (same logical gates as CI)
   shipped-behavior claim.
 - Keep one authoritative definition per concept and link to it instead of
   copying divergent wording.
+- Absolute links into a sibling repository (`github.com/bitty-terminal/*`
+  `blob`/`tree`) must point at a path that exists on that repository's current
+  `main`; `just docs-check-cross-repo` validates them.
 
 ## Delivery lifecycle
 

@@ -117,6 +117,32 @@ the docs matching that implementation, and the aggregator mount is the
 governance-reviewed snapshot. Pins are reproducibility anchors and are
 expected to differ; never force them equal.
 
+`just docs-status` prints each position with behind-counts
+(`git rev-list --count <pin>..<main>`) and `--fetch` refreshes the local
+upstream refs first; the helper is diagnostic, the pins remain the normative
+anchors.
+
+### Cross-repository link validation
+
+Absolute `github.com/bitty-terminal/*` `blob`/`tree` links in the shared
+corpus point into the sibling documentation repositories, so the
+repository-local link gate does not see them. `just docs-check-cross-repo`
+resolves every such link in repository-owned Markdown against the owning
+sibling's current `main` and fails with each dead target and occurrence:
+
+- local workspace checkouts are consulted first, then materialized submodules,
+  and the GitHub API last (`gh api repos/.../contents/<path>`);
+- `--offline` forbids the network and reports targets it cannot resolve as
+  skipped instead of passing them silently; `just check` runs the offline mode;
+- `--fetch` refreshes a local sibling's `origin/<ref>` before resolving;
+- `--include-submodules` extends the scan to the three project-docs working
+  trees for reports (their content is owned and gated by their own
+  repositories, so the default gate scans only repository-owned Markdown).
+
+A moved document in a sibling repository must therefore update its incoming
+absolute links in the same change or the gate fails; a dead link is a defect,
+not a redirect that CI can ignore.
+
 ### Migration outcome
 
 Phase 1 added the local partition, index pages, and skeletons. Phase 2

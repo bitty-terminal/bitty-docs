@@ -42,7 +42,7 @@ Concretely, two vocabularies exist with no authoritative bridge between them:
   memory persistence, and per-tool invocation, defined partly as capability
   constants in Core (`bitty/crates/bitty-runtime/src/ai_panel.rs`) and partly
   as draft architecture in `bitty-ai-docs`
-  ([ai-architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ai-architecture.md)).
+  ([ai-architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/architecture/ai-architecture.md)).
 
 ## Goals
 
@@ -67,14 +67,14 @@ Concretely, two vocabularies exist with no authoritative bridge between them:
 
 ## Sources and their standing
 
-| Source                                                                                                                            | Standing  | What it contributes                                                              |
-| --------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------- |
-| `bitty/crates/bitty-ipc/src/scope.rs` (`Scope`, `ScopeSet`, `ConsentLedger`, `required_scope_for_method`)                         | Shipped   | The 13 generic scopes, method-to-scope resolution, per-client consent ledgering  |
-| `bitty/crates/bitty-runtime/src/ai_panel.rs` (capability constants, `create_ai_panel`)                                            | Shipped   | The AI-named capability strings that already exist in Core (G-5 surface)         |
-| `bitty-ai` slice (`crates/bitty-ai-slice/src/bridge.rs`, `tests/vertical_slice.rs`)                                               | Evidence  | Proof that an AI turn runs on generic scopes + ledgered consent, failing closed  |
-| [AI architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ai-architecture.md)                    | Draft     | ModelProvider, ContextProvider, Tool Bus, agent levels, budgets (post-1.0)       |
-| [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md)                    | Canonical | Wire envelope, method registry, scope families, consent ledger, chunking (RC-10) |
-| [Pressure-test spec](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ai-vertical-slice-pressure-test.md) | Draft     | Gap list G-1..G-6, the reuse table this mapping extends                          |
+| Source                                                                                                                     | Standing  | What it contributes                                                              |
+| -------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------- |
+| `bitty/crates/bitty-ipc/src/scope.rs` (`Scope`, `ScopeSet`, `ConsentLedger`, `required_scope_for_method`)                  | Shipped   | The 13 generic scopes, method-to-scope resolution, per-client consent ledgering  |
+| `bitty/crates/bitty-runtime/src/ai_panel.rs` (capability constants, `create_ai_panel`)                                     | Shipped   | The AI-named capability strings that already exist in Core (G-5 surface)         |
+| `bitty-ai` slice (`crates/bitty-ai-slice/src/bridge.rs`, `tests/vertical_slice.rs`)                                        | Evidence  | Proof that an AI turn runs on generic scopes + ledgered consent, failing closed  |
+| [AI architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/architecture/ai-architecture.md)               | Draft     | ModelProvider, ContextProvider, Tool Bus, agent levels, budgets (post-1.0)       |
+| [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md)             | Canonical | Wire envelope, method registry, scope families, consent ledger, chunking (RC-10) |
+| [Pressure-test spec](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/product/ai-vertical-slice-pressure-test.md) | Draft     | Gap list G-1..G-6, the reuse table this mapping extends                          |
 
 ## The generic registry (shipped)
 
@@ -227,7 +227,7 @@ implementation: it records the reviewed mapping, not shipped behavior.
 ## References
 
 - CTX-0407 gap G-6 via the
-  [pressure-test specification](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ai-vertical-slice-pressure-test.md)
+  [pressure-test specification](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/product/ai-vertical-slice-pressure-test.md)
   (companion to bitty-ai PR #7).
 - Generic registry: `Scope::all` (13 scopes), `Scope::as_str`,
   `required_scope_for_method`, `authorize_method`, `ConsentLedger` in

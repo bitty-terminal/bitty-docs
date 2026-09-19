@@ -59,7 +59,7 @@ repositories above, so this repository records pointers instead of copies:
   are candidate contracts and unimplemented; only the configuration-root
   probe is shipped. No in-repo page duplicates this material.
 - Lua-glue external-CLI integration patterns and bat/glow rendering status
-  are owned by the [Plugin Reuse and Providers draft](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-reuse-and-providers.md)
+  are owned by the [Plugin Reuse and Providers draft](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/plugin-reuse-and-providers.md)
   in `bitty-plugins-docs`: manifest-declared tools with `doctor`
   diagnostics, the host-managed async runner with tree kill on unload, the
   provider pattern, and native PTY hosting with the `terminal.spawn` flow;

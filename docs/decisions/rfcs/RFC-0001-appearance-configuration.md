@@ -59,7 +59,7 @@ sidebar_order: 45
 > The accepted animation contract is
 > [RFC-0002](RFC-0002-panel-animations.md). The cross-cutting extension
 > architecture is reviewed in the
-> [UI Extensibility Architecture](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/ui-extensibility-architecture.md)
+> [UI Extensibility Architecture](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/architecture/ui-extensibility-architecture.md)
 > (candidate).
 
 ## Motivation
@@ -409,7 +409,7 @@ properties — per-panel opacity, blur, background image, border/outline color,
 and animation options — instead of one global look, so the UI is freer and
 plugins can extend it. This is the appearance half of that directive; the
 extension-architecture half is the
-[UI Extensibility Architecture](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/ui-extensibility-architecture.md).
+[UI Extensibility Architecture](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/architecture/ui-extensibility-architecture.md).
 
 Status: **accepted** as a reviewed contract by the 2026-09-12 acceptance
 amendment (docs `CTX-0163`, [OQ-041](../open-questions.md)). Acceptance records

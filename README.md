@@ -66,8 +66,8 @@ repository snapshot documentation below.
   normative contracts, and candidate decisions.
 - [Open-question register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/open-questions.md) — unresolved work
   that must not be silently treated as decided.
-- [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/isolation-resource-rfc.md) — accepted isolation boundaries, resource ceilings, and failure semantics with adversarial tests for OQ-014 (2026-08-28).
-- [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-followup-rfc.md) — accepted resolver, yank, prerelease, registry, and key-management contracts for OQ-022 and OQ-026 through OQ-029 (2026-08-28).
+- [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/isolation-resource-rfc.md) — accepted isolation boundaries, resource ceilings, and failure semantics with adversarial tests for OQ-014 (2026-08-28).
+- [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-followup-rfc.md) — accepted resolver, yank, prerelease, registry, and key-management contracts for OQ-022 and OQ-026 through OQ-029 (2026-08-28).
 - [Default Distribution RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/default-distribution-rfc.md) — accepted default plugin bundle, enabled-by-default set, and disable mechanisms for OQ-002 (2026-08-29).
 - [ADR 0008 - Headless Daemon, Detach/Reattach and Remote UI Trust Boundary](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0008-headless.md) — accepted deferral to post-v1.0 with trust-boundary gate for OQ-020 (2026-08-28).
 - [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md) — accepted bounded framing, wire, auth, scopes, and Agent bounded messages, auth, consent, and streaming for OQ-018 (2026-08-29).
@@ -75,7 +75,7 @@ repository snapshot documentation below.
 - [Governance RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/governance-rfc.md) — accepted licenses, branch protections, ownership, compatibility policy, and cross-repository release flow for OQ-024 (2026-08-29).
 - [Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md) — accepted loader, synchronization mechanism, release selector, multi-version URL scheme, route mapping, and redirect manifest for OQ-023 (2026-08-29).
 - [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
-- [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
+- [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
 - [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha status
   reconciliation and remaining hardening work (see `TODO.md` 2026-09-19).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
@@ -123,6 +123,9 @@ Routing rules:
 - Each submodule pointer pins an exact project-docs revision; update a pointer
   in a scoped review when the owning repository lands new content (see
   [submodule pointer updates](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/development/documentation-workflow.md#submodule-pointer-updates)).
+  `just docs-status` reports every pin against its sibling `main`, and
+  `just docs-check-cross-repo` fails on absolute cross-repository links whose
+  target path no longer exists upstream.
 
 Phases 1 and 2 added and populated the local `docs/projects/` partition. The
 final model removed that duplicated content and replaced it with the three

@@ -224,7 +224,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Browser and Agent Panel Integration — Draft research pre-study (CTX-0120, P2)
 
-- [x] Survey Browser and Agent via Panel Runtime ([Pre-Study](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/browser-agent-pre-study.md), `Draft` no impl, CTX-0120 depends CTX-0119): WebView via `View Browser` plus `Panel` host, MCP via Tool Bus `256 KiB` `8 KiB` `32` `64`/`1024`/`8192` `DropOldest`, Agent memory `32 KiB` `64`/`2 MiB` `32`/`64 KiB`, isolation `browser.*` `agent.*` `mcp.*` plus first-party matrix `5` bundled-disabled plus `browser` `agent` candidate-not-bundled; reconciled with Panel Runtime `9032d1e` / requested `05e8803` PR-1..PR-12 and Project plugin `bitty-terminal.project`; bounded BA-1..BA-12, typed failure, exclusions deferred; `sidebar_order 28`, indexes updated.
+- [x] Survey Browser and Agent via Panel Runtime ([Pre-Study](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/interfaces/browser-agent-pre-study.md), `Draft` no impl, CTX-0120 depends CTX-0119): WebView via `View Browser` plus `Panel` host, MCP via Tool Bus `256 KiB` `8 KiB` `32` `64`/`1024`/`8192` `DropOldest`, Agent memory `32 KiB` `64`/`2 MiB` `32`/`64 KiB`, isolation `browser.*` `agent.*` `mcp.*` plus first-party matrix `5` bundled-disabled plus `browser` `agent` candidate-not-bundled; reconciled with Panel Runtime `9032d1e` / requested `05e8803` PR-1..PR-12 and Project plugin `bitty-terminal.project`; bounded BA-1..BA-12, typed failure, exclusions deferred; `sidebar_order 28`, indexes updated.
 - [ ] Independent docs-reviewer review; research until future Browser and Agent RFC.
 
 ## Plugin dogfood — Experimental Implementation (CTX-0096 7e3104d)
@@ -271,12 +271,12 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       `bitty doctor`) with the DIR-015 version qualifier, in the owning
       project docs repository. This task only opens the policy gate; it does
       not write the guides.
-- [ ] Add an optional `just docs-status` helper that prints the three
-      submodule-pin positions against their upstreams (docs-repo `main`,
-      code-repo `docs/` mount, aggregator mount) with behind-counts. Only land
-      it if it stays cheap and gated; the pin semantics definition in the
+- [x] Add `just docs-status` (per-sibling pin, docs-main, behind-count, and
+      code-repo `docs/` mount) plus `just docs-check-cross-repo` (absolute
+      cross-repo link validation; offline mode gated in `just check`);
+      CTX-0234 (Issue #354). The pin semantics in the
       [repository map](docs/project/repository-map.md#submodule-pin-semantics)
-      is normative with or without the helper.
+      remain normative.
 
 ## Freshness detection — recommendation recorded by CTX-0233 (Issue #355)
 
@@ -288,13 +288,13 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Follow-up recorded by CTX-0231 (governance corpus)
 
-- [ ] Bump the three root submodule pointers (`bitty-terminal`, `bitty-ai`,
-      `bitty-plugins`) once the sibling alignment pull requests land
-      (bitty-ai-docs#134, bitty-plugins-docs#61), as a separate scoped chore per
-      the [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates); after CTX-0233 the pinned
-      `bitty-terminal` ladder summary (`bea338d`) lags the aggregator snapshot
-      (`23c3eb6`) by exactly one refresh, which `check-state.mjs` reports as a
-      note rather than an error, and the bump closes that lag.
+- [x] Bump the three root submodule pointers to the sibling mains:
+      `bitty-terminal` `0b2fcfb` -> `937cfcf`, `bitty-ai` `39b4c75` ->
+      `a1112fb`, `bitty-plugins` `ee19a0d` -> `4d5aed2`, and fix the dead
+      `specifications/*` cross-repo links (141 occurrences, 23 files);
+      CTX-0234 (Issue #354) per the
+      [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates);
+      the `check-state.mjs` ladder-lag note persists until the sibling refreshes.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.
