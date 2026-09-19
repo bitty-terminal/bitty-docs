@@ -1,6 +1,6 @@
 ---
 title: Now / Next / Later
-description: Planning horizon for Verified VT and rich hardening, candidate plugin, IPC, and post-v1.0 sequencing, plus the candidate CTX-0251 terminal feature survey gap register without date promises
+description: Planning horizon for auditor-reviewed VT and rich hardening that remains Open pending matrix closure, candidate plugin, IPC, and post-v1.0 sequencing, plus the candidate CTX-0251 terminal feature survey gap register without date promises
 category: roadmap
 audience: mixed
 document_type: overview
@@ -30,13 +30,13 @@ requirements, dependencies, owner, success evidence, and an explicit confidence
 or planning horizon. This document satisfies that bar without introducing a
 date promise:
 
-| Admission requirement  | Where satisfied here                                                                                          | Evidence or link                                                                                                                                                                                                                                                                                                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Accepted requirements  | Now cites Verified R-001 and R-002 with RS lifecycle; Next cites P0 Accepted risks; Later cites ladder slices | [Security Evidence Matrix](../security/evidence-matrix.md), [P0 Security Acceptance Criteria](../security/p0-acceptance-criteria.md), [Security Risk Register](../security/risk-register.md)                                                                                                                                                                               |
-| Dependencies           | Per-section dependency lists anchored to ladder spine and threat posture                                      | [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md), [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md), [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) |
-| Owner                  | Per-horizon owner table below; roadmap ownership is docs curation with security review                        | [Documentation workflow](../development/documentation-workflow.md)                                                                                                                                                                                                                                                                                                         |
-| Success evidence       | Per-item RS-gated criteria with bitty commit and harness citations                                            | Evidence matrix Phase E, p0-acceptance P0-AC-001..P0-AC-034, risk-evidence RFC RS-1..RS-7                                                                                                                                                                                                                                                                                  |
-| Confidence and horizon | Explicit confidence per horizon; horizon is maturity-gated, not calendared                                    | This section and [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md)                                                                                                                                                                                                                                               |
+| Admission requirement  | Where satisfied here                                                                                                                               | Evidence or link                                                                                                                                                                                                                                                                                                                                                           |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Accepted requirements  | Now cites Open R-001 and R-002 with RS lifecycle (auditor-reviewed artifacts, not yet closed); Next cites P0 Open risks; Later cites ladder slices | [Security Evidence Matrix](../security/evidence-matrix.md), [P0 Security Acceptance Criteria](../security/p0-acceptance-criteria.md), [Security Risk Register](../security/risk-register.md)                                                                                                                                                                               |
+| Dependencies           | Per-section dependency lists anchored to ladder spine and threat posture                                                                           | [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md), [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md), [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) |
+| Owner                  | Per-horizon owner table below; roadmap ownership is docs curation with security review                                                             | [Documentation workflow](../development/documentation-workflow.md)                                                                                                                                                                                                                                                                                                         |
+| Success evidence       | Per-item RS-gated criteria with bitty commit and harness citations                                                                                 | Evidence matrix Phase E, p0-acceptance P0-AC-001..P0-AC-034, risk-evidence RFC RS-1..RS-7                                                                                                                                                                                                                                                                                  |
+| Confidence and horizon | Explicit confidence per horizon; horizon is maturity-gated, not calendared                                                                         | This section and [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md)                                                                                                                                                                                                                                               |
 
 No item below promises a date, a release tag, or website availability. Website
 content remains not published from this document (`website_publish: false`);
@@ -90,8 +90,9 @@ in [`project-state.json`](../project/project-state.json)):
 | M8 Public Beta          | Not started               | No release-readiness claim; overall product not `Verified`/`Compatible`/`Release-ready`        |
 
 No milestone status moves a risk, weakens a control, or implies `Verified`.
-Risk states stay `R-004` `Open` and `R-005`/`R-006`/`R-007` `Mitigated` until
-the Risk Evidence RFC checklist plus auditor review says otherwise.
+Risk states stay `R-001`/`R-002`/`R-004` `Open` and `R-005`/`R-006`/`R-007`
+`Mitigated` until the Risk Evidence RFC checklist plus the recorded matrix
+review says otherwise.
 
 ### Anchor: release ladder and candidate spine
 
@@ -123,10 +124,13 @@ the Risk Evidence RFC checklist plus auditor review says otherwise.
   at `a8735d0` via `c0aadd2`/`7e3104d`/`a8735d0`) but remain `Implemented` not yet
   `Verified` until the matrix (RS-1..RS-7, `unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`)
   is satisfied. Experimental implementation is reviewable evidence, not `Verified`
-  closure. No risk moves from `Open` while the matrix is pending except where
-  this document records `Verified`/`Mitigated` closure with cited auditor
-  evidence. `R-004` is explicitly not `Verified` or `Mitigated`; the 2026-08-31
-  audit keeps it `Open`; experimental slice does not change risk state.
+  closure. No risk moves from `Open` while the matrix is pending, and this
+  document may restate only a closure that the [risk register](../security/risk-register.md)
+  and [evidence matrix](../security/evidence-matrix.md) already record with cited
+  auditor evidence and CarryCtx linkage. `R-004` is explicitly not `Verified` or
+  `Mitigated`; the 2026-08-31 audit keeps it `Open`. `R-001`/`R-002` have merged
+  auditor artifacts that authorize `Open -> Mitigated` but no recorded matrix
+  move, so they remain `Open` here; experimental slice does not change risk state.
 - **Candidate spine:** [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md)
   candidate build-order spine `PTY -> VT -> Grid -> Font -> GPU -> Correct
 Terminal -> Config -> Command/Event -> Plugin Runtime -> Plugin Manager ->
@@ -147,16 +151,23 @@ DevTools -> Rich Presentation -> IPC -> Agent` and version ladder `v0.1`
 This document uses the RFC lifecycle verbatim. `Verified` for a risk means
 every linked P0-AC criterion for that risk has passing evidence per its
 verification method (`unit`/`integration`/`adversarial`/`manual-audit`/`ci-gate`)
-plus an independent security-auditor review that moves the risk from `Open`
-per RS-2 and the `Entry to Mitigated` checklist (RS-1..RS-8) in the Risk
-Evidence RFC. `Verified` in this roadmap does not imply `Compatible` or
-`Release-ready`; those remain separate gates per the release ladder.
+plus an independent security-auditor review that records the register move out
+of `Open` per RS-2 and the `Entry to Mitigated` checklist (RS-1..RS-7) in the
+Risk Evidence RFC, followed by an explicit time-bounded CarryCtx decision for
+`Accepted`. A merged audit that only _authorizes_ a transition is not the
+recorded transition: until the [risk register](../security/risk-register.md)
+`State` and the [evidence matrix](../security/evidence-matrix.md) row actually
+record the move, this roadmap keeps the risk `Open`. `Verified` here does not
+imply `Compatible` or `Release-ready`; those remain separate gates per the
+release ladder.
 
 ### Bitty-docs scope note
 
 This repository is `bitty-docs` only. Product-code claims are limited to what
 `bitty` `main` already contains (`8c41f1e` for VT and `8e6c8a9` for rich, both
-merged after `be3bdb4`, `7a4ee41`/`de134ec` for clipboard `R-004` which
+merged after `be3bdb4` with auditor artifacts that authorize but do not record
+a transition, so `R-001`/`R-002` remain `Open`;
+`7a4ee41`/`de134ec` for clipboard `R-004` which
 remains `Open` per the 2026-08-31 audit, `d4d75e9`/`de134ec`/`7e3104d` for
 `R-005`/`R-006`/`R-007` at `5bdcdbd`/`0afc94d`/`d4d75e9` which are `Mitigated`,
 and `c0aadd2`/`7e3104d`/`a8735d0` chain for experimental slice/dogfood/PTY fix
@@ -229,18 +240,20 @@ config-matrix, plugin-CLI, execution-supervisor, generic IPC-service,
 security, and release-pipeline waves. Every change is `Implemented` not
 `Verified`; no risk or acceptance moved.
 
-## Now — Verified and Mitigated hardening with attributable evidence
+## Now — Bounded-hardening evidence at `Open`, with Mitigated hardening retained
 
 Confidence: **high** for the five items below because each has a merged `bitty`
-commit with independent security-auditor and docs-curator review, full matrix
-evidence, and retained corpora (R-001/R-002 `Verified`, R-005/R-006/R-007 `Mitigated`).
-Experimental slice `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
+commit with independent security-auditor review and full matrix evidence.
+Risk state stays `Open` for R-001/R-002 (their merged audits authorize only
+`Open -> Mitigated`, and the register/matrix have never recorded that move);
+R-005/R-006/R-007 are `Mitigated` with retained corpora. Experimental slice
+`c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
 (`23c3eb6` head, `de134ec` baseline `bea338d` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
-### Now-1: R-001 Bounded VT parser — Verified
+### Now-1: R-001 Bounded VT parser — Open pending auditor closure
 
 - **Requirement:** Bounded incremental VT parser with CSI `u16` saturation,
   parameter-count caps, `BoundedString` and `BoundedBytes`, OSC/DCS/APC
@@ -249,34 +262,42 @@ docs planning reflects it, it does not promise beyond it, overall product not
 - **P0 criteria:** [P0-AC-001](../security/p0-acceptance-criteria.md#parser-and-resource-limits)
   Bounded VT parser and [P0-AC-002](../security/p0-acceptance-criteria.md#parser-and-resource-limits)
   Malformed input recovery.
-- **Risk and evidence:** [R-001](../security/risk-register.md) via
-  [Evidence Matrix R-001](../security/evidence-matrix.md) Phase E row
-  `Implemented at be3bdb4, Verified at 8c41f1e` with implementation
-  `bitty-vt` `parser.rs` plus `bounded.rs`, test and adversarial evidence
-  below, CI `cargo check` and `cargo clippy -D warnings` and `just check`
-  green, and `manual-audit` security-auditor review `docs/security/audits/vt-parser-2026-xx.md`.
-- **Verified evidence (`bitty` CTX-0088):** squash `8c41f1e` PR `#130`
-  `feat(vt): verify bounded parser and fuzz closure for R-001 (R-001 Verified)`
-  (`84 files +11027 -641`, `57 lib` tests plus `1 harness` `fuzz/corpora/vt`
-  corpus determinism test plus `5 replay` corpora, fuzz `fuzz/corpora/vt`
-  `30 bins` plus `SHA256SUMS`). The commit citation is the observable artifact
-  that satisfies RS-2 entry to Mitigated (now Verified) for R-001; the evidence
-  matrix records the per-criterion mapping and the CarryCtx decision that
-  accepted the move.
+- **Risk and evidence:** [R-001](../security/risk-register.md) is `Open`. The
+  [Evidence Matrix R-001](../security/evidence-matrix.md) Phase E row records
+  implementation `bitty-vt` `parser.rs` plus `bounded.rs`, the retained
+  `fuzz/corpora/vt` corpus, and the auditor artifact
+  [`bitty` `docs/security/audits/vt-parser-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8c41f1e/docs/security/audits/vt-parser-2026-09.md)
+  (merged at `bitty` `8c41f1e`, PR #130, 2026-08-30). That audit is authored by
+  `core-security-auditor` and authorizes **only** the evidence-matrix transition
+  `Open -> Mitigated`; the matrix row has not recorded the move, and
+  `Mitigated -> Accepted` additionally requires a time-bounded CarryCtx decision
+  that has not been recorded. `R-001` therefore stays `Open` in this roadmap.
+- **Closure condition:** an auditor-recorded matrix transition `Open -> Mitigated`
+  for R-001 (per the [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
+  RS-1..RS-7) plus, for `Accepted`, a time-bounded CarryCtx decision. The
+  `P0-AC-002` pass threshold ("long-running fuzz campaign with zero crashes,
+  hangs, or memory-safety findings") is still being produced: `bitty` `5daf686`
+  (PR #1160, issue #1132, merged 2026-09-19) adds the `cargo-fuzz` targets
+  `vt_parser`/`osc_string`/`dcs_apc_string` under `fuzz/fuzz_targets/`, but its
+  own record states the runs are "short bounded smokes, not the long-running
+  campaign the RFC requires". The merged `8c41f1e` evidence (48 parser tests,
+  boundary matrix, retained `fuzz/corpora/vt` `30 bins` `SHA256SUMS`, replay
+  corpora) advances P0-AC-001 and the retained-corpus half of P0-AC-002 only.
 - **Dependencies:** [Terminal State RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/terminal-state-rfc.md)
   and [Performance Budget RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/performance-budget-rfc.md)
   accepted limits; no weakening of parser invariants.
-- **Owner:** `security-auditor` for the Mitigated review that moves R-001,
+- **Owner:** `security-auditor` for the matrix closure that moves R-001,
   `architecture` category-owner for parser correctness, `docs-curator` for
   taxonomy and links.
-- **Success evidence:** `R-001` is `Verified` only because every P0-AC-001 and
-  P0-AC-002 pass threshold is observed: boundary matrix at and beyond CSI/OSC
-  limits with zero panics or hangs, `pseudo_random_byte_soup_is_panic_free_and_deterministic`
-  fuzz with long-running corpus retained under `fuzz/corpora/vt`, and `vte`
-  `0.15` behind owned `TerminalAction` with no I/O. No normative control is
-  weakened.
+- **Success evidence:** `R-001` closes only when every P0-AC-001 and
+  P0-AC-002 pass threshold is observed and the auditor records the move:
+  boundary matrix at and beyond CSI/OSC limits with zero panics or hangs,
+  `pseudo_random_byte_soup_is_panic_free_and_deterministic` fuzz with
+  long-running corpus retained under `fuzz/corpora/vt`, and the P0-AC-002
+  long-running `cargo-fuzz` campaign on the `5daf686` targets with zero
+  crashes or hangs. No normative control is weakened.
 
-### Now-2: R-002 Rich and graphics decompression budgets — Verified
+### Now-2: R-002 Rich and graphics decompression budgets — Open pending auditor closure
 
 - **Requirement:** Pre-allocation rejection of decompression bombs and
   aggregate image-store budgeting per [Rich Presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md)
@@ -286,28 +307,35 @@ docs planning reflects it, it does not promise beyond it, overall product not
 - **P0 criteria:** [P0-AC-003](../security/p0-acceptance-criteria.md#parser-and-resource-limits)
   Graphics decompression limits and [P0-AC-004](../security/p0-acceptance-criteria.md#parser-and-resource-limits)
   Aggregate image-store budget.
-- **Risk and evidence:** [R-002](../security/risk-register.md) via
-  [Evidence Matrix R-002](../security/evidence-matrix.md) Phase E row
-  `Implemented at be3bdb4, Verified at 8e6c8a9` with implementation
-  `bitty-rich` `image.rs` IMG-1..IMG-9, `ImageStore::insert` validates
-  IMG-1..IMG-7 before allocation and FIFO evicts oldest on `total_bytes` and
-  `count` overflow.
-- **Verified evidence (`bitty` CTX-0089):** squash `8e6c8a9` PR `#132`
-  `feat(rich): verify bounded ImageStore for R-002 (IMG-1..IMG-9)`
-  (`93 headless` tests in `bitty-rich` admission and eviction: `compressed_too_large`,
-  `dimensions_too_large`, `decoded_too_large`, `animation_too_large`,
-  placement admission IMG-8, plus sustained-load budget invariant; fuzz
-  `fuzz/corpora/rich` `20 bins` plus `SHA256SUMS`). The matrix cites the
-  decompression-bomb pre-allocation proof that peak memory stays under `64 MiB`
-  per image and `256 MiB` aggregate.
+- **Risk and evidence:** [R-002](../security/risk-register.md) is `Open`. The
+  [Evidence Matrix R-002](../security/evidence-matrix.md) Phase E row records
+  implementation `bitty-rich` `image.rs` IMG-1..IMG-9, `ImageStore::insert`
+  validates IMG-1..IMG-7 before allocation and FIFO evicts oldest on
+  `total_bytes` and `count` overflow, the retained `fuzz/corpora/rich` corpus,
+  and the auditor artifact
+  [`bitty` `docs/security/audits/rich-image-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8e6c8a9/docs/security/audits/rich-image-2026-09.md)
+  (merged at `bitty` `8e6c8a9`, PR #132, 2026-08-30). That audit is authored by
+  `core-security-auditor` and authorizes **only** the evidence-matrix transition
+  `Open -> Mitigated`; the matrix row has not recorded the move, and
+  `Mitigated -> Accepted` additionally requires a time-bounded CarryCtx decision
+  that has not been recorded. `R-002` therefore stays `Open` in this roadmap.
+- **Closure condition:** an auditor-recorded matrix transition `Open -> Mitigated`
+  for R-002 (per the Risk Evidence RFC RS-1..RS-7) plus, for `Accepted`, a
+  time-bounded CarryCtx decision. The merged `8e6c8a9` evidence (93 headless
+  tests, decompression-bomb pre-allocation proof, sustained-load budget
+  invariant, retained `fuzz/corpora/rich` `20 bins` `SHA256SUMS`) is the
+  `Implemented`-and-reviewed baseline; it does not itself flip the register
+  `State`.
 - **Dependencies:** Rich Presentation RFC image contract and Isolation Resource
   RFC budget ceilings; Config and Plugin Platform RFCs remain `Accepted`.
-- **Owner:** `security-auditor` for the Mitigated review that moves R-002,
+- **Owner:** `security-auditor` for the matrix closure that moves R-002,
   `architecture` and `extensibility` category-owners, `docs-curator` for
   frontmatter and links.
-- **Success evidence:** `R-002` is `Verified` because pre-allocation rejection
-  and aggregate eviction hold with zero partial state and zero panics, and the
-  pending auditor report `rich-presentation` review confirms IMG-1..IMG-9 vs
+- **Success evidence:** `R-002` closes only when pre-allocation rejection and
+  aggregate eviction hold with zero partial state and zero panics
+  (`decompression_bomb_pre_allocation_no_alloc_peak_under_64mib_per_image`,
+  `sustained_load_bytes_invariant_fifo_256mib`), the retained corpus hash
+  verifies, and the auditor records the move against IMG-1..IMG-9 vs
   P0-AC-003 and P0-AC-004. No weakening of P0 graphics controls.
 
 ### Now-3: R-005 Hyperlink allowlist and activation gate — Mitigated
@@ -348,13 +376,15 @@ docs planning reflects it, it does not promise beyond it, overall product not
   `be3bdb4` (`~808` tests, `cargo test --workspace --all-targets --locked`
   `904` tests including non-headless at `904` in the matrix trunk) plus
   experimental `c0aadd2`/`7e3104d`/`a8735d0` are cited as the baseline that the
-  two Verified plus three Mitigated commits extend; experimental code is
-  review evidence, not `Verified`; only the matrix row plus auditor review
-  moves a risk.
+  R-001/R-002 auditor-reviewed commits plus three Mitigated commits extend;
+  experimental code is review evidence, not `Verified`; only the matrix row plus
+  auditor review moves a risk, and no Now-item risk state changes on this page.
 - This roadmap records those bitty commits as evidence; it does not claim any
-  bitty code beyond `8c41f1e`, `8e6c8a9`, `5bdcdbd`, `0afc94d`, `d4d75e9` plus
-  experimental `c0aadd2`/`7e3104d`/`a8735d0` is implemented (experimental not
-  `Verified`), and overall product remains not `Verified`/`Compatible`/`Release-ready`.
+  bitty code beyond `8c41f1e`, `8e6c8a9`, `5bdcdbd`, `0afc94d`, `d4d75e9`,
+  `5daf686` plus experimental `c0aadd2`/`7e3104d`/`a8735d0` is implemented
+  (the R-002/R-001 audit commits are `Implemented` and audit-reviewed, not
+  `Verified`; experimental code is not `Verified`), and overall product remains
+  not `Verified`/`Compatible`/`Release-ready`.
 
 ## Next — Candidate plugin and IPC hardening
 
@@ -370,7 +400,7 @@ Each Next item links its risk-register row, its P0-AC set, and the
 measurement and hardening that would be required to move that risk toward
 Verified. None weakens the control it cites.
 
-| ID    | Risk and normative control (no weakening)                                                                                | Linked P0-AC                                                                                                                                                                                                                                                                     | Current ladder and matrix state at `be3bdb4` plus Verified baseline                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Dependencies                                                                                                                                                                                                                                                                                                                | What would move it toward Verified                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ID    | Risk and normative control (no weakening)                                                                                | Linked P0-AC                                                                                                                                                                                                                                                                     | Current ladder and matrix state at `be3bdb4` plus auditor-reviewed baseline                                                                                                                                                                                                                                                                                                                                                                                                                                            | Dependencies                                                                                                                                                                                                                                                                                                                | What would move it toward Verified                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ----- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | R-003 | [R-003](../security/risk-register.md) Graphics or structured protocols read or delete arbitrary local files              | [P0-AC-005](../security/p0-acceptance-criteria.md#local-resources-clipboard-links) Deny-by-default loader, [P0-AC-006](../security/p0-acceptance-criteria.md#local-resources-clipboard-links) No protocol-directed deletion                                                      | [Evidence Matrix R-003](../security/evidence-matrix.md): `bitty-rich` `image.rs` deny-by-default loader plus `bitty-pty` and `bitty-platform` regular-file and approved-path checks; `Open` pending auditor `resource-loader-2026-xx`                                                                                                                                                                                                                                                                                  | Rich Presentation RFC image contract, Isolation Resource RFC deny loader, ladder `v0.8` rich slice                                                                                                                                                                                                                          | Negative class matrix denying devices, sockets, `/proc`, `/sys`, `/dev`, symlink escapes, non-regular files; exhaustive grep proving zero protocol-reachable delete primitives                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | R-004 | [R-004](../security/risk-register.md) OSC 52 or paste handling leaks clipboard                                           | [P0-AC-007](../security/p0-acceptance-criteria.md#local-resources-clipboard-links) Separate read/write policy, [P0-AC-008](../security/p0-acceptance-criteria.md#local-resources-clipboard-links) Suspicious paste inspection                                                    | [Evidence Matrix R-004](../security/evidence-matrix.md): `bitty` `7a4ee41` (baseline `de134ec`) `23` `suspicious_paste` (`19` baseline + `4` remediation) + `13` `paste` unit + `CLIPBOARD_MAX_BYTES=8192` char-boundary + `osc_clipboard_read/write` deny-by-default; audit [`clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md) (CTX-0097) keeps **Open** due to residual platform backends, real-window UX, `8192` post-acquisition bound-scope | Terminal State RFC OSC 52 handling, platform clipboard isolation, ladder `v0.2` VT/TUI slice                                                                                                                                                                                                                                | `osc_clipboard_*` + `headless_clipboard_roundtrip_is_deterministic` + `23` `suspicious_paste` / `13` `paste` unit / `4` remediation (`public_paste_text_api_is_also_gated`, `string_paste_apis_bound_oversized_*`, `sequential_suspicious_requests_preserve_first_pending_paste`) + `selection_clipboard` OSC gate; adversarial C0/NUL/ESC/CR/LF/C1/BiDi each triggers inspection with no silent delivery; bracketed `?2004` defense-in-depth only after confirm; residual Open: `arboard` backends not validated, windowed UX not proven, `8192` bound is retained/inspection bound not strict peak-memory |
@@ -391,11 +421,12 @@ and related recovery rows. No Next row moves on mechanism presence alone.
 **Dependency and sequencing note:** the Proposed Delivery Sequence spine order
 (PTY, VT, Grid, Font, GPU, Config, Command/Event, Plugin Runtime, Plugin
 Manager, DevTools, Rich, IPC, Agent) places rich presentation before IPC and
-Agent as a candidate ordering. The two Now items were explicitly Verified out
-of spine order because bounded parsing and image-store budgeting are P0
-invariants with isolated evidence; Next respects spine order for the remaining
-hardening but still treats that order as a draft candidate, not as accepted
-direction.
+Agent as a candidate ordering. The two Now items were explicitly moved out
+of spine order at the review level because bounded parsing and image-store
+budgeting are P0 invariants with isolated evidence; their risk state is still
+`Open` pending the recorded matrix move, and Next respects spine order for the
+remaining hardening but still treats that order as a draft candidate, not as
+accepted direction.
 
 ## Later — Candidate maturity and post-v1.0 horizons
 
@@ -411,9 +442,10 @@ independent review before it can be admitted as more than a candidate.
   Rich presentation, Markdown stress. Workspace focus `rich` blocks,
   `scene` and `zone`, images per [OQ-008](../decisions/open-questions.md),
   [OQ-015](../decisions/open-questions.md), [OQ-016](../decisions/open-questions.md).
-  M1 Hardening status `Accepted and Implemented at be3bdb4, R-002 now
-Verified at 8e6c8a9` (the slice itself remains `Implemented` not yet
-  `Compatible` per RS-7; the Rich Presentation RFC closed those three OQs at
+  M1 Hardening status `Accepted and Implemented at be3bdb4, R-002
+auditor-reviewed at 8e6c8a9 but still Open in the register/matrix` (the slice
+  itself remains `Implemented` not yet `Compatible` per RS-7; the Rich
+  Presentation RFC closed those three OQs at
   the design level on 2026-08-28 but does not authorize shipped behavior).
 - **Candidate scope:** Markdown-to-constrained-AST and `Scene` pipeline
   without `WebView` scripts, `hyperlink.rs` plus `image.rs` shared deny-by-default
@@ -661,15 +693,15 @@ moves a milestone.
 
 ## Dependencies, owners, and confidence
 
-| Horizon                 | Owner (accountable)                                                                                               | Reviewers required before status moves                                                                                      | Dependencies                                                                              | Confidence                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Now (R-001, R-002)      | `security-auditor` plus `docs-curator` (bitty side: `bitty-security` passed 8c41f1e and 8e6c8a9)                  | `security-auditor` plus `docs-curator` plus category-owner per P0 review checklist                                          | Terminal State RFC, Rich Presentation RFC, Performance Budget RFC, Isolation Resource RFC | High — merged on `main`, harness and corpus retained                     |
-| Next (R-003..R-004)     | `security-auditor` plus `extensibility` and `architecture` owners for RFC mechanism; `docs-curator` for docs sync | Same checklist plus per-risk auditor report                                                                                 | R-002 budgets, plugin platform and isolation budgets, VT and rich loader contracts        | Medium to low — Accepted and Implemented, not yet Verified               |
-| Later `v0.8`/`v0.9`     | `extensibility` plus `architecture` plus `security-auditor`                                                       | Independent review per owning RFC and the Risk Evidence RFC                                                                 | Now plus Next; ladder spine order taken as candidate                                      | Low — maturity label, behavior still draft                               |
-| Later `v1.0`            | Project initiator plus `security-auditor`                                                                         | All `P0` rows Verified plus `Compatible` plus Governance RFC release train                                                  | Entire ladder up to `v0.9`                                                                | Low — not claimable until every `P0` row is Verified                     |
-| Post-v1.0               | Future daemon and remote ADR owners                                                                               | ADR 0008 trust-boundary gate plus threat-model co-ownership                                                                 | IPC plus isolation plus layered scopes, explicitly deferred                               | Informational — not in horizon scope                                     |
-| Post-v1.0 Panel         | Future Panel RFC and distribution owners                                                                          | Panel RFC/ADR plus security, architecture, and distribution review                                                          | Workspace Compositor Draft, Panel Vision, IPC RFC, Default Distribution RFC               | Low — candidate direction only                                           |
-| Gap register (CTX-0251) | `docs-curator` for the register; per-row owning RFC or ADR owners once assigned                                   | Independent product and architecture review before any rank becomes accepted scope; security review for trust-boundary rows | Survey provenance (scratch-only) plus the owning contract named per row                   | Low — survey triage only; evidence-limited rows need another source pass |
+| Horizon                    | Owner (accountable)                                                                                                                           | Reviewers required before status moves                                                                                      | Dependencies                                                                              | Confidence                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Now-1/Now-2 (R-001, R-002) | `security-auditor` to record the matrix move; `docs-curator` for links (bitty side: `bitty-security` audit passed at `8c41f1e` and `8e6c8a9`) | `security-auditor` plus `docs-curator` plus category-owner per P0 review checklist                                          | Terminal State RFC, Rich Presentation RFC, Performance Budget RFC, Isolation Resource RFC | High for the merged/reviewed evidence — but state remains `Open`, no transition is recorded |
+| Next (R-003..R-004)        | `security-auditor` plus `extensibility` and `architecture` owners for RFC mechanism; `docs-curator` for docs sync                             | Same checklist plus per-risk auditor report                                                                                 | R-002 budgets, plugin platform and isolation budgets, VT and rich loader contracts        | Medium to low — Accepted and Implemented, not yet Verified                                  |
+| Later `v0.8`/`v0.9`        | `extensibility` plus `architecture` plus `security-auditor`                                                                                   | Independent review per owning RFC and the Risk Evidence RFC                                                                 | Now plus Next; ladder spine order taken as candidate                                      | Low — maturity label, behavior still draft                                                  |
+| Later `v1.0`               | Project initiator plus `security-auditor`                                                                                                     | All `P0` rows Verified plus `Compatible` plus Governance RFC release train                                                  | Entire ladder up to `v0.9`                                                                | Low — not claimable until every `P0` row is Verified                                        |
+| Post-v1.0                  | Future daemon and remote ADR owners                                                                                                           | ADR 0008 trust-boundary gate plus threat-model co-ownership                                                                 | IPC plus isolation plus layered scopes, explicitly deferred                               | Informational — not in horizon scope                                                        |
+| Post-v1.0 Panel            | Future Panel RFC and distribution owners                                                                                                      | Panel RFC/ADR plus security, architecture, and distribution review                                                          | Workspace Compositor Draft, Panel Vision, IPC RFC, Default Distribution RFC               | Low — candidate direction only                                                              |
+| Gap register (CTX-0251)    | `docs-curator` for the register; per-row owning RFC or ADR owners once assigned                                                               | Independent product and architecture review before any rank becomes accepted scope; security review for trust-boundary rows | Survey provenance (scratch-only) plus the owning contract named per row                   | Low — survey triage only; evidence-limited rows need another source pass                    |
 
 No horizon has a date. CarryCtx tasks remain the execution record; this
 document is sequencing only.
@@ -686,12 +718,12 @@ auditor records `Mitigated` (risk state) and the crate moves from
 `Implemented` to `Verified` (maturity). `Accepted` additionally requires a
 time-bounded CarryCtx decision.
 
-| Horizon claim        | How it is proven without weakening controls                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Now `R-001 Verified` | `bitty-vt` `48` parser tests plus `5` `tests/replay.rs` corpora plus soak `bitty-runtime` replay determinism; VT/UTF-8/OSC/DCS/APC corpus `pseudo_random_byte_soup_is_panic_free_and_deterministic` plus boundary matrix at and beyond CSI/OSC limits; corpus retained as `fuzz/corpora/vt` `30 bins` `SHA256SUMS`; `cargo check --workspace --all-targets --locked` and `cargo test -p bitty-vt` and `just check` `94` files `0 issues` and `cargo clippy -D warnings` and Docs quality `ci.yml` dry-run; auditor report `vt-parser-2026-xx` |
-| Now `R-002 Verified` | `bitty-rich` `93` tests headless plus `ImageStore` integration; sustained-load budget invariant bounded growth; decompression-bomb pre-allocation rejection proving peak under `64 MiB` per image and `256 MiB` aggregate; `cargo test -p bitty-rich` plus `cargo check --target x86_64-pc-windows-gnu`; auditor review of IMG-1..IMG-9 vs P0-AC-003 and P0-AC-004; `fuzz/corpora/rich` `20 bins` `SHA256SUMS`                                                                                                                                |
-| Next moves           | As above per risk: negative class matrices (loader, scheme, scope), budget-dimension trigger tests with correct attribution (`PluginId` plus generation), fault-injection suites, and reviewer-signed `docs/security/audits/` reports; `just check` plus `act -n` green on the same revision that claims the move; reopening on any regression per RS-5                                                                                                                                                                                       |
-| Later maturity       | Candidate `v0.8`/`v0.9`/`v1.0` slices move only when their owning RFCs and risk rows satisfy the same entry checklist; website publication and compatibility claims remain separate gates per the Website Delivery RFC and Governance RFC                                                                                                                                                                                                                                                                                                     |
+| Horizon claim    | How it is proven without weakening controls                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Now `R-001 Open` | `bitty-vt` `48` parser tests plus `5` `tests/replay.rs` corpora plus soak `bitty-runtime` replay determinism; VT/UTF-8/OSC/DCS/APC corpus `pseudo_random_byte_soup_is_panic_free_and_deterministic` plus boundary matrix at and beyond CSI/OSC limits; corpus retained as `fuzz/corpora/vt` `30 bins` `SHA256SUMS`; `cargo check --workspace --all-targets --locked` and `cargo test -p bitty-vt` and `just check` `94` files `0 issues` and `cargo clippy -D warnings` and Docs quality `ci.yml` dry-run; auditor artifact `docs/security/audits/vt-parser-2026-09.md` at `8c41f1e` authorizes `Open -> Mitigated` only, and `5daf686` adds the `cargo-fuzz` targets whose long-running campaign is still outstanding |
+| Now `R-002 Open` | `bitty-rich` `93` tests headless plus `ImageStore` integration; sustained-load budget invariant bounded growth; decompression-bomb pre-allocation rejection proving peak under `64 MiB` per image and `256 MiB` aggregate; `cargo test -p bitty-rich` plus `cargo check --target x86_64-pc-windows-gnu`; auditor artifact `docs/security/audits/rich-image-2026-09.md` at `8e6c8a9` authorizes `Open -> Mitigated` only; `fuzz/corpora/rich` `20 bins` `SHA256SUMS`; matrix `State` still `Open`                                                                                                                                                                                                                       |
+| Next moves       | As above per risk: negative class matrices (loader, scheme, scope), budget-dimension trigger tests with correct attribution (`PluginId` plus generation), fault-injection suites, and reviewer-signed `docs/security/audits/` reports; `just check` plus `act -n` green on the same revision that claims the move; reopening on any regression per RS-5                                                                                                                                                                                                                                                                                                                                                                |
+| Later maturity   | Candidate `v0.8`/`v0.9`/`v1.0` slices move only when their owning RFCs and risk rows satisfy the same entry checklist; website publication and compatibility claims remain separate gates per the Website Delivery RFC and Governance RFC                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 The evidence-matrix header `State` stays `Open` until the auditor records the
 review that moves a risk; presence of `bitty-vt`, `bitty-rich` `ImageStore`,
