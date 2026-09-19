@@ -261,7 +261,7 @@ events), the security corpus redaction and no-record defaults
 Agent View and env-snapshot handle direction in
 `bitty-terminal-docs`, and the `credential = "secret://..."` reference-not-value
 rule plus the MP-10/MPC-2 secret invariant in the
-[Provider Plugin Boundary](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/provider-plugin-boundary.md),
+[Provider Plugin Boundary](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/providers/provider-plugin-boundary.md),
 which records the host secret store as a `bitty`-side handoff item. This
 capture records only the host-side mechanism direction; provider consent
 semantics remain with `bitty-ai`.
@@ -315,7 +315,7 @@ Not captured here; owned by `bitty-ai-docs` / the Lua harness work:
 - `DelegationBudget` (children, depth, parallelism, token, cost, execution)
   enforcement and recursive-span limits;
 - subagent authority attenuation as a runtime guarantee — the
-  [Agent Coordination](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/agent-coordination.md)
+  [Agent Coordination](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/agent/agent-coordination.md)
   direction is draft and owner-pending: it states child authority is
   attenuated, never inherited wholesale, and the draft R5 task-lifecycle
   admission rules keep depth, fan-out, and profile checks with the authority

@@ -26,6 +26,20 @@ markdownlint:
 links:
     bun .github/scripts/check-docs.mjs links
 
+# Validate absolute github.com/bitty-terminal/* (blob|tree) links against the
+# owning sibling repository's current main. Local workspace checkouts and
+# materialized submodules are consulted first; the GitHub API is the fallback.
+# `--offline` forbids the network and reports unresolved targets as skipped;
+# `--include-submodules` extends the scan to the three project-docs trees.
+docs-check-cross-repo *args:
+    bash scripts/cross-repo.sh check {{args}}
+
+# Print the three submodule-pin positions against their upstreams: aggregator
+# pin, docs-repo main, commits behind, and the code-repo docs/ mount when a
+# workspace sibling carries one. `--fetch` refreshes local upstream refs first.
+docs-status *args:
+    bash scripts/cross-repo.sh status {{args}}
+
 # Validate the exact flat frontmatter schema for every document under docs/.
 metadata:
     bun .github/scripts/check-docs.mjs metadata
@@ -130,6 +144,7 @@ check:
     just fmt-check
     just markdownlint
     just links
+    just docs-check-cross-repo --offline
     just metadata
     just language
     just agents

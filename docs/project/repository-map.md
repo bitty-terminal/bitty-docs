@@ -33,7 +33,7 @@ Core Cargo workspace for initialization; the expanded crate graph is now
   `bitty-perf`, `bitty-test-support`, and `bitty-test-vm`. The accepted ten-crate topology is fixed in
   [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
   `bitty-package` lifecycle and integrity model is accepted
-  ([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md), OQ-021,
+  ([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md), OQ-021,
   2026-08-27) with real signature verification remaining draft per crate docs,
   and the tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/`bitty-agent`
   OQ-018, `bitty-lua` OQ-009/030-032) are `Implemented` (headless tests ~808)
@@ -165,8 +165,9 @@ only when its owner acts: the docs repository lands new content, the code
 repository cuts a matching implementation, or a scoped `bitty-docs` review
 accepts a new snapshot. The bump procedure lives in the
 [documentation workflow](../development/documentation-workflow.md#submodule-pointer-updates);
-a `just docs-status` helper that prints all three positions with behind-counts
-is a recorded follow-up, not a prerequisite.
+`just docs-status` prints the live positions and behind-counts, and
+`just docs-check-cross-repo` validates absolute cross-repository links against
+the same upstream revisions.
 
 ## Repository responsibilities
 

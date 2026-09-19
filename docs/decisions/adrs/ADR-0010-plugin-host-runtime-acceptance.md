@@ -15,7 +15,7 @@ sidebar_order: 40
 
 **Accepted** on 2026-09-11 by the project initiator (user), which ratified the
 bounded resolutions in the
-[Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-host-runtime-rfc.md) for
+[Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/plugin-host-runtime-rfc.md) for
 [OQ-033](../open-questions.md), OQ-034, and OQ-035 exactly as proposed,
 including the four named numeric defaults. The RFC now carries frontmatter
 `status: accepted`; the synchronized documents listed under
@@ -38,10 +38,10 @@ not weaken any normative security control.
   [ADR 0006](ADR-0006-os-env-policy.md),
   [ADR 0007](ADR-0007-async-gc.md),
   accepted [Plugin Platform RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-platform-rfc.md),
-  [Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-api-v1-lua-surface-rfc.md),
-  [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/lua-runtime-rfc.md),
-  [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/isolation-resource-rfc.md), and
-  [Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md).
+  [Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md),
+  [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md),
+  [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/isolation-resource-rfc.md), and
+  [Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md).
 
 ## Context
 
@@ -55,18 +55,18 @@ staging including the development local-path flow (Gap B), and the host-service
 wiring boundary (Gap C).
 
 The accepted sources fixed the surrounding contracts but not the mechanisms:
-the [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/lua-runtime-rfc.md) fixes one
+the [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md) fixes one
 host bridge per VM and rooted source-only resolution; the
-[Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-api-v1-lua-surface-rfc.md)
+[Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md)
 fixes the surface, `init.lua`, and generation-owned resources; the
-[Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md) fixes
+[Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md) fixes
 staged activation but delegates the stored tree location. The CTX-0148 Draft RFC
 recorded bounded resolutions for all three gaps. The project initiator has now
 ratified them.
 
 ## Decision
 
-Adopt the [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-host-runtime-rfc.md)
+Adopt the [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/plugin-host-runtime-rfc.md)
 as an accepted specification and resolve the three registered open questions.
 
 1. **OQ-033 (host bridge and VM lifecycle).** Adopt the three-way authority
@@ -145,7 +145,7 @@ any accepted number requires an RFC revision, not silent drift.
 
 The following synchronized documents were updated in the same change:
 
-- [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-host-runtime-rfc.md) -
+- [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/plugin-host-runtime-rfc.md) -
   frontmatter `status: accepted`, dated ratification note, ratified numeric
   defaults, and resolved open-questions section.
 - [Open-question register](../open-questions.md) - OQ-033, OQ-034, and OQ-035

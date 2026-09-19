@@ -36,6 +36,11 @@ jobs:
       - name: Check local links
         run: bun .github/scripts/check-docs.mjs links
 
+      - name: Check cross-repository links
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/cross-repo.sh check --fetch
+
       - name: Check documentation metadata
         run: bun .github/scripts/check-docs.mjs metadata
 

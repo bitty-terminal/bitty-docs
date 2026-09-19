@@ -181,7 +181,7 @@ A candidate defense model for agent-driven interactive input is registered as
 [OQ-086](../decisions/open-questions.md) and specified in the
 [IPC and Agent RFC](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ipc-agent-rfc.md#candidate-sensitive-input-interlock-and-interaction-policy-oq-086)
 candidate sensitive-input interlock; the command-side audit is specified by the
-[AI Architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/specifications/ai-architecture.md) candidate command risk
+[AI Architecture](https://github.com/bitty-terminal/bitty-ai-docs/blob/main/architecture/ai-architecture.md) candidate command risk
 classification ([OQ-087](../decisions/open-questions.md)). It composes with
 the normative rules above and does not replace them:
 

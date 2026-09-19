@@ -20,10 +20,10 @@ sidebar_order: 21
 > DIR-026 (execution host), and DIR-027 (agent authority) without rewriting
 > them. The accepted
 > [Plugin Platform RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-platform-rfc.md),
-> [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-host-runtime-rfc.md),
-> [Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-lifecycle-rfc.md),
-> [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-followup-rfc.md),
-> [Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-api-v1-lua-surface-rfc.md),
+> [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/plugin-host-runtime-rfc.md),
+> [Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md),
+> [Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-followup-rfc.md),
+> [Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md),
 > ADR-0005/ADR-0009/ADR-0010, and the security corpus remain authoritative.
 > `bitty-plugins-docs`-owned and `bitty-ai-docs`-owned semantics are
 > deliberately not captured here; they stay owner-pending. Where the page
@@ -214,7 +214,7 @@ The direction positions the plugin registry and index as the distribution point
 behind the manager, keeping host network dependencies out of the
 install and resolve paths. Registry service boundaries, attestation, bundled
 generation, key directory, rotation, and freshness stay with the accepted
-[Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/package-followup-rfc.md)
+[Package Follow-up RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-followup-rfc.md)
 contracts for OQ-028 and OQ-029; this capture adds no registry claim.
 
 ## Out of scope (owner-pending)
