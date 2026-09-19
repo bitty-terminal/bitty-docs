@@ -53,9 +53,7 @@ summary.
       `be3bdb4`).
 - [x] Review and accept the terminal state/action invariant RFC (OQ-007;
       accepted: specifications/terminal-state-rfc.md, 2026-08-28).
-- [x] Security-auditor review of the P0 acceptance criteria conversion
-      (accepted: security/p0-acceptance-criteria.md, 34 criteria, normative
-      2026-08-26).
+- [x] Security-auditor review of the P0 acceptance criteria conversion (accepted: security/p0-acceptance-criteria.md, 34 criteria, normative 2026-08-26).
 - [x] Decide the first compatibility milestone and platform support/CI policy
       (OQ-003, OQ-004; accepted M1 per ADR-0002).
 - [x] Record ADRs for the core topology, Rust toolchain/MSRV, and adopted
@@ -266,11 +264,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Follow-ups recorded by CTX-0199 (DIR-015)
 
-- [ ] Write the shipped-factual installation and getting-started guides for
-      `v0.0.20` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`,
-      `bitty doctor`) with the DIR-015 version qualifier, in the owning
-      project docs repository. This task only opens the policy gate; it does
-      not write the guides.
+- [ ] Write the shipped-factual installation and getting-started guides for `v0.0.20` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`, `bitty doctor`) with the DIR-015 version qualifier, in the owning project docs repository. This task only opens the policy gate; it does not write the guides.
 - [x] Add `just docs-status` (per-sibling pin, docs-main, behind-count, and
       code-repo `docs/` mount) plus `just docs-check-cross-repo` (absolute
       cross-repo link validation; offline mode gated in `just check`);
@@ -281,6 +275,11 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 ## Freshness detection — recommendation recorded by CTX-0233 (Issue #355)
 
 - [ ] Decide and implement the `just state-refresh-check` staleness trigger: keep the date-only `snapshot_date` comparison for release metadata, and add a commit-distance (or "implementation main changed") trigger so the scheduled State freshness workflow fails as soon as `bitty` `main` moves past the snapshot revision. Recommendation: prefer the main-changed trigger (snapshot revision vs implementation head) with a small, documented commit-distance tolerance; it catches every drift the date-only path misses, costs one `git rev-list` call per run, and moves no `Verified`/`Accepted` state. No workflow change in CTX-0233; land it as a separate scoped task.
+
+## Lua runtime successor — Phodopus (ADR 0012, CTX-0236)
+
+- [x] Record the owner decision (2026-09-20) moving Bitty's Lua path from the Piccolo watch-list candidate to Phodopus, a sandbox-first successor runtime forked from `kyren/piccolo`: [ADR 0012](docs/decisions/adrs/ADR-0012-phodopus-runtime.md), with refinement pointers in ADR 0004/ADR 0005 and the OQ-030 row. Direction only; accepted `mlua`/Lua 5.4 and `piccolo 0.3.3` pins unchanged.
+- [ ] Implement the six-phase Phodopus roadmap (fork/attribution, upstream PR absorption, `package`/`require` plus stdlib gaps, hard quotas/Fuel sandboxing, generic async bridge, `bitty-lua` integration) in the owning `phodopus` repository; `bitty-lua` migration is deferred until usable.
 
 ## Follow-up recorded by CTX-0232 (self-containment)
 
