@@ -1,11 +1,12 @@
 # bitty-docs
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
-terminal project. Project state at a glance (snapshot `2026-09-14`):
+terminal project. Project state at a glance (snapshot `2026-09-19`):
 
-- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `bea338d`,
-  baseline `de134ec`, previous `29772a3`, 19 crates).
-- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11).
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `23c3eb6`,
+  baseline `de134ec`, previous `bea338d`, 21 crates).
+- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11); pre-alpha releases
+  exist, but no stable or supported public contract has been declared.
 - Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
   `R-005`/`R-006`/`R-007` are `Mitigated`.
 - Full project state: [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json),
@@ -76,7 +77,7 @@ repository snapshot documentation below.
 - [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) — accepted risk-to-P0-AC traceability, evidence taxonomy, artifact storage, and review gates for OQ-025 (2026-08-29).
 - [Plugin Reuse and Provider Ecology RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-reuse-and-providers.md) — draft post-1.0 reuse principle Lua is glue with four layers and provider ecology for OQ-011, OQ-012, OQ-013 (Draft, not yet accepted).
 - [Phase A TODO](https://github.com/bitty-terminal/bitty-docs/blob/main/TODO.md) — Pre-alpha status
-  reconciliation and remaining hardening work (see `TODO.md` 2026-09-14).
+  reconciliation and remaining hardening work (see `TODO.md` 2026-09-19).
 - [Shared-conversation coverage](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/sources/chatgpt-share-coverage.md) —
   traceability from the 20-turn historical design conversation to canonical
   documents.
@@ -197,9 +198,10 @@ for crates):
   `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated`
   at `d4d75e9`, experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
-  `bea338d` 19 crates, including the `v0.0.20` plugin-runtime, Kitty-graphics,
-  decoration, and config-matrix wave; IPC/rich/resolver plus compat-lab/perf
-  hardening and experimental slice implemented but not
+  `23c3eb6` 21 crates, including the `v0.0.20` plugin-runtime, Kitty-graphics,
+  decoration, and config-matrix wave plus post-release execution-supervisor and
+  IPC-service foundations; IPC/rich/resolver plus compat-lab/perf hardening and
+  the experimental slice implemented but not
   yet verified) and must not be inferred from design prose.
 - **Verified / Compatible / Release-ready**: requires independent review and
   P0-AC evidence before compatibility or release claims.

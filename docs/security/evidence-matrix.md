@@ -11,13 +11,13 @@ sidebar_order: 34
 
 # Security Evidence Matrix
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-17, `bitty` `eb321f7` previous `bea338d` baseline `de134ec`, 21 crates,
-40 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`).
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-19, `bitty` `23c3eb6` previous `bea338d` baseline `de134ec`, 21 crates,
+41 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`), plus the post-`v0.0.20` security, IPC-service, execution-supervisor, and release-pipeline hardening wave through `23c3eb6`.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`)
 per RS-1..RS-7 and independent review; `R-004` remains
 `Open` at `7a4ee41` (audit 2026-08-31); all other rows remain `Open` because
-implementation is `Implemented` (headless hardening through `eb321f7`;
+implementation is `Implemented` (headless hardening and security wave through `23c3eb6`;
 prior snapshot text cited `bea338d`)
 plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
 not yet `Verified` per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
@@ -55,8 +55,8 @@ split, `58e488a` PR #362 fuel step slice). Each is cited in the wave
 table below as `Implemented`-only evidence; states remain `Open` pending
 auditor review per RS-1..RS-7. No risk moves on mechanism presence
 alone. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `bea338d`,
-`2026-09-14`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `23c3eb6`,
+`2026-09-19`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`.
 

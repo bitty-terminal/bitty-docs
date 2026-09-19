@@ -1,6 +1,6 @@
 ---
 title: Development
-description: Contributor entry point for the documentation-first Bitty project
+description: Contributor entry point for the pre-alpha Bitty project
 category: development
 audience: contributor
 document_type: index
@@ -11,10 +11,13 @@ sidebar_order: 10
 
 # Development
 
-Bitty is currently documentation-first and pre-implementation. Contributor work
-focuses on reviewed contracts, project initialization, security gates, and
-reproducible delivery practices. This page does not claim that a product build
-or test workflow exists.
+Bitty is currently in its pre-alpha phase: an experimental implementation
+exists in the `bitty` repository (releases up to `v0.0.20`), but no stable or
+supported public contract has been declared, and no part of the product is
+`Verified`, `Compatible`, or `Release-ready`. Contributor work focuses on
+reviewed contracts, project initialization, security gates, and reproducible
+delivery practices alongside that implementation. This page does not claim a
+supported product build, a stable test workflow, or compatibility guarantees.
 
 ## Start here
 

@@ -1,6 +1,6 @@
 ---
 title: P0 Review Checklist
-description: Coordination checklist for P0 review at Pre-alpha / M1 Hardening; Phase A freeze 2026-08-29 (16 crates be3bdb4, 32 OQs Accepted) refreshed 2026-09-16 to 19 crates and 41 of 100 OQs Accepted
+description: Coordination checklist for P0 review at Pre-alpha / M1 Hardening; Phase A freeze 2026-08-29 (16 crates be3bdb4, 32 OQs Accepted), refreshed 2026-09-16 to 19 crates and 41 of 100 OQs Accepted, current baseline 21 crates at 23c3eb6 (2026-09-19)
 category: decisions
 audience: maintainer
 document_type: register
@@ -22,17 +22,20 @@ sidebar_order: 30
 > `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 > (was `Draft -> experimental review evidence -> Accepted -> normative`).
 
-## Current baseline (2026-09-16 refresh)
+## Current baseline (2026-09-19 refresh)
 
-The current baseline is **19 crates** — the Phase A sixteen plus
-`bitty-compat-lab`, `bitty-perf`, and `bitty-test-support`, pinned in
+The current baseline is **21 crates** at `bitty` `23c3eb6` — the Phase A
+sixteen plus
+`bitty-compat-lab`, `bitty-perf`, `bitty-test-support`, `bitty-panels`
+(CTX-0438), and `bitty-test-vm` (CTX-0507), pinned in
 `bitty/Cargo.toml` — and **41 of 100 registered OQs are `Accepted`** per the
 [open-question register](../decisions/open-questions.md), which owns the
 count. The Phase A freeze above (16 crates `be3bdb4`, 32 OQs `Accepted`,
 soak ~808 headless tests) stays as the historical coordination baseline for
 the accepted P0 batch; the `Implemented -> Verified` gate and the risk
-evidence matrix remain pending. This refresh comes from the 2026-09-16
-whole-workspace review (report 01).
+evidence matrix remain pending. This refresh comes from the CTX-0233
+project-state synchronization (2026-09-19); the prior 2026-09-16 count was
+19 crates at `eb321f7`-era evidence.
 
 ## Purpose (Phase A reconciliation 2026-08-29)
 
