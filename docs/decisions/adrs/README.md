@@ -28,6 +28,7 @@ working directions and the remaining ADR queue.
 | [ADR 0009 - Plugin API v1 Lua Surface Acceptance Resolution](ADR-0009-plugin-api-v1-lua-surface.md)                | Accepted | Resolves LUA-OQ-1..12 and flips the Plugin API v1 Lua Surface RFC to accepted; contract authority in `bitty-docs`, implementation/parity in `bitty`, SDK generated                   |
 | [ADR 0010 - Plugin Host Runtime Acceptance Resolution](ADR-0010-plugin-host-runtime-acceptance.md)                 | Accepted | Ratifies OQ-033/OQ-034/OQ-035 and flips the Plugin Host Runtime RFC to accepted; host bridge, VM lifecycle, source staging, host-service wiring, and four numeric defaults           |
 | [ADR 0011 - Repository Metadata and GitHub Baseline](ADR-0011-repository-metadata-baseline.md)                     | Proposed | Byte-identical, parameterized, and per-repository metadata/.github tiers; required-check naming; action pinning and rust channel rules                                               |
+| [ADR 0012 - Phodopus Runtime as the Lua Successor Path](ADR-0012-phodopus-runtime.md)                              | Accepted | Moves the Lua path from the Piccolo watch-list candidate to Phodopus, a sandbox-first successor runtime forked from `kyren/piccolo`; fork, host-ABI boundary, async, and roadmap     |
 
 ## Admission criteria
 
