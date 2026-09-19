@@ -15,7 +15,16 @@ Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-19, `bitty` `23c3e
 41 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and the post-`v0.0.20` security, IPC-service, execution-supervisor, and release-pipeline hardening wave through `23c3eb6`.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
-per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), all others
+per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), `R-001`
+and `R-002` remain `Open` with merged auditor artifacts that authorize only
+`Open -> Mitigated` — `R-001` audit at
+[`bitty` `docs/security/audits/vt-parser-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8c41f1e/docs/security/audits/vt-parser-2026-09.md)
+(`8c41f1e`, PR #130) and `R-002` audit at
+[`bitty` `docs/security/audits/rich-image-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8e6c8a9/docs/security/audits/rich-image-2026-09.md)
+(`8e6c8a9`, PR #132), neither transition recorded in the matrix, with the
+`R-001` P0-AC-002 long-running `cargo-fuzz` campaign advanced by `5daf686`
+(PR #1160, `fuzz/fuzz_targets/` targets, short smokes only) and still
+outstanding — all others
 remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
 hardening and security wave through `23c3eb6` — including a 21-crate workspace and bounded VT
 payload types `crates/bitty-vt/src/bounded.rs` — plus
@@ -26,7 +35,10 @@ experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) 
 (crate). Experimental code is review evidence, not `Verified`.
 A risk may move to `Mitigated` only when the linked control has focused tests,
 fuzz corpora, and an independent security-auditor review record with P0-AC
-traceability; `Accepted` requires an explicit, time-bounded CarryCtx decision
+traceability _and that review is recorded in the matrix row_; an authorization
+to move is not the move (`R-001`/`R-002` audits authorize but the register
+`State` stays `Open`); `Accepted` requires an explicit, time-bounded CarryCtx
+decision
 with owner and rationale. Risk evidence matrix: [evidence-matrix.md](evidence-matrix.md)
 (Phase E draft, `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004`
 `Open` at `7a4ee41`; lifecycle `Open -> Mitigated -> Accepted` per risk evidence
@@ -85,9 +97,14 @@ that the risk can be ignored until then.
 ## FIND-0002 remediation wave residuals (2026-09-07, Implemented-only)
 
 The wave closes the code defects; it does not close the risks. Residuals per
-affected row, all `Open` pending auditor review: R-001 keeps fuzz and
-boundary-matrix review for the cursor/tab bound plus combining buffer; R-002
-keeps decompression-bomb proof review for the headless surface cap; R-003
+affected row, all `Open` pending the recorded matrix review: R-001 keeps fuzz
+and
+boundary-matrix review for the cursor/tab bound plus combining buffer (its
+merged audit `vt-parser-2026-09.md` covers the parser family only and
+authorizes `Open -> Mitigated` without recording it; the long-running
+`cargo-fuzz` campaign from `5daf686` remains outstanding); R-002
+keeps decompression-bomb proof review for the headless surface cap (its merged
+audit `rich-image-2026-09.md` likewise authorizes without recording); R-003
 keeps negative-loader review for the empty-roots rejection; R-004 keeps
 consent-matrix review for the OSC 52 read reply plus write decode; R-011
 keeps negative-auth review for the symlink attestation; R-015/R-022 keep
@@ -106,7 +123,11 @@ fault-injection review for the fuel step slice. Tooling items
   `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9` per RS-1..RS-7.
   `R-004` links `7a4ee41` (`de134ec` baseline) `23`+`13`+`4` tests and the
   2026-08-31 clipboard audit, and remains `Open` due to residual platform-backend,
-  real-window UX, and `8192` bound-scope limits; `R-005` links `5bdcdbd`
+  real-window UX, and `8192` bound-scope limits; `R-001` links `8c41f1e`
+  (audit `vt-parser-2026-09.md`, PR #130) plus `5daf686` `cargo-fuzz` targets
+  (PR #1160) and `R-002` links `8e6c8a9` (audit `rich-image-2026-09.md`,
+  PR #132), each `Open` with the auditor-authorized `Open -> Mitigated`
+  transition not yet recorded in the matrix; `R-005` links `5bdcdbd`
   hyperlink allowlist + activation gate, `R-006` links `0afc94d`
   deny-by-default + restricted stdlib, `R-007` links `d4d75e9` per-plugin VM +
   budgets, each `Mitigated` with residual UX/grant/budget soak gaps.
