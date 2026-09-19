@@ -1,6 +1,6 @@
 ---
 title: Security Overview
-description: Defines the normative pre-implementation security posture, trust boundaries, capability families, and P0 baseline for Bitty.
+description: Defines the normative pre-alpha security posture, trust boundaries, capability families, and P0 baseline for Bitty.
 category: security
 audience: mixed
 document_type: policy

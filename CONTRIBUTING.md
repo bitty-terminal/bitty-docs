@@ -1,9 +1,10 @@
 # Contributing
 
 Thank you for contributing to `bitty-docs`, the canonical design and governance
-repository for the Bitty terminal project. The project is in a
-documentation-first, pre-implementation phase: documents are the contract
-source, and nothing here should be described as implemented product behavior.
+repository for the Bitty terminal project. The project is in its pre-alpha
+phase: documents are the contract source, an experimental implementation exists
+in the `bitty` repository, and nothing here should be described as stable,
+supported, `Verified`, `Compatible`, or `Release-ready` product behavior.
 
 ## Prerequisites
 

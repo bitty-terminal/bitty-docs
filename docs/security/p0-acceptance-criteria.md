@@ -12,7 +12,8 @@ sidebar_order: 33
 # P0 Security Acceptance Criteria
 
 Status: **normative**, accepted 2026-08-26 by the project initiator. This
-document remains a pre-implementation test contract: no criterion may be marked
+document remains a pre-`Verified` test contract: mechanisms exist in the
+pre-alpha implementation, but no criterion may be marked
 satisfied until a separate security-auditor persona review confirms recorded,
 passing evidence per its verification method.
 

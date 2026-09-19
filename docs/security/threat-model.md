@@ -11,8 +11,9 @@ sidebar_order: 31
 
 # Threat Model
 
-Status: pre-implementation security contract. Controls are requirements, not
-claims about shipped behavior.
+Status: pre-alpha security contract. Controls are requirements; mechanism
+evidence exists in the `bitty` workspace but nothing is `Verified`, and no
+statement here claims shipped, stable, or supported behavior.
 
 ## Scope
 

@@ -348,14 +348,14 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`bea338d` at `2026-09-14`, baseline `de134ec`, previous `29772a3`), maturity
-and release status (`Pre-alpha / Engineering Milestones M1-M8`, 40 OQs
-`Accepted`, 19 crates, release `v0.0.20`), per-risk state and evidence
+`23c3eb6` at `2026-09-19`, baseline `de134ec`, previous `bea338d`), maturity
+and release status (`Pre-alpha / Engineering Milestones M1-M8`, 41 OQs
+`Accepted`, 21 crates, release `v0.0.20`), per-risk state and evidence
 revision and audit references (`R-004` remains `Open` at `7a4ee41` with
 residual platform, UX, and `8192`-byte bound-scope limits per `bitty`
 `docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-005`/`R-006`/`R-007`
-`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0180`, previous
-`CTX-0133`).
+`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0233`, previous
+`CTX-0180`).
 
 Mechanical fields (synchronized revision, snapshot date, crate count, latest
 release tag/commit/date, and the provenance chain) are regenerated
@@ -378,6 +378,14 @@ scheduled [state freshness workflow](../../.github/workflows/state-refresh.yml)
 implementation repository and derives its URL from the snapshot; a red run
 signals that a refresh task must land. It has no pull-request trigger and is
 not a required check.
+
+The canonical summaries in the pinned project-docs submodule (for example
+`bitty-terminal/product/release-ladder.md`) belong to the submodule repository
+and move only with a separate submodule pin bump. `check-state.mjs` therefore
+accepts a pinned summary that sits exactly one refresh behind the snapshot
+(its referenced revision equals `implementation.previous_short`), reports the
+lag as a note, and still enforces the maturity and `R-004` invariants; a pin
+older than one refresh remains a failure.
 
 Ownership is `docs-curator` plus `security-auditor`. Updates require a
 CarryCtx task with independent review, CI green (`just check` includes

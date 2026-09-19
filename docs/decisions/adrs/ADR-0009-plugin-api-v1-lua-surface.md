@@ -87,7 +87,7 @@ and the identity paragraph in the
 at ratification to record this three-way split instead of sole core ownership.
 
 **Rationale.** Every accepted contract in the project lives in `bitty-docs`,
-including all OQ-closing RFCs and ADRs; `bitty` is pre-implementation and its own
+including all OQ-closing RFCs and ADRs; `bitty` is pre-alpha and its own
 guide names `bitty-docs` canonical for interface decisions. The RFC is explicit
 that the SDK must derive from an accepted host contract, and the accepted
 verification plan already pairs docs acceptance with host parity checks. A

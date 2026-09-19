@@ -2,15 +2,16 @@
 
 ## Supported Versions
 
-No version of Bitty has been released yet. There are no supported releases;
-all documented behavior is pre-implementation design material.
+No stable version of Bitty has been released; pre-alpha releases exist but
+there is no supported release line. All documented behavior is pre-alpha design
+and implementation material without security-verification claims.
 
-| Version           | Supported |
-| ----------------- | --------- |
-| (no releases yet) | No        |
+| Version                  | Supported |
+| ------------------------ | --------- |
+| (pre-alpha, unsupported) | No        |
 
-Once releases exist, this table will list each supported version range and its
-support status.
+Once a stable release exists, this table will list each supported version range
+and its support status.
 
 ## Reporting a Vulnerability
 

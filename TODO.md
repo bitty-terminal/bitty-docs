@@ -1,21 +1,13 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-09-14`):
-
-- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `bea338d`,
-  baseline `de134ec`, previous `29772a3`, 19 crates).
-- Latest release: `v0.0.20` (`d9f5b49`, 2026-09-11).
-- Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
-  `R-005`/`R-006`/`R-007` are `Mitigated`.
-- Full project state: [`docs/project/project-state.json`](docs/project/project-state.json),
-  the single machine fact source. This summary is derived from it and checked
-  by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-09-19`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `23c3eb6`, baseline `de134ec`, previous `bea338d`, 21 crates); latest release `v0.0.20` (`d9f5b49`, 2026-09-11) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
-flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), and the
-project-state refresh plus refresh automation (CTX-0180). OQ counts live in
+flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), the
+project-state refresh plus refresh automation (CTX-0180), and the
+project-state refresh to `23c3eb6` (CTX-0233). OQ counts live in
 the [open-question register](docs/decisions/open-questions.md) and milestone
 detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
 summary.
@@ -270,6 +262,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [x] CTX-0132 scrollbar flip to shipped (`c49ead1` previous `7048139`): scrollbar shipped defaults (#405 merged); snapshot touch-up; no risk-state or normative changes.
 - [x] CTX-0133 sync bundle to `29772a3` previous `c49ead1` (release `v0.0.19`): workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults; snapshot, validator, fixture, and summaries in lockstep; no risk-state or normative changes (PR #164).
 - [x] CTX-0180 refresh to `bea338d` previous `29772a3` (release `v0.0.20`, 19 crates, 40 OQs Accepted): add `refresh-state.mjs` with `just state-refresh`/`just state-refresh-check` and the scheduled State freshness workflow; the validator now derives revision/date/count consistency instead of freezing literals; no risk-state or normative changes.
+- [x] CTX-0233 refresh to `23c3eb6` previous `bea338d` (21 crates, 41 OQs Accepted): snapshot, provenance, milestone/subsystem prose, derived summaries, and release vocabulary in lockstep; no risk-state or normative changes (Issue #355).
 
 ## Follow-ups recorded by CTX-0199 (DIR-015)
 
@@ -285,6 +278,10 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
       [repository map](docs/project/repository-map.md#submodule-pin-semantics)
       is normative with or without the helper.
 
+## Freshness detection — recommendation recorded by CTX-0233 (Issue #355)
+
+- [ ] Decide and implement the `just state-refresh-check` staleness trigger: keep the date-only `snapshot_date` comparison for release metadata, and add a commit-distance (or "implementation main changed") trigger so the scheduled State freshness workflow fails as soon as `bitty` `main` moves past the snapshot revision. Recommendation: prefer the main-changed trigger (snapshot revision vs implementation head) with a small, documented commit-distance tolerance; it catches every drift the date-only path misses, costs one `git rev-list` call per run, and moves no `Verified`/`Accepted` state. No workflow change in CTX-0233; land it as a separate scoped task.
+
 ## Follow-up recorded by CTX-0232 (self-containment)
 
 - [ ] Export the removed record-to-document mappings into the `research` repository ([rule](docs/development/documentation-workflow.md#docs-self-containment)).
@@ -294,7 +291,10 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [ ] Bump the three root submodule pointers (`bitty-terminal`, `bitty-ai`,
       `bitty-plugins`) once the sibling alignment pull requests land
       (bitty-ai-docs#134, bitty-plugins-docs#61), as a separate scoped chore per
-      the [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates).
+      the [documentation workflow](docs/development/documentation-workflow.md#submodule-pointer-updates); after CTX-0233 the pinned
+      `bitty-terminal` ladder summary (`bea338d`) lags the aggregator snapshot
+      (`23c3eb6`) by exactly one refresh, which `check-state.mjs` reports as a
+      note rather than an error, and the bump closes that lag.
 
 Progress in those sections must cite the owning task and decision artifact;
 design prose alone is never evidence that an implementation checkbox is done.

@@ -16,7 +16,12 @@ const CANONICAL_FILES = [
 // Project documentation lives in submodule repositories. Their canonical
 // summaries are validated when the submodule is checked out and skipped
 // otherwise, so `just check` passes with and without initialized submodules;
-// CI initializes them recursively.
+// CI initializes them recursively. The pinned submodule content is owned by
+// another repository, and a snapshot refresh here lands before the separate
+// submodule pin-bump chore, so a pinned summary may legitimately sit exactly
+// one refresh behind: its referenced revision equals the snapshot's previous
+// revision. In that case the invariant tokens are still enforced, the lag is
+// reported as a note, and anything older than one refresh remains a failure.
 const SUBMODULE_FILES = new Set(["bitty-terminal/product/release-ladder.md"]);
 
 function fail(message) {
@@ -297,12 +302,48 @@ async function checkCanonicalSummaries(data) {
     }
     checked += 1;
 
-    for (const token of requiredTokens) {
+    // A pinned submodule summary may sit exactly one refresh behind this
+    // snapshot when a separate pin-bump chore has not landed yet: its revision
+    // tokens match the snapshot's previous revision, and the snapshot date is
+    // absent. The file then states its own (older) snapshot date, so accept
+    // any valid date plus the chain and invariant tokens, and report the lag.
+    const submoduleLag =
+      SUBMODULE_FILES.has(rel) &&
+      !content.includes(data.implementation.short) &&
+      content.includes(data.implementation.previous_short) &&
+      !content.includes(data.snapshot_date) &&
+      !content.includes(data.maturity.date);
+    const tokens = submoduleLag
+      ? [
+          data.maturity.label,
+          data.implementation.baseline_short,
+          data.implementation.previous_short,
+          "R-004",
+          "Open",
+        ]
+      : requiredTokens;
+
+    for (const token of tokens) {
       if (!content.includes(token)) {
         failures.push(
-          `${rel}: missing required token "${token}" (drift from snapshot)`,
+          submoduleLag
+            ? `${rel}: lagging pin missing invariant token "${token}"`
+            : `${rel}: missing required token "${token}" (drift from snapshot)`,
         );
       }
+    }
+    if (submoduleLag) {
+      console.log(
+        `note: ${rel} lags one refresh (pinned submodule; pin bump is a separate chore)`,
+      );
+    } else if (
+      // Snapshot date or maturity date should appear somewhere
+      !content.includes(data.snapshot_date) &&
+      !content.includes(data.maturity.date)
+    ) {
+      failures.push(
+        `${rel}: missing snapshot_date ${data.snapshot_date} or maturity date ${data.maturity.date}`,
+      );
     }
 
     // Ensure R-004 is not marked Mitigated/Verified in these summaries (Open is required)
@@ -324,16 +365,6 @@ async function checkCanonicalSummaries(data) {
           `${rel}: contradictory R-004 Mitigated claim without Open qualifier`,
         );
       }
-    }
-
-    // Snapshot date or maturity date should appear somewhere
-    if (
-      !content.includes(data.snapshot_date) &&
-      !content.includes(data.maturity.date)
-    ) {
-      failures.push(
-        `${rel}: missing snapshot_date ${data.snapshot_date} or maturity date ${data.maturity.date}`,
-      );
     }
   }
 
