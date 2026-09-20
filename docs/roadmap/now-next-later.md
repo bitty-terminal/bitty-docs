@@ -350,7 +350,7 @@ docs planning reflects it, it does not promise beyond it, overall product not
 
 ### Now-4: R-006 Capability deny-by-default and restricted stdlib — Mitigated
 
-- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical.
+- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical. The plugin-VM successor direction is Phodopus per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the `piccolo 0.3.3` restricted stdlib remains the active mechanism and the cited evidence stays valid until a `bitty-lua` migration lands.
 - **P0 criteria:** [P0-AC-011](../security/p0-acceptance-criteria.md#plugins) Restricted stdlib, [P0-AC-012](../security/p0-acceptance-criteria.md#plugins) Capability-checked host API, [P0-AC-013](../security/p0-acceptance-criteria.md#plugins) Per-plugin VM isolation and failure containment.
 - **Risk and evidence:** [R-006](../security/risk-register.md) via [Evidence Matrix R-006](../security/evidence-matrix.md) Phase E row `Mitigated at 0afc94d` (PR #145, Issue #138) with implementation `bitty-plugin-host` `capability.rs`/`grant.rs`/`manifest.rs` + `bitty-lua` `piccolo` restricted stdlib, CI and independent review APPROVE.
 - **Mitigated evidence (`bitty` CTX-0092):** squash `0afc94d` PR #145 `feat(plugin): verify capability deny-by-default and restricted stdlib for R-006` (`6 files +197 -17`, `capability.rs` `denied_without_grant` + `closed_identifiers` + `protocol.register`, `grant.rs` declared+granted+hash intersection, `manifest.rs` fs pattern control deny, `lib.rs` `restricted_stdlib_denies_ambient_io` test `io==nil`). RS-1..RS-7 evidenced.
@@ -360,7 +360,7 @@ docs planning reflects it, it does not promise beyond it, overall product not
 
 ### Now-5: R-007 Per-plugin VM isolation and attributable budgets — Mitigated
 
-- **Requirement:** Per-plugin `piccolo` VM isolated `PluginId`+generation `forbid(unsafe_code)`, Fuel + `50 ms` wall/`8 ms` warning + `32 MiB` hard via `total_memory()`, queue budgets PerSub `64` strict / PerPlugin `1024` events/`256 KiB` / Global `8192`/`2 MiB` `DropOldest` hard-gated, attribution `PluginId`+generation, and transactional `reload` with `Generation overflow` and command-owner guard. Threat T-07, severity Critical.
+- **Requirement:** Per-plugin `piccolo` VM isolated `PluginId`+generation `forbid(unsafe_code)`, Fuel + `50 ms` wall/`8 ms` warning + `32 MiB` hard via `total_memory()`, queue budgets PerSub `64` strict / PerPlugin `1024` events/`256 KiB` / Global `8192`/`2 MiB` `DropOldest` hard-gated, attribution `PluginId`+generation, and transactional `reload` with `Generation overflow` and command-owner guard. Threat T-07, severity Critical. The per-plugin VM successor direction is Phodopus per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the `piccolo` VM remains the active mechanism until a `bitty-lua` migration lands.
 - **P0 criteria:** [P0-AC-013](../security/p0-acceptance-criteria.md#plugins), [P0-AC-014](../security/p0-acceptance-criteria.md#plugins) Budgets attributable, [P0-AC-015](../security/p0-acceptance-criteria.md#plugins) Plugins out of hot paths.
 - **Risk and evidence:** [R-007](../security/risk-register.md) via [Evidence Matrix R-007](../security/evidence-matrix.md) Phase E row `Mitigated at d4d75e9` (PR #146, Issue #139) with implementation `bitty-lua` Fuel + `bitty-plugin-host` queue budgets + attribution, measurement suites, fault-injection proof, independent review CONDITIONAL APPROVE.
 - **Mitigated evidence (`bitty` CTX-0092):** squash `d4d75e9` PR #146 `feat(plugin): verify per-plugin VM isolation and attributable budgets for R-007` (`2 files +344 -13`, `host.rs` queue isolation + `registry.rs` transactional reload `checked_add` overflow guard), headless measurement `21` + `15` tests at `d67a65b`, `reload_*` + `measurement` suites.
@@ -728,7 +728,11 @@ time-bounded CarryCtx decision.
 The evidence-matrix header `State` stays `Open` until the auditor records the
 review that moves a risk; presence of `bitty-vt`, `bitty-rich` `ImageStore`,
 `bitty-ipc` `256 KiB` framing with peer credentials, or `bitty-lua` `piccolo`
-at `be3bdb4` is `Implemented` evidence, not `Verified` closure.
+at `be3bdb4` is `Implemented` evidence, not `Verified` closure. The
+plugin-VM successor direction is Phodopus per
+[ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the `piccolo`
+runtime remains the current mechanism and this evidence stays valid until a
+`bitty-lua` migration lands.
 
 ## Non-goals and what this document does not promise
 

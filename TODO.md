@@ -112,7 +112,8 @@ summary.
       `winit` 0.30, `ui` layout, `runtime` orchestration; pending `Verified`).
 - [x] Build configuration and plugin runtimes (`Implemented`: `config`
       `ConfigPlan`, `lua` `piccolo` 0.3.3 per ADR 0005/0006/0007,
-      `plugin-host` capability/event queue; pending `Verified` and P0-AC).
+      `plugin-host` capability/event queue; pending `Verified` and P0-AC;
+      successor direction Phodopus, [ADR 0012](docs/decisions/adrs/ADR-0012-phodopus-runtime.md)).
 - [x] Build rich-content, CLI/IPC, DevTools, MCP, or headless services
       (`Implemented`: `rich` ImageStore/scene, `ipc` framing/scopes/auth
       `be3bdb4`, `agent` bounded messages, `cli` contract, `devtools`
