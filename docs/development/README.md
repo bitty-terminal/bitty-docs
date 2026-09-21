@@ -69,6 +69,11 @@ supported product build, a stable test workflow, or compatibility guarantees.
   contract shapes, the Bitty-owned plugin manager, the manifest split, and
   the resolver and loader boundary (core slice only; plugin, terminal, AI,
   and Wheel halves stay owner-pending).
+- [Remote infrastructure boundary](remote-infrastructure-boundary.md) is a
+  draft capture of the cross-cutting governance content of the remote client
+  direction: the trust-boundary gate, the optional-infrastructure rule, and
+  the two-layer push-gateway ownership (governance slice only; terminal,
+  plugin, and AI halves stay owner-pending).
 - [Reference projects](../project/reference-projects.md) records untrusted,
   read-only reference snapshots.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
