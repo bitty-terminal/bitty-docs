@@ -201,6 +201,17 @@ the historical conversation:
   `accepted` on 2026-09-11. First slice shipped in bitty PR #554 merge `e51b5cc`
   (CTX-0328) and PR #558 merge `064b9de` (CTX-0329); reload/update triggers
   remain [OQ-072](open-questions.md) and hardening remains bitty `CTX-0330`.)
+- Core ontology and identity model. (Accepted:
+  [ADR 0013](adrs/ADR-0013-core-ontology-identity.md) — the 10-concept ontology
+  (Instance, Workspace, Panel, Surface, ExecutionContext, Terminal, Session,
+  Resource, Service, Agent) with `PanelId`/`WorkspaceId`/`ResourceId`/
+  `ExecutionContextId`/`AgentId`/`GenerationId` relations and the
+  Panel/Execution and Restore/Persistence separations for
+  [OQ-084](open-questions.md); owner ruling 2026-09-23 adopting the `bitty`
+  owner decision packet (merged `bitty` #1300); closes `bitty` #1093;
+  [OQ-058](open-questions.md), [OQ-061](open-questions.md), and
+  [OQ-083](open-questions.md) reuse its terms; frontmatter `accepted` on
+  2026-09-23; no implementation claim.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
