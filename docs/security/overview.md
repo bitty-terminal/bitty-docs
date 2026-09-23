@@ -106,6 +106,14 @@ grant unrelated authority. Initial families include:
 An allow-all boolean is not an acceptable substitute. Official plugins obey the
 same capability model as community plugins.
 
+Capability grants are further narrowed by the adopted trust-level admission
+(L0 Core through L4 external tool/MCP), secret-storage tiers, credential
+references, agent roles, and the panel lease write hook, defined in the
+[threat model](threat-model.md#adopted-trust-and-authorization-models)
+and gated by [P0-AC-035 through
+P0-AC-039](p0-acceptance-criteria.md#adopted-trust-tier-role-and-lease-gates).
+Each narrows authority only; none grants it.
+
 ## P0 security baseline
 
 The following controls are required before Bitty is considered safe for normal
