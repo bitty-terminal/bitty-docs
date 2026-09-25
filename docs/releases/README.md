@@ -11,12 +11,16 @@ sidebar_order: 10
 
 # Releases
 
-Pre-alpha releases of Bitty exist (latest `v0.0.20`, 2026-09-11, with
-cross-platform artifacts); no stable or supported release line exists yet, and
-no compatibility or security-verification claim is made. Do not add release
-notes claiming supported behavior, download guarantees, or upgrade
-instructions beyond the published pre-alpha artifacts until an immutable
-released artifact and verification evidence are available.
+Pre-alpha releases of Bitty exist (latest `v0.0.21`, tag commit `7da6d6f`,
+2026-09-24, with cross-platform artifacts); no stable or supported release
+line exists yet, and no compatibility or security-verification claim is made.
+The release includes plugin services and manifest forms, CLI contract v1
+commands, workspace and panel operations, Kitty/input/render corrections,
+Rich Scene and semantic-terminal wiring, compatibility and DevTools evidence,
+and execution/security-closure evidence. Do not add release notes claiming
+supported behavior, download guarantees, or upgrade instructions beyond the
+published pre-alpha artifacts until an immutable released artifact and
+verification evidence are available.
 
 ## Admission criteria
 

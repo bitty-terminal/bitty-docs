@@ -204,7 +204,7 @@ against shipped reality (`bitty` documents AUR recipes, GitHub Releases,
 
 - Shipped-factual docs describe behavior that ships in a named release. They
   are allowed before `Verified` when every page carries an explicit version
-  qualifier such as "Available in `v0.0.20`, pre-alpha, API and behavior may
+  qualifier such as "Available in `v0.0.21`, pre-alpha, API and behavior may
   change".
 - Compatibility guarantees promise stable behavior across releases. They
   require `Verified` plus the semver and compatibility matrix, and remain
@@ -374,14 +374,16 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`23c3eb6` at `2026-09-19`, baseline `de134ec`, previous `bea338d`), maturity
-and release status (`Pre-alpha / Engineering Milestones M1-M8`, 41 OQs
-`Accepted`, 21 crates, release `v0.0.20`), per-risk state and evidence
-revision and audit references (`R-004` remains `Open` at `7a4ee41` with
-residual platform, UX, and `8192`-byte bound-scope limits per `bitty`
+`679f12f` at `2026-09-25`, baseline `de134ec`, previous `23c3eb6`), maturity
+and release status (`Pre-alpha / Engineering Milestones M1-M8`, 54 OQs
+`Accepted` and 46 `Open` in the synchronized docs register, 21 crates, release
+`v0.0.21` at `7da6d6f` dated 2026-09-24), per-risk state and evidence revision and audit
+references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
+`8192`-byte bound-scope limits per `bitty`
 `docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-005`/`R-006`/`R-007`
-`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0233`, previous
-`CTX-0180`).
+`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0244`, previous
+`CTX-0233`). The release and post-release security evidence are
+`Implemented`-only until the matrix and independent review gates are recorded.
 
 Mechanical fields (synchronized revision, snapshot date, crate count, latest
 release tag/commit/date, and the provenance chain) are regenerated
