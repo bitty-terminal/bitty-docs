@@ -811,7 +811,7 @@ runtime remains the current mechanism and this evidence stays valid until a
 ## References
 
 - [Roadmap index](README.md) — admission criteria and authority.
-- [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 to `v0.1`..`v1.0` (submodule pin `bea338d`; aggregator snapshot `679f12f`, release `v0.0.21`).
+- [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md) — Pre-alpha / Engineering Milestones M1-M8 to `v0.1`..`v1.0` (release-ladder `bitty` snapshot and aggregator snapshot `679f12f`, release `v0.0.21`).
 - [Proposed Delivery Sequence](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/proposed-delivery-sequence.md) — candidate spine and ladders, draft deposit from [6a8dae4b-2aec-83ea-9174-03abc1f81531](https://chatgpt.com/share/6a8dae4b-2aec-83ea-9174-03abc1f81531).
 - [Shared-conversation coverage](../sources/chatgpt-share-coverage.md) — provenance matrices for both historical conversations.
 - [Security Risk Register](../security/risk-register.md) — R-001..R-022, severity and stage.
