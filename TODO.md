@@ -1,14 +1,14 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-09-19`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `23c3eb6`, baseline `de134ec`, previous `bea338d`, 21 crates); latest release `v0.0.20` (`d9f5b49`, 2026-09-11) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-09-25`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `679f12f`, baseline `de134ec`, previous `23c3eb6`, 21 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
 flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), the
 project-state refresh plus refresh automation (CTX-0180), and the
-project-state refresh to `23c3eb6` (CTX-0233). OQ counts live in
-the [open-question register](docs/decisions/open-questions.md) and milestone
+project-state refresh to `23c3eb6` (CTX-0233) and current refresh to `679f12f` (CTX-0244). OQ counts live in the
+[open-question register](docs/decisions/open-questions.md) and milestone
 detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
 summary.
 
@@ -129,7 +129,7 @@ summary.
       gate per risk-evidence RFC). Shipped-factual user docs are different:
       per DIR-015, installation, getting-started, daily-use, and
       troubleshooting pages that describe shipped behavior with an explicit
-      version qualifier ("Available in `v0.0.20`, pre-alpha, API and behavior
+      version qualifier ("Available in `v0.0.21`, pre-alpha, API and behavior
       may change") do not wait for `Verified`; they must never claim
       compatibility or verified security.
 - [ ] Decide internationalization ownership, locale structure, translation
@@ -265,7 +265,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 
 ## Follow-ups recorded by CTX-0199 (DIR-015)
 
-- [ ] Write the shipped-factual installation and getting-started guides for `v0.0.20` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`, `bitty doctor`) with the DIR-015 version qualifier, in the owning project docs repository. This task only opens the policy gate; it does not write the guides.
+- [ ] Write the shipped-factual installation and getting-started guides for `v0.0.21` (AUR `bitty-bin`/`bitty`, GitHub Releases, `bitty init`, `bitty doctor`) with the DIR-015 version qualifier, in the owning project docs repository. This task only opens the policy gate; it does not write the guides.
 - [x] Add `just docs-status` (per-sibling pin, docs-main, behind-count, and
       code-repo `docs/` mount) plus `just docs-check-cross-repo` (absolute
       cross-repo link validation; offline mode gated in `just check`);

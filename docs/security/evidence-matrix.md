@@ -11,8 +11,8 @@ sidebar_order: 34
 
 # Security Evidence Matrix
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-19, `bitty` `23c3eb6` previous `bea338d` baseline `de134ec`, 21 crates,
-41 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`), plus the post-`v0.0.20` security, IPC-service, execution-supervisor, and release-pipeline hardening wave through `23c3eb6`.
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-25, `bitty` `679f12f` previous `23c3eb6` baseline `de134ec`, 21 crates,
+54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`), plus post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `679f12f`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`)
 per RS-1..RS-7 and independent review; `R-004` remains
@@ -25,8 +25,8 @@ at `8e6c8a9` PR #132) that authorize only `Open -> Mitigated`; the rows below
 have not recorded that move, and `R-001`'s P0-AC-002 long-running `cargo-fuzz`
 campaign is advanced by `5daf686` (PR #1160, Issue #1132, short smokes only)
 but still outstanding; all other rows remain `Open` because
-implementation is `Implemented` (headless hardening and security wave through `23c3eb6`;
-prior snapshot text cited `bea338d`)
+implementation is `Implemented` (headless hardening and security wave through `679f12f`;
+the prior snapshot cited `23c3eb6`)
 plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
 not yet `Verified` per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
 RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
@@ -63,10 +63,16 @@ split, `58e488a` PR #362 fuel step slice). Each is cited in the wave
 table below as `Implemented`-only evidence; states remain `Open` pending
 auditor review per RS-1..RS-7. No risk moves on mechanism presence
 alone. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `23c3eb6`,
-`2026-09-19`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `679f12f`,
+`2026-09-25`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.21` at `7da6d6f`) validated by
+`bun .github/scripts/check-state.mjs`.
+
+The v0.0.21 release records CTX-0680, CTX-0691, and CTX-0701 security-closure
+work for R-014, R-015, and R-022. Their evidence files state that the rows
+remain `Open` pending independent auditor review; mechanism and test evidence
+alone do not authorize a Phase E transition.
 
 This matrix is the Phase E companion to the
 [risk register](risk-register.md) and the
@@ -134,6 +140,22 @@ soak point: 16 crates, ~808 headless soaking tests (904 `cargo test
 | R-022 | P0-AC-027                       | `bitty-package` supply chain: `integrity::verify_pipeline` 7-stage ordered enum `VerificationStage` fan-in, `package-lifecycle.md` no `postinstall` install-time execution, `install` is download + `sha256_hex` H-A + manifest validation + `verify_manifest_hash_binding` H-B + content-addressed store `verify_store_commit` H-C with zero code exec, first execution only after `grant` authorization                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Instrumented install zero plugin/script invocation, hostile-manifest fixture with hooks executes nothing, `verify_pipeline` before `Generation::new` gate                                                                                                                                                                                                                                                                                                                                                                                                             | `cargo test -p bitty-package`, `just check`, `cargo clippy`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `postinstall` hook presence adversarial: tampered manifest declaring hook `store` verifies but `activate` still requires `grant`; no package-supplied code executed at `verify_pipeline` stage                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | pending auditor `install-no-exec-2026-xx`                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Open                                                                                                             |
 
 <!-- markdownlint-enable MD018 MD038 MD056 -->
+
+## v0.0.21 security-closure evidence (`Implemented`-only)
+
+The v0.0.21 release at `7da6d6f` includes security-closure evidence recorded
+by CTX-0680 (`bb14453`), CTX-0691 (`c9680cb`), and CTX-0701 (`1a5c9d4`).
+These records are implementation and test evidence, not risk transitions:
+
+| Risk  | Evidence recorded                                                                         | Matrix disposition                                                               |
+| ----- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| R-014 | Redaction, scope, and trace-minimization tests in the CTX-0680 batch                      | `Open`; independent auditor artifacts and the Phase E transition remain required |
+| R-015 | Package integrity, lock/checksum, and transactional activation tests in CTX-0680/CTX-0691 | `Open`; supply-chain auditor review remains required                             |
+| R-022 | No-install-time-execution and package admission tests in CTX-0680                         | `Open`; independent auditor review remains required                              |
+
+The later SEC-19 record is explicitly incomplete and does not move any row.
+The synchronized product head is `679f12f`; these facts do not imply
+`Verified`, `Compatible`, or `Release-ready`.
 
 ## FIND-0002 remediation wave (`Implemented`-only, 2026-09-07)
 

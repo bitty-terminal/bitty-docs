@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates 23c3eb6, 41 OQs Accepted), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates 679f12f, 54 OQs Accepted, 46 Open), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,8 +11,8 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-19, `bitty` `23c3eb6` previous `bea338d` baseline `de134ec`, 21 crates,
-41 OQs `Accepted`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` plugin-runtime, Kitty-graphics, decoration, and config-matrix wave plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and the post-`v0.0.20` security, IPC-service, execution-supervisor, and release-pipeline hardening wave through `23c3eb6`.
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-25, `bitty` `679f12f` previous `23c3eb6` baseline `de134ec`, 21 crates,
+54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `679f12f`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), `R-001`
@@ -26,7 +26,7 @@ and `R-002` remain `Open` with merged auditor artifacts that authorize only
 (PR #1160, `fuzz/fuzz_targets/` targets, short smokes only) and still
 outstanding — all others
 remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
-hardening and security wave through `23c3eb6` — including a 21-crate workspace and bounded VT
+hardening and security wave through `679f12f` — including a 21-crate workspace and bounded VT
 payload types `crates/bitty-vt/src/bounded.rs` — plus
 experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md): lifecycle is
@@ -56,10 +56,16 @@ for the per-risk mapping). Every affected row below stays `Open`: the wave is
 required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `23c3eb6`,
-`2026-09-19`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `679f12f`,
+`2026-09-25`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
-`Implemented` not `Verified`, release `v0.0.20`) validated by `bun .github/scripts/check-state.mjs`.
+`Implemented` not `Verified`, release `v0.0.21` at `7da6d6f`) validated by
+`bun .github/scripts/check-state.mjs`.
+
+The v0.0.21 release records CTX-0680, CTX-0691, and CTX-0701 security-closure
+work for R-014, R-015, and R-022. Those records explicitly remain
+`Implemented`-only until independent auditor review and the Phase E matrix
+transition are recorded; this register therefore keeps those risks `Open`.
 
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim

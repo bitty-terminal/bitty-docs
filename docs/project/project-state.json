@@ -1,27 +1,27 @@
 {
   "schema_version": 1,
-  "snapshot_date": "2026-09-19",
+  "snapshot_date": "2026-09-25",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "23c3eb66e50a2d204dbf2b23a2f6402e7ac8ca9f",
-    "short": "23c3eb6",
+    "revision": "679f12f3529e6d75dcd63a485fb4c88c2e6141cd",
+    "short": "679f12f",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "bea338d225eb13db3682a2a915ec3bddaa9023f9",
-    "previous_short": "bea338d",
+    "previous_revision": "23c3eb66e50a2d204dbf2b23a2f6402e7ac8ca9f",
+    "previous_short": "23c3eb6",
     "crates": 21
   },
   "latest_release": {
-    "tag": "v0.0.20",
-    "commit": "d9f5b496d20cd669ebab99c0a5febd83d44ab7d6",
-    "short": "d9f5b49",
-    "date": "2026-09-11",
-    "summary": "Bitty 0.0.20 prepared by CTX-0331 PR #556 (first workspace Cargo bump since 0.0.1: 0.0.1 -> 0.0.20, kept aligned by scripts/check-release-version.sh): plugin runtime Gap A per-plugin !Send VM lifecycle with atomic activation and bundled plugins loading under --safe without a third-party VM; ctl D1/D2/D3 correctness; end-to-end Kitty graphics (bounded decode, placement/composite, per-pane origins, real-GPU upload); Core-owned workspace decoration gaps px/border/radius plus SDF rounded fills and scrollbar tracking the decorated frame; config matrix (arrow variants, Mod+M/HJKL, F-keys and chords, per-window font zoom, which-key, focus-follows-mouse); plugin CLI capability gates plus required_services and 0600 managed manifests; Windows ConPTY Tier-1; terminal.scrollback/shell honored; reflow and live split-resize correctness; in-repo CarryCtx snapshot publication; 19-crate workspace including bitty-test-support (CTX-0267)"
+    "tag": "v0.0.21",
+    "commit": "7da6d6f46065c495c82f31ce047abaab5124bf2a",
+    "short": "7da6d6f",
+    "date": "2026-09-24",
+    "summary": "Bitty 0.0.21 released 2026-09-24 from tag v0.0.21 (7da6d6f): plugin services and manifest forms; CLI contract v1 commands; workspace and panel operations; Kitty graphics, input, render, and grid correctness; Rich Scene and semantic-terminal wiring; compatibility and DevTools evidence batches; execution and security-closure evidence; 21-crate workspace. This is a pre-alpha release; no stable, compatible, or security-verified claim is made."
   },
   "maturity": {
     "label": "Pre-alpha / Engineering Milestones M1-M8",
-    "date": "2026-09-19",
-    "oqs_accepted": 41,
+    "date": "2026-09-25",
+    "oqs_accepted": 54,
     "lifecycle": "Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready",
     "milestone_frame": "M1 Terminal Truth; M2 Correct Terminal; M3 Usable Terminal; M4 Workspace / Panel; M5 Plugin Ecosystem; M6 Rich / IPC / Agent; M7 Stable Compatibility; M8 Public Beta"
   },
@@ -360,26 +360,26 @@
     },
     "release_packaging": {
       "assessment": "operating",
-      "evidence": "tag v0.0.19 at c2aabee (2026-09-03); binary artifact bitty-app -> bitty a724771; AUR bitty-bin prebuilt package 559ccff; closed capability set enforced at manifest time 33a6731; cross-platform dist assets plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, SHA256SUMS and provenance per CHANGELOG; tag v0.0.20 at d9f5b49 (2026-09-11) prepared by CTX-0331 (#556), first workspace Cargo bump since 0.0.1 aligned by scripts/check-release-version.sh; app icons regenerated 233f118; AUR source recipe sync guard 150855e; workspace now 21 crates (bitty-test-support CTX-0267, bitty-panels 74361aa CTX-0438, bitty-test-vm ae094b7 CTX-0507); post-v0.0.20 pipeline hardening (AppStream metainfo and Linux app ID 97f852a, Windows x86_64 portable ZIP 6eea1c6, clean-container install smoke tests 1aa56a2, per-distro runtime deps gated by ldd/readelf daac2cd, real terminfo 868c8d4, macOS Universal 2 DMG ab770ee, Linux ARM64 matrix entry db0c6c2, real musl apk 3d3cfa1, real .pkg.tar.zst 01fdbe7, stale 0.0.1 manifests retired fb0be5c)"
+      "evidence": "tag v0.0.19 at c2aabee (2026-09-03); binary artifact bitty-app -> bitty a724771; AUR bitty-bin prebuilt package 559ccff; closed capability set enforced at manifest time 33a6731; cross-platform dist assets plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, SHA256SUMS and provenance per CHANGELOG; tag v0.0.20 at d9f5b49 (2026-09-11) prepared by CTX-0331 (#556), first workspace Cargo bump since 0.0.1 aligned by scripts/check-release-version.sh; app icons regenerated 233f118; AUR source recipe sync guard 150855e; workspace now 21 crates (bitty-test-support CTX-0267, bitty-panels 74361aa CTX-0438, bitty-test-vm ae094b7 CTX-0507); post-v0.0.20 pipeline hardening (AppStream metainfo and Linux app ID 97f852a, Windows x86_64 portable ZIP 6eea1c6, clean-container install smoke tests 1aa56a2, per-distro runtime deps gated by ldd/readelf daac2cd, real terminfo 868c8d4, macOS Universal 2 DMG ab770ee, Linux ARM64 matrix entry db0c6c2, real musl apk 3d3cfa1, real .pkg.tar.zst 01fdbe7, stale 0.0.1 manifests retired fb0be5c); v0.0.21 at 7da6d6f (2026-09-24) adds the release engineering and pre-0.0.21 documentation/configuration/plugin wave; synchronized head 679f12f is four commits later and remains Implemented-only, not Verified"
     }
   },
   "sync_provenance": {
-    "carryctx_task": "CTX-0233",
-    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/355",
-    "previous_task": "CTX-0180",
-    "previous_issue": null,
+    "carryctx_task": "CTX-0244",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/371",
+    "previous_task": "CTX-0233",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/355",
     "audit_task": "CTX-0092",
-    "synchronized_at": "2026-09-19",
-    "synchronized_by": "bitty-docs-0233-impl",
-    "synchronized_revision": "23c3eb6",
-    "previous_revision": "bea338d",
+    "synchronized_at": "2026-09-25",
+    "synchronized_by": "ctx-0244-impl",
+    "synchronized_revision": "679f12f",
+    "previous_revision": "23c3eb6",
     "baseline_revision": "de134ec",
-    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as evidence; main has advanced to 23c3eb6 (previous bea338d) through the post-v0.0.20 hardening and foundation wave: workspace growth to 21 crates (bitty-panels 74361aa CTX-0438, bitty-test-vm ae094b7 CTX-0507), security wave (host secret store and opaque credential handles eb321f7, effective-capability intersection and self-grant prohibition b32d90d, sensitive-path policy 43739d0, plugin fs/interpreter/git predicate hardening b76c4b1/6a9ee85/20dddcd, Lua sandbox caps 1ccdb1b, IPC attestation abb37a4, package trust-stub removal 1eb6aa8), execution supervisor phase-1 (bcbb25a/e32ad8c/5a41fde), generic IPC services (9bbc1a6/50b32ec/cf3ac8b/a61c291/eef983e/b9ea7b6/2cbb1fb/92cd709), UI/UX wave (search overlay 8ea5f86, keyboard copy mode e154324, multi-click selection d89fa19, session save/restore a266b2a, custom palette plus OSC 4 9c63750), plugin catalog reset and Layer-2 process spawn (dd46c7a/d4d754e/65aac5c/e84da34, 9830edb/64e1709), release-pipeline hardening (97f852a/6eea1c6/1aa56a2/daac2cd/868c8d4/ab770ee/db0c6c2/3d3cfa1/01fdbe7/fb0be5c), and terminal core corrections (ae8f4ba/b52e918/3375439/96ba205/a998456/0d71be8/317d4b4) plus the package collision-check fix (23c3eb6); all Implemented-only, none Verified)"
+    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is 679f12f (previous 23c3eb6) through the v0.0.21 release at 7da6d6f (2026-09-24) and post-release fixes a034c9a, 841ae6e, 2339f0a, and 679f12f; the 21-crate workspace and all release/security-closure artifacts are Implemented-only, none Verified"
   },
   "ownership": {
     "owner": "docs-curator + security-auditor",
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, latest release, subsystem assessments, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. At Engineering Milestones M1-M8 per CTX-0233 (previous CTX-0180), R-005/R-006/R-007 stay Mitigated at d4d75e9 (5bdcdbd/0afc94d/d4d75e9, Issues #137/#138/#139) per RS-1..RS-7 and independent review; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits per audit; all other risks remain Open. Experimental Implementations c0aadd2 (vertical slice), 7e3104d (plugin dogfood), a8735d0 (PTY reply + Kitty) stay Implemented (experimental) not Verified/Compatible/Release-ready per Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible ladder; semantic-terminal P1-P5 (4ccb771/064486b/ab1f7ab) and scrollbar overlay c49ead1 (CTX-0181, bitty #405) remain Implemented-only evidence, not Accepted/Verified, closing no open question; the v0.0.20 wave plus post-release hardening now runs to 23c3eb6 (previous bea338d) with workspace growth to 21 crates (bitty-panels 74361aa, bitty-test-vm ae094b7), the execution supervisor and generic IPC-service foundations, the security hardening wave (host secret store eb321f7, effective-capability intersection b32d90d, sensitive-path policy 43739d0), the UI/UX wave, the plugin catalog reset, and release-pipeline hardening; all Implemented-only at 23c3eb6, not Accepted/Verified, closing no open question, with P0-AC-026 unchanged. The open-question register counts 41 Accepted OQs at this snapshot (40 at 2026-09-14; docs/decisions/open-questions.md) and reports 59 Open. Subsystem rows cover only bitty origin/main evidence verified read-only for this snapshot; plugin SDK, MCP adapter, DevTools client, and website rows are omitted because they live in separate repositories and were not verified here. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit/implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0244 addresses #371; #372 is the related self-containment issue. Snapshot 2026-09-25 uses bitty 679f12f (previous 23c3eb6, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-005/R-006/R-007 remain Mitigated at d4d75e9 under RS-1..RS-7; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; all other risks remain Open. The v0.0.21 release and post-release fixes are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
 }
