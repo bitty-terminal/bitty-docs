@@ -1,11 +1,11 @@
 ---
 title: Finding 0002 - Comprehensive Code Review Defects and Enhancements Ledger
-description: Historical code review findings from the 18-crate 2026-09-06 scope with current remediation disposition
+description: CTX-0126 comprehensive code review campaign defect ledger and remediation state
 category: findings
-audience: maintainer
-document_type: register
+audience: contributor
+document_type: reference
 status: accepted
-website_publish: false
+website_publish: true
 sidebar_order: 12
 ---
 

@@ -1,12 +1,12 @@
 ---
 title: Repository and Local Workspace Map
-description: Records the accepted polyrepo topology, current repository initialization state, planned responsibilities, and local routing rules.
+description: Local/remote topology, repository ownership, and current initialization state
 category: project
 audience: contributor
 document_type: reference
-status: draft
-website_publish: false
-sidebar_order: 91
+status: accepted
+website_publish: true
+sidebar_order: 10
 ---
 
 # Repository and Local Workspace Map

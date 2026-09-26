@@ -1,12 +1,12 @@
 ---
 title: Website content contract
-description: Normative boundary between canonical Bitty documentation and website presentation
+description: Normative ownership and validation boundary between bitty-docs and bitty-website
 category: project
 audience: contributor
-document_type: contract
-status: normative
-website_publish: false
-sidebar_order: 50
+document_type: specification
+status: accepted
+website_publish: true
+sidebar_order: 20
 ---
 
 # Website content contract
