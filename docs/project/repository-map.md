@@ -15,7 +15,7 @@ sidebar_order: 10
 
 Bitty has accepted an organization-level polyrepo. ADR 0001 accepts a minimal
 Core Cargo workspace for initialization; the expanded crate graph is now
-**Pre-alpha / Engineering Milestones M1-M8** at 21 crates (`679f12f`) with lifecycle
+**Pre-alpha / Engineering Milestones M1-M8** at 21 crates (`c6db24d`) with lifecycle
 `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 (see Status below):
 
@@ -24,7 +24,7 @@ Core Cargo workspace for initialization; the expanded crate graph is now
 - Product repositories are independent. Run Git and CarryCtx commands inside
   the target child repository.
 - The `bitty/` workspace is spine-complete (twenty-one members in
-  `bitty/Cargo.toml` as of 2026-09-25 `679f12f`): `bitty-vt`, `bitty-term-state`,
+  `bitty/Cargo.toml` as of 2026-09-27 `c6db24d`): `bitty-vt`, `bitty-term-state`,
   `bitty-pty`, `bitty-platform`, `bitty-config`, `bitty-render`, `bitty-ui`,
   `bitty-plugin-host`, `bitty-runtime`, `bitty-package`, `bitty-lua`,
   `bitty-rich`, `bitty-ipc`, `bitty-agent`, `bitty-panels`, plus `bitty-app`,
@@ -171,7 +171,7 @@ the same upstream revisions.
 
 | Repository or directory | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty`                 | Rust runtime and application                                                                                     | Spine-complete workspace (twenty-one members) accepted in ADR 0003 for ten crates plus `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032) and tail crates `bitty-rich` (OQ-008/015/016), `bitty-ipc`/`bitty-agent` (OQ-018) `Implemented` (compat-lab/perf hardening and UX wave through `29772a3` plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus the post-release security, IPC-service, execution-supervisor, panel-extraction, and release-pipeline wave at `679f12f`) but not yet `Verified`; signatures still draft; Plugin API `Accepted` via Plugin Platform RFC; debug protocol `Accepted` via DevTools RFC |
+| `bitty`                 | Rust runtime and application                                                                                     | Spine-complete workspace (twenty-one members) accepted in ADR 0003 for ten crates plus `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032) and tail crates `bitty-rich` (OQ-008/015/016), `bitty-ipc`/`bitty-agent` (OQ-018) `Implemented` (compat-lab/perf hardening and UX wave through `29772a3` plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus the post-release security, IPC-service, execution-supervisor, panel-extraction, and release-pipeline wave at `c6db24d`) but not yet `Verified`; signatures still draft; Plugin API `Accepted` via Plugin Platform RFC; debug protocol `Accepted` via DevTools RFC |
 | `bitty-docs`            | Shared governance plus aggregator: ADRs, RFCs, security, project state, roadmap, and the project docs submodules | Accepted authoritative governance repository; owns the root submodule pointers and the shared registers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `bitty-terminal-docs`   | Terminal-platform documentation (submodule `bitty-terminal`)                                                     | Split content merged; canonical project documentation for the terminal platform                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `bitty-ai-docs`         | AI-core documentation (submodule `bitty-ai`)                                                                     | Split content merged; canonical project documentation for the independent AI core                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -212,9 +212,9 @@ and tool versions plus lockfiles are fixed and verified by later
 repository-scoped implementation tasks. See the
 [repository bootstrap guide](../development/repository-bootstrap.md).
 
-## Workspace structure (Pre-alpha / Engineering Milestones M1-M8, 21 crates `679f12f`)
+## Workspace structure (Pre-alpha / Engineering Milestones M1-M8, 21 crates `c6db24d`)
 
-The workspace is spine-complete as of 2026-09-25 (`679f12f`). The accepted
+The workspace is spine-complete as of 2026-09-27 (`c6db24d`). The accepted
 topology is
 [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the
 structure below is what `bitty/Cargo.toml` currently resolves to. Presence is
@@ -358,7 +358,7 @@ database exists. Therefore:
 - Verification of `bitty-package` (lifecycle accepted, signatures draft) and
   the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/
   `bitty-agent` OQ-018, `bitty-lua` OQ-009/030-032, compat-lab/perf hardening
-  through `679f12f`) from `Implemented` to `Verified` per risk evidence RFC
+  through `c6db24d`) from `Implemented` to `Verified` per risk evidence RFC
   OQ-025 (evidence matrix pending), plus successor topology ADR when needed,
   release profiles, package publication, and release automation beyond ADR 0003.
 - The concrete theme/search approach for the website (loader, sync pin,
