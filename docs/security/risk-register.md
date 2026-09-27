@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates 679f12f, 54 OQs Accepted, 46 Open), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates c6db24d, 54 OQs Accepted, 46 Open), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,7 +11,7 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-25, `bitty` `679f12f` previous `23c3eb6` baseline `de134ec`, 21 crates,
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-27, `bitty` `c6db24d` previous `679f12f` baseline `de134ec`, 21 crates,
 54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `679f12f`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
@@ -56,8 +56,8 @@ for the per-risk mapping). Every affected row below stays `Open`: the wave is
 required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `679f12f`,
-`2026-09-25`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `c6db24d`,
+`2026-09-27`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.21` at `7da6d6f`) validated by
 `bun .github/scripts/check-state.mjs`.

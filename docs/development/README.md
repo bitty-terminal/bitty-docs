@@ -12,7 +12,7 @@ sidebar_order: 10
 # Development
 
 Bitty is currently in its pre-alpha phase: an experimental implementation
-exists in the `bitty` repository (current synchronized revision `679f12f`,
+exists in the `bitty` repository (current synchronized revision `c6db24d`,
 latest release `v0.0.21` at `7da6d6f`, 2026-09-24), but no stable or supported
 public contract has been declared, and no part of the product is `Verified`,
 `Compatible`, or `Release-ready`. The release and post-release fixes are

@@ -1,13 +1,13 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-09-25`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `679f12f`, baseline `de134ec`, previous `23c3eb6`, 21 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-09-27`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `c6db24d`, baseline `de134ec`, previous `679f12f`, 21 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
 flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), the
 project-state refresh plus refresh automation (CTX-0180), and the
-project-state refresh to `23c3eb6` (CTX-0233) and current refresh to `679f12f` (CTX-0244). OQ counts live in the
+project-state refresh to `23c3eb6` (CTX-0233), the refresh to `679f12f` (CTX-0244), and the current refresh to `c6db24d` (CTX-0246). OQ counts live in the
 [open-question register](docs/decisions/open-questions.md) and milestone
 detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
 summary.
