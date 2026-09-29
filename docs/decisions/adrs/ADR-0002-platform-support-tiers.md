@@ -167,3 +167,26 @@ Acceptance on 2026-08-26 applied these same-change updates:
   the CI workflow task pins runners.
 - Windows ConPTY API availability from Windows 10 1809 is documented by
   Microsoft; re-verify against Microsoft Learn when pinning the Windows floor.
+
+## Tier 2 implementation evidence (FreeBSD x86_64)
+
+Recorded 2026-09-29 (CTX-0849, issue #1509). The FreeBSD x86_64 Tier 2 gate —
+"Build plus core unit tests on merge or nightly schedule" — is now wired in
+the `bitty` repository:
+
+- `.github/workflows/bsd-tier.yml` boots a real FreeBSD 15.1 x86_64 VM
+  nightly (`schedule`) and on `workflow_dispatch`, never on pull requests, so
+  the Tier 2 leg cannot gate a Tier 1 merge. It runs
+  `cargo check --workspace --all-targets` and the core headless suites
+  (`bitty-vt`, `bitty-term-state`, `bitty-ui`, `bitty-pty`) inside the guest.
+- `.github/workflows/release.yml` gained a `build-freebsd` job that builds the
+  native binary and a `bitty-<version>-x86_64-unknown-freebsd.tar.xz` bundle in
+  the guest.
+- The pinned runner is `cross-platform-actions/action` v1.6.0 (release-gate
+  tooling re-check requested by the Validation-basis note above).
+
+The library-level portability probe (CTX-0849) found no Rust-level FreeBSD
+breakage: `bitty-pty`, `bitty-vt`, `bitty-term-state`, and `bitty-ui` all
+`cargo check` clean for `x86_64-unknown-freebsd`; only the C build of
+`aws-lc-sys` needs a FreeBSD C toolchain (supplied by the VM), not a code
+change.
