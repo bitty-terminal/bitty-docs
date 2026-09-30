@@ -243,7 +243,13 @@ the historical conversation:
   [Default Distribution RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/default-distribution-rfc.md)
   bundled catalog is revised ten to eight; closed [OQ-053](open-questions.md)
   on 2026-09-14. The plugin-ecosystem roadmap carries the matching catalog
-  update and the capability deltas are tracked as `bitty-plugins` `CTX-0005`.)
+  update and the capability deltas are tracked as `bitty-plugins` `CTX-0005`.
+  Later change (2026-09-30, `bitty` CTX-0886, issues #1554, #1556, #1557):
+  `browser-panel`, `ai-panel`, `mail-panel`, and `project` were removed from
+  Core, superseding the `browser-panel` stay-bundled verdict; the bundled
+  catalog is `shell-integration` and `workspace`. AI surfaces move to the
+  optional `bitty-ai` extension; mail is not planned; project and browser may
+  return as independent optional plugins.)
 - Repository governance: licenses, branch protections, ownership, compatibility policy, and cross-repository release flow. (Accepted: [Governance RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/governance-rfc.md) — MIT license, squash-only `main` with required checks and CODEOWNERS, semver with MSRV 1.85 and Tier 1 platform policy, and dependency-ordered release train with `Docs-PR`/`Code-PR` trailers for [OQ-024](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Website delivery: loader, synchronization, release selector, multi-version URL scheme, route mapping, and redirect manifest. (Accepted: [Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md) — Astro content-collection loader with eight-field schema and `title == H1` check, pinned `src/content/docs-revision.json` with `sync:docs --pin` copy and stale-mirror rejection, `src/content/versions.json` selector with `latest`/`stable` aliases, `/docs/<version>/<path>/` multi-version scheme with per-version `dist` isolation and 301 canonical redirects, deterministic `docs/<category>/<file>.md -> /docs/<version>/<category>/<slug>/` mapping with collision gate, and split redirect manifest `docs/project/redirects.json` intent plus `src/redirects.json` implementation for [OQ-023](open-questions.md); frontmatter `accepted` on 2026-08-29.)
 - Risk evidence and P0 closure. (Accepted: [Risk Evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md) —

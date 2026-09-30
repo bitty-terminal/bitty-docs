@@ -243,7 +243,7 @@ bitty/
 │   ├── bitty-ipc/         # Implemented: bounded framing/channels/stdio stub (std-only)
 │   ├── bitty-lua/         # Implemented: piccolo 0.3.3 deterministic VM budgets RC-1/RC-2
 │   ├── bitty-package/     # lifecycle/integrity accepted (OQ-021, 2026-08-27); signatures draft (std-only)
-│   ├── bitty-panels/      # extracted ai/mail panel experiences (CTX-0438)
+│   ├── bitty-panels/      # panel staging scaffold; ai/mail panels removed (CTX-0886)
 │   ├── bitty-perf/        # forming: bench harness owning benches/
 │   ├── bitty-platform/    # winit 0.30, raw-window-handle =0.6.2
 │   ├── bitty-plugin-host/ # registry/capability/lifecycle (+ bitty-package edge)
