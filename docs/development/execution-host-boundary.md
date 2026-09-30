@@ -109,8 +109,12 @@ Consequences recorded:
 - **Structured outcome, never a bare exit code**: at minimum `Success`,
   `ExitCode`, `Signaled`, `SpawnFailed`, `Cancelled`, `TimedOut`,
   `OomKilled`, `SupervisorLost`, `Unknown`. `OomKilled` is only asserted when
-  the host can actually determine it (for example per-job cgroup
-  `memory.events` on Linux); the cross-platform backend split is process
+  the host can actually determine it (per-job cgroup `memory.events` on Linux
+  when enabled via `JobRegistry::with_job_cgroups`). Linux cgroup discovery
+  accepts the process's own cgroup only when it is the root of the cgroup
+  namespace (container) or carries the `user.delegate` or `trusted.delegate`
+  xattr (systemd `Delegate=yes` units); undelegated parent cgroups are
+  refused. The cross-platform backend split is per-job cgroups v2 plus process
   groups plus pidfd on Linux, process groups plus kqueue/process wait on
   macOS, and Job Objects plus ConPTY on Windows.
 - **Kill the owned process tree**, never a single PID.
@@ -240,8 +244,13 @@ by OQ-057. Their owner repository records them separately.
 
 - The v0.1 boundary and the trigger for Phase 2 persistence are recorded but
   not scheduled; no implementation is authorized.
-- OOM determination without cgroups, and the Windows/macOS process-tree
-  backends, are direction with no decided mechanism.
+- Linux per-job cgroup OOM evidence is implemented (#1537) and opt-in via
+  `JobRegistry::with_job_cgroups`. Discovery refuses undelegated cgroups and
+  accepts only the cgroup namespace root or xattr-delegated cgroups. OOM
+  determination without cgroups (macOS, Windows, undelegated Linux hosts)
+  reports `Unknown` by design. The Windows/macOS process-tree backends are
+  implemented (process groups + kqueue on macOS #1540, Job Objects + ConPTY on
+  Windows planned).
 - Output retention defaults (ring size, log retention, artifact retention)
   are undecided.
 - Whether the execution subsystem becomes its own crate, and how the generic
