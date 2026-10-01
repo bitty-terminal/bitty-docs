@@ -38,10 +38,13 @@ conflated:
 Consequences recorded:
 
 - A wrapper crate created only to "deduplicate" a dependency is unnecessary;
-  the resolver already does dependency graph resolution. A shared crate such as
-  a future `bitty-net` is justified only when shared network **policy** is
-  needed (proxy, TLS policy, timeout, retry, auth, offline mode, telemetry),
-  never for deduplication.
+  the resolver already does dependency graph resolution. Shared network code
+  is justified only when shared network **policy** is needed (proxy, TLS
+  policy, timeout, retry, auth, offline mode, telemetry), never for
+  deduplication. That shared network-policy layer is the bitty-network
+  repository; `bitty-net` now names its native component executable
+  ([DIR-030](../decisions/index.md),
+  [Native Component Boundary](native-component-boundary.md)), not a crate.
 - Duplicate transitive versions in `Cargo.lock` (for example `bitflags`,
   `core-foundation`, `windows-sys`, `zune-*`) are normal in a large
   GUI/GPU/terminal dependency graph and must not be force-unified to make
@@ -178,8 +181,10 @@ never Fcitx/IBus/TSF/IMM32/CoreText/fontconfig/text-input protocol names.
 - Minimum glibc baseline and minimum Windows/macOS versions are undecided.
 - GPU baseline, driver support policy, and software-fallback policy are
   undecided.
-- The trigger condition for a shared network-policy crate (`bitty-net`) is
-  recorded (shared policy, not duplication) but no such crate is approved.
+- The trigger condition for shared network-policy code is recorded (shared
+  policy, not duplication); that layer is the bitty-network repository, and
+  `bitty-net` is the native component executable under DIR-030. This page
+  approves no new crate.
 - IME/font compatibility-layer and extraction timing is undecided.
 - The dependency-firewall enforcement mechanism (for example a CI
   dependency-DAG check) is not chosen.
