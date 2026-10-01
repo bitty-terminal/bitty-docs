@@ -23,28 +23,36 @@ Core Cargo workspace for initialization; the expanded crate graph is now
   a Git repository.
 - Product repositories are independent. Run Git and CarryCtx commands inside
   the target child repository.
-- The `bitty/` workspace is spine-complete (twenty-one members in
-  `bitty/Cargo.toml` as of 2026-09-27 `c6db24d`): `bitty-vt`, `bitty-term-state`,
-  `bitty-pty`, `bitty-platform`, `bitty-config`, `bitty-render`, `bitty-ui`,
-  `bitty-plugin-host`, `bitty-runtime`, `bitty-package`, `bitty-lua`,
-  `bitty-rich`, `bitty-ipc`, `bitty-agent`, `bitty-panels`, plus `bitty-app`,
-  the retained
-  `bitty-core` seed, and verification/harness crates `bitty-compat-lab`,
-  `bitty-perf`, `bitty-test-support`, and `bitty-test-vm`. The accepted ten-crate topology is fixed in
-  [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
+- The `bitty/` workspace is the minimal Core terminal platform following the
+  Unix philosophy (twenty members in `bitty/Cargo.toml`): `bitty-vt`,
+  `bitty-term-state`, `bitty-pty`, `bitty-platform`, `bitty-config`,
+  `bitty-render`, `bitty-ui`, `bitty-plugin-host`, `bitty-runtime`,
+  `bitty-package`, `bitty-lua`, `bitty-rich`, `bitty-panels`, `bitty-winjob`,
+  plus binary artifact `bitty-terminal`, the retained `bitty-core` seed, and
+  verification/harness crates `bitty-compat-lab`, `bitty-perf`,
+  `bitty-test-support`, and `bitty-test-vm`. The accepted ten-crate topology is
+  fixed in [ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md);
   `bitty-package` lifecycle and integrity model is accepted
   ([Package Lifecycle RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/packaging/package-lifecycle-rfc.md), OQ-021,
-  2026-08-27) with real signature verification remaining draft per crate docs,
-  and the tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/`bitty-agent`
-  OQ-018, `bitty-lua` OQ-009/030-032) are `Implemented` (headless tests ~808)
-  but not yet `Verified`; `Website Delivery` (OQ-023) and `Governance` (OQ-024)
-  are `Accepted` 2026-08-29.
+  2026-08-27) with real signature verification remaining draft per crate docs.
+- To preserve Bitty's core focus, low footprint, and robust extensibility,
+  out-of-process IPC, network runtime, and AI agent protocol layers are
+  externalized into dedicated L1 Rust Core Extension repositories rather than
+  embedded into the terminal core:
+  - `bitty-ipc`: Out-of-process IPC bridge layer (`bitty-ipc-api`, `ipc-auth`,
+    `ipc-core`, `ipc-devtools`, `ipc-mcp`, umbrella `bitty-ipc`), default-off.
+  - `bitty-network`: Shared optional network runtime (`bitty-network-api`,
+    `bitty-network`), default-off.
+  - `bitty-agent`: AI agent protocol layer (`bitty-agent-api`, `bitty-agent`),
+    default-off.
+  - `bitty-observability`: Observability and tracing infrastructure
+    (`bitty-observability-api`).
 - `bitty-plugins` is the plugin-ecosystem entry repository (registry, store
-  frontend, and official plugin submodules). The workspace mirrors the GitHub
-  organization flatly: every repository, including `bitty-plugins` and each
-  official plugin (`activity`, `palette`, `statusline`, `file-manager`,
-  `git-panel`), is a direct child of the workspace root. There is no grouping
-  directory.
+  frontend, and official plugin submodules). In accordance with
+  [ADR 0014](../decisions/adrs/ADR-0014-workspace-core-presentation-plugins.md),
+  visual chrome (workspace bars, tab strips, statuslines) is not hardcoded in
+  Core; presentation is entirely driven by Lua plugins over generic Core
+  mechanisms.
 - `bitty-ai` is an independent repository (AI-core runtime, providers, and
   context), checked out at the umbrella root `bitty-ai/`. The `bitty-ai/` path
   inside `bitty-docs` is the project-documentation submodule described below,
@@ -52,6 +60,8 @@ Core Cargo workspace for initialization; the expanded crate graph is now
 - `bitty-mcp` was archived on 2026-09-14 because its MCP tool-surface
   functionality is covered by `bitty-ai`; the remote is read-only for history
   and the local checkout moved to `.trash/bitty-mcp-archived-20260914`.
+  `bitty-devtools` was archived on 2026-09-30 (superseded by the `devtools`
+  Lua plugin under `bitty-plugins/plugins/devtools` and `bitty-ipc-devtools`).
 - Documentation is split by ownership: `bitty-docs` keeps shared
   cross-project governance and mounts the three project documentation
   repositories (`bitty-terminal-docs`, `bitty-ai-docs`, `bitty-plugins-docs`)
@@ -169,24 +179,31 @@ the same upstream revisions.
 
 ## Repository responsibilities
 
-| Repository or directory | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty`                 | Rust runtime and application                                                                                     | Spine-complete workspace (twenty-one members) accepted in ADR 0003 for ten crates plus `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032) and tail crates `bitty-rich` (OQ-008/015/016), `bitty-ipc`/`bitty-agent` (OQ-018) `Implemented` (compat-lab/perf hardening and UX wave through `29772a3` plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus the post-release security, IPC-service, execution-supervisor, panel-extraction, and release-pipeline wave at `c6db24d`) but not yet `Verified`; signatures still draft; Plugin API `Accepted` via Plugin Platform RFC; debug protocol `Accepted` via DevTools RFC |
-| `bitty-docs`            | Shared governance plus aggregator: ADRs, RFCs, security, project state, roadmap, and the project docs submodules | Accepted authoritative governance repository; owns the root submodule pointers and the shared registers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `bitty-terminal-docs`   | Terminal-platform documentation (submodule `bitty-terminal`)                                                     | Split content merged; canonical project documentation for the terminal platform                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `bitty-ai-docs`         | AI-core documentation (submodule `bitty-ai`)                                                                     | Split content merged; canonical project documentation for the independent AI core                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `bitty-plugins-docs`    | Plugin documentation (submodule `bitty-plugins`)                                                                 | Split content merged; canonical plugin platform, SDK, lifecycle, and per-plugin documentation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `bitty-ai`              | AI-core runtime, providers, context, and Tool Bus                                                                | Independent repository initialized; experimental deterministic runtime skeleton and vertical slice exist (`bitty-ai-runtime`, `bitty-ai-slice`); no production runtime, ModelProvider/ContextProvider/Tool Bus implementation and design recorded in `bitty-ai-docs`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `bitty-plugins`         | Plugin-ecosystem entry: registry, static store frontend, and official plugin submodules                          | Independent repository initialized; registry format, validation, generation, and static store frontend exist; pre-alpha, no shipped plugin install flow (the `bitty plugin add` flow is a design proposal)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `bitty-website`         | Astro static shell and future presentation consumer of canonical `bitty-docs` Markdown                           | Astro, Bun, and Workers Static Assets bootstrap accepted; loader, synchronization, version selection, routes, and redirect manifest `Accepted` via Website Delivery RFC (OQ-023, 2026-08-29); theme/search remain open; consuming submodule-mounted project content is a follow-up                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `bitty-devtools`        | Human debugging client                                                                                           | Independent repository; inspect-only watch mode, wire-trace support, live-socket fixture boundaries, framer fuzz-smoke coverage, and transport/tracing hardening are implemented; the debug protocol is not `Verified` or `Compatible`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `activity`              | First official independent plugin (privacy-first local activity timeline)                                        | Independent repository initialized; per-plugin documentation pending in `bitty-plugins-docs`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `bitty-plugin-sdk`      | Lua helpers, LuaLS types, mock host, and test tools                                                              | Independent repository accepted; exact responsibilities are candidates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `bitty-plugin-template` | Plugin scaffold, CI, and manifest examples                                                                       | Independent repository accepted; minimal runnable template implemented ([bitty-plugin-template](https://github.com/bitty-terminal/bitty-plugin-template), R-TPL-1 [PR #28](https://github.com/bitty-terminal/bitty-plugin-template/pull/28))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Each plugin repository  | One optional user experience or integration                                                                      | Independent-repository model accepted; public API constraints are candidates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Repository or directory | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty`                 | Minimal Rust terminal platform core: PTY, VT, render, runtime, configuration, and workspace mechanism            | Minimal Core terminal platform (twenty members in `bitty/Cargo.toml`) accepted in ADR 0003; `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032); tail extension crates extracted to independent L1 repositories to maintain a lean, robust small core; visual chrome presentation is plugin-only (ADR 0014) |
+| `bitty-ipc`             | L1 Rust Core Extension: out-of-process IPC bridge (6 crates), DevTools/MCP protocols                             | Independent extension repository initialized (`crates/bitty-ipc-api`, `ipc-auth`, `ipc-core`, `ipc-devtools`, `ipc-mcp`, umbrella `bitty-ipc`); bounded framing, peer-credential auth, default-off                                                                                                                                                                |
+| `bitty-network`         | L1 Rust Core Extension: shared optional network runtime (api + impl)                                             | Independent extension repository initialized (`crates/bitty-network-api`, `bitty-network`); provides unified connection pooling, DNS caching, TLS policy, and proxy handling behind default-off features                                                                                                                                                          |
+| `bitty-agent`           | L1 Rust Core Extension: AI agent protocol layer (AgentMessage, ToolCall, bounded queues)                         | Independent extension repository initialized (`crates/bitty-agent-api`, `bitty-agent`); provides bounded agent message queues and tool execution vocabulary for the AI sub-platform                                                                                                                                                                               |
+| `bitty-observability`   | L1 Rust Core Extension: observability and tracing infrastructure (API + Core + integration)                      | Independent extension repository initialized (`crates/bitty-observability-api`); zero-dependency tracing and metrics definitions                                                                                                                                                                                                                                  |
+| `phodopus`              | Pure-Rust stackless Lua runtime: sandbox, fuel, and modular stdlib (Piccolo successor)                           | Independent core runtime repository under `bitty-plugins` ownership; provides stackless coroutines, deterministic fuel quotas, and pure-Rust Lua 5.4 subset per ADR 0012                                                                                                                                                                                          |
+| `bitty-docs`            | Shared governance plus aggregator: ADRs, RFCs, security, project state, roadmap, and the project docs submodules | Accepted authoritative governance repository; owns the root submodule pointers and the shared registers                                                                                                                                                                                                                                                           |
+| `bitty-terminal-docs`   | Terminal-platform documentation (submodule `bitty-terminal`)                                                     | Split content merged; canonical project documentation for the terminal platform                                                                                                                                                                                                                                                                                   |
+| `bitty-ai-docs`         | AI-core documentation (submodule `bitty-ai`)                                                                     | Split content merged; canonical project documentation for the independent AI core                                                                                                                                                                                                                                                                                 |
+| `bitty-plugins-docs`    | Plugin documentation (submodule `bitty-plugins`)                                                                 | Split content merged; canonical plugin platform, SDK, lifecycle, and per-plugin documentation                                                                                                                                                                                                                                                                     |
+| `bitty-ai`              | AI-core runtime, providers, context, and Tool Bus                                                                | Independent repository initialized; experimental deterministic runtime skeleton and vertical slice exist (`bitty-ai-runtime`, `bitty-ai-slice`); no production runtime, ModelProvider/ContextProvider/Tool Bus implementation and design recorded in `bitty-ai-docs`                                                                                              |
+| `bitty-plugins`         | Plugin-ecosystem entry: registry, static store frontend, and official plugin submodules                          | Independent repository initialized; registry format, validation, generation, and static store frontend exist; pre-alpha, no shipped plugin install flow (the `bitty plugin add` flow is a design proposal)                                                                                                                                                        |
+| `bitty-website`         | Astro static shell and future presentation consumer of canonical `bitty-docs` Markdown                           | Astro, Bun, and Workers Static Assets bootstrap accepted; loader, synchronization, version selection, routes, and redirect manifest `Accepted` via Website Delivery RFC (OQ-023, 2026-08-29); theme/search remain open; consuming submodule-mounted project content is a follow-up                                                                                |
+| `bitty-devtools`        | Standalone human debugging client (archived)                                                                     | Archived on 2026-09-30 (superseded by the `devtools` Lua plugin checked out at `bitty-plugins/plugins/devtools` and `bitty-ipc-devtools`)                                                                                                                                                                                                                         |
+| `activity`              | First official independent plugin (privacy-first local activity timeline)                                        | Independent repository initialized; per-plugin documentation pending in `bitty-plugins-docs`                                                                                                                                                                                                                                                                      |
+| `bitty-plugin-sdk`      | Lua helpers, LuaLS types, mock host, and test tools                                                              | Independent repository accepted; exact responsibilities are candidates                                                                                                                                                                                                                                                                                            |
+| `bitty-plugin-template` | Plugin scaffold, CI, and manifest examples                                                                       | Independent repository accepted; minimal runnable template implemented ([bitty-plugin-template](https://github.com/bitty-terminal/bitty-plugin-template), R-TPL-1 [PR #28](https://github.com/bitty-terminal/bitty-plugin-template/pull/28))                                                                                                                      |
+| Each plugin repository  | One optional user experience or integration                                                                      | Independent-repository model accepted; public API constraints are candidates                                                                                                                                                                                                                                                                                      |
 
 `bitty-mcp` is not a live repository: it was archived on 2026-09-14 (read-only
 for history) and its MCP tool-surface scope is covered by `bitty-ai`.
+`bitty-devtools` was archived on 2026-09-30 (superseded by the `devtools`
+Lua plugin and `bitty-ipc-devtools`).
 
 ## Accepted repository bootstrap baseline
 
@@ -212,50 +229,39 @@ and tool versions plus lockfiles are fixed and verified by later
 repository-scoped implementation tasks. See the
 [repository bootstrap guide](../development/repository-bootstrap.md).
 
-## Workspace structure (Pre-alpha / Engineering Milestones M1-M8, 21 crates `c6db24d`)
+## Workspace structure (Small Core and L1 Rust Core Extensions)
 
-The workspace is spine-complete as of 2026-09-27 (`c6db24d`). The accepted
-topology is
-[ADR 0003](../decisions/adrs/ADR-0003-core-workspace-topology.md); the
-structure below is what `bitty/Cargo.toml` currently resolves to. Presence is
-`Implemented` (compat-lab/perf hardening and UX wave) but only `Verified` after P0-AC
-evidence; lifecycle is
-`Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
-per the
-[risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md). Presence does
-not imply `Verified`: `bitty-package` lifecycle and integrity model is
-`Accepted` (OQ-021, 2026-08-27) with signatures still draft, `bitty-lua`
-accepted (OQ-009/030-032, 2026-08-29), and `bitty-rich`/`bitty-ipc`/`bitty-agent`
-are `Implemented` (headless `Implemented`, not yet `Verified`):
+The Core terminal platform workspace has twenty members in `bitty/Cargo.toml`
+following the extraction of out-of-process IPC, networking, and agent protocols
+into dedicated L1 Rust Core Extension repositories:
 
 ```text
 bitty/
-├── Cargo.toml            # twenty-one members, edition 2024, resolver 3, rust-version 1.85
+├── Cargo.toml            # twenty members, edition 2024, resolver 3, rust-version 1.85
 ├── Cargo.lock
 ├── rust-toolchain.toml   # channel 1.98.1, components rustfmt+clippy
 ├── justfile
 ├── crates/
-│   ├── bitty-agent/       # Implemented: bounded Agent messages/side queue (std-only)
-│   ├── bitty-app/         # binary artifact `bitty`: runtime+platform composition root
-│   ├── bitty-compat-lab/  # forming: bounded harness re-exporting tests/compat/harness.rs
-│   ├── bitty-config/      # typed ConfigPlan, validation, migration (std-only)
-│   ├── bitty-core/        # seed to be retired
-│   ├── bitty-ipc/         # Implemented: bounded framing/channels/stdio stub (std-only)
-│   ├── bitty-lua/         # Implemented: piccolo 0.3.3 deterministic VM budgets RC-1/RC-2
-│   ├── bitty-package/     # lifecycle/integrity accepted (OQ-021, 2026-08-27); signatures draft (std-only)
-│   ├── bitty-panels/      # panel staging scaffold; ai/mail panels removed (CTX-0886)
-│   ├── bitty-perf/        # forming: bench harness owning benches/
-│   ├── bitty-platform/    # winit 0.30, raw-window-handle =0.6.2
-│   ├── bitty-plugin-host/ # registry/capability/lifecycle (+ bitty-package edge)
-│   ├── bitty-pty/         # portable-pty 0.9 wrapper
-│   ├── bitty-rich/        # Implemented: rich presentation helpers (vt+term-state)
-│   ├── bitty-vt/          # vte 0.15 parser -> TerminalAction
-│   ├── bitty-term-state/  # Terminal Truth + damage + image store
+│   ├── bitty-compat-lab/   # forming: bounded harness re-exporting tests/compat/harness.rs
+│   ├── bitty-config/       # typed ConfigPlan, validation, migration (std-only)
+│   ├── bitty-core/         # seed to be retired
+│   ├── bitty-lua/          # Implemented: piccolo 0.3.3 deterministic VM budgets RC-1/RC-2
+│   ├── bitty-package/      # lifecycle/integrity accepted (OQ-021, 2026-08-27); signatures draft (std-only)
+│   ├── bitty-panels/       # panel staging scaffold; ai/mail panels removed (CTX-0886)
+│   ├── bitty-perf/         # forming: bench harness owning benches/
+│   ├── bitty-platform/     # winit 0.30, raw-window-handle =0.6.2
+│   ├── bitty-plugin-host/  # registry/capability/lifecycle (+ bitty-package edge)
+│   ├── bitty-pty/          # portable-pty 0.9 wrapper
+│   ├── bitty-render/       # wgpu 25.0, crossfont 0.9, snapshot-only
+│   ├── bitty-rich/         # Implemented: rich presentation helpers (vt+term-state)
+│   ├── bitty-runtime/      # orchestration (vt/term-state/pty/render/platform/ui/plugin-host)
+│   ├── bitty-terminal/     # binary artifact `bitty`: runtime+platform composition root
+│   ├── bitty-term-state/   # Terminal Truth + damage + image store
 │   ├── bitty-test-support/ # shared test-harness helpers (live-PTY gating)
-│   ├── bitty-test-vm/     # VM test tier first slice (CTX-0507)
-│   ├── bitty-render/      # wgpu 25.0, crossfont 0.9, snapshot-only
-│   ├── bitty-runtime/     # orchestration (vt/term-state/pty/render/platform/ui/plugin-host)
-│   └── bitty-ui/          # view/layout/focus/selection primitives
+│   ├── bitty-test-vm/      # VM test tier first slice (CTX-0507)
+│   ├── bitty-ui/           # view/layout/focus/selection primitives
+│   ├── bitty-vt/           # vte 0.15 parser -> TerminalAction
+│   └── bitty-winjob/       # Win32 Job Object adapter
 ├── runtime/
 │   ├── lua/
 │   ├── terminfo/
@@ -266,13 +272,41 @@ bitty/
 └── tools/xtask/
 ```
 
-The earlier candidate expansion list that included `bitty-terminal`,
-`bitty-input`, `bitty-font`, `bitty-image`,
-`bitty-plugin-api`, and `bitty-debug-protocol` was the
-discussion sketch before ADR 0003; those names are not crates today.
-Crate boundaries still follow architecture boundaries, not source-file
-boundaries. `Cell`, `Grid`, and `Cursor` remain internal modules of
-`bitty-term-state` rather than many small crates.
+### L1 Rust Core Extensions (Modular Repositories)
+
+To maintain a minimal, resilient terminal core and maximize scriptability,
+host-side out-of-process IPC, shared networking, and agent protocols are
+partitioned into independent L1 repositories:
+
+```text
+bitty-ipc/                 # Out-of-process IPC bridge layer
+├── crates/
+│   ├── bitty-ipc-api/     # Contract definitions (zero impl dependencies)
+│   ├── bitty-ipc-auth/    # Authentication and scope authorization
+│   ├── bitty-ipc-core/    # Message framing and channel routing
+│   ├── bitty-ipc-devtools/# DevTools JSON-RPC bridge
+│   ├── bitty-ipc-mcp/     # MCP protocol bridge
+│   └── bitty-ipc/         # Umbrella re-export crate
+
+bitty-network/             # Shared optional network stack
+├── crates/
+│   ├── bitty-network-api/ # Contract definitions and traits
+│   └── bitty-network/     # Runtime, connection pool, DNS, TLS policy
+
+bitty-agent/               # Agent protocol and side queues
+├── crates/
+│   ├── bitty-agent-api/   # AgentId, AgentMessage, ToolCall definitions
+│   └── bitty-agent/       # Session and queue execution runtime
+
+bitty-observability/       # Metrics and tracing definitions
+└── crates/
+    └── bitty-observability-api/
+```
+
+`bitty-terminal` is the binary composition root (`crates/bitty-terminal`),
+replacing the early `bitty-app` working name. Crate boundaries follow
+architectural domains rather than source modules; `Cell`, `Grid`, and `Cursor`
+remain internal modules of `bitty-term-state` rather than granular micro-crates.
 
 ## Plugin repository model
 
@@ -356,16 +390,18 @@ database exists. Therefore:
   documentation repositories are not yet protected); licenses accepted as MIT
   per Governance RFC OQ-024 (2026-08-29).
 - Verification of `bitty-package` (lifecycle accepted, signatures draft) and
-  the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-ipc`/
-  `bitty-agent` OQ-018, `bitty-lua` OQ-009/030-032, compat-lab/perf hardening
-  through `c6db24d`) from `Implemented` to `Verified` per risk evidence RFC
-  OQ-025 (evidence matrix pending), plus successor topology ADR when needed,
-  release profiles, package publication, and release automation beyond ADR 0003.
+  the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-lua`
+  OQ-009/030-032, compat-lab/perf hardening through `c6db24d`) alongside the
+  independent L1 extensions (`bitty-ipc`, `bitty-network`, `bitty-agent`) from
+  `Implemented` to `Verified` per risk evidence RFC OQ-025 (evidence matrix
+  pending), plus successor topology ADR when needed, release profiles, package
+  publication, and release automation beyond ADR 0003.
 - The concrete theme/search approach for the website (loader, sync pin,
   version selection, routes, redirects accepted per OQ-023).
-- Whether `bitty-devtools` begins implementation before the Core milestone
-  (debug protocol accepted per DevTools RFC OQ-019); `bitty-mcp` was archived
-  on 2026-09-14 and its MCP tool-surface scope is covered by `bitty-ai`.
+- Evolution of the DevTools protocol bridge in `bitty-ipc-devtools` and the
+  `devtools` Lua plugin (the early standalone `bitty-devtools` CLI repository
+  was archived on 2026-09-30; `bitty-mcp` was archived on 2026-09-14 and its
+  tool-surface scope is covered by `bitty-ai`).
 - The first set of official plugin repositories and their ownership.
 - The cross-repository release train, compatibility matrix, and change
   announcement process (train accepted per Governance RFC OQ-024,
