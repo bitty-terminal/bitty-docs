@@ -212,6 +212,15 @@ the historical conversation:
   [OQ-058](open-questions.md), [OQ-061](open-questions.md), and
   [OQ-083](open-questions.md) reuse its terms; frontmatter `accepted` on
   2026-09-23; no implementation claim.)
+- Workspace mechanism versus workspace presentation. (Accepted:
+  [ADR 0014](adrs/ADR-0014-workspace-core-presentation-plugins.md) — Workspace
+  lifecycle and state are a Core mechanism reachable without plugins; Core
+  publishes bounded workspace state and generic chrome surfaces, and every
+  workspace bar, tab strip, and sidebar is an optional plugin; retires the
+  bundled `bitty-terminal.workspace` manifest and the transitional Core
+  workspaceline; owner decision 2026-10-01 on `bitty` #1558; resolves the
+  tabs slice of [OQ-052](open-questions.md), spellings stay under
+  [OQ-056](open-questions.md); no implementation claim.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
