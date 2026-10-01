@@ -77,6 +77,10 @@ supported product build, a stable test workflow, or compatibility guarantees.
   direction: the trust-boundary gate, the optional-infrastructure rule, and
   the two-layer push-gateway ownership (governance slice only; terminal,
   plugin, and AI halves stay owner-pending).
+- [Native component boundary](native-component-boundary.md) is the accepted
+  direction (DIR-030) for native capabilities as independently installed,
+  on-demand stdio coprocesses that Core resolves without `PATH`, verifies by
+  digest, spawns, and grants (first component `net`, executable `bitty-net`).
 - [Reference projects](../project/reference-projects.md) records self-contained,
   non-normative upstream reference revisions and research questions.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),

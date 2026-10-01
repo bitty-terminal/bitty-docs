@@ -66,6 +66,7 @@ local `bitty` checkout; OQ counts live in the
 | [Toolchain and tooling policy](development/toolchain-policy.md)                                              | Pinned per-repository toolchains and canonical gate commands all agents must use.                                                                                                                                   |
 | [Website sync contract](development/website-sync.md)                                                         | Draft developer guide to the pinned docs-to-website mirror, route mapping, and parity gates.                                                                                                                        |
 | [Repository metadata and GitHub baseline](development/repository-metadata-baseline.md)                       | Proposed classification of shared-verbatim, parameterized, and per-repository `.github/` and root metadata, with required-check naming, action-pinning, and rollout rules.                                          |
+| [Native component boundary](development/native-component-boundary.md)                                        | Accepted direction (DIR-030) for native capabilities as on-demand stdio coprocesses: install layout, descriptor and digest verification, lifecycle, and the Core-versus-component authority split.                  |
 
 ## Architecture and interfaces
 

@@ -113,6 +113,12 @@ through to their grants, so the matrix never invents authority the
 accepted capability grammar does not already name. Unknown levels or
 domains deny rather than default. Native sidecars here are out-of-process
 helpers; native in-process plugins stay rejected through P0 and P1.
+Per [DIR-030](../decisions/index.md), native sidecars are realized as
+native component coprocesses
+([Native Component Boundary](../development/native-component-boundary.md)):
+Core spawns the component, verifies its descriptor and executable digest
+before every spawn, and issues the per-request grant; Core never resolves a
+component through `PATH`, and a component never widens its grant.
 
 ### Secret-storage tiers (OQ-055, SEC-22)
 
