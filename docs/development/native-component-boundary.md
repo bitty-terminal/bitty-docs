@@ -12,7 +12,8 @@ sidebar_order: 24
 # Native Component Boundary
 
 > Status: **accepted direction (DIR-030)**, recorded from the owner decision
-> of 2026-10-01. This page fixes the process, install, and authority model for
+> of 2026-10-01 and refined by the accepted refinements D1 to D6 of
+> 2026-10-02. This page fixes the process, install, and authority model for
 > native components. It is not `Verified`, makes no shipped-behavior claim,
 > and authorizes implementation only through scoped tasks in the owning
 > repositories. The wire byte layout is owned by the `bitty-network-wire`
@@ -69,6 +70,30 @@ This direction must not weaken:
   bitty-network repository). The AI host follows the same model later as
   component `ai` (executable `bitty-ai`).
 
+### Accepted refinements (2026-10-02)
+
+The owner accepted six refinements on 2026-10-02 after the review of the
+Core broker slice. They are part of this direction; the sections below state
+each rule where it applies, and the Core constants are named here once.
+
+| ID  | Refinement                     | Rule                                                                                                                                                                                                                                                                                                                          | Core constants                                                                                                                                                          |
+| --- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Windows environment            | On Windows only, Core also forwards `SystemRoot`, which Winsock initialization requires. `windir` is not forwarded, and `PATH` is still never forwarded.                                                                                                                                                                      | `COMPONENT_ENV_WINDOWS_ALLOWLIST` = `["SystemRoot"]`                                                                                                                    |
+| D2  | Core-side request deadline     | Every request has a Core deadline of min(requested timeout, or the default when none is requested; the ceiling) plus a grace period. On expiry Core fails the request with `timeout` and sends `Cancel`. Three consecutive deadline expiries on one component count as one crash.                                             | `COMPONENT_REQUEST_DEFAULT_TIMEOUT` = 30 s, `COMPONENT_REQUEST_MAX_TIMEOUT` = 300 s, `COMPONENT_REQUEST_DEADLINE_GRACE` = 5 s, `COMPONENT_DEADLINE_CRASH_THRESHOLD` = 3 |
+| D3  | Response body budget ceiling   | A requested `max_body_bytes` is clamped to the ceiling; the default stays 8 MiB.                                                                                                                                                                                                                                              | `COMPONENT_MAX_BODY_BYTES_CEILING` = 64 MiB                                                                                                                             |
+| D4  | stderr logging                 | On a crash, a handshake failure, or an idle stop, Core logs the last bounded tail of the stderr ring at warn level, with control characters escaped. stderr is not logged otherwise.                                                                                                                                          | `COMPONENT_STDERR_LOG_TAIL_BYTES` = 4 KiB                                                                                                                               |
+| D5  | Streamed digest                | Verification of the executable streams the SHA-256 digest through a fixed buffer and never loads the whole file into memory.                                                                                                                                                                                                  | `COMPONENT_DIGEST_BUFFER_BYTES` = 64 KiB                                                                                                                                |
+| D6  | Component install sources (v1) | Local path only, through `bitty component add`, `list`, `remove`, and `clean`; `bitty plugin add` resolves the plugin's `[components]` table and fails with a diagnostic naming `bitty component add` when a component is missing or incompatible. No automatic download in v1; a registry or download source is a follow-up. | none                                                                                                                                                                    |
+
+D2 details: Core forwards the effective timeout (the clamped value, before
+grace) as the wire `timeout_ms`, so the component's own deadline expires
+first in the normal case. A frame that arrives for a request after its Core
+deadline has expired is discarded and is not a protocol error. The
+consecutive-expiry counter is per component and resets when any request on
+that component ends with a component-produced terminal frame; reaching the
+threshold triggers the crash path (every in-flight request fails with
+`component_lost`, then backoff) and resets the counter.
+
 ## Install layout and resolution
 
 Core never reads `PATH` to find a component.
@@ -95,8 +120,23 @@ sha256 = "<64 lowercase hex>"   # digest of the executable
 ```
 
 Before every spawn Core verifies the name, the version, the executable name
-(no path separators), and the SHA-256 digest of the executable. Any mismatch
-fails closed with a diagnostic.
+(no path separators), and the SHA-256 digest of the executable. The digest
+is streamed through a fixed buffer (D5); the whole executable is never read
+into memory. Any mismatch fails closed with a diagnostic.
+
+### Component commands (v1, D6)
+
+Installation executes no component code; every command works on files only.
+
+| Command                                     | Rule                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty component add <dir-or-executable>`   | Local path source. A directory holds a source `bitty-component.toml` (name, version, protocol, executable) and the executable; a bare executable named `bitty-<name>` takes its version from a required `--version <semver>` flag and the protocol range Core supports. The command computes the digest, copies the executable into `<root>/<name>/<version>/`, writes `bitty-component.toml` with the computed `sha256` and `current` naming the added version. A source descriptor that carries a `sha256` must match the computed digest. Re-adding an installed version with a different digest fails. |
+| `bitty component list`                      | Lists every installed component and version, marks the version named by `current`, and reports components no installed plugin requires as unused.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `bitty component remove <name> [<version>]` | Removes one version, or every version when none is named; removing the version named by `current` also removes `current`. Refuses while an installed plugin's requirement would become unmet, naming those plugins.                                                                                                                                                                                                                                                                                                                                                                                        |
+| `bitty component clean`                     | Removes every version not referenced by `current`, and every component that no installed plugin requires.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+
+Registry and download sources are a follow-up; v1 never downloads a
+component.
 
 ## Plugin dependency declaration
 
@@ -107,24 +147,35 @@ A plugin declares the components it needs in its manifest:
 net = "^0.0.1"
 ```
 
-A missing or incompatible component makes the package manager refuse the
-install with a diagnostic, or makes the capability unavailable at runtime.
-Local-path installation is the first component source; registry
-installation is a follow-up. Uninstall never cascades automatically: when the
-last dependent plugin is removed, the manager reports the component as
-unused.
+Requirements use semver caret matching with Cargo semantics: `^0.0.1` admits
+exactly `0.0.1`, and `^0.1` admits `>=0.1.0, <0.2.0`. A requirement is met
+when the version named by `<root>/<name>/current` satisfies it.
+
+`bitty plugin add` resolves the plugin's `[components]` table before
+activation. A missing or incompatible component makes the install fail with
+a diagnostic naming the component, the requirement, and the
+`bitty component add` command to run (D6); there is no automatic download in
+v1. At runtime, an unmet requirement makes the capability unavailable, never
+ambient. Uninstall never cascades automatically: when the last dependent
+plugin is removed, `bitty component list` reports the component as unused
+and `bitty component clean` or `remove` deletes it on explicit request.
+
+The plugin-facing Lua request surface over the `net` component is the
+[bitty.net Lua Request Surface (Candidate)](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/net-request-surface-candidate.md)
+in the plugin corpus (draft candidate, not implemented).
 
 ## Process lifecycle
 
-| Aspect      | Rule                                                                                                                                                                                                 |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Spawn       | On first request; one process per Bitty instance per component.                                                                                                                                      |
-| Handshake   | The `Hello`/`HelloAck` exchange must complete within `COMPONENT_HANDSHAKE_TIMEOUT` = 5 s of spawn; a timed-out handshake is treated as a crash and follows the crash/restart rule below.             |
-| Environment | Cleared, then an allowlist only: `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (and lowercase variants), `SSL_CERT_FILE`, `SSL_CERT_DIR`, `LANG`, `LC_ALL`. `PATH` is not forwarded for `net`.             |
-| Working dir | The component's version directory.                                                                                                                                                                   |
-| stderr      | Captured into a bounded ring (`COMPONENT_STDERR_MAX_BYTES` = 64 KiB) and logged.                                                                                                                     |
-| Idle stop   | Core closes stdin after `COMPONENT_IDLE_TIMEOUT` = 60 s with nothing in flight; the component exits on stdin EOF. Shutdown grace is 2 s, then Core kills only the PID it recorded at spawn.          |
-| Crash       | Every in-flight request completes with error `component_lost`; restart with backoff from 1 s doubling to 30 s; after 5 crashes in 5 minutes the component is unavailable until the next Bitty start. |
+| Aspect      | Rule                                                                                                                                                                                                                                                                                                                                                  |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Spawn       | On first request; one process per Bitty instance per component.                                                                                                                                                                                                                                                                                       |
+| Handshake   | The `Hello`/`HelloAck` exchange must complete within `COMPONENT_HANDSHAKE_TIMEOUT` = 5 s of spawn; a timed-out handshake is treated as a crash and follows the crash/restart rule below.                                                                                                                                                              |
+| Environment | Cleared, then an allowlist only: `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (and lowercase variants), `SSL_CERT_FILE`, `SSL_CERT_DIR`, `LANG`, `LC_ALL`; on Windows only, also `SystemRoot` (D1, `COMPONENT_ENV_WINDOWS_ALLOWLIST`). `windir` is not forwarded, and `PATH` is never forwarded for `net`.                                                 |
+| Working dir | The component's version directory.                                                                                                                                                                                                                                                                                                                    |
+| stderr      | Captured into a bounded ring (`COMPONENT_STDERR_MAX_BYTES` = 64 KiB). On a crash, a handshake failure, or an idle stop, Core logs the last `COMPONENT_STDERR_LOG_TAIL_BYTES` of the ring at warn level with control characters escaped (D4); stderr is not logged otherwise.                                                                          |
+| Requests    | Each request carries a Core deadline (D2): min(requested timeout or `COMPONENT_REQUEST_DEFAULT_TIMEOUT`, `COMPONENT_REQUEST_MAX_TIMEOUT`) plus `COMPONENT_REQUEST_DEADLINE_GRACE`. On expiry Core fails the request with `timeout` and sends `Cancel`; `COMPONENT_DEADLINE_CRASH_THRESHOLD` consecutive expiries on one component count as one crash. |
+| Idle stop   | Core closes stdin after `COMPONENT_IDLE_TIMEOUT` = 60 s with nothing in flight; the component exits on stdin EOF. Shutdown grace is 2 s, then Core kills only the PID it recorded at spawn.                                                                                                                                                           |
+| Crash       | Every in-flight request completes with error `component_lost`; restart with backoff from 1 s doubling to 30 s; after 5 crashes in 5 minutes the component is unavailable until the next Bitty start.                                                                                                                                                  |
 
 Process sandboxing (Linux landlock and seccomp, the macOS sandbox, a Windows
 restricted token) is an accepted direction but a follow-up task, not part of
@@ -152,7 +203,8 @@ network implementation crate.
   optional method set, mapping onto the bitty-network API capability type.
 - Limits: 64 requests in flight, 64 headers and 16 KiB of header bytes, 8 KiB
   URL, at most 192 KiB of body data per frame, and a response body bounded by
-  the request budget (default 8 MiB).
+  the request budget (default 8 MiB, clamped by Core to
+  `COMPONENT_MAX_BODY_BYTES_CEILING` = 64 MiB per D3).
 - The handshake completes before any other message. An unknown tag or a
   version outside the negotiated range is a protocol error and closes the
   stream.
@@ -169,14 +221,22 @@ repository specification.
   `[[network.egress]]` declarations, and attributes every request to its
   plugin. The broker (`bitty_runtime::component`) is implemented in `bitty`
   ([bitty#1604](https://github.com/bitty-terminal/bitty/pull/1604)); it is
-  `Implemented`-only and not yet `Verified`. The Lua request surface,
-  sandboxing, registry install, and the terminal composition-root instance
-  that wires the broker into `bitty-terminal` remain deferred follow-ups. The
-  embedded network path (an optional Cargo feature and a Lua network binding
-  linked into Core) is removed.
+  `Implemented`-only and not yet `Verified`, and it predates the
+  refinements: the Windows `SystemRoot` forwarding (D1), the Core request
+  deadline (D2), the body budget ceiling (D3), stderr tail logging (D4), and
+  the streamed digest (D5) are not implemented yet. The Lua request surface,
+  the component commands (D6), sandboxing, registry install, and the
+  terminal composition-root instance that wires the broker into
+  `bitty-terminal` remain deferred follow-ups. The embedded network path (an
+  optional Cargo feature and a Lua network binding linked into Core) is
+  removed.
 - The Lua surface (a request handle plus a response event, never blocking a
-  callback) depends on the application event loop and may land as a
-  follow-up.
+  callback) depends on the application event loop. Its candidate spelling is
+  the
+  [bitty.net Lua Request Surface (Candidate)](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/net-request-surface-candidate.md):
+  `bitty.net.request(opts)` returns an integer request id, results arrive as
+  `net.response`, `net.body`, `net.done`, and `net.error` events, and the
+  surface is not implemented.
 - AI: the AI host becomes component `ai`. It may link network crates
   in-process, but only under a Core-issued network capability grant that it
   never widens. This resolves the process and distribution half of OQ-081
@@ -200,8 +260,17 @@ repository specification.
   this residual risk is accepted for the first slice and tracked by that
   follow-up.
 - Resource exhaustion: frame, header, URL, chunk, body, in-flight, and stderr
-  bounds are fixed; crash restarts are rate-limited and end in a fail-closed
-  unavailable state.
+  bounds are fixed; the response budget is clamped to a ceiling (D3); every
+  request has a Core deadline, so a silent component cannot pin in-flight
+  slots, and repeated expiry feeds the crash path (D2); digest verification
+  uses a fixed buffer (D5); crash restarts are rate-limited and end in a
+  fail-closed unavailable state.
+- Environment: the Windows-only `SystemRoot` addition (D1) carries the system
+  directory path, not a secret; `windir` and `PATH` stay excluded.
+- Diagnostics: logged stderr is bounded to a short tail and escaped (D4), so
+  a component cannot inject terminal control sequences into logs; it may
+  still contain whatever the component wrote, so components must not print
+  secrets to stderr.
 - Process safety: Core kills only the PID it recorded at spawn.
 
 ## Verification
@@ -214,19 +283,32 @@ repository specification.
   repository, and broker tests for digest mismatch, missing component, crash
   backoff, idle stop, and grant intersection in the bitty repository, remain
   required before any status beyond `Implemented`.
+- Refinement evidence still required in the bitty repository: a Windows
+  spawn test that observes `SystemRoot` and no `windir` or `PATH` (D1); a
+  silent test component whose requests fail with `timeout` at the Core
+  deadline, plus the three-expiry crash count (D2); clamping of an oversized
+  `max_body_bytes` (D3); a warn-level log of an escaped, bounded stderr tail
+  on crash, handshake failure, and idle stop, and no log otherwise (D4); a
+  digest test that bounds memory independently of executable size (D5); and
+  `bitty component` and `bitty plugin add` resolution tests (D6).
 
 ## Open points
 
 - Process sandboxing per platform is a follow-up task.
-- Registry install source for components is a follow-up; local-path install
-  comes first.
+- Registry and download install sources for components are a follow-up;
+  local-path install through the D6 component commands comes first.
 - WebSocket messages occupy a reserved tag range and are not specified yet.
 - Cross-instance sharing is not provided: each Bitty instance runs its own
   component process; a shared daemon is out of scope.
-- The Lua request surface, sandboxing, registry install, and the terminal
-  composition-root instance that wires the broker into `bitty-terminal` are
-  deferred follow-ups to the Core broker slice.
-- Windows: the environment allowlist in the Process lifecycle table may be
-  insufficient for Winsock initialization. A proposed Windows-only addition
-  would forward `SystemRoot` (and possibly `windir`) to the component
-  process; this is pending a decision and not yet accepted.
+- The Lua request surface has a candidate specification in the plugin corpus
+  but is not accepted or implemented; its acceptance depends on the plugin
+  manifest contracts admitting `[components]` and `[[network.egress]]`. The
+  Lua binding, the component commands, sandboxing, registry install, and the
+  terminal composition-root instance that wires the broker into
+  `bitty-terminal` are deferred follow-ups to the Core broker slice.
+
+Closed on 2026-10-02: the Windows environment question (resolved by D1:
+`SystemRoot` is forwarded on Windows, `windir` is not), the unspecified
+handshake timeout (recorded in the lifecycle table), the missing Core
+request deadline (D2), the unbounded response budget (D3), the unlogged
+stderr ring (D4), and the whole-file digest read (D5).
