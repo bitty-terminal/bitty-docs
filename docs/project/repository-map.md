@@ -316,6 +316,28 @@ replacing the early `bitty-app` working name. Crate boundaries follow
 architectural domains rather than source modules; `Cell`, `Grid`, and `Cursor`
 remain internal modules of `bitty-term-state` rather than granular micro-crates.
 
+### Candidate extraction repositories (metadata-only scaffolds)
+
+Twelve repositories were initialized on 2026-10-02 as metadata-only scaffolds
+for the small-core extraction work. They hold governance, toolchain, and CI
+metadata but no product code: repository creation does not accept a contract,
+enable a runtime path, or satisfy security review. Each carries a four-phase
+CarryCtx graph (bootstrap -> contract readiness -> implementation -> independent
+verification) with a matching `v0.1.0` Issue set; `main` is protected and a
+redacted CarryCtx snapshot is published. The extraction boundaries, public
+contracts, and layout ownership remain owner-pending.
+
+- L1 Rust extension candidates: `bitty-execution`, `bitty-graphics`,
+  `bitty-a11y`, `bitty-storage`.
+- Peripheral tooling: `bitty-plugin-manager`, `bitty-compat-lab`, `bitty-perf`.
+- Official non-AI plugin candidates, nested under the plugins registry owner at
+  `bitty-plugins/plugins/`: `beacon`, `composer`, `history`, `search`,
+  `copy-mode`.
+
+`workspace.toml` remains the machine-readable roster; the seven top-level
+candidates are tagged there and the nested plugin checkouts are not umbrella
+entries.
+
 ## Plugin repository model
 
 Every official and community plugin uses an independent Git repository as its
