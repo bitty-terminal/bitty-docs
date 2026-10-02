@@ -249,6 +249,17 @@ the historical conversation:
   isolation, and the crate-versus-worker choice stays with the focused
   contracts `W-132`, `W-133`, `W-134`, and `W-136`; storage is gated on `W-131`; owner
   delegation 2026-10-02, `bitty-docs#406`; no implementation claim.)
+- Bundled-manifest and compatibility-alias retirement. (Accepted:
+  [ADR 0017](adrs/ADR-0017-tabs-alias-shell-integration-retirement.md) — the
+  owner decision retires the `bitty-terminal.tabs` compatibility alias and the
+  bundled `bitty-terminal.shell-integration` manifest at a `v0.2.0` floor,
+  after parity, migration, and documentation gates; stored grants for the
+  alias remap to `bitty-terminal.workspace` with denials preserved and no
+  widening, while the shell-integration id moves to an independently versioned
+  package and its grants carry forward through the hash-bound permission-diff
+  path; the decision also resolves the `DEC-0032` citation carried by
+  `tabs.rs` and `bundled.rs`; Issue #397, plan `W-02`, `CTX-0257`; no
+  implementation claim.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
