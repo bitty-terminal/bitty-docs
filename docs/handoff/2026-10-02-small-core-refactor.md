@@ -51,7 +51,10 @@ and workspace-presentation follow-ups in the same dependency map.
 - `W-70` decided the proposed extraction boundaries and recorded the owner
   decision in
   [ADR 0015](../decisions/adrs/ADR-0015-small-core-extraction-boundaries.md).
-  The focused contracts `W-71` through `W-75` are still to be written. No
+  The focused contracts `W-71` through `W-75` are written and merged
+  (observability, package-manager, Composer, legacy-chrome retirement, and
+  validation-suite ownership in `docs/development/`), with the observability
+  contract still a draft pending its security review. No
   implementation task may treat a proposal as implemented merely because a
   candidate document exists.
 - `W-71` defines the minimal Core observability contract and the extraction gate.
@@ -96,7 +99,11 @@ and workspace-presentation follow-ups in the same dependency map.
 - `W-130` decided the execution, graphics, accessibility, storage, and
   platform-service boundaries and recorded the owner decision in
   [ADR 0016](../decisions/adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md).
-  The focused contracts `W-131` through `W-138` are still to be written.
+  The focused contracts `W-131` through `W-138` are written and merged across
+  `bitty-docs`, `bitty-terminal-docs`, and `bitty-plugins-docs` (storage and
+  history reconciliation; execution, graphics, accessibility, search/selection,
+  and platform-service contracts; Beacon mechanism contract and plugin policy;
+  history/storage and search/copy-mode plugin policy; Beacon SDK reconciliation).
 - `W-131` reconciles history and storage scope: transcript, command history,
   session snapshots, and plugin key-value storage.
 - `W-132` defines the execution extraction contract (principals, generations,
