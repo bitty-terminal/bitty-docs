@@ -87,6 +87,12 @@ supported product build, a stable test workflow, or compatibility guarantees.
   direction (DIR-030) for native capabilities as independently installed,
   on-demand stdio coprocesses that Core resolves without `PATH`, verifies by
   digest, spawns, and grants (first component `net`, executable `bitty-net`).
+- [Composer boundary](composer-boundary.md) is the accepted `W-73` focused
+  contract: the Composer is a first-party extension, not a Core feature, and the
+  document fixes the focusable-overlay and transient input-capture dependency
+  plus the PTY paste, external-editor process, temp-file, API versioning, and
+  rollback contracts (the host API spellings stay parked to `W-01`/`W-82`;
+  nothing is implemented and extraction is not authorized).
 - [Storage and history boundary](storage-and-history-boundary.md) is the draft
   `W-131` reconciliation of the segmented transcript, command history, session
   snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
