@@ -86,6 +86,11 @@ supported product build, a stable test workflow, or compatibility guarantees.
   snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
   default-persistence posture, and the downstream `W-137`/`W-139`/`W-146`
   owners (candidate direction only; nothing accepted or implemented).
+- [Observability boundary](observability-boundary.md) is the draft `W-71`
+  focused contract for the minimal Core read-only observation mechanism, its
+  authorization gate and redaction rules, the default build and `bitty --safe`
+  behavior, and the `W-100`/`W-110` extraction gates (candidate contract only;
+  nothing accepted or implemented).
 - [Reference projects](../project/reference-projects.md) records self-contained,
   non-normative upstream reference revisions and research questions.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
