@@ -374,15 +374,15 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`c6db24d` at `2026-09-27`, baseline `de134ec`, previous `679f12f`), maturity
+`310bf87` at `2026-10-02`, baseline `de134ec`, previous `2cb49af`), maturity
 and release status (`Pre-alpha / Engineering Milestones M1-M8`, 54 OQs
-`Accepted` and 46 `Open` in the synchronized docs register, 21 crates, release
+`Accepted` and 46 `Open` in the synchronized docs register, 18 crates, release
 `v0.0.21` at `7da6d6f` dated 2026-09-24), per-risk state and evidence revision and audit
 references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `8192`-byte bound-scope limits per `bitty`
 `docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-005`/`R-006`/`R-007`
-`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0244`, previous
-`CTX-0233`). The release and post-release security evidence are
+`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0269`, previous
+`CTX-0253`). The release and post-release security evidence are
 `Implemented`-only until the matrix and independent review gates are recorded.
 
 Mechanical fields (synchronized revision, snapshot date, crate count, latest

@@ -12,7 +12,7 @@ sidebar_order: 32
 # Security Risk Register
 
 Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-10-02, `bitty` `310bf87` previous `2cb49af` baseline `de134ec`, 18 crates,
-54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `c6db24d`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
+54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `310bf87`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), `R-001`
@@ -26,7 +26,7 @@ and `R-002` remain `Open` with merged auditor artifacts that authorize only
 (PR #1160, `fuzz/fuzz_targets/` targets, short smokes only) and still
 outstanding — all others
 remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
-hardening and security wave through `c6db24d` — including an 18-crate workspace and bounded VT
+hardening and security wave through `310bf87` — including an 18-crate workspace and bounded VT
 payload types `crates/bitty-vt/src/bounded.rs` — plus
 experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md): lifecycle is

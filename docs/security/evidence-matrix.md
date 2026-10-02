@@ -12,7 +12,7 @@ sidebar_order: 34
 # Security Evidence Matrix
 
 Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-10-02, `bitty` `310bf87` previous `2cb49af` baseline `de134ec`, 18 crates,
-54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`), plus post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `c6db24d`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
+54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`), plus post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `310bf87`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/138/139, baseline `de134ec`)
 per RS-1..RS-7 and independent review; `R-004` remains
@@ -25,8 +25,7 @@ at `8e6c8a9` PR #132) that authorize only `Open -> Mitigated`; the rows below
 have not recorded that move, and `R-001`'s P0-AC-002 long-running `cargo-fuzz`
 campaign is advanced by `5daf686` (PR #1160, Issue #1132, short smokes only)
 but still outstanding; all other rows remain `Open` because
-implementation is `Implemented` (headless hardening and security wave through `c6db24d`;
-the synchronized head is `310bf87`)
+implementation is `Implemented` (headless hardening and security wave through the synchronized head `310bf87`)
 plus experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but
 not yet `Verified` per [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
 RS-1..RS-7. Lifecycle is `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible`
@@ -154,7 +153,7 @@ These records are implementation and test evidence, not risk transitions:
 | R-022 | No-install-time-execution and package admission tests in CTX-0680                         | `Open`; independent auditor review remains required                              |
 
 The later SEC-19 record is explicitly incomplete and does not move any row.
-The synchronized product head is `2cb49af`; these facts do not imply
+The synchronized product head is `310bf87`; these facts do not imply
 `Verified`, `Compatible`, or `Release-ready`.
 
 ## FIND-0002 remediation wave (`Implemented`-only, 2026-09-07)
