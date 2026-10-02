@@ -103,6 +103,16 @@ supported product build, a stable test workflow, or compatibility guarantees.
   authorization gate and redaction rules, the default build and `bitty --safe`
   behavior, and the `W-100`/`W-110` extraction gates (candidate contract only;
   nothing accepted or implemented).
+- [Legacy chrome retirement](legacy-chrome-retirement.md) is the accepted
+  `W-74` contract that assigns an owner and disposition to every legacy
+  tab-strip, scratchpad, and workspaceline path under
+  [ADR 0014](../decisions/adrs/ADR-0014-workspace-core-presentation-plugins.md)
+  and
+  [ADR 0015](../decisions/adrs/ADR-0015-small-core-extraction-boundaries.md)
+  Boundary 5, defines behavior parity and the no-plugin baseline, and states the
+  deprecation and removal gates tied to `W-26`, `W-27`, `W-40`, and `W-104`
+  (Core retains the workspace lifecycle, state, panel primitives, and generic
+  chrome mechanism; nothing is implemented or deleted by the decision).
 - [Reference projects](../project/reference-projects.md) records self-contained,
   non-normative upstream reference revisions and research questions.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
