@@ -234,7 +234,8 @@ the historical conversation:
   production-revision pinning of compatibility and performance gates; the
   focused contracts are `W-71` through `W-75` and the exact trait, schema,
   naming, and host-API details stay parked to their named tasks;
-  [OQ-089](open-questions.md) records the parked Beacon naming; owner
+  [OQ-089](open-questions.md) records the Beacon naming park, which
+  [ADR 0018](adrs/ADR-0018-beacon-mechanism-policy-split.md) fulfills; owner
   delegation 2026-10-02, `bitty-docs#399`; no implementation claim.)
 - Execution, graphics, accessibility, storage, and platform-service boundaries.
   (Accepted: [ADR 0016](adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md) —
@@ -260,6 +261,19 @@ the historical conversation:
   path; the decision also resolves the `DEC-0032` citation carried by
   `tabs.rs` and `bundled.rs`; Issue #397, plan `W-02`, `CTX-0257`; no
   implementation claim.)
+- Beacon mechanism/policy split and Core targeting-mechanism naming. (Accepted:
+  [ADR 0018](adrs/ADR-0018-beacon-mechanism-policy-split.md) — the owner
+  decision formalizes the candidate `B-8` split, names the Core mechanism
+  `TargetEngine` (target registry, semantic target snapshots, provider
+  registration and composition, and the command-dispatch bridge) and
+  `AnnotationEngine` (annotation layer and `LabelAllocator`), and resolves the
+  [OQ-089](open-questions.md) extraction scope: policy moves to the optional
+  `beacon` plugin, the Core mechanism stays in Core for the 0.1.0 scope, and any
+  separate Rust-component extraction is deferred to `W-29`/`W-30`; the plugin is
+  an ordinary capability-gated package with no private first-party bypass, and
+  target safety, stale-handle/generation fail-closed, and no Event-Bus exposure
+  are retained; unblocks bitty `W-29`/`W-30`, bitty-plugins-docs `W-12`, and
+  `bar` `W-53`; Issue #398, plan `W-03`, `CTX-0258`; no implementation claim.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.
