@@ -113,6 +113,13 @@ supported product build, a stable test workflow, or compatibility guarantees.
   deprecation and removal gates tied to `W-26`, `W-27`, `W-40`, and `W-104`
   (Core retains the workspace lifecycle, state, panel primitives, and generic
   chrome mechanism; nothing is implemented or deleted by the decision).
+- [Validation suite ownership](validation-suite-ownership.md) is the accepted
+  `W-75` decision for the compatibility and performance suites: they relocate
+  to independent validation repositories that pin and exercise the production
+  revision, the product workspace and the `dev-perf` edge drop them, CI and
+  evidence ownership moves with them, and every required gate is preserved (the
+  `bitty-compat-lab` and `bitty-perf` repositories stay metadata-only scaffolds;
+  execution is `W-105`).
 - [Reference projects](../project/reference-projects.md) records self-contained,
   non-normative upstream reference revisions and research questions.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
