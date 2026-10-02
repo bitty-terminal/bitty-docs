@@ -325,3 +325,7 @@
 {"created_at":"2026-09-25T13:47:00.946603712+00:00","id":"01M3CD3GYJP714YW6FQHH0GNFB","kind":"include","pattern":"security/","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3CD3GV0VP3CJ0R4BBKD29SD"}
 {"created_at":"2026-09-25T14:40:44.072005435+00:00","id":"01M3CG5WHWXFYMX3V35N8WAB8A","kind":"include","pattern":"README.md","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3CD3GV0VP3CJ0R4BBKD29SD"}
 {"created_at":"2026-09-25T14:40:45.013294632+00:00","id":"01M3CG5XF3Q7PDBJ9AT2FSZTGW","kind":"include","pattern":"TODO.md","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3CD3GV0VP3CJ0R4BBKD29SD"}
+{"created_at":"2026-10-02T11:47:59.922781109+00:00","id":"01M3Y72M9JNS8363F6DE1PGDQ5","kind":"include","pattern":"docs/decisions/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3Y6MSVN39DQREXXT5W3H16C"}
+{"created_at":"2026-10-02T11:48:51.224873329+00:00","id":"01M3Y746CRP09HW1DE6BK7DGX1","kind":"include","pattern":"docs/decisions/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3Y6MSVN39DQREXXT5W3H16C"}
+{"created_at":"2026-10-02T11:48:51.276439784+00:00","id":"01M3Y746ECY35MGQXS8T5TF9DB","kind":"include","pattern":"docs/development/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3Y6MSWJ7RNF3TG529PB4SC8"}
+{"created_at":"2026-10-02T14:49:09.923240856+00:00","id":"01M3YHEBH31JV704FXGZTSYVA6","kind":"include","pattern":"docs/project/repository-map.md","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3YHEBET7TZ7MJB1QH0SJ0Z7"}
