@@ -81,6 +81,11 @@ supported product build, a stable test workflow, or compatibility guarantees.
   direction (DIR-030) for native capabilities as independently installed,
   on-demand stdio coprocesses that Core resolves without `PATH`, verifies by
   digest, spawns, and grants (first component `net`, executable `bitty-net`).
+- [Storage and history boundary](storage-and-history-boundary.md) is the draft
+  `W-131` reconciliation of the segmented transcript, command history, session
+  snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
+  default-persistence posture, and the downstream `W-137`/`W-139`/`W-146`
+  owners (candidate direction only; nothing accepted or implemented).
 - [Reference projects](../project/reference-projects.md) records self-contained,
   non-normative upstream reference revisions and research questions.
 - [Security overview](../security/overview.md), [threat model](../security/threat-model.md),
