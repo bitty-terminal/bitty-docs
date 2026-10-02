@@ -201,7 +201,7 @@ for crates):
   `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated`
   at `d4d75e9`, experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
-  `2cb49af` 18 crates, including the `v0.0.20` and `v0.0.21` plugin-runtime,
+  `310bf87` 18 crates, including the `v0.0.20` and `v0.0.21` plugin-runtime,
   Kitty-graphics, decoration, config-matrix, and release waves plus post-release
   execution-supervisor, IPC-service, and security foundations; IPC/rich/resolver
   plus compat-lab/perf hardening and the experimental slice implemented but not
