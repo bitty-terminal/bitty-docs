@@ -72,6 +72,12 @@ supported product build, a stable test workflow, or compatibility guarantees.
   contract shapes, the Bitty-owned plugin manager, the manifest split, and
   the resolver and loader boundary (core slice only; plugin, terminal, AI,
   and Wheel halves stay owner-pending).
+- [Package manager and runtime loader boundary](package-manager-boundary.md) is
+  the accepted `W-72` focused contract for the public package-operation
+  ownership split, the Core-never-network paths and their gate, read-only
+  startup validation, and the OQ-021 migration and rollback evidence (the
+  external `bitty-plugin-manager` is a metadata-only scaffold; nothing is
+  implemented).
 - [Remote infrastructure boundary](remote-infrastructure-boundary.md) is a
   draft capture of the cross-cutting governance content of the remote client
   direction: the trust-boundary gate, the optional-infrastructure rule, and
