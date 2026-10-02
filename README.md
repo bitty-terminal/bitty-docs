@@ -3,8 +3,8 @@
 `bitty-docs` is the canonical design and governance repository for the Bitty
 terminal project. Project state at a glance (snapshot `2026-10-02`):
 
-- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `2cb49af`,
-  baseline `de134ec`, previous `799f743`, 18 crates).
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `310bf87`,
+  baseline `de134ec`, previous `2cb49af`, 18 crates).
 - Latest release: `v0.0.21` (`7da6d6f`, 2026-09-24); pre-alpha releases
   exist, but no stable or supported public contract has been declared.
 - Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
