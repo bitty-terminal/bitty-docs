@@ -36,6 +36,14 @@ dependency rules below now record `bitty-lua`, `bitty-compat-lab`,
 ten-crate decision is unchanged, and the added crates introduce no new trust
 boundary; they stay governed by their RFCs and the lifecycle above.
 
+Status note (2026-10-02): `bitty-core` and `bitty-panels` were retired from
+the workspace (`bitty#1603`, `bitty#1604`), and `bitty-agent` is no longer a
+dependency of `bitty-runtime` or any other workspace crate; see the
+[repository map](../../project/repository-map.md) for the current eighteen-crate
+list. The crate table, dependency rules, and relationship narrative below are
+retained as the historical record of this decision and are not updated for
+every subsequent crate-graph change.
+
 ## Context
 
 [ADR 0001](ADR-0001-repository-bootstrap-baseline.md) accepted an
