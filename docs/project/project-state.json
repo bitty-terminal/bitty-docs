@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "snapshot_date": "2026-09-27",
+  "snapshot_date": "2026-10-02",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "c6db24dfa9aec1e35ebe458a20f3a0b7b5610b51",
-    "short": "c6db24d",
+    "revision": "799f7433d7f36b2011ece305c7d05adbc38120a5",
+    "short": "799f743",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "679f12f3529e6d75dcd63a485fb4c88c2e6141cd",
-    "previous_short": "679f12f",
-    "crates": 21
+    "previous_revision": "c6db24dfa9aec1e35ebe458a20f3a0b7b5610b51",
+    "previous_short": "c6db24d",
+    "crates": 18
   },
   "latest_release": {
     "tag": "v0.0.21",
@@ -20,7 +20,7 @@
   },
   "maturity": {
     "label": "Pre-alpha / Engineering Milestones M1-M8",
-    "date": "2026-09-27",
+    "date": "2026-10-02",
     "oqs_accepted": 54,
     "lifecycle": "Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready",
     "milestone_frame": "M1 Terminal Truth; M2 Correct Terminal; M3 Usable Terminal; M4 Workspace / Panel; M5 Plugin Ecosystem; M6 Rich / IPC / Agent; M7 Stable Compatibility; M8 Public Beta"
@@ -369,17 +369,17 @@
     "previous_task": "CTX-0244",
     "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/371",
     "audit_task": "CTX-0092",
-    "synchronized_at": "2026-09-27",
+    "synchronized_at": "2026-10-02",
     "synchronized_by": "ctx-0246-impl",
-    "synchronized_revision": "c6db24d",
-    "previous_revision": "679f12f",
+    "synchronized_revision": "799f743",
+    "previous_revision": "c6db24d",
     "baseline_revision": "de134ec",
-    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is c6db24d (previous 679f12f) through the v0.0.21 release at 7da6d6f (2026-09-24) and post-release fixes a034c9a, 841ae6e, 2339f0a, and 679f12f; the 21-crate workspace and all release/security-closure artifacts are Implemented-only, none Verified"
+    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is 799f743 (previous c6db24d) through the v0.0.21 release at 7da6d6f (2026-09-24) and post-release changes including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604); the 18-crate workspace and all release/security-closure artifacts are Implemented-only, none Verified"
   },
   "ownership": {
     "owner": "docs-curator + security-auditor",
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, latest release, subsystem assessments, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-09-27 uses bitty c6db24d (previous 679f12f, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-005/R-006/R-007 remain Mitigated at d4d75e9 under RS-1..RS-7; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; all other risks remain Open. The v0.0.21 release and post-release fixes are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-10-02 uses bitty 799f743 (previous c6db24d, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-005/R-006/R-007 remain Mitigated at d4d75e9 under RS-1..RS-7; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; all other risks remain Open. The v0.0.21 release and post-release changes, including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604), are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
 }

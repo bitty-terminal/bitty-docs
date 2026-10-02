@@ -1,6 +1,6 @@
 ---
 title: Security Risk Register
-description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (21 crates c6db24d, 54 OQs Accepted, 46 Open), severity, likelihood, required mitigation evidence, stages, and review cadence.
+description: Tracks security risks at Pre-alpha / Engineering Milestones M1-M8 (18 crates 799f743, 54 OQs Accepted, 46 Open), severity, likelihood, required mitigation evidence, stages, and review cadence.
 category: security
 audience: security-reviewer
 document_type: register
@@ -11,8 +11,8 @@ sidebar_order: 32
 
 # Security Risk Register
 
-Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-09-27, `bitty` `c6db24d` previous `679f12f` baseline `de134ec`, 21 crates,
-54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus workspace growth to 21 crates (`bitty-panels` `74361aa`, `bitty-test-vm` `ae094b7`) with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `679f12f`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
+Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-10-02, `bitty` `799f743` previous `c6db24d` baseline `de134ec`, 18 crates,
+54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `c6db24d`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), `R-001`
@@ -26,7 +26,7 @@ and `R-002` remain `Open` with merged auditor artifacts that authorize only
 (PR #1160, `fuzz/fuzz_targets/` targets, short smokes only) and still
 outstanding — all others
 remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
-hardening and security wave through `679f12f` — including a 21-crate workspace and bounded VT
+hardening and security wave through `c6db24d` — including an 18-crate workspace and bounded VT
 payload types `crates/bitty-vt/src/bounded.rs` — plus
 experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) per the
 [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md): lifecycle is
@@ -56,8 +56,8 @@ for the per-risk mapping). Every affected row below stays `Open`: the wave is
 required mitigation below is weakened.
 Experimental implementations `c0aadd2` + `7e3104d` + `a8735d0` are `Implemented`
 (experimental) not `Verified`/`Compatible`. Canonical snapshot:
-[`project-state.json`](../project/project-state.json) (synchronized `c6db24d`,
-`2026-09-27`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
+[`project-state.json`](../project/project-state.json) (synchronized `799f743`,
+`2026-10-02`, `Pre-alpha / Engineering Milestones M1-M8`, `R-004` `Open`,
 `R-005`/`R-006`/`R-007` `Mitigated`, experimental `c0aadd2`/`7e3104d`/`a8735d0`
 `Implemented` not `Verified`, release `v0.0.21` at `7da6d6f`) validated by
 `bun .github/scripts/check-state.mjs`.

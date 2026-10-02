@@ -83,15 +83,16 @@ no third-party runtime dependencies and are headless, `forbid(unsafe_code)`:
 | `bitty-runtime`     | `bitty-vt`, `bitty-term-state`, `bitty-pty`, `bitty-render`, `bitty-platform`, `bitty-ui`, `bitty-plugin-host` | Orchestration; no new third-party pins                                                                                                     |
 | `bitty-package`     | std-only                                                                                                       | Lifecycle and integrity model accepted (OQ-021, 2026-08-27); real signature verification remains draft; deterministic SHA-256 stub; no I/O |
 | `bitty-rich`        | `bitty-term-state`, `bitty-vt` (and dev)                                                                       | Draft rich presentation; no decoder/renderer dep                                                                                           |
-| `bitty-ipc`         | std-only                                                                                                       | Draft bounded framing/channels/stdio stub; no socket/pipe                                                                                  |
-| `bitty-agent`       | std-only                                                                                                       | Draft bounded messages/tool stubs/side queue; no LLM I/O                                                                                   |
-| `bitty-app`         | `bitty-runtime`, `bitty-platform`                                                                              | Thin composition root; no new pins                                                                                                         |
-| `bitty-core`        | std-only                                                                                                       | Bootstrap seed; to be retired                                                                                                              |
+| `bitty-terminal`    | `bitty-runtime`, `bitty-platform`                                                                              | Thin composition root; non-default `dev-perf` feature links `bitty-perf`                                                                   |
 
-`bitty-ipc` and `bitty-agent` currently carry no third-party pins and remain
-std-only; `bitty-rich` likewise carries only workspace-crate edges plus the
-bounds above, and `bitty-package` carries only workspace-crate edges with the
-lifecycle and integrity model accepted (signatures remain draft per crate docs).
+`bitty-rich` carries only workspace-crate edges plus the bounds above, and
+`bitty-package` carries only workspace-crate edges with the lifecycle and
+integrity model accepted (signatures remain draft per crate docs). `bitty-core`
+and `bitty-panels` were retired from the workspace (`bitty#1603`, `bitty#1604`).
+`bitty-ipc` is an independent L1 repository pinned by `bitty` at `e9714e7`;
+`bitty` links only the dependency-free `bitty-network-wire` codec from the
+independent `bitty-network` repository, never a network implementation.
+`bitty-agent` is an independent repository not currently linked by `bitty`.
 Any new upstream for the remaining draft tail requires an ADR 0004 revision.
 
 ## Local gate tools and hook wiring

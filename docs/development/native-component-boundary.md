@@ -88,7 +88,7 @@ The component descriptor `bitty-component.toml` (v1):
 ```toml
 [component]
 name = "net"            # [a-z][a-z0-9-]{0,31}
-version = "0.1.0"       # semver
+version = "0.0.1"       # semver
 protocol = [1, 1]       # supported wire protocol min,max
 executable = "bitty-net"
 sha256 = "<64 lowercase hex>"   # digest of the executable
@@ -104,7 +104,7 @@ A plugin declares the components it needs in its manifest:
 
 ```toml
 [components]
-net = "^0.1"
+net = "^0.0.1"
 ```
 
 A missing or incompatible component makes the package manager refuse the
@@ -119,6 +119,7 @@ unused.
 | Aspect      | Rule                                                                                                                                                                                                 |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Spawn       | On first request; one process per Bitty instance per component.                                                                                                                                      |
+| Handshake   | The `Hello`/`HelloAck` exchange must complete within `COMPONENT_HANDSHAKE_TIMEOUT` = 5 s of spawn; a timed-out handshake is treated as a crash and follows the crash/restart rule below.             |
 | Environment | Cleared, then an allowlist only: `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (and lowercase variants), `SSL_CERT_FILE`, `SSL_CERT_DIR`, `LANG`, `LC_ALL`. `PATH` is not forwarded for `net`.             |
 | Working dir | The component's version directory.                                                                                                                                                                   |
 | stderr      | Captured into a bounded ring (`COMPONENT_STDERR_MAX_BYTES` = 64 KiB) and logged.                                                                                                                     |
@@ -166,8 +167,13 @@ repository specification.
   stops it when idle, handles crashes, computes the per-plugin grant from the
   granted `network.connect:*` capabilities intersected with the manifest
   `[[network.egress]]` declarations, and attributes every request to its
-  plugin. The embedded network path (an optional Cargo feature and a Lua
-  network binding linked into Core) is removed.
+  plugin. The broker (`bitty_runtime::component`) is implemented in `bitty`
+  ([bitty#1604](https://github.com/bitty-terminal/bitty/pull/1604)); it is
+  `Implemented`-only and not yet `Verified`. The Lua request surface,
+  sandboxing, registry install, and the terminal composition-root instance
+  that wires the broker into `bitty-terminal` remain deferred follow-ups. The
+  embedded network path (an optional Cargo feature and a Lua network binding
+  linked into Core) is removed.
 - The Lua surface (a request handle plus a response event, never blocking a
   callback) depends on the application event loop and may land as a
   follow-up.
@@ -201,11 +207,13 @@ repository specification.
 ## Verification
 
 - Documentation: `just check` passes for this repository.
-- Implementation evidence is required in the owning repositories before any
-  status beyond accepted direction: codec property and fuzz tests in the
-  bitty-network repository, and broker tests for digest mismatch, missing
-  component, crash backoff, idle stop, and grant intersection in the bitty
-  repository.
+- Implementation evidence: the Core broker slice
+  (`bitty_runtime::component`) is `Implemented` in the bitty repository
+  ([bitty#1604](https://github.com/bitty-terminal/bitty/pull/1604)); it is
+  not yet `Verified`. Codec property and fuzz tests in the bitty-network
+  repository, and broker tests for digest mismatch, missing component, crash
+  backoff, idle stop, and grant intersection in the bitty repository, remain
+  required before any status beyond `Implemented`.
 
 ## Open points
 
@@ -215,3 +223,10 @@ repository specification.
 - WebSocket messages occupy a reserved tag range and are not specified yet.
 - Cross-instance sharing is not provided: each Bitty instance runs its own
   component process; a shared daemon is out of scope.
+- The Lua request surface, sandboxing, registry install, and the terminal
+  composition-root instance that wires the broker into `bitty-terminal` are
+  deferred follow-ups to the Core broker slice.
+- Windows: the environment allowlist in the Process lifecycle table may be
+  insufficient for Winsock initialization. A proposed Windows-only addition
+  would forward `SystemRoot` (and possibly `windir`) to the component
+  process; this is pending a decision and not yet accepted.
