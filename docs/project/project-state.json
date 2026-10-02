@@ -3,12 +3,12 @@
   "snapshot_date": "2026-10-02",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "2cb49afed11fcac4a69dd556ff71e576760e063d",
-    "short": "2cb49af",
+    "revision": "310bf87a9c91699c468f010646d8d45396aca1fc",
+    "short": "310bf87",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "799f7433d7f36b2011ece305c7d05adbc38120a5",
-    "previous_short": "799f743",
+    "previous_revision": "2cb49afed11fcac4a69dd556ff71e576760e063d",
+    "previous_short": "2cb49af",
     "crates": 18
   },
   "latest_release": {
@@ -364,15 +364,15 @@
     }
   },
   "sync_provenance": {
-    "carryctx_task": "CTX-0253",
-    "github_issue": null,
-    "previous_task": "CTX-0246",
-    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/379",
+    "carryctx_task": "CTX-0269",
+    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/408",
+    "previous_task": "CTX-0253",
+    "previous_issue": null,
     "audit_task": "CTX-0092",
     "synchronized_at": "2026-10-02",
-    "synchronized_by": "ctx-0246-impl",
-    "synchronized_revision": "2cb49af",
-    "previous_revision": "799f743",
+    "synchronized_by": "state-freshness-impl",
+    "synchronized_revision": "310bf87",
+    "previous_revision": "2cb49af",
     "baseline_revision": "de134ec",
     "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is 799f743 (previous c6db24d) through the v0.0.21 release at 7da6d6f (2026-09-24) and post-release changes including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604); the 18-crate workspace and all release/security-closure artifacts are Implemented-only, none Verified"
   },
