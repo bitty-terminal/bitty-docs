@@ -236,6 +236,19 @@ the historical conversation:
   naming, and host-API details stay parked to their named tasks;
   [OQ-089](open-questions.md) records the parked Beacon naming; owner
   delegation 2026-10-02, `bitty-docs#399`; no implementation claim.)
+- Execution, graphics, accessibility, storage, and platform-service boundaries.
+  (Accepted: [ADR 0016](adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md) —
+  the owner-delegated `W-130` decision accepts the execution-supervisor,
+  graphics decode/processing, platform-accessibility, restricted-storage, and
+  platform-service boundary directions; Core retains Terminal Truth,
+  PTY/permission/resource enforcement, identity and generation fencing, the
+  bounded graphics intake and aggregate image budget with pre-upload
+  validation, the accessibility baseline and focus/terminal-state association,
+  opt-in secret-minimizing storage budgets, and the platform permission gate
+  with validated URL arguments; a separate repository is not process
+  isolation, and the crate-versus-worker choice stays with the focused
+  contracts `W-132`, `W-133`, `W-134`, and `W-136`; storage is gated on `W-131`; owner
+  delegation 2026-10-02, `bitty-docs#406`; no implementation claim.)
 - Rich blocks, semantic zones, structured transports, and TUI transformation. (Accepted: [Rich presentation RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/rich-presentation-rfc.md) — image/rich-block/scene/zone and structured transport for [OQ-008](open-questions.md)/[OQ-015](open-questions.md)/[OQ-016](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Unified action registry, CLI grammar, IPC contract, and MCP/DevTools protocol. (Accepted: [CLI Contract RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/cli-contract-rfc.md) — top-level commands, dynamic `bitty x` namespace, action and output schemas, aliases, and exit codes 0 through 8 for [OQ-017](open-questions.md); frontmatter `accepted` on 2026-08-28.)
 - Package manifest/lock formats, resolver, registry, and update UX.

@@ -91,18 +91,52 @@ and workspace-presentation follow-ups in the same dependency map.
 - `W-122` tracks the independent review and registry migration needed to onboard
   `bar`; it is unrelated to Beacon repository creation.
 
+### Mechanism and policy extraction (execution, graphics, accessibility, storage, platform)
+
+- `W-130` decided the execution, graphics, accessibility, storage, and
+  platform-service boundaries and recorded the owner decision in
+  [ADR 0016](../decisions/adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md).
+  The focused contracts `W-131` through `W-138` are still to be written.
+- `W-131` reconciles history and storage scope: transcript, command history,
+  session snapshots, and plugin key-value storage.
+- `W-132` defines the execution extraction contract (principals, generations,
+  lifetime, PTY/process ownership, cancellation, OOM evidence, recovery).
+- `W-133` defines the graphics extraction contract (bounded APC intake, decode
+  worker, placement, quotas, texture upload, failure handling).
+- `W-134` defines the accessibility adapter contract (semantic snapshots,
+  focus/actions, privacy, platform backends, baseline coverage).
+- `W-135` defines the search and selection mechanisms (stable snapshot/line
+  identities, viewport navigation, input capture, clipboard gates). It is not a
+  `W-130` boundary contract; it is owned with the search and copy-mode plugins.
+- `W-136` defines the platform-service contract (notification, URL
+  permission/launch, compositor blur).
+- `W-137` defines the history/storage policy contract and plugin page sets.
+- `W-138` defines the search/copy-mode policy contracts and plugin page sets.
+- `W-140` through `W-146` extract or integrate each accepted boundary in Core
+  after the matching producer implementation and parity evidence exist.
+- `W-147` verifies the small-core dependency graph, safe startup, regression,
+  platform behavior, and the evidence matrix.
+
 ## Dependency rules
 
 CarryCtx dependencies are repository-local. Cross-repository dependencies are
 therefore recorded by `W-*` keys in this document and in each Issue body. The
 required order is:
 
-1. Decide the boundaries (`W-70`), then finalize the focused contracts (`W-71`
-   through `W-75`).
+1. Decide the boundaries (`W-70`, `W-130`), then finalize the focused contracts
+   (`W-71` through `W-75`, `W-131` through `W-138`).
 2. Synchronize terminal and plugin documentation (`W-80` through `W-91`).
-3. Implement host and SDK surfaces (`W-100` through `W-105`, `W-110`, `W-120`).
+3. Implement host and SDK surfaces (`W-100` through `W-105`, `W-110`, `W-120`,
+   `W-139`).
 4. Create, register, and implement the Beacon plugin (`W-121`), followed by
    integration and evidence tasks.
+
+For the mechanism and policy extraction the required order is: boundary decision
+(`W-130`), focused contracts (`W-131` through `W-138`), host and SDK readiness
+(`W-139`), producer and plugin implementation (`W-140` through `W-146` carry the
+Core integration and retirement work after each producer exists), then
+independent integrated verification (`W-147`). A producer or implementation task
+must not be treated as ready while its contract is unaccepted.
 
 The existing overlay/input-capture work (`W-01`, `W-28`, `W-43`) remains a hard
 prerequisite for Beacon and Composer. Existing package/component work (`W-10`,
