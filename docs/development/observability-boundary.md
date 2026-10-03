@@ -1,10 +1,10 @@
 ---
 title: Observability Boundary
-description: Draft W-71 contract for the minimal Core read-only observation mechanism, its authorization gate, redaction and bounds, the default build behavior, and the bitty-observability extraction gates
+description: Accepted W-71 focused contract for the minimal Core read-only observation mechanism, its authorization gate, redaction and bounds, the default build behavior, and the bitty-observability extraction gates
 category: development
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 27
 ---
@@ -13,26 +13,25 @@ sidebar_order: 27
 
 ## Document status
 
-Draft. This document is the `W-71` focused contract for Boundary 1
+Accepted focused contract. This document is the `W-71` deliverable for Boundary 1
 (Observability) that [ADR 0015](../decisions/adrs/ADR-0015-small-core-extraction-boundaries.md)
-accepted in direction and parked to `W-71` and `W-110`. It proposes the minimal
+accepted in direction and gated on `W-71`. It fixes the minimal
 read-only observation mechanism Core retains, the authorization gate and
 redaction rules that bound it, the default build behavior, the external
 responsibilities that move to the independent `bitty-observability` repository,
 the capability and security boundary, the API versioning rule, and the evidence
 required before any Core debug or trace code may be retired.
 
-This document does not accept the contract, does not authorize implementation,
-and does not describe implemented behavior. It keeps the boundary as an
-accepted direction with a focused contract still to be reviewed: nothing here
-is authoritative until independent review accepts it. The `bitty-observability`
+This document is an accepted boundary decision, not verified implementation:
+it authorizes no implementation and describes no implemented behavior. The
+`bitty-observability`
 repository is an independent extension repository that already contains API and
-partial implementation crates (`crates/bitty-observability-api` and sibling
-crates, per the
-[repository map](../project/repository-map.md)); its existence is not evidence
+partial implementation crates (`crates/bitty-observability-api`,
+`crates/bitty-observability-core`, and the facade crate); its existence is not evidence
 that Core has adopted the observation seam, and no part of it is described here
-as integrated or accepted. Frontmatter `status` is `draft` per the repository
-metadata schema.
+as integrated or implemented. Verification items 1-9 and removal gates 2-8
+remain future `W-100`/`W-110` evidence; `R-014` stays `Open`. Frontmatter
+`status` is `accepted` per the repository metadata schema.
 
 - Owning task: `W-71` (bitty-docs), CarryCtx `CTX-0260`, Issue
   [bitty-docs#400](https://github.com/bitty-terminal/bitty-docs/issues/400).
@@ -279,7 +278,7 @@ implicitly; and safe mode neither reads nor writes a trace artifact.
 
 ## External responsibilities
 
-The split below is the ownership contract this document proposes. Core keeps
+The split below is the ownership contract this document fixes. Core keeps
 the mechanism, the gate, the redaction rules, and the bounds; the optional
 implementation and all observation policy move to `bitty-observability`.
 
@@ -462,8 +461,8 @@ Any later implementation of the boundary must prove, at minimum:
 ## Affected contracts
 
 - [ADR 0015 - Small-Core Extraction Boundaries](../decisions/adrs/ADR-0015-small-core-extraction-boundaries.md):
-  Boundary 1's parked trait surface now has a focused draft contract for
-  review; the dependency order (`W-71` then `W-100` and `W-110`) is unchanged.
+  Boundary 1's parked trait surface now has an accepted focused contract;
+  the dependency order (`W-71` then `W-100` and `W-110`) is unchanged.
 - [Small-core refactor execution handoff](../handoff/2026-10-02-small-core-refactor.md):
   `W-71` now has its deliverable; `W-100` and `W-110` remain gated on it.
 - [Storage and history boundary](storage-and-history-boundary.md): the sibling
