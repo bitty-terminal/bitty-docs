@@ -330,3 +330,4 @@
 {"created_at":"2026-10-02T14:51:38.692750252+00:00","id":"01M3YHJWT4SNS070Q50E7WF3SZ","kind":"include","pattern":"docs/project/project-state.json","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3YHJWRC8D2QPVR2YHQ0AC08"}
 {"created_at":"2026-10-02T14:59:24.037895788+00:00","id":"01M3YJ1385A9E6YES4AA2RT3E5","kind":"include","pattern":"docs/decisions/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3Y6MSVN39DQREXXT5W3H16C"}
 {"created_at":"2026-10-02T14:59:24.072452608+00:00","id":"01M3YJ1398VH6EFV2FF703RAJ8","kind":"include","pattern":"docs/development/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M3Y6MSVN39DQREXXT5W3H16C"}
+{"created_at":"2026-10-03T12:33:42.640884763+00:00","id":"01M40W31QG86T2HB04Y1ZK2TB7","kind":"include","pattern":"docs/development/**","project_id":"01M0W9F2XC05P834QEG7FA8XVX","task_id":"01M40W2TC9G61P0J9Y79AHPR17"}
