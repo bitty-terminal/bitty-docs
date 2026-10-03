@@ -93,6 +93,12 @@ supported product build, a stable test workflow, or compatibility guarantees.
   plus the PTY paste, external-editor process, temp-file, API versioning, and
   rollback contracts (the host API spellings stay parked to `W-01`/`W-82`;
   nothing is implemented and extraction is not authorized).
+- [Overlay and input-capture host contract](overlay-input-capture-contract.md) is
+  the accepted `W-01` v2 contract for the focusable overlay and transient
+  input-capture surface: the `ui.overlay.focus` capability, the
+  `bitty.ui.overlay.*` Lua spellings, the capture lifecycle, finite bounds,
+  typed failure modes, focus arbitration, safe-mode behavior, and versioning
+  (provisional sibling spellings superseded; nothing implemented).
 - [Storage and history boundary](storage-and-history-boundary.md) is the draft
   `W-131` reconciliation of the segmented transcript, command history, session
   snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
