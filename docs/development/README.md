@@ -99,11 +99,11 @@ supported product build, a stable test workflow, or compatibility guarantees.
   `bitty.ui.overlay.*` Lua spellings, the capture lifecycle, finite bounds,
   typed failure modes, focus arbitration, safe-mode behavior, and versioning
   (provisional sibling spellings superseded; nothing implemented).
-- [Storage and history boundary](storage-and-history-boundary.md) is the draft
+- [Storage and history boundary](storage-and-history-boundary.md) is the accepted
   `W-131` reconciliation of the segmented transcript, command history, session
   snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
   default-persistence posture, and the downstream `W-137`/`W-139`/`W-146`
-  owners (candidate direction only; nothing accepted or implemented).
+  owners (accepted reconciliation only; trait/API details stay parked; nothing implemented).
 - [Observability boundary](observability-boundary.md) is the accepted `W-71`
   focused contract for the minimal Core read-only observation mechanism, its
   authorization gate and redaction rules, the default build and `bitty --safe`

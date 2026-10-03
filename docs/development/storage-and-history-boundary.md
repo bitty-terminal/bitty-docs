@@ -1,10 +1,10 @@
 ---
 title: Storage and History Boundary
-description: Draft reconciliation of the segmented transcript command history session snapshots and per-plugin KV ownership lifecycles retention budgets and public contract shapes
+description: Accepted W-131 reconciliation of the segmented transcript command history session snapshots and per-plugin KV ownership lifecycles retention budgets and public contract shapes
 category: development
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: true
 sidebar_order: 26
 ---
@@ -13,22 +13,19 @@ sidebar_order: 26
 
 ## Document status
 
-Draft. This document is the `W-131` reconciliation deliverable for the
+Accepted reconciliation. This document is the `W-131` deliverable for the
 restricted-storage boundary that [ADR 0016](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md)
 accepted in direction and gated on `W-131`. It reconciles the four storage
 objects named by the bootstrap fence - segmented transcript, command history,
-session snapshots, and per-plugin key-value (KV) state - and proposes their
+session snapshots, and per-plugin key-value (KV) state - and fixes their
 ownership, lifecycle, retention and deletion rules, budgets, default-persistence
 posture, and high-level public contract shapes.
 
-This document does not accept the storage boundary, does not accept any
-candidate contract, does not authorize implementation, and does not describe
-implemented behavior. The `bitty-storage` repository and the Panel History
+This document is an accepted boundary reconciliation, not verified implementation: it authorizes no implementation and describes no implemented behavior. The `bitty-storage` repository and the Panel History
 candidate remain candidate or planned artifacts; candidate status stays
 candidate until an owning task accepts it through independent review. Every
-ownership statement here is a proposed direction until the `W-131` reconciliation
-is reviewed and accepted; no storage object is authoritative yet. Frontmatter
-`status` is `draft` per the repository metadata schema.
+ownership statement here is a contract direction for a later implementation; the reconciled four-object split and retained-Core mechanisms are accepted while trait/API details stay parked; nothing is Verified. Frontmatter
+`status` is `accepted` per the repository metadata schema.
 
 - Owning task: `W-131` (bitty-docs), CarryCtx `CTX-0267`, Issue
   [bitty-docs#405](https://github.com/bitty-terminal/bitty-docs/issues/405).
@@ -46,8 +43,7 @@ is reviewed and accepted; no storage object is authoritative yet. Frontmatter
 
 ## Purpose and scope
 
-This specification reconciles the history and storage scope before the
-restricted-storage boundary can be authoritative. It fixes one ownership and
+This specification is the accepted reconciliation of the history and storage scope. It fixes one ownership and
 lifecycle model for four already-named objects that have different lifecycles,
 different sensitivity, and different budgets, so no single unreviewed database
 is allowed to absorb them.
@@ -72,7 +68,7 @@ Out of scope and not decided here:
   storage formats, segment seal bounds, retention defaults, quota constants
   beyond the already-published plugin-store ceilings, and migration mechanics;
 - the choice of crate, out-of-process worker, or repository shape for the
-  storage boundary, which belongs to the `W-131`/`W-137` scope and the focused
+  storage boundary, which belongs to the `W-137` scope and the focused
   contracts;
 - repository creation for `bitty-storage` or the `history` plugin, and any
   implementation or migration;
@@ -123,7 +119,7 @@ This reconciliation must be read together with, and must not weaken:
 - **Extracted storage component**: the proposed persistent-store mechanics
   behind the restricted-storage boundary (candidate name `bitty-storage`), which
   exists today only as a metadata-only scaffold and may move out of Core only
-  after this reconciliation accepts the scope.
+  under the accepted scope.
 - **Terminal Truth**: parser state, grid semantics, cursor state, modes, and
   canonical scrollback; volatile and Core-owned. Plugins may alter presentation,
   never Terminal Truth.
@@ -165,7 +161,7 @@ output.
 
 | Storage object       | Owner (contract and policy)                                                                                   | Store mechanics                                                                                      | Lifecycle                                                                                                                                                                                                                               | Retention and deletion                                                                                                                           | Persists by default                                                                                                 | Budget or bound                                                                                                                      |
 | -------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Segmented transcript | History plugin (`history`, candidate) under plugin-facing policy fixed by `W-137`; Core owns the event source | Proposed extracted `bitty-storage` mechanics after `W-131` acceptance                                | Created only while opt-in capture is enabled for a panel; segments seal and roll; active capture ends at purging or uninstalling the plugin or at panel close per policy, and retained history is not deleted merely by closing a panel | Retention by age and size with sealed-segment deletion; explicit purge is authoritative and must remove bytes; no resurrect from a derived index | No; raw stdout and PTY bytes are not persisted without explicit opt-in                                              | Per-panel and per-store byte and age caps; bounded sealed-segment size; compression; no unbounded growth                             |
+| Segmented transcript | History plugin (`history`, candidate) under plugin-facing policy fixed by `W-137`; Core owns the event source | Proposed extracted `bitty-storage` mechanics under the accepted reconciliation                       | Created only while opt-in capture is enabled for a panel; segments seal and roll; active capture ends at purging or uninstalling the plugin or at panel close per policy, and retained history is not deleted merely by closing a panel | Retention by age and size with sealed-segment deletion; explicit purge is authoritative and must remove bytes; no resurrect from a derived index | No; raw stdout and PTY bytes are not persisted without explicit opt-in                                              | Per-panel and per-store byte and age caps; bounded sealed-segment size; compression; no unbounded growth                             |
 | Command history      | History plugin under policy fixed by `W-137`; Core owns the event source, and `OSC 133` is advisory only      | Proposed extracted `bitty-storage` mechanics for the bytes and rebuildable index                     | Appended per command boundary while capture is enabled; small and long-lived; external links may dangle after provider removal                                                                                                          | Explicit purge or uninstall; age and count bounds; dangling external references surface as typed unavailability, never as silent gaps            | No; capture is opt-in, and recording input is a separate opt-in                                                     | Command-count, age, and byte bounds; commands-only is the least sensitive tier; optional output tier stays bounded and separate      |
 | Session snapshots    | Core, under the Restore/Persistence separation in ADR 0013 and the Panel Runtime save/restore rules           | Core save/restore path; storage mechanics may move only if restore re-derivation stays Core          | Written by Core on normal interactive exit; read on restore; volatile structure is re-derived on load and fails closed to a clean start                                                                                                 | Replaced by the next exit save; deletion removes the session file; safe mode never reads it; restore never writes                                | Yes for bounded scrollback and cwd on normal interactive exit (open point below); never under safe or headless mode | Versioned whole-file bound; bounded per-pane scrollback and captured metadata; atomic temp-plus-rename                               |
 | Per-plugin KV        | `bitty-plugin-host` Lua host service (Core); SDK surface fixed by `W-139`, plugin-facing policy by `W-137`    | Core host service today; mechanics may move to `bitty-storage` while the contract stays with the SDK | Plugin-scoped and generation-independent: values committed before a generation is disposed remain readable by the next generation                                                                                                       | Deleted only by uninstall, an explicit `nil` write, or an explicit user purge; no expiry and no eviction by construction                         | Only plugin-authored writes; not a default sink for terminal output or secrets                                      | Published plugin-store ceilings: 256 KiB total per plugin, 8 KiB per value, depth 8, 1024 nodes; atomic commit with no partial write |
@@ -295,8 +291,7 @@ Whatever moves, Core retains the following mechanisms and rules:
 
 ## What may move to the extracted storage component
 
-Only after this reconciliation is accepted may the following persistent-store
-mechanics move to the proposed `bitty-storage` component:
+The following persistent-store mechanics may move to the proposed `bitty-storage` component under this reconciliation:
 
 - the append-only segmented log, segment sealing and compression, and a
   rebuildable index over it;
@@ -329,15 +324,15 @@ their content.
   preserves volatile Terminal Truth while adopting the accepted storage
   boundary. The `bitty` owner answers it.
 - The extraction and verification tasks (`W-140` through `W-145`, `W-147`) and
-  the `bitty-storage` repository tasks follow their own contracts; none may start
-  while this reconciliation is unaccepted.
+  the `bitty-storage` repository tasks follow their own contracts; they
+  may proceed only under their own contracts now that this reconciliation is accepted.
 
 ## Security review
 
 Persistent transcript, command history, session snapshots, and plugin KV all
 touch trust boundaries that the security overview governs. Independent security
 review is required before this reconciliation merges. The reviewers must confirm
-that every retained mechanism and every proposed ownership preserves ADR 0016
+that every retained mechanism and every fixed ownership preserves ADR 0016
 binding constraints 8 and 9, that no object is persisted by default when it
 carries sensitive terminal-derived content except the accepted bounded session
 snapshot on normal exit (which the reviewer must assess against the open point
@@ -408,7 +403,7 @@ own. Any later implementation of the boundary must prove, at minimum:
 ## Affected contracts
 
 - [ADR 0016 - Execution, Graphics, Accessibility, Storage, and Platform-Service Boundaries](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0016-execution-graphics-accessibility-storage-platform-boundaries.md):
-  Boundary 4 remains gated on this reconciliation; the four objects stay
+  Boundary 4 now has its accepted reconciliation; the four objects stay
   distinct.
 - [ADR 0015 - Small-Core Extraction Boundaries](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0015-small-core-extraction-boundaries.md)
   and [ADR 0013 - Core Ontology and Identity Model](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/decisions/adrs/ADR-0013-core-ontology-identity.md):
@@ -472,8 +467,7 @@ milestone, and no implementation evidence forces one yet.
   both stated explicitly.
 - `W-137`, `W-139`, and `W-146` are named as downstream owners without deciding
   their content.
-- Candidate status remains candidate and no storage object or boundary is
-  described as accepted or implemented.
+- Candidate status remains candidate except the reconciled boundary direction, which is accepted; no storage object is described as implemented.
 - The verification plan requires deletion, default-persistence privacy, scope
   escape, generation fencing, and no-private-bypass evidence.
 - Independent security review is required before merge, and the reviewer roles
