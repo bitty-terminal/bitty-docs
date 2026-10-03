@@ -104,11 +104,12 @@ supported product build, a stable test workflow, or compatibility guarantees.
   snapshots, and per-plugin KV: ownership, lifecycle, retention, budgets,
   default-persistence posture, and the downstream `W-137`/`W-139`/`W-146`
   owners (candidate direction only; nothing accepted or implemented).
-- [Observability boundary](observability-boundary.md) is the draft `W-71`
+- [Observability boundary](observability-boundary.md) is the accepted `W-71`
   focused contract for the minimal Core read-only observation mechanism, its
   authorization gate and redaction rules, the default build and `bitty --safe`
-  behavior, and the `W-100`/`W-110` extraction gates (candidate contract only;
-  nothing accepted or implemented).
+  behavior, and the `W-100`/`W-110` extraction gates (accepted boundary
+  decision only; verification items 1-9 and removal gates 2-8 remain future
+  `W-100`/`W-110` evidence; nothing implemented).
 - [Legacy chrome retirement](legacy-chrome-retirement.md) is the accepted
   `W-74` contract that assigns an owner and disposition to every legacy
   tab-strip, scratchpad, and workspaceline path under
