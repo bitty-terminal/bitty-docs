@@ -120,6 +120,27 @@ Core spawns the component, verifies its descriptor and executable digest
 before every spawn, and issues the per-request grant; Core never resolves a
 component through `PATH`, and a component never widens its grant.
 
+#### History-read family admission (RFC-0004 draft, OQ-085)
+
+The candidate history-read family maps to the `terminal output` domain:
+reads of persisted terminal-derived content. It grants no `terminal input`,
+process, filesystem, clipboard, or other domain authority, and a grant in
+one domain never implies authority in another. Exact capability identifiers
+stay parked to W-139 (SDK); this admission covers the family shape only and
+authorizes no implementation. Acceptance requires independent security
+review plus docs-curator approval per RFC-0004 acceptance evidence.
+
+| Level | History-read family admission                                                                                                                                                                         | Rationale                                                                                                                                                                                                            |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| L0    | Allowed — Core owns enforcement (grant gate, bound enforcement, redaction and truncation, typed denials).                                                                                             | L0 admits `terminal output`; Core is the enforcement point and no plugin grant confers Core authority.                                                                                                               |
+| L1    | Allowed only with an explicit per-plugin, per-source grant recorded by Core; the query scope must intersect the grant scope; reads are bounded snapshots, redacted, truncated, and labeled untrusted. | L1 admits `terminal output`; deny-by-default is preserved and safe-mode, capture-disabled, scope-mismatch, and over-bound or over-rate requests deny fail-closed with a typed denial.                                |
+| L2    | Allowed only with an explicit per-plugin, per-source grant recorded by Core; the query scope must intersect the grant scope; reads are bounded snapshots, redacted, truncated, and labeled untrusted. | L2 admits `terminal output` and is the primary consumer (search, copy-mode, and history plugins); no grant migrates from `terminal.*` in either direction and a newly requested family blocks updates per P0-AC-030. |
+| L3    | Allowed only through an explicit per-request grant issued by Core to a verified native component coprocess; no standing grant exists.                                                                 | L3 admits `terminal output` at the domain level; the sidecar stays out-of-process with descriptor and digest verified before every spawn, never resolved through `PATH`, and never widening its grant.               |
+| L4    | Denied by default — no standing admission; acts only through an explicit per-invocation grant.                                                                                                        | L4 admits none by default per OQ-085 and the family grants no L4 authority; unknown levels or domains also deny rather than default.                                                                                 |
+
+Denials name the level and the family only and carry no content bytes,
+foreign identifiers, or absent-versus-denied signals.
+
 ### Secret-storage tiers (OQ-055, SEC-22)
 
 Secrets live in exactly one of four tiers, with policy that only tightens
