@@ -1,26 +1,27 @@
 ---
 title: History Read Surface RFC
-description: Draft proposal for a read-only history search and selection plugin capability family with bounded snapshot queries explicit grants and secret-minimizing redaction
+description: Accepted contract for a read-only history search and selection plugin capability family with bounded snapshot queries explicit grants and secret-minimizing redaction
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: false
 sidebar_order: 48
 ---
 
 # History Read Surface RFC
 
-> Status: **draft** proposed on 2026-10-04 by commander decision DEC-W139-1
-> ([issue #430](https://github.com/bitty-terminal/bitty-docs/issues/430)).
+> Status: **accepted** on 2026-10-04 (W-139 acceptance;
+> [issue #430](https://github.com/bitty-terminal/bitty-docs/issues/430)).
 > This document is the W-139 successor RFC: it gives the read-only
-> history/search/selection plugin surface a documented home. It is a proposal:
-> it closes no open question, authorizes no shipped behavior, mints no
+> history/search/selection plugin surface a documented home. It is an accepted
+> contract: it closes no open question, authorizes no shipped behavior, mints no
 > capability identifier, and makes no compatibility promise. [OQ-056](../open-questions.md)
-> stays open. Acceptance requires explicit review plus an independent security
-> review before any Core, SDK, or plugin work builds on it. Revised 2026-10-04
-> per the independent security review NEEDS-FIX (findings F-01..F-08); status
-> stays draft and no finding is closed by this revision alone.
+> stays open. Acceptance rests on explicit review plus the independent security
+> review recorded under Acceptance evidence. Revised 2026-10-04
+> per the independent security review NEEDS-FIX (findings F-01..F-08); accepted
+> 2026-10-04 after re-review APPROVE with the matrix plus `P0-AC-035` update
+> merged (PR #433).
 
 ## Problem
 
@@ -56,7 +57,7 @@ which bounds, and with which secrecy treatment.
 - Keep the closed `terminal` family closed: the surface is a NEW capability
   family, never an extension of `terminal.*`.
 - Keep statuses honest: distinguish the accepted storage boundary (W-131), the
-  accepted plugin-facing policy (W-137), and this draft contract, and mark
+  accepted plugin-facing policy (W-137), and this accepted contract, and mark
   every spelling, identifier, and numeric ceiling that stays parked to W-139
   (SDK), W-146 (Core integration), or the security review.
 - Name the blocked consumers and the unblocking chain explicitly, so W-139,
@@ -384,8 +385,11 @@ and the no-leak rule.
   light of this read family (owned by the security review and W-146; this
   RFC proposes no change and grants no snapshot access)?
 - Which threat-model matrix cells (every level x new-family admission cell)
-  and which `P0-AC-035` update cover this family (owned by the security
-  review; required before acceptance; see Acceptance evidence)?
+  and which `P0-AC-035` update cover this family? Disposition (accepted
+  2026-10-04): satisfied by PR #433 (merged as commit `48b60c4`) — the
+  history-read family admission subsection under the `terminal output` domain
+  with every L0-L4 x family admission cell plus the `P0-AC-035` history-read
+  scope; exact identifiers stay parked to W-139.
 
 ## Acceptance evidence
 
@@ -404,6 +408,18 @@ each unresolved question. Acceptance still authorizes no
 implementation: it records the reviewed contract, not shipped behavior.
 Host parity tests belong to the Core implementation task that follows
 acceptance, and must not be claimed as evidence inside this RFC.
+
+Accepted 2026-10-04 (W-139 acceptance,
+[issue #430](https://github.com/bitty-terminal/bitty-docs/issues/430)):
+independent security review APPROVE after the NEEDS-FIX revision (findings
+F-01..F-08 resolved in `fed7560`; provenance CarryCtx note PX-0916 on
+CTX-0276; full text in workspace
+`recording/handoff-2026-10-02/rfc0004-security-review.md`); independent
+acceptance review ACCEPT; docs-curator APPROVE; threat-model matrix plus
+`P0-AC-035` update covering the new family under the `terminal output`
+domain with every level x new-family admission cell evidenced, merged as
+[PR #433](https://github.com/bitty-terminal/bitty-docs/pull/433) (commit
+`48b60c4`). UQ #6 is satisfied by the #433 merge (see disposition above).
 
 ## References
 
