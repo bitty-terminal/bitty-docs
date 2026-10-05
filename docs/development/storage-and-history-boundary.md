@@ -64,11 +64,12 @@ weakening.
   strictly tighter than the superseded prose. Depth 16 versus 8 is the one
   documented exception: it carries Core's pre-existing JSON depth, already
   enforced by Core.
-- Dual-layer scope note: the Lua marshalling layer (`bitty-lua` store) still
-  enforces the older 256 KiB / depth 8 / 1024-node ceilings; effective
-  enforcement is the tighter of the two layers per dimension until its
-  alignment lands (bitty CTX-0970). In particular depth 8 governs live
-  traffic today, not the depth 16 stated above.
+- Dual-layer scope note (resolved 2026-10-05): the Lua marshalling layer
+  previously enforced the older 256 KiB / depth 8 / 1024-node ceilings; its
+  alignment to the ceilings above landed in bitty CTX-0970 (PR #1713,
+  `a3dbf9d`). Both layers now enforce 64 KiB total, 8 KiB per value, and
+  depth 16; the count bound is 256 in each layer's native unit (entries in
+  `bitty-runtime`, nodes in `bitty-lua`).
 - No silent changes: any future bound change is a new security-reviewed
   decision, not an edit to this erratum.
 
