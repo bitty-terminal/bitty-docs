@@ -214,8 +214,10 @@ separately granted authority.**
   names for the future bridge. No `terminal.*` spelling touches the
   filesystem, and no `bitty.fs.*` spelling touches terminal state.
 - The family maps to the OQ-085 `filesystem` capability domain. A grant in
-  this family never implies process, network, clipboard, IPC, or any other
-  domain authority.
+  this family never implies process, network, clipboard, IPC, terminal
+  input/output, or any other domain authority. No grant migration in either
+  direction: a `terminal.*` grant never implies a grant in this family, and
+  a grant in this family never implies a `terminal.*` grant.
 - A plugin update that newly requests this family is a capability increase
   and blocks pending the explicit permission-diff approval gate
   (`P0-AC-030`).
@@ -298,7 +300,7 @@ the SDK work; this RFC fixes the verb set and the grant mapping only.
   unredacted write), and the exact redaction format stays parked with the
   accepted storage and history policy owners.
 - Every returned record carries a Core-attached, typed untrusted-observation
-  label that survives truncation and attribution: a plugin, agent, or tool
+  label that survives redaction, truncation, and attribution: a plugin, agent, or tool
   that consumes file bytes must treat them as content under the
   prompt-injection rule, and the host forbids executing, interpolating, or
   routing labeled content into an instruction channel without a separately
@@ -307,7 +309,9 @@ the SDK work; this RFC fixes the verb set and the grant mapping only.
   delivery of results into the plugin VM only. Copying to the clipboard,
   spawning processes over file content, publishing to IPC, or egressing
   over the network each needs its own separately granted authority; the
-  family grant never implies them. Writing file content obtained under a
+  family grant never implies them. Process invocation over file content stays
+  argv-first with validated arguments and no shell-string construction or
+  interpolation (`P0-AC-009`). Writing file content obtained under a
   read grant to a separately granted write scope is permitted only when
   both grants are present; the read grant alone never authorizes the write.
 
@@ -323,9 +327,11 @@ or domain. Denials are oracle-tight: their shape must not vary with
 out-of-scope facts, so no denial carries content bytes, foreign
 identifiers, or any signal distinguishing absent files from denied files;
 where `P0-AC-035` applies, the denial names the level and the family only.
-Whether listings suppress denied entries silently or mark them as denied
-stays an unresolved question for the security review (suppression leaks
-less; marking is more debuggable). Exact error identifiers and wire shapes
+Listings suppress denied entries silently (silent skip) as the default; any
+alternative shape stays an unresolved question for the security review only
+if it preserves the no absent-vs-denied signal rule above, with disposition
+required before acceptance (suppression leaks less; marking is more
+debuggable but must not leak existence). Exact error identifiers and wire shapes
 belong to the SDK work; this RFC fixes the taxonomy and the no-leak rule.
 
 ### No streaming or watch analog
@@ -383,7 +389,8 @@ belong to the SDK work; this RFC fixes the taxonomy and the no-leak rule.
   read-back) and beyond the VM (separate authorities for
   copy/spawn/publish/egress); trust-level admission for the `fs` family
   (level x family cells under `P0-AC-035`); and denial oracles (oracle-tight
-  no-leak rule, listing-suppression question parked to review).
+  no-leak rule, listing silent-suppression default with no-signal constraint,
+  disposition before acceptance).
 - P0 gates exercised: `P0-AC-012` (every operation capability-checked),
   `P0-AC-013` (operation faults contained to the calling plugin VM),
   `P0-AC-014` (paths, payloads, listings, rates, and aggregate budgets with
@@ -437,9 +444,11 @@ belong to the SDK work; this RFC fixes the taxonomy and the no-leak rule.
   versus append-mode flag), or stay a single disposition (parked to the Core
   bridge and SDK work; default proposed is a single verb with a flag
   candidate)?
-- Do listings suppress denied entries silently or mark them as denied
-  (parked to the security review; suppression leaks less, marking is more
-  debuggable)?
+- Do listings keep the silent-suppression default or adopt an alternative
+  denied-entry shape (parked to the security review; whichever shape is
+  chosen must preserve the no absent-vs-denied signal rule, with disposition
+  required before acceptance; suppression leaks less, marking is more
+  debuggable but must not leak existence)?
 - What is the exact redaction format and label encoding in read and listing
   results, and how are preview-equality and label preservation tested
   (parked with the accepted storage and history policy owners)?
