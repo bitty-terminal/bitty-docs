@@ -141,6 +141,42 @@ review plus docs-curator approval per RFC-0004 acceptance evidence.
 Denials name the level and the family only and carry no content bytes,
 foreign identifiers, or absent-versus-denied signals.
 
+#### Filesystem family admission (RFC-0005 draft, OQ-085)
+
+The candidate filesystem (`fs`) family maps to the `filesystem` domain:
+bounded, self-contained reads, writes, and listings strictly inside explicit
+path patterns. It grants no process, network, clipboard, IPC, `terminal
+input`, `terminal output`, or other domain authority, and a grant in one
+domain never implies authority in another; a `terminal.*` grant never implies
+a grant in this family and vice versa. The decided verb set is read, write,
+and list: `list` is read-class and rides the read grant over the listed
+prefix, while `open` and `append` are rejected as verbs. This admission mints
+no capability identifier and changes no grammar: the accepted
+`fs.read:PATTERN` and `fs.write:PATTERN` split stays the single authority
+with the parameter required and no family-wide wildcard. Exact Lua
+spellings, per-call payload and listing caps, operation rates and quotas,
+redaction format, and label encoding stay parked to the Core bridge and SDK
+implementation; this admission covers the family shape only and authorizes no
+implementation. Acceptance requires independent security review plus
+docs-curator approval per RFC-0005 acceptance evidence.
+
+| Level | Filesystem family admission                                                                                                                                                                                                                                      | Rationale                                                                                                                                                                                                                                                                             |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| L0    | Allowed — Core owns enforcement (grant gate, bound enforcement, redaction and truncation, typed denials).                                                                                                                                                        | L0 admits `filesystem`; Core is the enforcement point and no plugin grant confers Core authority.                                                                                                                                                                                     |
+| L1    | Allowed only with an explicit per-plugin grant carrying explicit path patterns recorded by Core; the operation path must intersect the grant scope; reads, writes, and listings are bounded self-contained requests, redacted, truncated, and labeled untrusted. | L1 admits `filesystem`; deny-by-default is preserved and safe-mode, scope-mismatch, sensitive-path, secret-shaped, hostile-pattern, and over-bound or over-rate requests deny fail-closed with a typed denial.                                                                        |
+| L2    | Allowed only with an explicit per-plugin grant carrying explicit path patterns recorded by Core; the operation path must intersect the grant scope; reads, writes, and listings are bounded self-contained requests, redacted, truncated, and labeled untrusted. | L2 admits `filesystem` and is the primary consumer (file-manager, editor preview, and mediated Wheel reads); no grant migrates from `terminal.*` in either direction and a newly requested family blocks updates per P0-AC-030; `list` never becomes a grant-free enumeration oracle. |
+| L3    | Allowed only through an explicit per-request grant issued by Core to a verified native component coprocess; no standing grant exists.                                                                                                                            | L3 admits `filesystem` at the domain level; the sidecar stays out-of-process with descriptor and digest verified before every spawn, never resolved through `PATH`, and never widening its grant.                                                                                     |
+| L4    | Denied by default — no standing admission; acts only through an explicit per-invocation grant.                                                                                                                                                                   | L4 admits none by default per OQ-085 and the family grants no L4 authority; unknown levels or domains also deny rather than default.                                                                                                                                                  |
+
+Denials name the level and the family only and carry no content bytes,
+foreign identifiers, or absent-versus-denied signals. Listings suppress
+denied entries silently (silent skip) as the default; any alternative shape
+must preserve the no absent-versus-denied signal rule above. Reads never
+imply writes and writes never imply read-back; reading or listing under this
+family authorizes delivery of results into the plugin VM only, and no watch,
+subscription, tail-follow, retained handle, or cross-call cursor exists in
+this family.
+
 ### Secret-storage tiers (OQ-055, SEC-22)
 
 Secrets live in exactly one of four tiers, with policy that only tightens

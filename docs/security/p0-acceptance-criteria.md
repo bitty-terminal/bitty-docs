@@ -228,6 +228,11 @@ History-read family scope (RFC-0004 draft): a history-read query fault
 (over-bound, over-rate, scope mismatch, or revoked grant) is contained to
 the calling plugin VM; the host survives and other plugins are unaffected.
 
+Filesystem family scope (RFC-0005 draft): a filesystem operation fault
+(over-bound, over-rate, scope mismatch, revoked grant, sensitive-path
+denial, or secret-shaped refusal) is contained to the calling plugin VM;
+the host survives and other plugins are unaffected.
+
 ### P0-AC-014 Plugin resource budgets attributable
 
 Source: plugin system "Runtime isolation"; baseline "Plugins". Risk: R-007.
@@ -397,6 +402,14 @@ plugin VM never implies clipboard, filesystem, process, or external-history
 authority, each of which needs a separately granted authority with
 argv-first external invocation and no shell-string construction.
 
+Filesystem family scope (RFC-0005 draft): every filesystem read and listing
+result carries a Core-attached typed untrusted-observation label that
+survives redaction, truncation, and attribution; labeled content is never
+executed, interpolated, or routed into an instruction channel. Delivery into
+the plugin VM never implies clipboard, process, IPC, or network authority,
+each of which needs a separately granted authority, and process invocation
+over file content stays argv-first with no shell-string construction.
+
 ### P0-AC-025 DevTools scopes distinct and ungranted by connection
 
 Source: threat model "MCP, Agents, and DevTools". Risk: R-014.
@@ -488,6 +501,11 @@ History-read family scope (RFC-0004 draft): a plugin update newly
 requesting the history-read family is a capability increase and blocks
 pending an explicit permission diff and approval; no grant migrates from
 `terminal.*` to the history-read family or back in either direction.
+
+Filesystem family scope (RFC-0005 draft): a plugin update newly requesting
+the filesystem family is a capability increase and blocks pending an
+explicit permission diff and approval; no grant migrates from `terminal.*`
+to the filesystem family or back in either direction.
 
 ## Configuration trust and origin policy
 
@@ -582,6 +600,21 @@ L0–L4 × history-read cell with allowed or denied plus rationale; denials
 name the level and the family only with no content bytes or
 absent-versus-denied signals. Exact identifiers stay parked to W-139; this
 criterion covers admission shape only.
+
+Filesystem family scope (RFC-0005 draft, OQ-085): the candidate filesystem
+family maps to the `filesystem` domain and grants no other domain
+authority. Effective authorization applies the threat-model filesystem
+admission table before the grant intersection: L0 allowed as the enforcer;
+L1 and L2 allowed only with an explicit per-plugin grant carrying explicit
+path patterns and intersecting operation scope; L3 allowed only through an
+explicit per-request Core-issued grant; L4 denied by default with only
+explicit per-invocation grants. Verification extends the matrix to every
+L0–L4 × filesystem cell with allowed or denied plus rationale; denials name
+the level and the family only with no content bytes or absent-versus-denied
+signals, and listings suppress denied entries silently. This admission mints
+no identifier and covers the family shape only; exact spellings, payload and
+listing caps, rates, and label encoding stay parked to the Core bridge and
+SDK implementation.
 
 ### P0-AC-036 Secret-tier consent, audit, and redaction
 
