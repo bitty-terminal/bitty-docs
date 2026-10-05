@@ -1,24 +1,27 @@
 ---
 title: Filesystem Host Surface RFC
-description: Draft contract for a capability-gated plugin filesystem surface with scoped read and write grants explicit path patterns and Core-owned enforcement
+description: Accepted contract for a capability-gated plugin filesystem surface with scoped read and write grants explicit path patterns and Core-owned enforcement
 category: decisions
 audience: contributor
 document_type: specification
-status: draft
+status: accepted
 website_publish: false
 sidebar_order: 49
 ---
 
 # Filesystem Host Surface RFC
 
-> Status: **draft** (targets [OQ-056](../open-questions.md), which stays open;
+> Status: **accepted** on 2026-10-05 (filesystem acceptance;
 > [issue #439](https://github.com/bitty-terminal/bitty-docs/issues/439)).
-> This document is a proposal for the plugin filesystem host surface (the
-> `bitty.fs` successor). It is not an accepted contract: it mints no
-> capability identifier, authorizes no shipped behavior, and makes no
-> compatibility promise. It must not merge beyond draft status until an
-> independent security review plus acceptance are recorded under Acceptance
-> evidence.
+> This document is the `bitty.fs` successor RFC: it gives the capability-gated
+> plugin filesystem host surface a documented home. It is an accepted
+> contract: it mints no capability identifier, authorizes no shipped behavior,
+> and makes no compatibility promise. [OQ-056](../open-questions.md)
+> stays open. Acceptance rests on explicit review plus the independent security
+> review recorded under Acceptance evidence. Revised 2026-10-05
+> per the independent security review NEEDS-FIX (findings F-01..F-04); accepted
+> 2026-10-05 after re-review APPROVE with the matrix plus `P0-AC-035` update
+> merged (PR #442).
 
 ## Problem
 
@@ -448,13 +451,21 @@ belong to the SDK work; this RFC fixes the taxonomy and the no-leak rule.
   denied-entry shape (parked to the security review; whichever shape is
   chosen must preserve the no absent-vs-denied signal rule, with disposition
   required before acceptance; suppression leaks less, marking is more
-  debuggable but must not leak existence)?
+  debuggable but must not leak existence)? Disposition (accepted
+  2026-10-05): silent-suppression default APPROVED (PX-0933); any
+  alternative shape stays parked to the security review only if it preserves
+  the no absent-vs-denied signal rule.
 - What is the exact redaction format and label encoding in read and listing
   results, and how are preview-equality and label preservation tested
   (parked with the accepted storage and history policy owners)?
 - Which threat-model matrix cells (every level x `fs`-family admission cell)
-  and which `P0-AC-035` update cover this family (owned by the security
-  review and the matrix update that must precede acceptance)?
+  and which `P0-AC-035` update cover this family? Disposition (accepted
+  2026-10-05): satisfied by PR #442 (merged as commit
+  `856f34d51f1fa45ef14b2caf7009f0c8b2d83e65`) — the filesystem family
+  admission subsection under the `filesystem` domain with every L0-L4 x
+  family admission cell plus the `P0-AC-035`/`P0-AC-030`/`P0-AC-024`/`P0-AC-013`
+  filesystem scope notes; exact identifiers stay parked to the Core bridge
+  and SDK work.
 - Does the `.wheel/` contract ever require direct file operations, or does
   mediated host read stay sufficient (owned by the Wheel contract work; this
   RFC assumes the latter and grants nothing to Wheel)?
@@ -476,6 +487,25 @@ for each unresolved question. Acceptance still authorizes no
 implementation: it records the reviewed contract, not shipped behavior.
 Host parity tests belong to the Core implementation task that follows
 acceptance, and must not be claimed as evidence inside this RFC.
+
+Accepted 2026-10-05 (filesystem acceptance,
+[issue #439](https://github.com/bitty-terminal/bitty-docs/issues/439)):
+independent security review APPROVE after the NEEDS-FIX revision (findings
+F-01..F-04 resolved in `0b0bab1`; provenance CarryCtx note PX-0933 on
+CTX-0280); independent acceptance review NOT-YET with curator gap now
+satisfied (provenance CarryCtx note PX-0936 on CTX-0280, conditional on
+curator); docs-curator APPROVE filling the PX-0936 gap (provenance CarryCtx
+note PX-0937 on CTX-0280); threat-model matrix plus `P0-AC-035` update
+covering the `fs` family under the `filesystem` domain with every L0-L4 x
+family admission cell evidenced, merged as
+[PR #442](https://github.com/bitty-terminal/bitty-docs/pull/442) (commit
+`856f34d51f1fa45ef14b2caf7009f0c8b2d83e65`). Per-UQ dispositions: Lua
+signatures parked to SDK work; payload/rate/budget caps parked to Core bridge
+and SDK work; write-disposition flag parked to Core bridge and SDK work;
+listing silent-suppression default APPROVED (see disposition above);
+redaction/label encoding parked with storage and history policy owners;
+matrix cells satisfied by the #442 merge (see disposition above); Wheel
+mediated-read assumption parked to Wheel contract work.
 
 ## References
 
