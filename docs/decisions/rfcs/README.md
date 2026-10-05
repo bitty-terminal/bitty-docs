@@ -17,6 +17,7 @@ sidebar_order: 40
 | [Panel Animations and Effects RFC](RFC-0002-panel-animations.md)                | Accepted | OQ-040                                                         |
 | [AI Consent to Generic Scope Mapping RFC](RFC-0003-ai-consent-scope-mapping.md) | Draft    | OQ-066                                                         |
 | [History Read Surface RFC](RFC-0004-history-read-surface.md)                    | Accepted | OQ-056                                                         |
+| [Filesystem Host Surface RFC](RFC-0005-filesystem-host-surface.md)              | Accepted | OQ-056                                                         |
 
 Candidate mechanisms in the design corpus remain candidates until a scoped RFC
 is written and reviewed. Acceptance records a reviewed contract, not an
