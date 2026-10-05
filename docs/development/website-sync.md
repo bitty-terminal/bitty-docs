@@ -65,8 +65,14 @@ resolves to a single SHA. The file has no extra keys and is committed.
 Synchronization is the single command defined by SY-2:
 
 ```sh
-bun run sync:docs --pin <40-char-sha-or-tag>
+just docs-sync --source <id> --pin <sha|tag>
+# equivalent: bun run sync:docs --source <id> --pin <sha|tag>
 ```
+
+`<id>` is the pin entry's source id (for example `bitty-docs`).
+`--pin` without `--source` is accepted only while exactly one source
+is pinned; once more than one source is pinned, `--pin` requires
+`--source`.
 
 Behavior, per the RFC and `bitty-website/scripts/sync-docs.mjs`:
 
@@ -277,9 +283,13 @@ publish a docs change:
    mirror:
 
    ```sh
-   just docs-sync PIN=<merged-docs-sha>
-   # equivalent: bun run sync:docs --pin <merged-docs-sha>
+   just docs-sync --source <id> --pin <merged-docs-sha>
+   # equivalent: bun run sync:docs --source <id> --pin <merged-docs-sha>
    ```
+
+   `<id>` is the pin entry's source id (for example `bitty-docs`).
+   The `PIN=<sha>` just-variable form is rejected; pass `--source`
+   and `--pin` as arguments.
 
 3. Verify the mirror is current and reproducible:
 
@@ -319,8 +329,9 @@ here.
    `docs/project/redirects.json` when a published identity moves, and
    passes `just check`.
 2. The `bitty-website` change advances the pin to that exact docs SHA
-   via `bun run sync:docs --pin <sha>`, implements presentation or
-   routing changes, and passes `just check` with the new pin.
+   via `just docs-sync --source <id> --pin <sha>`, implements
+   presentation or routing changes, and passes `just check` with the
+   new pin.
 3. Each pull request links the other (`Docs-PR`, optional `Code-PR`,
    `RFC: Website Delivery RFC OQ-023`, `CarryCtx: CTX-XXXX`) and names
    ordering constraints.
