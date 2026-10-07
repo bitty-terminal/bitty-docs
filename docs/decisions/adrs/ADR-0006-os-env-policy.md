@@ -34,6 +34,9 @@ Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> 
   closed with `E_CAPABILITY_DENIED` and never enumerate keys. Denial semantics,
   key minimization, and audit behavior are unchanged
   ([LUA-OQ-2](ADR-0009-plugin-api-v1-lua-surface.md#lua-oq-2-absent-versus-denied-namespaces)).
+- Implementation-divergence note (Issue #381, 2026-10-07): the shipped host
+  bridge is wider than the contract below; the contract stays normative and
+  the host is tracked for tightening (see Implementation divergence).
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-014 and T-11 and P0-AC-026),
   `bitty-lua` and `bitty-config` maintainers (CTX-0053).
@@ -237,6 +240,36 @@ Per-plugin VMs are untrusted and start with no environment authority:
   and is covered by the same semver and compatibility note as the rest of the
   host bridge. Future expansion such as enumeration or write-back requires a
   new minor with its own ADR and capability gate.
+
+### Implementation divergence (Issue #381)
+
+Decision Option 1: keep this ADR normative and tighten the host. This section
+records the divergence without changing the contract; accepted status is kept
+and no bound or code is widened here.
+
+- Contract (normative, unchanged): `bitty.env.get` and `bitty.env.has` accept
+  `^[A-Z_][A-Z0-9_]*$` with length 1..64, denied with `E_ENV_KEY_INVALID`.
+  Manifest grants use the same bound.
+- Shipped host (wider, to be tightened): `bitty@7da6d6f`
+  `crates/bitty-lua/src/host.rs` accepts `[A-Za-z_][A-Za-z0-9_]*` with length
+  1..128 (`ENV_KEY_MAX_BYTES = 128` at `host.rs:86`; `env_key_shape_ok` and
+  `validate_env_key`), denied with `E_DEF_INVALID` for shape and
+  `E_DEF_LIMIT` for over-bound keys before any grant check. The same 128-byte
+  mixed-case bound is still present on current main (verified 2026-10-07).
+  The host module header marks its identifiers as working identifiers, not
+  accepted spellings, so this ADR governs.
+- Manifest side (aligned with this ADR): `bitty-plugin-sdk`
+  `src/capabilities.ts` enforces `MAX_ENV_KEY_LEN = 64` with `ENV_KEY_PATTERN`
+  for the grant parameter, so a mixed-case or over-64-byte runtime key is
+  grant-never: it can pass bridge shape validation but can never hold a grant.
+- Follow-up: host tightening is tracked in `bitty#1751`; no host change is
+  made in this repository. Until that lands, diagnostics for mixed-case or
+  over-64-byte inputs follow the runtime codes above, while contract tests
+  assert the normative `E_ENV_KEY_INVALID` bound.
+- Why not the alternatives: amending this ADR to the wider host shape would be
+  a normative weakening and is rejected; keeping both shapes deliberately
+  would bless an ungrantable runtime surface with no use case. The starter
+  set in the appendix is already all uppercase within the 64-byte bound.
 
 ## Consequences
 
