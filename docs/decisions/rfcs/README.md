@@ -11,13 +11,14 @@ sidebar_order: 40
 
 # Requests for comments
 
-| RFC                                                                             | Status   | Targets                                                        |
-| ------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| [Appearance Configuration RFC](RFC-0001-appearance-configuration.md)            | Accepted | OQ-036, OQ-037, OQ-038, OQ-039, OQ-041, OQ-042, OQ-043, OQ-045 |
-| [Panel Animations and Effects RFC](RFC-0002-panel-animations.md)                | Accepted | OQ-040                                                         |
-| [AI Consent to Generic Scope Mapping RFC](RFC-0003-ai-consent-scope-mapping.md) | Draft    | OQ-066                                                         |
-| [History Read Surface RFC](RFC-0004-history-read-surface.md)                    | Accepted | OQ-056                                                         |
-| [Filesystem Host Surface RFC](RFC-0005-filesystem-host-surface.md)              | Accepted | OQ-056                                                         |
+| RFC                                                                                    | Status   | Targets                                                        |
+| -------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| [Appearance Configuration RFC](RFC-0001-appearance-configuration.md)                   | Accepted | OQ-036, OQ-037, OQ-038, OQ-039, OQ-041, OQ-042, OQ-043, OQ-045 |
+| [Panel Animations and Effects RFC](RFC-0002-panel-animations.md)                       | Accepted | OQ-040                                                         |
+| [AI Consent to Generic Scope Mapping RFC](RFC-0003-ai-consent-scope-mapping.md)        | Draft    | OQ-066                                                         |
+| [History Read Surface RFC](RFC-0004-history-read-surface.md)                           | Accepted | OQ-056                                                         |
+| [Filesystem Host Surface RFC](RFC-0005-filesystem-host-surface.md)                     | Accepted | OQ-056                                                         |
+| [Panel Provider Registration Mount RFC](RFC-0006-panel-provider-registration-mount.md) | Accepted | OQ-058, RFC-OQ-2, RFC-OQ-3, RFC-OQ-5                           |
 
 Candidate mechanisms in the design corpus remain candidates until a scoped RFC
 is written and reviewed. Acceptance records a reviewed contract, not an
