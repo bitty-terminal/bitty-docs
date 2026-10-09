@@ -16,15 +16,15 @@ Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-10-02, `bitty` `310bf
 `R-005`/`R-006`/`R-007` are `Mitigated` at `bitty` `d4d75e9`
 (`5bdcdbd`/`0afc94d`/`d4d75e9`, Issues 137/#138/#139, baseline `de134ec`)
 per RS-1..RS-7, `R-004` remains `Open` at `7a4ee41` (audit 2026-08-31), `R-001`
-and `R-002` remain `Open` with merged auditor artifacts that authorize only
+and `R-002` are `Mitigated` on merged auditor artifacts that authorize
 `Open -> Mitigated` — `R-001` audit at
 [`bitty` `docs/security/audits/vt-parser-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8c41f1e/docs/security/audits/vt-parser-2026-09.md)
 (`8c41f1e`, PR #130) and `R-002` audit at
 [`bitty` `docs/security/audits/rich-image-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8e6c8a9/docs/security/audits/rich-image-2026-09.md)
-(`8e6c8a9`, PR #132), neither transition recorded in the matrix, with the
-`R-001` P0-AC-002 long-running `cargo-fuzz` campaign advanced by `5daf686`
-(PR #1160, `fuzz/fuzz_targets/` targets, short smokes only) and still
-outstanding — all others
+(`8e6c8a9`, PR #132), both transitions recorded in the matrix (CTX-1050,
+EPIC #975), with the `R-001` P0-AC-002 long-running `cargo-fuzz` campaign
+advanced by `5daf686` (PR #1160, `fuzz/fuzz_targets/` targets, short smokes
+only) and remaining outstanding as a residual — all others
 remain `Open` because evidence is `Implemented` (VT/parser, IPC/rich/resolver
 hardening and security wave through `310bf87` — including an 18-crate workspace and bounded VT
 payload types `crates/bitty-vt/src/bounded.rs` — plus
@@ -36,11 +36,11 @@ experimental `c0aadd2`/`7e3104d`/`a8735d0` at `a8735d0` but not yet `Verified`) 
 A risk may move to `Mitigated` only when the linked control has focused tests,
 fuzz corpora, and an independent security-auditor review record with P0-AC
 traceability _and that review is recorded in the matrix row_; an authorization
-to move is not the move (`R-001`/`R-002` audits authorize but the register
-`State` stays `Open`); `Accepted` requires an explicit, time-bounded CarryCtx
+to move is not the move (`R-001`/`R-002` audits authorized and CTX-1050 recorded
+the moves, so the register `State` is now `Mitigated`); `Accepted` requires an explicit, time-bounded CarryCtx
 decision
 with owner and rationale. Risk evidence matrix: [evidence-matrix.md](evidence-matrix.md)
-(Phase E draft, `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004`
+(Phase E draft, `R-001`/`R-002` `Mitigated` via CTX-1050 and `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004`
 `Open` at `7a4ee41`; lifecycle `Open -> Mitigated -> Accepted` per risk evidence
 RFC). `R-004` was re-audited at `bitty` `7a4ee41` (baseline `de134ec`) per
 [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
@@ -75,8 +75,8 @@ that the risk can be ignored until then.
 
 | ID    | Risk                                                                                 | Severity | Likelihood | Stage | Required mitigation / exit evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | State     |
 | ----- | ------------------------------------------------------------------------------------ | -------- | ---------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| R-001 | Malformed or unterminated VT sequences crash, corrupt, or hang the terminal          | Critical | High       | P0    | Bounded incremental parser; malformed/oversized tests; VT/UTF-8/OSC/DCS/APC fuzz corpus                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Open      |
-| R-002 | Compressed graphics or rich content causes memory/CPU exhaustion                     | Critical | High       | P0    | Pre-allocation dimensions, decoded-byte and pixel limits; aggregate image budget; decompression-bomb tests                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Open      |
+| R-001 | Malformed or unterminated VT sequences crash, corrupt, or hang the terminal          | Critical | High       | P0    | Bounded incremental parser; malformed/oversized tests; VT/UTF-8/OSC/DCS/APC fuzz corpus; auditor-authorized `Open -> Mitigated` per [`vt-parser-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8c41f1e/docs/security/audits/vt-parser-2026-09.md) (`8c41f1e`, PR #130), recorded CTX-1050                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Mitigated |
+| R-002 | Compressed graphics or rich content causes memory/CPU exhaustion                     | Critical | High       | P0    | Pre-allocation dimensions, decoded-byte and pixel limits; aggregate image budget; decompression-bomb tests; auditor-authorized `Open -> Mitigated` per [`rich-image-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/8e6c8a9/docs/security/audits/rich-image-2026-09.md) (`8e6c8a9`, PR #132), recorded CTX-1050                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Mitigated |
 | R-003 | Graphics or structured protocols read/delete arbitrary local files or devices        | Critical | Medium     | P0    | Deny-by-default resource loader; regular-file and approved-path checks; no protocol-directed deletion                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Open      |
 | R-004 | OSC 52 or paste handling leaks clipboard data or executes unintended shell input     | Critical | High       | P0    | Separate read/write policy; read consent; control-character inspection (C0 excl tab/NUL/ESC/CR/LF/C1/BiDi) with `23` `suspicious_paste` (`19` baseline at `de134ec` + `4` remediation at `7a4ee41`) + `13` `paste` unit + `CLIPBOARD_MAX_BYTES=8192` char-boundary bound and bracketed `?2004` defense-in-depth; audit at `7a4ee41` keeps **Open** due to residual platform-backend (`arboard` X11/Wayland/macOS/Windows), real-window UX, and `8192` post-acquisition bound-scope gaps (see [evidence-matrix.md](evidence-matrix.md))                                                                                                                                                                                                                                                                                                                                     | Open      |
 | R-005 | OSC 8 or rich links invoke dangerous schemes or shell interpolation                  | High     | Medium     | P0    | `bitty-platform` `url.rs` allowlist `http`/`https`/`mailto`/`file` with one-layer percent-decode, `URL_MAX_LEN 4096`, `ValidatedUrl`, file authority-free `file:///` with `..` and encoded traversal deny, `bitty-rich` `hyperlink.rs` `is_safe_hyperlink_uri` + `hyperlink_at` `checked_mul` overflow safe, `bitty-runtime` `ActivationGesture` single-use + `intercept_open_url` veto-wins + re-validate at spawn (`5bdcdbd`, Issue #137); adversarial URI corpus zero shell interpolation, 4096/1024 table bounds, crate-private `ValidatedUrl` only                                                                                                                                                                                                                                                                                                                    | Mitigated |
@@ -103,14 +103,15 @@ that the risk can be ignored until then.
 ## FIND-0002 remediation wave residuals (2026-09-07, Implemented-only)
 
 The wave closes the code defects; it does not close the risks. Residuals per
-affected row, all `Open` pending the recorded matrix review: R-001 keeps fuzz
+affected row, all `Open` pending the recorded matrix review (except `R-001`
+and `R-002`, `Mitigated` via CTX-1050 with residuals below): R-001 keeps fuzz
 and
 boundary-matrix review for the cursor/tab bound plus combining buffer (its
 merged audit `vt-parser-2026-09.md` covers the parser family only and
-authorizes `Open -> Mitigated` without recording it; the long-running
+authorized `Open -> Mitigated`, recorded via CTX-1050; the long-running
 `cargo-fuzz` campaign from `5daf686` remains outstanding); R-002
 keeps decompression-bomb proof review for the headless surface cap (its merged
-audit `rich-image-2026-09.md` likewise authorizes without recording); R-003
+audit `rich-image-2026-09.md` likewise authorized, recorded via CTX-1050); R-003
 keeps negative-loader review for the empty-roots rejection; R-004 keeps
 consent-matrix review for the OSC 52 read reply plus write decode; R-011
 keeps negative-auth review for the symlink attestation; R-015/R-022 keep
@@ -126,14 +127,16 @@ fault-injection review for the fuel step slice. Tooling items
   source, IPC method, or data-recording feature changes; each `Implemented`
   crate (`ipc`, `rich`, `resolver` hardening through `1835175`) must link
   headless evidence but stays `Open` until `Verified`, except
-  `R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9` per RS-1..RS-7.
+  `R-001`/`R-002` plus `R-005`/`R-006`/`R-007` `Mitigated` (the former pair
+  recorded via CTX-1050, the latter at `d4d75e9` per RS-1..RS-7).
   `R-004` links `7a4ee41` (`de134ec` baseline) `23`+`13`+`4` tests and the
   2026-08-31 clipboard audit, and remains `Open` due to residual platform-backend,
   real-window UX, and `8192` bound-scope limits; `R-001` links `8c41f1e`
   (audit `vt-parser-2026-09.md`, PR #130) plus `5daf686` `cargo-fuzz` targets
   (PR #1160) and `R-002` links `8e6c8a9` (audit `rich-image-2026-09.md`,
-  PR #132), each `Open` with the auditor-authorized `Open -> Mitigated`
-  transition not yet recorded in the matrix; `R-005` links `5bdcdbd`
+  PR #132), each now `Mitigated` with the auditor-authorized
+  `Open -> Mitigated` transition recorded in the matrix (CTX-1050);
+  `R-005` links `5bdcdbd`
   hyperlink allowlist + activation gate, `R-006` links `0afc94d`
   deny-by-default + restricted stdlib, `R-007` links `d4d75e9` per-plugin VM +
   budgets, each `Mitigated` with residual UX/grant/budget soak gaps.
@@ -147,6 +150,7 @@ fault-injection review for the fuel step slice. Tooling items
   audit columns; no risk moves to `Mitigated` until the per-risk checklist in
   [risk evidence RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/risk-evidence-rfc.md)
   RS-1..RS-7 is satisfied, `just check` plus `act -n` are green, and CarryCtx
-  linkage is recorded; `R-005`/`R-006`/`R-007` moved `Open -> Mitigated` at
-  PR #144/#145/#146 independent review, `R-004` remains `Open` per 2026-08-31
-  audit.
+  linkage is recorded; `R-001`/`R-002` moved `Open -> Mitigated` on their
+  auditor authorizations recorded via CTX-1050, and `R-005`/`R-006`/`R-007`
+  moved `Open -> Mitigated` at PR #144/#145/#146 independent review;
+  `R-004` remains `Open` per 2026-08-31 audit.
