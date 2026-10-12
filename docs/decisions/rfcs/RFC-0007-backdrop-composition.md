@@ -57,7 +57,8 @@ In scope: the bottom-to-top layering order for one window backdrop; the
 ownership split between bitty-rendered work (decode, scale, cache, dim, tint,
 unfocused-dim) and compositor-requested effects (window translucency, blur);
 the frozen semantics of `window.opacity`, `window.background_opacity`, and
-`blur_radius`; the `background_image_roots` sandbox reuse; the headed-only
+`blur_radius`; the `decoration.background_image_roots` sandbox reuse (hereafter
+`background_image_roots`); the headed-only
 linear and dither quality path with a hash-stable headless path; the
 bitty-graphics versus core split; the security review surface; the
 compatibility and migration posture; the verification obligations; the sliced
@@ -110,11 +111,11 @@ L-8:
 | L-0   | Compositor alpha and blur region                                                     | Platform compositor |
 | L-1   | Single window-extent backdrop blit (shared by tiled panels; covers padding and gaps) | `bitty-render`      |
 | L-2   | Per-`View` decoration blits, clipped to the leaf                                     | `bitty-render`      |
-| L-3   | Kitty graphics with z-index below threshold                                          | Image pipeline      |
+| L-3   | Kitty graphics with negative z-index (`z < 0`)                                       | Image pipeline      |
 | L-4   | Cell backgrounds                                                                     | `bitty-render`      |
-| L-5   | Kitty graphics with negative z-index                                                 | Image pipeline      |
-| L-6   | Text                                                                                 | `bitty-render`      |
-| L-7   | Kitty graphics with z-index zero or above                                            | Image pipeline      |
+| L-5   | Kitty graphics with z-index zero (`z == 0`)                                          | Image pipeline      |
+| L-6   | Text (glyphs)                                                                        | `bitty-render`      |
+| L-7   | Kitty graphics with positive z-index (`z > 0`)                                       | Image pipeline      |
 | L-8   | Chrome rings, float borders, overlays, cursor                                        | Core chrome         |
 
 Rules:
@@ -124,26 +125,32 @@ Rules:
    issues its own backdrop blit.
 2. L-2 blits clip to the owning leaf `View`. Decoration never paints outside
    its leaf.
-3. The L-1 window blit sorts below the kitty z-threshold: every kitty image
-   layer (L-3, L-5, L-7) paints above the backdrop. The backdrop never covers
+3. The L-1 window blit sorts below every kitty image layer (L-3, L-5, L-7).
+   The numeric z-index threshold is `0`: negative (`z < 0`) at L-3, zero
+   (`z == 0`) at L-5, positive (`z > 0`) at L-7. The backdrop never covers
    terminal graphics.
 4. Float and pinned surfaces carry a `1` px ring, and `RoundedClip` punches
    the rounded edge over L-1: the ring and the punched edge belong to L-8 and
    paint above the backdrop, so a float never inherits a hard rectangular
    backdrop seam.
-5. Cell backgrounds (L-4) paint above below-threshold kitty images (L-3) and
-   below negative-z kitty images (L-5); text (L-6) paints above both. This
-   preserves the accepted image-over-background expectation while the
-   backdrop stays at the bottom of the stack.
+5. Cell backgrounds (L-4) paint above negative-z kitty images (L-3, `z < 0`)
+   and below zero-z kitty images (L-5, `z == 0`); text (L-6, glyphs) paints
+   above zero-z images and below positive-z images (L-7, `z > 0`). This
+   matches the DIR-021 order (negative, cell background, normal, glyphs,
+   positive) with no inversion, while the backdrop stays at the bottom of
+   the stack.
 
 Relation to the accepted direction: the decision register records a
 composition layer-order direction (background, negative kitty, cell
 background, normal kitty, glyphs, positive kitty, UI overlay) in
-[the decision register](../index.md) (DIR-021). This candidate refines that
-direction for the window-backdrop slice by fixing L-1 to one shared
-window-extent blit, placing per-`View` decoration explicitly at L-2, and
-naming the kitty threshold sort. Where the two differ, this candidate
-proposes and DIR-021 stays authoritative until this RFC is accepted.
+[the decision register](../index.md) (DIR-021). This candidate aligns with
+that direction exactly for the window-backdrop slice: it fixes L-1 to one
+shared window-extent blit, places per-`View` decoration explicitly at L-2,
+and defines the kitty threshold numerically as z-index `0` (L-3 `z < 0`,
+L-5 `z == 0`, L-7 `z > 0`). There is no inversion: negative stays below
+cell backgrounds, zero stays above cell backgrounds and below glyphs, and
+positive stays above glyphs. DIR-021 stays authoritative until this RFC is
+accepted.
 
 ## Ownership split
 
@@ -197,7 +204,12 @@ Validation rules:
    infinity) sanitize to `0` at the `ConfigPlan` boundary with a
    source-attributed diagnostic, never by silent clamping of out-of-range
    integers: out-of-range integers fail validation fail-closed.
-4. The window image reuses the `background_image_roots` sandbox unchanged:
+4. `blur_radius` takes effect only when `window.opacity < 1.0`, carrying the
+   DIR-021 `meaningful only with opacity below 1` direction. A non-zero
+   radius with `window.opacity == 1.0` is still validated and bounded at
+   `ConfigPlan` but degrades to a documented no-effect state (an opaque
+   surface has nothing behind it to blur), never a startup failure.
+5. The window image reuses the `background_image_roots` sandbox unchanged:
    deny-by-default approved roots, regular-file checks, and the accepted
    image bounds from the per-panel background-image contract in
    [RFC-0001](RFC-0001-appearance-configuration.md). No new root, no widened
