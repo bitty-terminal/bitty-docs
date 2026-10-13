@@ -270,6 +270,51 @@ Any plugin with an event subscription may observe it; no phase may intercept or
 veto it. Acquisition needs no bus event because the acquirer learns the outcome
 from the return value.
 
+### Amendment assessment for `overlay.input.available` (implementation evidence)
+
+Status: **assessment, not an amendment.** This subsection records host
+behavior that merged into `bitty` `origin/main` and assesses what a `W-01`
+amendment must decide; it amends nothing and claims no compatibility
+promise.
+
+- **Observed host behavior** (`bitty` #2034 `cb8b8e37`, CTX-1170, host half
+  of `bitty` #1972): the host registers `overlay.input.available` as an
+  `Observation` event kind (coalescable level signal, `Ungated` payload)
+  and, while a live capture owner has undrained queued input, delivers at
+  most one observation-only event per tick on the cold tick path with
+  payload `{ owner, queued }` (text owner id, queued event count) so the
+  owner drains through `bitty.ui.overlay.poll` and repaints. The payload
+  carries no input bytes, only the drain nudge; any subscriber may observe
+  it and no phase may intercept or veto it. Delivery runs right after
+  `overlay.released` on the application tick with the snapshot borrow
+  released before delivery, and a released session clears its queue, so the
+  nudge can never name a dead session. Evidence in
+  `crates/bitty-plugin-host/src/event.rs`
+  (`OverlayInputAvailable`, `overlay_input_available_kind_contract`),
+  `crates/bitty-runtime/src/plugin_runtime/overlay.rs`
+  (`OverlayCapture::input_available`), and
+  `crates/bitty-terminal/src/terminal_app.rs`
+  (`deliver_overlay_input_available`).
+- **Assessment.** The identifier is consistent with this contract's
+  additive-within-v2 rule: observation-only, never intercepted, no input
+  bytes, cold tick path only (`P0-AC-015` preserved), dead-session-safe,
+  and coupled to the single-owner session it nudges. It belongs to `W-01`
+  (the owning contract for new v2 identifiers per the composer contract's
+  ownership rule), not to a consumer page. A reviewed `W-01` amendment
+  should list it alongside `overlay.released` in the lifecycle bus-event
+  table above (payload `{ owner, queued }`, observation-only phase),
+  extend the decided coalescable set and the `Ungated` payload-policy set,
+  and carry the redaction-list entry that already names it; no new bound,
+  capability, failure code, or reason is required (existing queue depth,
+  per-event ceilings, and the idle timeout already bound the pump, and the
+  empty-queue case is a no-op, not an error).
+- **Until that amendment lands**, `overlay.input.available` is
+  `Implemented`-only host evidence, not an accepted identifier; no
+  implementation may cite this assessment as acceptance. The plugin-side
+  record lives in the plugin-ecosystem contracts (event reference and host
+  runtime notes); the terminal-side pill chrome lives with the composer
+  consumer contract.
+
 ## Capture lifecycle
 
 The lifecycle has three states per handle. Core performs every transition;
@@ -559,6 +604,11 @@ forces one yet.
   bounds, codes, and reasons decided here.
 - **Search, copy-mode, and help adoption details** parked to their owning
   extraction tasks: which surface each hosts on this contract is decided there.
+- **`overlay.input.available` amendment** parked to `W-01`: the
+  implementation evidence and the amendment scope are assessed in the
+  [amendment assessment](#amendment-assessment-for-overlayinputavailable-implementation-evidence)
+  above; the identifier stays `Implemented`-only until a reviewed `W-01`
+  amendment lists it alongside `overlay.released`.
 
 ## Acceptance criteria
 
