@@ -191,7 +191,7 @@ function validateSnapshot(data) {
     // not Verified — they do not change risk state.
     const mitigatedExpected = new Map([
       ["R-002", "8e6c8a9"],
-      ["R-003", "8e6c8a9"],
+      ["R-003", "2bf194de"],
       ["R-005", "5bdcdbd"],
     ]);
     const reopenedExpected = new Map([
