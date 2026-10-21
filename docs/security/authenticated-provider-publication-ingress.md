@@ -6,7 +6,7 @@ audience: security-reviewer
 document_type: specification
 status: draft
 website_publish: false
-sidebar_order: 35
+sidebar_order: 36
 ---
 
 # Authenticated provider publication ingress and proof lifetime
@@ -123,21 +123,23 @@ acceptance.
 
 ## Terminology
 
-| Term                | Meaning in this document                                                                                                                                          |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ingress             | The authenticated path by which an authorized Core supervisor presents a provider-routing publication to a helper.                                                |
-| Delegation          | The per-launch authority the trusted Core supervisor grants to exactly one verified helper launch for provider-publication control only.                          |
-| Launch bootstrap    | The one-shot bounded record carrying the manifest and launch key material over a dedicated inherited channel.                                                     |
-| Control session     | One mutually authenticated TLS 1.3 connection plus the matching application establishment exchange.                                                               |
-| Lifetime            | One helper-created, non-reconstructible private capability plus its live revocation cell; distinct from public publication tuples and Core authentication.        |
-| Receipt             | An opaque helper-resident lookup handle for one live proof; not a serialized proof, general credential, or caller parameter.                                      |
-| Feed revision       | Helper-owned registry mutation revision, covering aliases and projected model fields.                                                                             |
-| Publication version | Core-owned monotonic publication revision; never inferred from a feed revision, MCP list version, or generic snapshot version.                                    |
-| Snapshot version    | Core-owned source-view revision: `1` for the first adopted projection, then one greater for each replacement projection; never reset by publication-only re-mint. |
-| Strict admission    | The `Admit`/`Admitted` reservation and live-proof recheck that precedes only the scoped `ai.provider_list` handler.                                               |
-| Tolerant path       | Existing standalone, safe-mode, and non-strict `ai.*` behavior that does not depend on publication authority.                                                     |
-| Audit evidence      | Bounded, typed, secret-minimizing local decision records and the test/review artifacts that prove control behavior.                                               |
-| Broker              | The DIR-030 `bitty_runtime::component` request/response component broker; not the publication authority.                                                          |
+| Term                           | Meaning in this document                                                                                                                                                |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ingress                        | The authenticated path by which an authorized Core supervisor presents a provider-routing publication to a helper.                                                      |
+| Delegation                     | The per-launch authority the trusted Core supervisor grants to exactly one verified helper launch for provider-publication control only.                                |
+| Launch bootstrap               | The one-shot bounded record carrying the manifest and launch key material over a dedicated inherited channel.                                                           |
+| Control session                | One mutually authenticated TLS 1.3 connection plus the matching application establishment exchange.                                                                     |
+| Lifetime                       | One helper-created, non-reconstructible private capability plus its live revocation cell; distinct from the protocol-visible publication tuple and Core authentication. |
+| Receipt                        | An opaque helper-resident lookup handle for one live proof; not a serialized proof, general credential, or caller parameter.                                            |
+| Feed revision                  | Helper-owned registry mutation revision, covering aliases and projected model fields.                                                                                   |
+| Publication version            | Core-owned monotonic publication revision; never inferred from a feed revision, MCP list version, or generic snapshot version.                                          |
+| Snapshot version               | Core-owned source-view revision: `1` for the first adopted projection, then one greater for each replacement projection; never reset by publication-only re-mint.       |
+| Strict admission               | The `Admit`/`Admitted` reservation and live-proof recheck that precedes only the scoped `ai.provider_list` handler.                                                     |
+| Tolerant path                  | Existing standalone, safe-mode, and non-strict `ai.*` behavior that does not depend on publication authority.                                                           |
+| Audit evidence                 | Bounded, typed, secret-minimizing local decision records and the test/review artifacts that prove control behavior.                                                     |
+| Core publication-control owner | The Core module that owns the launch/control session, Core publication identity and version, the accepted read-only source view, and the Core-local audit ring.         |
+| Helper authority owner         | The helper module that owns the lifetime capability, proof/receipt, authoritative populated registry, registry gate, and helper-local audit ring.                       |
+| Broker                         | The DIR-030 `bitty_runtime::component` request/response component broker; not the publication authority.                                                                |
 
 ## Current evidence baseline (2026-10-21)
 
@@ -214,12 +216,12 @@ the environment, the filesystem, logs, traces, or caller parameters.
 
 ### Candidate comparison: launch-bound channel versus OS-attested endpoint
 
-| Candidate                              | What it can establish                                                                         | Why it is or is not sufficient                                                                                                                                                                                                                                                                                     |
-| -------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A: private stdio/pipe possession alone | That a process holds a duplicated descriptor or handle.                                       | Insufficient. Possession is not explicit supervisor delegation; a same-user process with a duplicated handle or inherited endpoint could present whatever it wants. The selected design adds the one-shot bootstrap and pairwise TLS on top of A.                                                                  |
-| A plus restricted bootstrap and TLS    | Possession of the specific supervisor delegation bound to the component, launch, and channel. | Selected. The helper receives fresh key material only through the kernel-mediated launch; the pin is provisioned out of band from the channel it protects; TLS Finished and the establishment echo prove the live peer holds the delegated key and matches the manifest.                                           |
-| B: OS-attested local socket/named pipe | That the peer is a same-user process and, where available, a process identity or ACL subject. | Rejected for this scope. UID/SID/ACL equality and caller identity identify the user, not the authorized Core component, instance, or channel. B would still need equivalent bootstrap/authentication plus discoverability, endpoint replacement and TOCTOU handling, per-OS peer APIs, and broader lifecycle work. |
-| B plus binary signing/attestation      | That an endpoint runs a signed binary under a platform trust root.                            | Not available and not selected. No product binary-signing or attestation delivery exists; asserting it would invent a trust root. It could be a separately reviewed future direction.                                                                                                                              |
+| Candidate                              | What it can establish                                                                         | Why it is or is not sufficient                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A: private stdio/pipe possession alone | That a process holds a duplicated descriptor or handle.                                       | Insufficient. Possession is not explicit supervisor delegation; a same-user process with a duplicated handle or inherited endpoint could present whatever it wants. The selected design adds the one-shot bootstrap and pairwise TLS on top of A.                                                                                                                                         |
+| A plus restricted bootstrap and TLS    | Possession of the specific supervisor delegation bound to the component, launch, and channel. | Selected. The helper receives fresh key material only through the kernel-mediated launch; the pin is provisioned out of band from the channel it protects; the peer's TLS 1.3 CertificateVerify signature over the handshake transcript, validated under the pinned leaf, plus Finished and the establishment echo, prove the live peer holds the delegated key and matches the manifest. |
+| B: OS-attested local socket/named pipe | That the peer is a same-user process and, where available, a process identity or ACL subject. | Rejected for this scope. UID/SID/ACL equality and caller identity identify the user, not the authorized Core component, instance, or channel. B would still need equivalent bootstrap/authentication plus discoverability, endpoint replacement and TOCTOU handling, per-OS peer APIs, and broader lifecycle work.                                                                        |
+| B plus binary signing/attestation      | That an endpoint runs a signed binary under a platform trust root.                            | Not available and not selected. No product binary-signing or attestation delivery exists; asserting it would invent a trust root. It could be a separately reviewed future direction.                                                                                                                                                                                                     |
 
 Candidate A is not accepted because a private pipe is "trusted". It is accepted
 only as the carrier for a bootstrap-provisioned, pairwise TLS delegation. A
@@ -241,8 +243,8 @@ compromised bootstrap, a stolen key, a debugger, or a compromised kernel.
 UID/SID/ACL equality, same-user endpoint access, process-ID inference, and
 caller-supplied identity echoes are defense in depth only. They do not establish
 the delegation. A same-user process that only holds a duplicated control or data
-handle cannot produce TLS Finished with the pinned key, and cannot satisfy the
-manifest echo or the per-session sequence.
+handle cannot produce a CertificateVerify signature or Finished under the pinned
+key, and cannot satisfy the manifest echo or the per-session sequence.
 
 ### What the ingress proves and does not prove
 
@@ -263,9 +265,11 @@ stated residual risk, not a solved problem.
 ### Authorization loss, process replacement, and generation confusion
 
 - Authorization loss: a policy withdrawal, grant loss, shutdown, or supervisor
-  decision to stop publication sends `Invalidate` with the `grant loss` or
-  `shutdown` reason, revokes locally before enqueueing, and closes control.
-  No acknowledgement, proof, reservation, or handler entry is issued afterward.
+  decision to stop publication revokes locally first, sends
+  `Invalidate(L1,R1)` with the `grant loss` or `shutdown` reason, closes
+  control, and leaves strict publication disabled. It does not wait for or
+  accept a `Lifetime`/`Projection`; no acknowledgement, proof, reservation, or
+  handler entry is issued afterward. Re-enabling requires a fresh launch.
 - Process replacement: there is no discoverable endpoint to replace. A
   substituted control stream lacks the per-launch private key and exact
   manifest and fails authentication. Replacement of the actual verified
@@ -285,12 +289,17 @@ These are proposed adapter requirements, not claims of tested support. Strict
 provider publication stays disabled on a platform until its native evidence
 passes.
 
-| Platform   | Required inherited-channel handling                                                                                                                                                                                                                                                                                                         | Evidence boundary                                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linux      | Create non-inheritable descriptors atomically; explicit per-child spawn actions allow only the intended bootstrap, control, data, and stderr ends; close opposite and unused ends; make surviving control/data descriptors close-on-exec and exclude them from every helper descendant; audit concurrent spawns and descriptor duplication. | Current evidence is Linux-local only. It does not prove the bootstrap. Process memory, `/proc`, and ptrace access can defeat secrecy inside the stated compromise boundary.                                                         |
-| BSD family | Reviewed platform-specific spawn actions and close-on-exec allowlist, including concurrent descriptor creation and fork behavior; no reliance on a PID supplied as zero by existing peer code.                                                                                                                                              | Verify each supported BSD independently. Strict stays disabled until native leakage and revocation tests pass; Linux or generic POSIX behavior is not evidence.                                                                     |
-| macOS      | Reviewed spawn file actions and close-on-exec facilities; inherit only selected descriptors, then close or restore flags; treat task and debugger access as compromise of trusted memory.                                                                                                                                                   | macOS-native tests are required. POSIX citations and Unix UID checks do not prove the adapter; strict stays disabled until they pass.                                                                                               |
-| Windows    | Reviewed `STARTUPINFOEX` explicit handle list; inheritable child duplicates only for the target spawn; non-inheritable parent ends; narrow handle access; close bootstrap and unused handles immediately; clear inheritance on surviving child handles; exclude all from descendants.                                                       | SID/ACL checks alone are insufficient. Native tests must cover concurrent `CreateProcess`, handle duplication and process-access rights, and descendant leakage. The current Core and helper paths fail closed on non-Unix targets. |
+| Platform                                    | Required inherited-channel handling                                                                                                                                                                                                                                                                                                         | Evidence boundary                                                                                                                                                                                                                   |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Linux x86_64 (Tier 1), Linux ARM64 (Tier 2) | Create non-inheritable descriptors atomically; explicit per-child spawn actions allow only the intended bootstrap, control, data, and stderr ends; close opposite and unused ends; make surviving control/data descriptors close-on-exec and exclude them from every helper descendant; audit concurrent spawns and descriptor duplication. | Current evidence is Linux-local only. It does not prove the bootstrap. Process memory, `/proc`, and ptrace access can defeat secrecy inside the stated compromise boundary.                                                         |
+| FreeBSD x86_64 (Tier 2)                     | Reviewed platform-specific spawn actions and close-on-exec allowlist, including concurrent descriptor creation and fork behavior; no reliance on a PID supplied as zero by existing peer code.                                                                                                                                              | Verify FreeBSD independently under its Tier 2 scheduled evidence. Strict stays disabled until native leakage and revocation tests pass; Linux or generic POSIX behavior is not evidence.                                            |
+| NetBSD and OpenBSD (Tier 3)                 | No publication-specific adapter is approved. A future adapter needs reviewed spawn actions, close-on-exec behavior, and descriptor ownership under the same rules as FreeBSD.                                                                                                                                                               | Tier 3 has no CI guarantee. Strict is unsupported until community-maintained native evidence and a separate enablement decision; no cross-tier inference.                                                                           |
+| macOS ARM64 (Tier 1), macOS x86_64 (Tier 2) | Reviewed spawn file actions and close-on-exec facilities; inherit only selected descriptors, then close or restore flags; treat task and debugger access as compromise of trusted memory.                                                                                                                                                   | macOS-native tests are required for each enabled architecture. POSIX citations and Unix UID checks do not prove the adapter; strict stays disabled until they pass.                                                                 |
+| Windows x86_64 (Tier 1)                     | Reviewed `STARTUPINFOEX` explicit handle list; inheritable child duplicates only for the target spawn; non-inheritable parent ends; narrow handle access; close bootstrap and unused handles immediately; clear inheritance on surviving child handles; exclude all from descendants.                                                       | SID/ACL checks alone are insufficient. Native tests must cover concurrent `CreateProcess`, handle duplication and process-access rights, and descendant leakage. The current Core and helper paths fail closed on non-Unix targets. |
+
+Platform tier is not publication enablement. Even a Tier 1 platform keeps
+strict publication disabled until the publication-specific native
+handle-inheritance, leakage, replacement, and shutdown tests pass.
 
 The bootstrap handle is a dedicated inherited channel: never standard input or
 output, never a named path or socket path, never the control stream, and never
@@ -318,7 +327,7 @@ and helper at `e6a2c0c`. The record family is:
 | Kind | Name          | Direction        | Purpose                                                                                                                         |
 | ---- | ------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 1    | `Establish`   | Core to helper   | Non-secret establishment echo; compare every field against the private bootstrap expectations; no publication acceptance yet.   |
-| 2    | `Established` | Helper to Core   | Same echo plus a fresh public lifetime ID; establishes the current lifetime only.                                               |
+| 2    | `Established` | Helper to Core   | Same echo plus a fresh non-secret lifetime ID; establishes the current lifetime only.                                           |
 | 3    | `Projection`  | Helper to Core   | Bounded atomic registry projection at a feed revision; Core validates and canonicalizes before adopting its read-only view.     |
 | 4    | `Publish`     | Core to helper   | Lifetime, feed revision, tuple, and canonical payload; validate origin, lifetime, version, schema, and digest before retention. |
 | 5    | `Ack`         | Helper to Core   | Confirms validation and retention of one exact publication; not yet strict proof.                                               |
@@ -370,7 +379,9 @@ credential.
 No simultaneous publication pipeline exists. Only one publication and one
 receipt are pending. A newer valid publication supersedes the prior one; the
 old acknowledgement, receipt, and proof cannot be used. A duplicate identity is
-refused even when the payload is unchanged.
+refused even when the payload is unchanged. Duplicate, out-of-order, crossed, or
+replayed `Ack`, `Bind`, or `Bound` records revoke the session; they are not
+idempotent retries and are never answered from retained state.
 
 ### Bounds, queues, and deadlines
 
@@ -453,9 +464,9 @@ projection, and never resets on a publication-only re-mint. Neither version is
 inferred from the helper feed revision, the generic IPC `snapshot_version`
 field, MCP `list_version`, or a caller value.
 
-The helper creates the private lifetime capability and the public lifetime ID.
+The helper creates the private lifetime capability and the non-secret lifetime ID.
 The capability includes a fresh OS-random `LIFETIME_SECRET_BYTES` value that is
-never serialized and is not reconstructible from the public tuple. A proof
+never serialized and is not reconstructible from the protocol-visible tuple. A proof
 references the shared revocation cell and that private capability; it does not
 merely compare the public ID or publication fields.
 
@@ -468,14 +479,14 @@ identical `Publish`, `Ack`, and `Bind` inputs. The old proof must refuse even
 when all of the following repeat:
 
 - exact canonical publication bytes and digest;
-- public identity and publication version;
+- protocol-visible identity and publication version;
 - registry feed revision and current snapshot version;
 - local epoch, process, channel, and session identifiers.
 
 The refusal must hold against both the old endpoint object and the newly
 constructed endpoint object. A guessed process-global counter, ephemeral
 pointer, caller boolean, self-asserted field, timestamp, fixed seed, or copied
-public tuple is not Core authority and does not satisfy this case. The
+protocol-visible tuple is not Core authority and does not satisfy this case. The
 distinguishing mechanism is the fresh private lifetime capability plus the
 permanently revoked old cell. Production replay is separately rejected by the
 session sequence, lifetime, and version high-water checks before
@@ -497,13 +508,13 @@ The helper creates one private authority owner per established control session,
 separate from the replaceable `PublicationState`. It owns:
 
 - the serialized revocation gate;
-- the current lifetime capability and public lifetime ID;
+- the current lifetime capability and non-secret lifetime ID;
 - one current proof slot and one receipt;
 - session, sequence, and publication-version high-water marks;
 - the current feed revision and the absolute deadline state.
 
 Only the helper's authenticated-session authority owner may create a lifetime
-or a proof. A public constructor, deserializer, caller boolean, pointer
+or a proof. An exposed constructor, deserializer, caller boolean, pointer
 identity, or process-global counter cannot mint one. The private lifetime
 capability authenticates local provenance and revocability only; authorized
 Core origin comes separately from the trusted bootstrap, TLS, and manifest
@@ -516,14 +527,15 @@ enter caller params, logs, traces, or error text.
 
 ### Rotation and invalidation sequences
 
-| Event                                                                                                                                                     | Required sequence                                                                                                                                                                                                                             |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Core-origin invalidation of current `L1/R1`                                                                                                               | Helper revokes `L1` and sends `Lifetime(L2,R1)` then `Projection(L2,R1)`; no registry mutation or refresh request is needed. Core adopts and publishes a fresh greater version.                                                               |
-| Core source-view mutation or policy withdrawal                                                                                                            | Core invalidates local state first, sends `Invalidate(L1,R1)`, and waits for the matching `Lifetime`/`Projection`; no old proof or reservation survives.                                                                                      |
-| Helper reset, clone, reconstruction, or supersession without mutation                                                                                     | Helper revokes before the operation and sends `Invalidate(L1,R1)`, `Lifetime(L2,R1)`, `Projection(L2,R1)` on the existing authenticated session; no Core refresh request.                                                                     |
-| Helper registry, model, capability, context/cost, or alias mutation                                                                                       | Under one mutation gate, revoke all shared lifetimes, acknowledgements, proofs, receipts, and reservations before changing state; increment the checked feed revision; then send `Invalidate(L1,R1)`, `Lifetime(L2,R2)`, `Projection(L2,R2)`. |
-| Supersession by a newer valid publication                                                                                                                 | Revoke the prior pending acknowledgement, receipt, and proof before accepting the replacement; the old tuple cannot be reused.                                                                                                                |
-| Absolute authority expiry, timeout, crash, closure, shutdown, grant loss, digest/version change, restart, process/endpoint/generation/channel replacement | Revoke the authoritative slot, all pending state, and every old endpoint proof; close control where applicable; no live rebootstrap.                                                                                                          |
+| Event                                                                                                                                                     | Required sequence                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Core-origin invalidation for source-view mutation or supersession of current `L1/R1`                                                                      | Helper revokes `L1` and sends `Lifetime(L2,R1)` then `Projection(L2,R1)`; no registry mutation or refresh request is needed. Core adopts and publishes a fresh greater version.                                                                                                                                                                                             |
+| Core source-view mutation (not policy withdrawal)                                                                                                         | Core invalidates local state first, sends `Invalidate(L1,R1)`, and waits for the matching `Lifetime`/`Projection`; no old proof or reservation survives.                                                                                                                                                                                                                    |
+| Core policy withdrawal, grant loss, or shutdown                                                                                                           | Core revokes locally first, sends `Invalidate(L1,R1)` with the `grant loss` or `shutdown` reason, and closes control. The helper revokes and sends no `Lifetime` or `Projection`; strict stays disabled and a fresh launch is required.                                                                                                                                     |
+| Helper reset, clone, reconstruction, or supersession without mutation                                                                                     | Helper revokes before the operation and sends `Invalidate(L1,R1)`, `Lifetime(L2,R1)`, `Projection(L2,R1)` on the existing authenticated session; no Core refresh request.                                                                                                                                                                                                   |
+| Helper registry, model, capability, context/cost, or alias mutation                                                                                       | Under one mutation gate: revoke all shared lifetimes, acknowledgements, proofs, receipts, and reservations; send `Invalidate(L1,R1)` before changing the registry; apply the atomic mutation and increment the checked feed revision to `R2`; then send `Lifetime(L2,R2)` and `Projection(L2,R2)`. If the invalidation cannot be queued, revoke and close without mutating. |
+| Supersession by a newer valid publication                                                                                                                 | Revoke the prior pending acknowledgement, receipt, and proof before accepting the replacement; the old tuple cannot be reused.                                                                                                                                                                                                                                              |
+| Absolute authority expiry, timeout, crash, closure, shutdown, grant loss, digest/version change, restart, process/endpoint/generation/channel replacement | Revoke the authoritative slot, all pending state, and every old endpoint proof; close control where applicable; no live rebootstrap.                                                                                                                                                                                                                                        |
 
 The helper retains exactly one immediately retired predecessor `L1/R1` for a
 crossed invalidation. If Core's `Invalidate(L1,R1)` arrives after the helper has
@@ -532,9 +544,11 @@ already rotated to `L2`, consume it once as correlation only, without rotating
 older predecessor, or more than one outrun rotation closes publication control
 and leaves strict disabled. Never guess or revive a lifetime.
 
-A valid Core-origin invalidation of the current lifetime is the only case that
-lets the helper rotate without a registry mutation. A helper-origin reset,
-clone, or reconstruction announces the new lifetime unsolicited. Every
+A valid Core-origin invalidation for source-view mutation or supersession of
+the current lifetime is the only Core-origin case that lets the helper rotate
+without a registry mutation. Policy withdrawal, grant loss, and shutdown are
+not rotation cases: they close control and disable strict. A helper-origin
+reset, clone, or reconstruction announces the new lifetime unsolicited. Every
 `Projection` is legal only immediately after its matching `Lifetime` or the
 initial `Established`, exactly once. All such announcements are helper
 authority over the publication lifetime, not Core authority, and Core must
@@ -653,23 +667,25 @@ Two source options were considered:
 | Independent shared registration metadata | Rejected. It creates a second registry population path, duplicate semantics, and drift between Core and the helper's authoritative `ProviderRegistry`; it also widens the metadata trust boundary without improving exact equality.                                                                      |
 | Helper-to-Core read-only projection feed | Selected. The helper constructs `Projection` from the same populated registry read view used by `ai.provider_list`, grouped and sorted under R1's exact rules. Core parses the bounded feed, derives canonical bytes itself, adopts a typed read-only view, and assigns Core-owned identity and version. |
 
-Ownership remains:
+Ownership remains split as follows:
 
-- **Core** owns the accepted read-only source view, publication identity and
-  version, snapshot version, invalidation on its own view mutation, and
-  acknowledgement/receipt handling. Core does not populate the registry, call
-  provider implementations, resolve credentials, or validate the feed by
-  contacting a provider.
-- **The helper** owns authoritative registry population, aliases, selection,
-  provider I/O, credentials, the registry read/mutation gate, retained exact
-  bytes, and the equality proof. The helper feed is not independent evidence
-  that a malicious helper supplied truthful registration data; the trusted
-  helper and its registration policy remain inside that semantic trust
-  boundary.
-- **Neither** may include provider display names, free-form routing facts,
-  aliases, selection results, provider clients, request data, credentials,
-  implementation state, or model prompt/content in the projection. The
-  projection is credential-free metadata.
+| Owner      | Owns                                                                                                                                                                                                             | Does not own                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Core       | Core publication identity and version, source-view snapshot version, the accepted read-only source view, invalidation on its own view mutation, acknowledgement and receipt handling                             | Helper lifetime, helper proof or receipt, the authoritative populated `ProviderRegistry`              |
+| The helper | Helper lifetime, proof and receipt, the authoritative populated `ProviderRegistry`, aliases, selection, provider I/O, credentials, the registry read/mutation gate, retained exact bytes, and the equality proof | Core publication identity or version, Core source-view snapshot version, Core's read-only source view |
+
+The helper feed is not independent evidence that a malicious helper supplied
+truthful registration data; the trusted helper and its registration policy
+remain inside that semantic trust boundary. Neither side may include provider
+display names, free-form routing facts, aliases, selection results, provider
+clients, request data, credentials, implementation state, or model
+prompt/content in the projection. The projection is credential-free metadata.
+
+Current baseline: the helper launch entrypoint uses `ControlOnlyRegistry`, a
+fixed empty projection at feed revision `1` with no provider or credential
+integration. Helper ownership of a populated `ProviderRegistry` is therefore the
+target contract, not current integrated evidence; real registry integration
+remains Q8.
 
 Every provider, model, capability, context/cost, or alias mutation follows the
 mutation sequence in [Rotation and invalidation sequences](#rotation-and-invalidation-sequences).
@@ -698,39 +714,47 @@ ledger:
 ### Runtime decision record contract
 
 A proposed minimum event set, emitted at the decision point and never on the
-control or data stream:
+control or data stream. Every record carries the common fields `schema_version`,
+`event`, `actor`, `outcome`, and `local_ordinal`; the table lists only
+event-specific fields.
 
-| ID     | Event                      | Required fields                                                                              |
-| ------ | -------------------------- | -------------------------------------------------------------------------------------------- |
-| AUD-1  | `launch_refused`           | actor, outcome, fixed reason class, platform class, local ordinal                            |
-| AUD-2  | `session_established`      | actor, profile version, component class, local ordinal                                       |
-| AUD-3  | `projection_adopted`       | actor, feed revision, snapshot version, canonical digest, local ordinal                      |
-| AUD-4  | `publication_published`    | actor, publication version, snapshot version, feed revision, canonical digest, local ordinal |
-| AUD-5  | `publication_acknowledged` | actor, publication version, feed revision, local ordinal                                     |
-| AUD-6  | `proof_bound`              | actor, publication version, feed revision, local ordinal                                     |
-| AUD-7  | `strict_admitted`          | actor, request ordinal, publication version, data-frame digest, local ordinal                |
-| AUD-8  | `strict_refused`           | actor, fixed reason class, request ordinal when available, local ordinal                     |
-| AUD-9  | `lifetime_rotated`         | actor, fixed reason class, feed revision, local ordinal                                      |
-| AUD-10 | `authority_revoked`        | actor, fixed reason class, local ordinal                                                     |
-| AUD-11 | `resource_refused`         | actor, fixed limit class, local ordinal                                                      |
-| AUD-12 | `platform_unsupported`     | actor, platform class, local ordinal                                                         |
-| AUD-13 | `audit_dropped`            | actor, drop count, local ordinal                                                             |
+| ID     | Event                      | Event-specific fields                                                  |
+| ------ | -------------------------- | ---------------------------------------------------------------------- |
+| AUD-1  | `launch_refused`           | fixed reason class, platform class                                     |
+| AUD-2  | `session_established`      | profile version, component class                                       |
+| AUD-3  | `projection_adopted`       | feed revision, snapshot version, canonical digest                      |
+| AUD-4  | `publication_published`    | publication version, snapshot version, feed revision, canonical digest |
+| AUD-5  | `publication_acknowledged` | publication version, feed revision                                     |
+| AUD-6  | `proof_bound`              | publication version, feed revision                                     |
+| AUD-7  | `strict_admitted`          | request ordinal, publication version, data-frame digest                |
+| AUD-8  | `strict_refused`           | fixed reason class, request ordinal when available                     |
+| AUD-9  | `lifetime_rotated`         | fixed reason class, feed revision                                      |
+| AUD-10 | `authority_revoked`        | fixed reason class                                                     |
+| AUD-11 | `resource_refused`         | fixed limit class                                                      |
+| AUD-12 | `platform_unsupported`     | platform class                                                         |
+| AUD-13 | `audit_dropped`            | drop count                                                             |
 
-A record carries a schema version, a closed event code, an actor role, an
-outcome, a closed reason/limit/platform class, and local monotonic ordinals. It
-must not carry launch nonces, lifetime IDs, receipt or acknowledgement IDs,
-certificates, keys, key material, paths, usernames, hostnames, addresses,
-provider or model strings, capability labels, payload bytes, or free-form
-error text. Canonical digests are permitted only because the projection is
-public, credential-free metadata; they are not authority.
+The record must not carry launch nonces, lifetime IDs, receipt or
+acknowledgement IDs, certificates, keys, key material, paths, usernames,
+hostnames, addresses, provider or model strings, capability labels, payload
+bytes, or free-form error text. Canonical digests are permitted only as bounded
+correlation handles over credential-free, non-secret provider-routing metadata;
+they are not authority. A digest can confirm an observer's guess about that
+metadata, so a caller or sink that must not learn that confirmation must not
+receive audit records.
 
 No audit data is added to the control record family. Adding an audit record kind
 or a data-stream field would change the wire contract and is out of scope.
 
 ### Sink, retention, and access
 
-The recommended default is a bounded in-memory ring owned by the publication
-supervisor, with drop-oldest and an explicit drop counter. No file, export, or
+The recommended default is exactly one bounded in-memory audit ring per
+process: the Core publication-control owner holds the Core ring and the helper
+authority owner holds the helper ring. Records never cross the control or data
+stream; tests read each side's ring locally. Proposed bounds are
+`AUDIT_RING_MAX_RECORDS = 256` per process and `AUDIT_RECORD_MAX_BYTES = 512`,
+with drop-oldest and an explicit drop counter. Q2 may refine the values, but
+per-process isolation and non-crossing are not optional. No file, export, or
 remote sink is enabled by default. An opt-in local file, if later approved, must
 reuse the observability boundary's user-only permissions, typed redaction,
 export preview, and capability/consent gate; it must not be invented here.
@@ -762,12 +786,12 @@ observability redaction rules apply unchanged.
 
 ### Current component shapes
 
-| Path                              | Role                                                                                                                                                                                                                                     | Publication authority                                                                             |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `bitty_runtime::component` broker | DIR-030 request/response broker: resolves and verifies a component, spawns it, completes native-component wire v1, multiplexes requests by ID, idle-stops after the component timeout, handles crashes, and computes per-request grants. | None. It is not a publication authority, parser, relay, cache, or policy point.                   |
-| `bitty_runtime::ai_helper`        | Resident-singleton AI helper supervisor; no idle stop; reuses broker resolution, digest verification, crash tracking, cleared environment, and stderr ring; speaks bitty-ipc framing over stdio.                                         | It owns the data path and supervision only; it does not own publication state.                    |
-| `ai_publication_launch`           | Feature-gated Core launch seam: generates launch material, encodes the bootstrap record, creates the one-shot bootstrap channel and duplex control channel, and establishes the TLS 1.3 client.                                          | It owns the Core side of the launch/control session, not provider or registry authority.          |
-| `bitty-ai-helper`                 | Helper launch entrypoint: adopts the inherited bootstrap/control descriptors, runs the TLS server, and drives the helper publication state machine.                                                                                      | It owns the helper lifetime and proof; it does not own Core publication identity or the registry. |
+| Path                              | Role                                                                                                                                                                                                                                     | Publication authority                                                                                                                                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty_runtime::component` broker | DIR-030 request/response broker: resolves and verifies a component, spawns it, completes native-component wire v1, multiplexes requests by ID, idle-stops after the component timeout, handles crashes, and computes per-request grants. | None. It is not a publication authority, parser, relay, cache, or policy point.                                                                                                        |
+| `bitty_runtime::ai_helper`        | Resident-singleton AI helper supervisor; no idle stop; reuses broker resolution, digest verification, crash tracking, cleared environment, and stderr ring; speaks bitty-ipc framing over stdio.                                         | It owns the data path and supervision only; it does not own publication state.                                                                                                         |
+| `ai_publication_launch`           | Feature-gated Core launch seam: generates launch material, encodes the bootstrap record, creates the one-shot bootstrap channel and duplex control channel, and establishes the TLS 1.3 client.                                          | It owns the Core side of the launch/control session, not provider or registry authority.                                                                                               |
+| `bitty-ai-helper`                 | Helper launch entrypoint: adopts the inherited bootstrap/control descriptors, runs the TLS server, and drives the helper publication state machine.                                                                                      | It owns the helper lifetime, proof, and authoritative populated registry (currently `ControlOnlyRegistry`); it does not own Core publication identity or Core's read-only source view. |
 
 At this baseline the Core launch seam is not wired to the AI helper spawn. The
 two sides are separately testable but are not integrated evidence.
@@ -866,8 +890,8 @@ canonical register and marks no mitigation verified.
 | Threat or risk trace                                                                       | Required control and test                                                                                                                                                        | Residual trust assumption                                                                                                                                 |
 | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Same-user publication injection; T-09, R-011, P0-AC-021/022                                | Restricted per-launch bootstrap, mutual TLS with exact manifest, session sequence, lifetime/version binding; deny a peer with only a data/control handle before acknowledgement. | Kernel, supervisor/helper code, and process-memory protections are trusted. External IPC authentication is unchanged and is not replaced by this control. |
-| Replay, clone, reconstruction, old proof; R-011                                            | TLS record protection, application sequence, publication high-water marks, fresh private lifetime, shared irreversible revocation; old/new endpoint refusal in the AI-0330 case. | Public tuples may repeat in offline fixtures; arbitrary memory rollback is outside the cryptographic boundary.                                            |
-| Feed drift, alias mutation, confused deputy; R-011, R-013, P0-AC-024                       | Atomic mutation gate, invalidation before mutation, revision/lifetime match, registry read gate, retained-byte equality, strict-only provider-list scope.                        | The authoritative helper registry and its registration policy are trusted; a feed echo is not independent truth.                                          |
+| Replay, clone, reconstruction, old proof; R-011                                            | TLS record protection, application sequence, publication high-water marks, fresh private lifetime, shared irreversible revocation; old/new endpoint refusal in the AI-0330 case. | Protocol-visible tuples may repeat in offline fixtures; arbitrary memory rollback is outside the cryptographic boundary.                                  |
+| Feed drift, alias mutation, confused deputy; R-011, R-013                                  | Atomic mutation gate, invalidation before mutation, revision/lifetime match, registry read gate, retained-byte equality, strict-only provider-list scope.                        | The authoritative helper registry and its registration policy are trusted; a feed echo is not independent truth.                                          |
 | Credential or child-scope leakage; R-012, P0-AC-023                                        | Credential-free projection, no credentials in control records or Core, cleared allowlisted child environment, no bootstrap in argv/env/files, bounded handles.                   | A stolen launch key can impersonate its delegated bearer until revocation or expiry; detection triggers teardown, not harmlessness.                       |
 | Audit or diagnostic exposure; R-014, P0-AC-026                                             | Typed audit schema, forbidden-field list, no default file or export, in-memory bounds, redaction at emission, seeded-secret tests.                                               | Runtime audit is not tamper-evident and not a compliance ledger; durable evidence lives in CI/CarryCtx.                                                   |
 | Exhaustion, malformed or unknown protocol; overview invariant 7                            | Pre-allocation size/depth/count limits, byte/record/rate/deadline budgets, checked overflow, bounded fuzz corpus, zero side effects on refusal.                                  | Bounded local denial of service remains possible; tolerant startup and non-strict paths stay usable.                                                      |
@@ -891,8 +915,8 @@ records exact revisions, platform, command, and independent evidence.
 | Exact positive flow                            | Trusted launch, bootstrap, TLS/manifest echo, real registry feed, Core acceptance, publish/ack/bind/bound/admit, exact data frame, provider-list projection. All tuples and bytes agree; only the scoped handler runs.                                                                                 |
 | Unauthorized same-user caller                  | A same-user process with only a data/control handle, a duplicated handle, a wrong bootstrap, a fake manifest, wrong key, wrong role, or wrong descriptor cannot establish; no ack, proof, reservation, or handler entry.                                                                               |
 | Wrong channel and stream                       | Control bytes on data, RPC on control, wrong ALPN, wrong sender, wrong session, wrong descriptor, crossed data/control nonce, or a record from another launch is refused before body acceptance.                                                                                                       |
-| Stale, future, replay, duplicate, supersession | Stale/future publication versions, duplicate identity, older lifetime, older feed revision, repeated ack/bind/bound, out-of-order records, and a newer publication superseding a pending one are refused; old receipt and proof cannot be reused.                                                      |
-| Reconstruction with identical inputs           | In one live process/channel/session, reconstruct state and replay identical publish/ack/bind bytes and public tuple; old proof refuses against both old and new endpoint objects. Production sequence/version checks separately refuse before ack.                                                     |
+| Stale, future, replay, duplicate, supersession | Stale/future publication versions, duplicate identity, older lifetime, older feed revision, duplicate or out-of-order Ack/Bind/Bound records, and a newer publication superseding a pending one are refused or revoke; old receipt and proof cannot be reused.                                         |
+| Reconstruction with identical inputs           | In one live process/channel/session, reconstruct state and replay identical publish/ack/bind bytes and protocol-visible tuple; old proof refuses against both old and new endpoint objects. Production sequence/version checks separately refuse before ack.                                           |
 | Source and registry mutation                   | Mutate provider/model/capability/context/cost or alias before, between, and after each step; verify invalidation precedes mutation, feed revision increments, old proof is revoked, and a strict read is bounded by the registry read gate.                                                            |
 | Reset and replacement                          | Reset, clone, reconstruction, crash, kill, restart, shutdown, grant loss, timeout, expiry, digest/version change, and process/endpoint/generation/channel replacement revoke all pending state; fresh authority needs a fresh launch and fresh material.                                               |
 | Malformed and oversized                        | Every named bound at limit and limit-plus-one; incomplete header, huge length, unknown version/kind/reason/error, trailing bytes, invalid TLS, zero-length records, rate burst, queue saturation, blocked write, RNG failure, and checked overflow cause refusal without allocation or side effects.   |
@@ -930,17 +954,17 @@ ordering.
 
 ## Affected contracts
 
-| Contract                             | Effect of this draft                                                                                                                                                                                                                                |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| R1 provider/routing contract         | No change to the accepted projection, ownership, or strict admission. This page supplies the residual ingress, replay, and lifetime decision.                                                                                                       |
-| AI-owned authenticated publication   | Exact records, manifest, certificate profile, constants, and carried gates stay owned there. This page must be cross-linked and must not diverge; conflicts are defects.                                                                            |
-| `bitty-ipc-api` provider-publication | No schema or placement change requested. The merged pure module at `e6a2c0c` stays in `bitty-ipc-api`; it is consumed by Core at `9493674` and by the AI endpoint/helper at `e6a2c0c`. Cross-pin golden vectors remain required before integration. |
-| Core publication-control feature     | No new public API promised. The feature stays default-off; launch wiring, real registry integration, `Admit`, and strict handler remain separately scoped.                                                                                          |
-| AI helper control crate              | No new public surface promised. Real registry source, `Admit`, data channel, and provider contact remain pending; strict stays `Unbound`.                                                                                                           |
-| DIR-030 native component boundary    | The broker remains generic; no broker API, grant, or wire change. Any future broker participation requires a separate decision.                                                                                                                     |
-| Extension/package publication        | Unchanged. No shared keys, revocation list, trust root, or publisher identity; R-015 and OQ-028/OQ-029 remain owner-separate.                                                                                                                       |
-| Security corpus                      | This page is a proposed synchronization artifact, not an accepted control. It moves no risk, P0 criterion, evidence row, or open question.                                                                                                          |
-| Observability and audit              | No new public observation kind or file writer. An opt-in local audit file, if approved later, must reuse the observability boundary.                                                                                                                |
+| Contract                             | Effect of this draft                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R1 provider/routing contract         | No change to the accepted projection, ownership, or strict admission. This page supplies the residual ingress, replay, and lifetime decision.                                                                                                                                                                                                                                                                                    |
+| AI-owned authenticated publication   | Exact records, manifest, certificate profile, constants, and carried gates stay owned there. This page must be cross-linked and must not diverge; conflicts are defects. The registry-mutation ordering here sends `Invalidate(L1,R1)` before the registry changes, which is stricter than that page's current step list; the AI commander must correct it before either page is accepted, and strict stays disabled until then. |
+| `bitty-ipc-api` provider-publication | No schema or placement change requested. The merged pure module at `e6a2c0c` stays in `bitty-ipc-api`; it is consumed by Core at `9493674` and by the AI endpoint/helper at `e6a2c0c`. Cross-pin golden vectors remain required before integration.                                                                                                                                                                              |
+| Core publication-control feature     | No new public API promised. The feature stays default-off; launch wiring, real registry integration, `Admit`, and strict handler remain separately scoped.                                                                                                                                                                                                                                                                       |
+| AI helper control crate              | No new public surface promised. Real registry source, `Admit`, data channel, and provider contact remain pending; strict stays `Unbound`.                                                                                                                                                                                                                                                                                        |
+| DIR-030 native component boundary    | The broker remains generic; no broker API, grant, or wire change. Any future broker participation requires a separate decision.                                                                                                                                                                                                                                                                                                  |
+| Extension/package publication        | Unchanged. No shared keys, revocation list, trust root, or publisher identity; R-015 and OQ-028/OQ-029 remain owner-separate.                                                                                                                                                                                                                                                                                                    |
+| Security corpus                      | This page is a proposed synchronization artifact, not an accepted control. It moves no risk, P0 criterion, evidence row, or open question.                                                                                                                                                                                                                                                                                       |
+| Observability and audit              | No new public observation kind or file writer. An opt-in local audit file, if approved later, must reuse the observability boundary.                                                                                                                                                                                                                                                                                             |
 
 This draft assigns no crate placement, dependency change, pin upgrade, or
 implementation task. Core, AI, and IPC owners retain their task allocation and
@@ -951,18 +975,18 @@ delivery timelines.
 Each point records alternatives and a recommendation. None is silently decided
 by this draft.
 
-| ID  | Open point                                       | Alternatives and recommendation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Q1  | Core TLS and certificate dependency adoption     | Current evidence: Core's default-off feature pins released `rustls 0.23.46` with `aws-lc-rs` and `bitty-network-publication` at `c8710e0`; that transport crate pins `rcgen 0.13.2` with `aws_lc_rs`. Recommend accepting those exact pins for the feature after the rcgen supply-chain/maturity review, Core dependency audit, MSRV/platform checks, and per-step work bounds. Alternative: switch to `ring`; rejected for now because it would add a second provider family and require revalidation, not reduce the review. |
-| Q2  | Audit sink and retention                         | Recommend bounded in-memory rings with drop counters and no default file or export; opt-in local file only through the observability contract. Alternatives: always-on local file (rejected: default persistence and redaction surface), remote sink (rejected: new network and trust boundary), fail-closed audit (rejected: local denial of service).                                                                                                                                                                        |
-| Q3  | Audit tamper-evidence                            | Recommend deferring. No requirement demands a tamper-evident ledger; acceptance evidence is CI/CarryCtx. Alternatives: hash-chained local log, signed audit export; both need a separate threat model and key-management decision.                                                                                                                                                                                                                                                                                             |
-| Q4  | Broker ownership of AI helper lifecycle          | Recommend keeping the broker generic and the publication launch/lifetime owner separate. If a future broker owns AI helper lifecycle, it must call publication revocation on stop/restart/backoff and never restart into an old lifetime; that is a new DIR-030 decision.                                                                                                                                                                                                                                                      |
-| Q5  | Executable verification-to-execution race        | Recommend a reviewed stable-file/launch binding or equivalent platform enforcement before strict enablement. The current digest check alone does not close the race; a signature is not required by this design and would be a separate trust-root decision.                                                                                                                                                                                                                                                                   |
-| Q6  | Per-platform enablement                          | Recommend strict disabled on every platform until its native handle-inheritance, leakage, replacement, and shutdown tests pass. Linux-local evidence does not enable BSD, macOS, or Windows. No cross-platform promise is made by this draft.                                                                                                                                                                                                                                                                                  |
-| Q7  | Authority lifetime and renewal                   | Recommend the 60-second absolute publication-authority age with no live rebootstrap; fresh authority requires an independently safe fresh launch. Alternatives: longer lifetime, in-place renewal, or reconnect; all need a reviewed secondary protocol and are not selected.                                                                                                                                                                                                                                                  |
-| Q8  | Core-helper integration and real registry source | Pending. The Core launch seam is not wired to the AI helper, and the helper uses `ControlOnlyRegistry`. The merged AI-0327 exact-byte binding is a prerequisite; equal digests alone are not equality evidence. Recommend completing integration, real registry projection, the AI-0330 regression, and cross-pin vectors before AI-0329 enables only `ai.provider_list`.                                                                                                                                                      |
-| Q9  | Audit exposure to external observers             | Recommend no plugin, Lua, IPC, MCP, or broker access to publication audit records. A future observation kind is an observability contract change, not a publication-control change.                                                                                                                                                                                                                                                                                                                                            |
-| Q10 | Product signing or attestation root              | Not selected. A future root could strengthen binary identity, but no delivery exists and it would not replace the launch key or proof lifetime. Record as a separate future trust-root decision, not an implied control.                                                                                                                                                                                                                                                                                                       |
+| ID  | Open point                                       | Alternatives and recommendation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Q1  | Core TLS and certificate dependency adoption     | Current evidence: Core's default-off feature pins released `rustls 0.23.46` with `aws-lc-rs` and `bitty-network-publication` at `c8710e0`; that transport crate pins `rcgen 0.13.2` with `aws_lc_rs`. Recommend accepting those exact pins for the feature after the rcgen supply-chain/maturity review, Core dependency audit, MSRV/platform checks, and per-step work bounds. Alternative: switch to `ring`; rejected for now because it would add a second provider family and require revalidation, not reduce the review.                                                    |
+| Q2  | Audit sink and retention                         | Recommend one bounded in-memory ring per process (Core publication-control owner and helper authority owner), never crossing the control/data stream, with `AUDIT_RING_MAX_RECORDS = 256`, `AUDIT_RECORD_MAX_BYTES = 512`, and drop counters. Confirm or refine those bounds here; no default file or export. Opt-in local file only through the observability contract. Alternatives: always-on local file (rejected: default persistence and redaction surface), remote sink (rejected: new network and trust boundary), fail-closed audit (rejected: local denial of service). |
+| Q3  | Audit tamper-evidence                            | Recommend deferring. No requirement demands a tamper-evident ledger; acceptance evidence is CI/CarryCtx. Alternatives: hash-chained local log, signed audit export; both need a separate threat model and key-management decision.                                                                                                                                                                                                                                                                                                                                                |
+| Q4  | Broker ownership of AI helper lifecycle          | Recommend keeping the broker generic and the publication launch/lifetime owner separate. If a future broker owns AI helper lifecycle, it must call publication revocation on stop/restart/backoff and never restart into an old lifetime; that is a new DIR-030 decision.                                                                                                                                                                                                                                                                                                         |
+| Q5  | Executable verification-to-execution race        | Recommend a reviewed stable-file/launch binding or equivalent platform enforcement before strict enablement. The current digest check alone does not close the race; a signature is not required by this design and would be a separate trust-root decision.                                                                                                                                                                                                                                                                                                                      |
+| Q6  | Per-platform enablement                          | Recommend strict disabled on every platform until its native handle-inheritance, leakage, replacement, and shutdown tests pass. Linux-local evidence does not enable BSD, macOS, or Windows. No cross-platform promise is made by this draft.                                                                                                                                                                                                                                                                                                                                     |
+| Q7  | Authority lifetime and renewal                   | Recommend the 60-second absolute publication-authority age with no live rebootstrap; fresh authority requires an independently safe fresh launch. Alternatives: longer lifetime, in-place renewal, or reconnect; all need a reviewed secondary protocol and are not selected.                                                                                                                                                                                                                                                                                                     |
+| Q8  | Core-helper integration and real registry source | Pending. The Core launch seam is not wired to the AI helper, and the helper uses `ControlOnlyRegistry`. The merged AI-0327 exact-byte binding is a prerequisite; equal digests alone are not equality evidence. Recommend completing integration, real registry projection, the AI-0330 regression, and cross-pin vectors before AI-0329 enables only `ai.provider_list`.                                                                                                                                                                                                         |
+| Q9  | Audit exposure to external observers             | Recommend no plugin, Lua, IPC, MCP, or broker access to publication audit records. A future observation kind is an observability contract change, not a publication-control change.                                                                                                                                                                                                                                                                                                                                                                                               |
+| Q10 | Product signing or attestation root              | Not selected. A future root could strengthen binary identity, but no delivery exists and it would not replace the launch key or proof lifetime. Record as a separate future trust-root decision, not an implied control.                                                                                                                                                                                                                                                                                                                                                          |
 
 The carried gates from the AI-owned mechanism ruling remain open and are not
 discharged here: certificate-pin shape (resolved as DER in the current draft
