@@ -14,7 +14,7 @@ sidebar_order: 32
 Status: **Pre-alpha / Engineering Milestones M1-M8** (2026-10-02, `bitty` `310bf87` previous `2cb49af` baseline `de134ec`, 18 crates,
 54 OQs `Accepted` and 46 `Open`, compat-lab/perf hardening and UX wave through `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay `Implemented`-only plus workspace/frameHash wave `Implemented`-only plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus experimental slice `c0aadd2`/`7e3104d`/`a8735d0`, plus the retirement of `bitty-core` and `bitty-panels` and the native component broker (DIR-030, `bitty#1603`, `bitty#1604`) narrowing the workspace to 18 crates, with bounded VT payload types (`crates/bitty-vt/src/bounded.rs`) and post-release security, IPC-service, execution-supervisor, and release-pipeline hardening through `310bf87`. The v0.0.21 security-closure records are `Implemented`-only evidence pending independent auditor review; they do not move any risk state.
 `R-001`, `R-002`, `R-003`, and `R-005` are `Mitigated`; `R-004` and
-`R-006`..`R-022` are `Open` as of `bitty` `339f7566` (2026-10-21), recorded
+`R-006`..`R-022` are `Open` as of `bitty` `27807ef0` (2026-10-21), recorded
 per row in the [Phase E evidence ledger](evidence-matrix.md).
 `R-001`/`R-002` moved on merged auditor artifacts
 ([`vt-parser-2026-09.md`](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/vt-parser-2026-09.md)
