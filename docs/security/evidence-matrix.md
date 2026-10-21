@@ -39,12 +39,15 @@ changes:
   here with the audit's evidence revisions.
 - `R-006`/`R-007` `Mitigated -> Open` under risk-evidence RFC RS-5
   ("mechanism change invalidating the cited hash or run"). The audited
-  `piccolo 0.3.3` VM was replaced by Phodopus in `bitty` `803c29f5`
-  (PR #1204, CTX-0599, 2026-09-21), before this matrix's previous synchronized
-  head. The host-side capability, queue-budget, and lifecycle controls remain
-  evidenced; the VM-tier evidence and the PR #145/#146 reviews cover a runtime
-  that no longer ships. The controls are not weakened; their verification is
-  reopened until the Phodopus-backed tiers are re-reviewed (F-3).
+  `piccolo 0.3.3` VM was replaced by Phodopus (PR #1204, CTX-0599, squash commit
+  `803c29f5`, merged 2026-09-21). That commit predates the current
+  `main`-history baseline, so it is provenance, not a `main`-reachable revision:
+  the reproducible evidence is `crates/bitty-lua/Cargo.toml` at `27807ef0`,
+  which pins `phodopus` at `91b8a2c` and carries no `piccolo` dependency. The
+  host-side capability, queue-budget, and lifecycle controls remain evidenced;
+  the VM-tier evidence and the PR #145/#146 reviews cover a runtime that no
+  longer ships. The controls are not weakened; their verification is reopened
+  until the Phodopus-backed tiers are re-reviewed (F-3).
 
 `R-001` stays `Mitigated` on its auditor authorization with a recorded
 residual: P0-AC-002's "long-running fuzz campaign" threshold is met only by

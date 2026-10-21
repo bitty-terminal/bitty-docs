@@ -181,7 +181,8 @@ function validateSnapshot(data) {
     // artifacts (CTX-1050); R-003 moved on the resource-loader audit; R-005
     // moved at d4d75e9 (CTX-0114). R-006/R-007 were Mitigated at
     // 0afc94d/d4d75e9 but are reopened under RS-5 because the audited
-    // piccolo 0.3.3 VM was replaced by Phodopus (803c29f5, PR #1204): their
+    // piccolo 0.3.3 VM was replaced by Phodopus (PR #1204; squash commit
+    // 803c29f5 predates the current main-history baseline): their
     // VM-tier evidence no longer covers the shipped runtime.
     // Experimental implementations c0aadd2, 7e3104d, a8735d0 are Implemented,
     // not Verified — they do not change risk state.
@@ -211,7 +212,9 @@ function validateSnapshot(data) {
         }
       } else if (reopenedExpected.has(risk.id)) {
         if (risk.state !== "Open") {
-          failures.push(`${risk.id} must remain Open (RS-5, 803c29f5)`);
+          failures.push(
+            `${risk.id} must remain Open (RS-5, Phodopus swap PR #1204)`,
+          );
         }
         if (
           !risk.reopened ||

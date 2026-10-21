@@ -184,6 +184,8 @@
         "date": "2026-10-21",
         "rule": "RS-5",
         "mechanism": "803c29f5",
+        "mechanism_note": "PR #1204 squash commit; predates the current main-history baseline, so it is provenance rather than a main-reachable revision",
+        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 27807ef0 pins phodopus 91b8a2c and carries no piccolo dependency",
         "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
         "still_evidenced": [
           "host-side capability closed set and grant intersection",
@@ -209,6 +211,8 @@
         "date": "2026-10-21",
         "rule": "RS-5",
         "mechanism": "803c29f5",
+        "mechanism_note": "PR #1204 squash commit; predates the current main-history baseline, so it is provenance rather than a main-reachable revision",
+        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 27807ef0 pins phodopus 91b8a2c and carries no piccolo dependency",
         "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
         "still_evidenced": [
           "host-side capability closed set and grant intersection",

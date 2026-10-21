@@ -30,7 +30,8 @@ extended campaign the criterion names.
 
 `R-006`/`R-007` were `Mitigated` at `0afc94d`/`d4d75e9` and are **reopened**
 to `Open` under RS-5: the audited `piccolo 0.3.3` VM was replaced by Phodopus
-(`bitty` `803c29f5`, PR #1204), so the VM-tier evidence and the PR #145/#146
+(PR #1204; `crates/bitty-lua/Cargo.toml` at `27807ef0` pins `phodopus`
+`91b8a2c`), so the VM-tier evidence and the PR #145/#146
 reviews no longer cover the shipped runtime. The host-side capability,
 queue-budget, and lifecycle controls remain evidenced and are not weakened;
 the re-review is tracked in the [evidence-matrix follow-up register](evidence-matrix.md#scoped-follow-ups)
@@ -138,7 +139,7 @@ fault-injection review for the fuel step slice. Tooling items
   `R-005` links `5bdcdbd` hyperlink allowlist + activation gate and is
   `Mitigated` with a residual live-UX gap. `R-006` links `0afc94d` and `R-007`
   links `d4d75e9`; both were `Mitigated` and are reopened `Open` under RS-5
-  because the audited `piccolo` VM was replaced by Phodopus (`803c29f5`);
+  because the audited `piccolo` VM was replaced by Phodopus (PR #1204);
   host-side capability and queue controls remain evidenced (F-3).
 - Link new implementation tasks to the relevant risk IDs.
 - Keep a residual risk open when only part of its exit evidence exists

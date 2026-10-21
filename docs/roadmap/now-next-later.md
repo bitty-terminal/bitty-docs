@@ -116,7 +116,7 @@ otherwise.
   [`docs/security/audits/clipboard-2026-09.md`](https://github.com/bitty-terminal/bitty/blob/7a4ee41/docs/security/audits/clipboard-2026-09.md)
   (CTX-0097, 2026-08-31) and remains `Open` (see `Next` `R-004`);
   `R-001`/`R-002`/`R-003`/`R-005` are `Mitigated`; `R-006`/`R-007` are reopened
-  `Open` under RS-5 at `803c29f5`; experimental `c0aadd2`/`7e3104d`/`a8735d0`
+  `Open` under RS-5 after the Phodopus swap (PR #1204); experimental `c0aadd2`/`7e3104d`/`a8735d0`
   are `Implemented` not `Verified`; overall maturity remains `Pre-alpha`.
 - **Lifecycle:** `Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready`
   (spec) and `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
@@ -173,7 +173,7 @@ transitions CTX-1050 recorded, so `R-001`/`R-002` are `Mitigated`;
 `7a4ee41`/`de134ec` for clipboard `R-004` which
 remains `Open` per the 2026-08-31 audit, `d4d75e9`/`de134ec`/`7e3104d` for
 `R-005` at `5bdcdbd` which is `Mitigated`, `R-006`/`R-007` at
-`0afc94d`/`d4d75e9` which were reopened `Open` by `803c29f5` (RS-5),
+`0afc94d`/`d4d75e9` which were reopened `Open` by the Phodopus swap (PR #1204, RS-5),
 and `c0aadd2`/`7e3104d`/`a8735d0` chain for experimental slice/dogfood/PTY fix
 which are `Implemented` (experimental) not `Verified`, plus the post-0189
 `bitty` origin `main` `7dbe4e2` chain (`b795f90` PR #328 verify harness,
@@ -360,7 +360,7 @@ docs planning reflects it, it does not promise beyond it, overall product not
 
 ### Now-4: R-006 Capability deny-by-default and restricted stdlib — reopened `Open` for Phodopus re-review
 
-- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical. The plugin VM is Phodopus since `bitty` `803c29f5` (PR #1204) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo 0.3.3` restricted-stdlib evidence no longer covers the shipped runtime.
+- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical. The plugin VM is Phodopus since PR #1204 (the swap squash commit `803c29f5` predates the current `main`-history baseline; `crates/bitty-lua/Cargo.toml` at `27807ef0` pins `phodopus` `91b8a2c`) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo 0.3.3` restricted-stdlib evidence no longer covers the shipped runtime.
 - **P0 criteria:** [P0-AC-011](../security/p0-acceptance-criteria.md#plugins) Restricted stdlib, [P0-AC-012](../security/p0-acceptance-criteria.md#plugins) Capability-checked host API, [P0-AC-013](../security/p0-acceptance-criteria.md#plugins) Per-plugin VM isolation and failure containment.
 - **Risk and evidence:** [R-006](../security/risk-register.md) via [Evidence Matrix R-006](../security/evidence-matrix.md) is `Open` (reopened under RS-5). The historical `Mitigated` state at `0afc94d` (PR #145, Issue #138) covered `bitty-plugin-host` `capability.rs`/`grant.rs`/`manifest.rs` plus the `bitty-lua` `piccolo` restricted stdlib; the host-side controls still hold, the VM-tier evidence is stale.
 - **Historical evidence (`bitty` CTX-0092):** squash `0afc94d` PR #145 `feat(plugin): verify capability deny-by-default and restricted stdlib for R-006` (`6 files +197 -17`, `capability.rs` `denied_without_grant` + `closed_identifiers` + `protocol.register`, `grant.rs` declared+granted+hash intersection, `manifest.rs` fs pattern control deny, `lib.rs` `restricted_stdlib_denies_ambient_io` test `io==nil`). RS-1..RS-7 evidenced for the piccolo runtime only.
@@ -370,7 +370,7 @@ docs planning reflects it, it does not promise beyond it, overall product not
 
 ### Now-5: R-007 Per-plugin VM isolation and attributable budgets — reopened `Open` for Phodopus re-review
 
-- **Requirement:** Per-plugin `piccolo` VM isolated `PluginId`+generation `forbid(unsafe_code)`, Fuel + `50 ms` wall/`8 ms` warning + `32 MiB` hard via `total_memory()`, queue budgets PerSub `64` strict / PerPlugin `1024` events/`256 KiB` / Global `8192`/`2 MiB` `DropOldest` hard-gated, attribution `PluginId`+generation, and transactional `reload` with `Generation overflow` and command-owner guard. Threat T-07, severity Critical. The per-plugin VM is Phodopus since `bitty` `803c29f5` (PR #1204) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo` budget evidence no longer covers the shipped runtime.
+- **Requirement:** Per-plugin `piccolo` VM isolated `PluginId`+generation `forbid(unsafe_code)`, Fuel + `50 ms` wall/`8 ms` warning + `32 MiB` hard via `total_memory()`, queue budgets PerSub `64` strict / PerPlugin `1024` events/`256 KiB` / Global `8192`/`2 MiB` `DropOldest` hard-gated, attribution `PluginId`+generation, and transactional `reload` with `Generation overflow` and command-owner guard. Threat T-07, severity Critical. The per-plugin VM is Phodopus since PR #1204 (see the `803c29f5` provenance note above) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo` budget evidence no longer covers the shipped runtime.
 - **P0 criteria:** [P0-AC-013](../security/p0-acceptance-criteria.md#plugins), [P0-AC-014](../security/p0-acceptance-criteria.md#plugins) Budgets attributable, [P0-AC-015](../security/p0-acceptance-criteria.md#plugins) Plugins out of hot paths.
 - **Risk and evidence:** [R-007](../security/risk-register.md) via [Evidence Matrix R-007](../security/evidence-matrix.md) is `Open` (reopened under RS-5). The historical `Mitigated` state at `d4d75e9` (PR #146, Issue #139) covered `bitty-lua` Fuel plus `bitty-plugin-host` queue budgets and attribution; the queue and lifecycle controls still hold, the VM-tier evidence is stale.
 - **Historical evidence (`bitty` CTX-0092):** squash `d4d75e9` PR #146 `feat(plugin): verify per-plugin VM isolation and attributable budgets for R-007` (`2 files +344 -13`, `host.rs` queue isolation + `registry.rs` transactional reload `checked_add` overflow guard), headless measurement `21` + `15` tests at `d67a65b`, `reload_*` + `measurement` suites.
