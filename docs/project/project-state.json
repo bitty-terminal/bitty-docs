@@ -78,18 +78,58 @@
   "risks": [
     {
       "id": "R-001",
-      "state": "Open",
-      "stage": "P0"
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "8c41f1e",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/vt-parser-2026-09.md",
+        "audit_task": "CTX-1050",
+        "audit_date": "2026-08-30",
+        "issue": "130",
+        "pr": "130",
+        "commit": "8c41f1e3cdc9f122f5c103fa17d5460b691b082a",
+        "residual": [
+          "P0-AC-002 long-running cargo-fuzz campaign: bounded 300 s-per-target campaign only (f31ab9cd), extended campaign outstanding"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per auditor report"
+      }
     },
     {
       "id": "R-002",
-      "state": "Open",
-      "stage": "P0"
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "8e6c8a9",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/rich-image-2026-09.md",
+        "audit_task": "CTX-1050",
+        "audit_date": "2026-08-30",
+        "issue": "132",
+        "pr": "132",
+        "commit": "8e6c8a9af85f5a5257fef7693121c177462e1067",
+        "residual": [
+          "post-audit 4af50e7 headless present-path hardening is additive, covered by the existing IMG budget contract"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per auditor report"
+      }
     },
     {
       "id": "R-003",
-      "state": "Open",
-      "stage": "P0"
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "8e6c8a9",
+        "baseline": "de134ec",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/resource-loader-2026-09.md",
+        "audit_task": "CTX-0090",
+        "audit_date": "2026-08-30",
+        "commit": "8e6c8a9af85f5a5257fef7693121c177462e1067",
+        "residual": [
+          "post-audit fade082 empty/relative/un-canonicalizable root rejections are additive"
+        ],
+        "rs_checklist": "RS-1..RS-7 evidenced per auditor report"
+      }
     },
     {
       "id": "R-004",
@@ -130,42 +170,52 @@
     },
     {
       "id": "R-006",
-      "state": "Mitigated",
+      "state": "Open",
       "stage": "P0",
       "evidence": {
+        "historical_state": "Mitigated",
         "revision": "0afc94d",
         "baseline": "de134ec",
         "audit": "https://github.com/bitty-terminal/bitty/pull/145",
-        "audit_task": "CTX-0092",
-        "audit_date": "2026-08-31",
-        "issue": "138",
-        "pr": "145",
-        "commit": "0afc94dd49a0b9df2d4cf8a0249153b468cd81b5",
-        "residual": [
-          "capability grant UX and revocation flow hardening pending",
-          "official-plugin parity suite to be extended under CTX follow-up"
+        "audit_task": "CTX-0114",
+        "audit_date": "2026-08-31"
+      },
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-5",
+        "mechanism": "803c29f5",
+        "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
+        "still_evidenced": [
+          "host-side capability closed set and grant intersection",
+          "queue budgets and attribution",
+          "transactional lifecycle reload"
         ],
-        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+        "follow_up": "F-3"
       }
     },
     {
       "id": "R-007",
-      "state": "Mitigated",
+      "state": "Open",
       "stage": "P0",
       "evidence": {
+        "historical_state": "Mitigated",
         "revision": "d4d75e9",
         "baseline": "de134ec",
         "audit": "https://github.com/bitty-terminal/bitty/pull/146",
-        "audit_task": "CTX-0092",
-        "audit_date": "2026-08-31",
-        "issue": "139",
-        "pr": "146",
-        "commit": "d4d75e92f3ba38f5e984aff017f57388e6adb63b",
-        "residual": [
-          "reclaim invariant PB-3 15% after GC ten-cycle observably fires, long-horizon soak pending",
-          "queue-budget DropOldest attribution verified, headless measurement only"
+        "audit_task": "CTX-0114",
+        "audit_date": "2026-08-31"
+      },
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-5",
+        "mechanism": "803c29f5",
+        "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
+        "still_evidenced": [
+          "host-side capability closed set and grant intersection",
+          "queue budgets and attribution",
+          "transactional lifecycle reload"
         ],
-        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+        "follow_up": "F-3"
       }
     },
     {
