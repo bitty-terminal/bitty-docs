@@ -78,21 +78,32 @@
   "risks": [
     {
       "id": "R-001",
-      "state": "Mitigated",
+      "state": "Open",
       "stage": "P0",
       "evidence": {
+        "historical_state": "Mitigated",
         "revision": "8c41f1e",
         "baseline": "de134ec",
-        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/vt-parser-2026-09.md",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/667c296/security/audits/vt-parser-2026-09.md",
         "audit_task": "CTX-1050",
         "audit_date": "2026-08-30",
         "issue": "130",
         "pr": "130",
         "commit": "8c41f1e3cdc9f122f5c103fa17d5460b691b082a",
         "residual": [
-          "P0-AC-002 long-running cargo-fuzz campaign: bounded 300 s-per-target campaign only (f31ab9cd), extended campaign outstanding"
+          "P0-AC-002 long-running cargo-fuzz campaign: bounded 300 s-per-target campaign (c17c0cff) plus 60 s smokes only; extended campaign outstanding (F-1)"
         ],
-        "rs_checklist": "RS-1..RS-7 evidenced per auditor report"
+        "rs_checklist": "authorization recorded; P0-AC-002 pass threshold not observed"
+      },
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-2",
+        "reason": "P0-AC-002 pass threshold (long-running fuzz campaign with zero crashes, hangs, or memory-safety findings) is unmet; only bounded runs are recorded",
+        "still_evidenced": [
+          "P0-AC-001 boundary matrix and deterministic resynchronization",
+          "retained fuzz/corpora/vt corpus plus replay and harness determinism"
+        ],
+        "follow_up": "F-1"
       }
     },
     {
@@ -102,7 +113,7 @@
       "evidence": {
         "revision": "8e6c8a9",
         "baseline": "de134ec",
-        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/rich-image-2026-09.md",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/667c296/security/audits/rich-image-2026-09.md",
         "audit_task": "CTX-1050",
         "audit_date": "2026-08-30",
         "issue": "132",
@@ -121,7 +132,7 @@
       "evidence": {
         "revision": "8e6c8a9",
         "baseline": "de134ec",
-        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/security/audits/resource-loader-2026-09.md",
+        "audit": "https://github.com/bitty-terminal/bitty-terminal-docs/blob/667c296/security/audits/resource-loader-2026-09.md",
         "audit_task": "CTX-0090",
         "audit_date": "2026-08-30",
         "commit": "8e6c8a9af85f5a5257fef7693121c177462e1067",
@@ -300,6 +311,17 @@
   ],
   "audits": [
     {
+      "risk": "R-001",
+      "path": "security/audits/vt-parser-2026-09.md",
+      "revision": "8c41f1e",
+      "date": "2026-08-30",
+      "verdict": "Mitigated",
+      "historical": true,
+      "superseded_by": "P0-AC-002 long-running campaign unmet (F-1)",
+      "task": "CTX-1050",
+      "issue": "130"
+    },
+    {
       "risk": "R-004",
       "path": "docs/security/audits/clipboard-2026-09.md",
       "revision": "7a4ee41",
@@ -322,6 +344,8 @@
       "revision": "0afc94d",
       "date": "2026-08-31",
       "verdict": "Mitigated",
+      "historical": true,
+      "superseded_by": "PR #1204 Phodopus VM swap reopens the risk under RS-5 (F-3)",
       "task": "CTX-0092",
       "issue": "138"
     },
@@ -331,6 +355,8 @@
       "revision": "d4d75e9",
       "date": "2026-08-31",
       "verdict": "Mitigated",
+      "historical": true,
+      "superseded_by": "PR #1204 Phodopus VM swap reopens the risk under RS-5 (F-3)",
       "task": "CTX-0092",
       "issue": "139"
     }
@@ -435,5 +461,5 @@
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, latest release, subsystem assessments, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-10-02 uses bitty 310bf87 (previous 2cb49af, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-005/R-006/R-007 remain Mitigated at d4d75e9 under RS-1..RS-7; R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; all other risks remain Open. The v0.0.21 release and post-release changes, including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604), are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-10-02 uses bitty 310bf87 (previous 2cb49af, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-002 (8e6c8a9), R-003 (8e6c8a9), and R-005 (5bdcdbd) are Mitigated; R-001 stays Open because P0-AC-002's long-running fuzz campaign is unmet (F-1); R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; R-006 and R-007 were Mitigated at 0afc94d/d4d75e9 on their historical auditor verdicts but are reopened Open under RS-5 because the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); all other risks remain Open. The v0.0.21 release and post-release changes, including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604), are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
 }
