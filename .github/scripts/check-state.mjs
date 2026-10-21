@@ -176,48 +176,76 @@ function validateSnapshot(data) {
         );
       }
     }
-    // R-005/006/007 are Mitigated at d4d75e9 per CTX-0114 with RS-1..RS-7 evidence;
-    // all other risks remain Open (no auto-accept on snapshot refresh).
+    // Curated risk states mirror docs/security/risk-register.md and
+    // docs/security/evidence-matrix.md. R-002 moved on its auditor artifact
+    // (CTX-1050); R-003 moved on the resource-loader audit; R-005 moved at
+    // d4d75e9 (CTX-0114). R-001 was recorded as Mitigated by CTX-1050 but is
+    // reopened under RS-2 because P0-AC-002's pass threshold (a long-running
+    // fuzz campaign) is unmet: only a 300 s bounded campaign and 60 s smokes
+    // are recorded. R-006/R-007 were Mitigated at 0afc94d/d4d75e9 but are
+    // reopened under RS-5 because the audited piccolo 0.3.3 VM was replaced by
+    // Phodopus (PR #1204; squash commit 803c29f5 predates the current
+    // main-history baseline): their VM-tier evidence no longer covers the
+    // shipped runtime.
     // Experimental implementations c0aadd2, 7e3104d, a8735d0 are Implemented,
     // not Verified — they do not change risk state.
-    const mitigatedExpected = new Set(["R-005", "R-006", "R-007"]);
+    const mitigatedExpected = new Map([
+      ["R-002", "8e6c8a9"],
+      ["R-003", "2bf194de"],
+      ["R-005", "5bdcdbd"],
+    ]);
+    const reopenedExpected = new Map([
+      ["R-001", "RS-2"],
+      ["R-006", "RS-5"],
+      ["R-007", "RS-5"],
+    ]);
     for (const risk of data.risks) {
       if (!["Open", "Mitigated", "Accepted"].includes(risk.state)) {
         failures.push(`${risk.id} has invalid state ${risk.state}`);
       }
       if (mitigatedExpected.has(risk.id)) {
         if (risk.state !== "Mitigated") {
-          failures.push(`${risk.id} must be Mitigated at d4d75e9 per CTX-0114`);
+          failures.push(
+            `${risk.id} must be Mitigated at ${mitigatedExpected.get(risk.id)}`,
+          );
         }
         if (!risk.evidence || !risk.evidence.revision) {
           failures.push(`${risk.id} Mitigated requires evidence.revision`);
+        } else if (risk.evidence.revision !== mitigatedExpected.get(risk.id)) {
+          failures.push(
+            `${risk.id} evidence.revision must be ${mitigatedExpected.get(risk.id)}`,
+          );
         }
-      } else {
+      } else if (reopenedExpected.has(risk.id)) {
+        const rule = reopenedExpected.get(risk.id);
         if (risk.state !== "Open") {
-          failures.push(`${risk.id} must remain Open (no auto-accept)`);
+          failures.push(`${risk.id} must remain Open (${rule})`);
         }
+        if (
+          !risk.reopened ||
+          risk.reopened.rule !== rule ||
+          !risk.reopened.follow_up
+        ) {
+          failures.push(
+            `${risk.id} Open requires reopened.rule ${rule} and a follow_up`,
+          );
+        }
+      } else if (risk.state !== "Open") {
+        failures.push(`${risk.id} must remain Open (no auto-accept)`);
       }
       if (!["P0", "P1"].includes(risk.stage)) {
         failures.push(`${risk.id} has invalid stage`);
       }
     }
-    // Validate per-risk evidence for Mitigated set
-    const r005 = data.risks.find((r) => r.id === "R-005");
-    if (r005 && r005.state === "Mitigated") {
-      if (r005.evidence?.revision !== "5bdcdbd")
-        failures.push("R-005 evidence.revision must be 5bdcdbd");
-      if (r005.evidence?.baseline !== "de134ec")
-        failures.push("R-005 evidence.baseline must be de134ec");
-    }
-    const r006 = data.risks.find((r) => r.id === "R-006");
-    if (r006 && r006.state === "Mitigated") {
-      if (r006.evidence?.revision !== "0afc94d")
-        failures.push("R-006 evidence.revision must be 0afc94d");
-    }
-    const r007 = data.risks.find((r) => r.id === "R-007");
-    if (r007 && r007.state === "Mitigated") {
-      if (r007.evidence?.revision !== "d4d75e9")
-        failures.push("R-007 evidence.revision must be d4d75e9");
+    // Validate baseline anchors for the Mitigated set.
+    for (const id of ["R-002", "R-003", "R-005"]) {
+      const risk = data.risks.find((r) => r.id === id);
+      if (
+        risk?.state === "Mitigated" &&
+        risk.evidence?.baseline !== "de134ec"
+      ) {
+        failures.push(`${id} evidence.baseline must be de134ec`);
+      }
     }
   }
 

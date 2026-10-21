@@ -1,6 +1,6 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-10-02`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `310bf87`, baseline `de134ec`, previous `2cb49af`, 18 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), while `R-005`/`R-006`/`R-007` are `Mitigated`; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-10-02`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `310bf87`, baseline `de134ec`, previous `2cb49af`, 18 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), `R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` pending the `P0-AC-002` long-running campaign, and `R-006`/`R-007` are reopened `Open` under RS-5; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the

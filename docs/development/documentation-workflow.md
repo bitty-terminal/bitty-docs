@@ -380,8 +380,11 @@ and release status (`Pre-alpha / Engineering Milestones M1-M8`, 54 OQs
 `v0.0.21` at `7da6d6f` dated 2026-09-24), per-risk state and evidence revision and audit
 references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `8192`-byte bound-scope limits per `bitty`
-`docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-005`/`R-006`/`R-007`
-`Mitigated` at `d4d75e9`), and explicit sync provenance (`CTX-0269`, previous
+`docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-002`/`R-003`
+`Mitigated` on their auditor artifacts; `R-001` `Open` because the
+`P0-AC-002` long-running campaign is unmet; `R-005` `Mitigated` at `d4d75e9`;
+`R-006`/`R-007` reopened `Open` under RS-5 after the Phodopus VM swap), and
+explicit sync provenance (`CTX-0269`, previous
 `CTX-0253`). The release and post-release security evidence are
 `Implemented`-only until the matrix and independent review gates are recorded.
 

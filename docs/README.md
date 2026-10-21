@@ -19,7 +19,9 @@ state at a glance (snapshot `2026-10-02`):
 - Latest release: `v0.0.21` (`7da6d6f`, 2026-09-24); pre-alpha releases
   exist, but no stable or supported public contract has been declared.
 - Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
-  `R-005`/`R-006`/`R-007` are `Mitigated`.
+  `R-002`/`R-003`/`R-005` are `Mitigated`; `R-001` is `Open` pending the
+  `P0-AC-002` long-running campaign; `R-006`/`R-007` are reopened `Open` after
+  the Phodopus VM swap; the remainder are `Open`.
 - Full project state: [`project-state.json`](project/project-state.json),
   the single machine fact source. This summary is derived from it and checked
   by `just state` (`bun .github/scripts/check-state.mjs`).
@@ -91,15 +93,15 @@ local `bitty` checkout; OQ counts live in the
 
 ## Security
 
-| Document                                                                                             | Authority                                                                                                                                                                                                 |
-| ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Security](security/README.md)                                                                       | Index route to the normative corpus and evidence registers; states no control status.                                                                                                                     |
-| [Security overview](security/overview.md)                                                            | Normative security contract and capability taxonomy (Pre-alpha, `Implemented` not yet `Verified`).                                                                                                        |
-| [Threat model](security/threat-model.md)                                                             | Normative trust boundaries, threats, and required controls (engineering milestones).                                                                                                                      |
-| [Risk register](security/risk-register.md)                                                           | Security risks and evidence-based closure criteria (`R-005`/`R-006`/`R-007` `Mitigated` at `d4d75e9`, `R-004` `Open` at `7a4ee41`, others `Open` until `Verified`, matrix Phase E per Risk Evidence RFC). |
-| [P0 acceptance criteria](security/p0-acceptance-criteria.md)                                         | Testable acceptance criteria for every normative P0 control.                                                                                                                                              |
-| [Evidence matrix](security/evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                                                                |
-| [Authenticated provider publication ingress](security/authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted or implemented.                                                                                     |
+| Document                                                                                             | Authority                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Security](security/README.md)                                                                       | Index route to the normative corpus and evidence registers; states no control status.                                                                                                                                                                      |
+| [Security overview](security/overview.md)                                                            | Normative security contract and capability taxonomy (Pre-alpha, `Implemented` not yet `Verified`).                                                                                                                                                         |
+| [Threat model](security/threat-model.md)                                                             | Normative trust boundaries, threats, and required controls (engineering milestones).                                                                                                                                                                       |
+| [Risk register](security/risk-register.md)                                                           | Security risks and evidence-based closure criteria (`R-002`/`R-003`/`R-005` `Mitigated`, `R-004` `Open` at `7a4ee41`, `R-001` `Open` on the unmet `P0-AC-002` campaign, `R-006`/`R-007` reopened `Open` under RS-5, matrix Phase E per Risk Evidence RFC). |
+| [P0 acceptance criteria](security/p0-acceptance-criteria.md)                                         | Testable acceptance criteria for every normative P0 control.                                                                                                                                                                                               |
+| [Evidence matrix](security/evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                                                                                                                 |
+| [Authenticated provider publication ingress](security/authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted or implemented.                                                                                                                                      |
 
 Security controls are not optional candidates merely because their exact
 mechanisms or thresholds still need an RFC. The security corpus takes
@@ -148,7 +150,7 @@ crate):
 | Accepted working direction            | Current project intent; record an ADR/RFC before freezing a public contract. See the [open-question register](decisions/open-questions.md) for the current `Accepted` count (the register owns OQ numbers).                                                                                                                                                                                                                                                                |
 | Candidate / Draft                     | A proposal to investigate, compare, or prototype. Spec remains `Draft` until reviewed `Accepted`; the [specifications index](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/README.md) table owns the current Draft list and prioritization.                                                                                                                                                                                               |
 | Experimental Implementation           | Code exists at `c0aadd2`/`7e3104d`/`a8735d0` (`Implemented` experimental, not `Verified`): single-window slice, PTY reply loop, dogfood plugins — reviewable evidence distinct from `Draft` (no code) and `Accepted`.                                                                                                                                                                                                                                                      |
-| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated` at `d4d75e9`.                                                                                                                                                                                                                                                                |
+| Open                                  | No decision has been made, or closure evidence is missing. Risks are `Open` until `Verified` (matrix `pending`); `R-004` remains `Open` at `7a4ee41`; `R-002`/`R-003`/`R-005` are `Mitigated`; `R-001` is `Open` pending the `P0-AC-002` campaign; `R-006`/`R-007` are reopened `Open` under RS-5.                                                                                                                                                                         |
 | Implemented                           | Demonstrated by code, tests, or release evidence in the owning repository (`bitty` `310bf87`, 18 crates, compat-lab/perf hardening plus scrollbar overlay plus workspace/frameHash wave plus the `v0.0.20` and `v0.0.21` plugin-runtime, Kitty-graphics, decoration, config-matrix, and release waves plus post-release execution-supervisor, IPC-service, and security foundations with experimental `c0aadd2`/`7e3104d`/`a8735d0` `Implemented` but not yet `Verified`). |
 | Verified / Compatible / Release-ready | Independent security-auditor and P0-AC evidence, compatibility matrix, and release train per Governance RFC. Not yet claimed; experimental code does not imply `Verified`.                                                                                                                                                                                                                                                                                                 |
 
@@ -160,8 +162,10 @@ post-release fixes are implementation evidence only; they do not move a risk
 or create a compatibility claim. `R-004` clipboard was re-audited at `bitty`
 `7a4ee41` (baseline `de134ec`) and remains `Open` (not `Mitigated`/`Verified`)
 due to residual platform-backend, real-window UX, and `8192`-byte bound-scope
-limits; `R-005`/`R-006`/`R-007` at `bitty` `d4d75e9` are `Mitigated` per
-RS-1..RS-7; overall product remains not `Verified`/`Compatible`/`Release-ready`.
+limits; `R-002`/`R-003`/`R-005` are `Mitigated` per the recorded auditor
+artifacts, `R-001` is `Open` pending the `P0-AC-002` campaign, and
+`R-006`/`R-007` are reopened `Open` under RS-5 for the Phodopus VM swap;
+overall product remains not `Verified`/`Compatible`/`Release-ready`.
 Detail lives in
 [`project-state.json`](project/project-state.json), the
 [risk register](security/risk-register.md), and the

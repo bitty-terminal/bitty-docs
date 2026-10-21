@@ -8,7 +8,9 @@ terminal project. Project state at a glance (snapshot `2026-10-02`):
 - Latest release: `v0.0.21` (`7da6d6f`, 2026-09-24); pre-alpha releases
   exist, but no stable or supported public contract has been declared.
 - Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
-  `R-005`/`R-006`/`R-007` are `Mitigated`.
+  `R-002`/`R-003`/`R-005` are `Mitigated`; `R-001` is `Open` pending the
+  `P0-AC-002` long-running campaign; `R-006`/`R-007` are reopened `Open` after
+  the Phodopus VM swap; the remainder are `Open`.
 - Full project state: [`docs/project/project-state.json`](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/project/project-state.json),
   the single machine fact source. This summary is derived from it and checked
   by `just state` (`bun .github/scripts/check-state.mjs`); generate the
@@ -198,8 +200,10 @@ for crates):
 - **Open**: an unresolved question or risk; risk evidence matrix remains
   `pending` (implemented but not yet verified per
   [risk register](https://github.com/bitty-terminal/bitty-docs/blob/main/docs/security/risk-register.md));
-  `R-004` remains `Open` at `7a4ee41`, `R-005`/`R-006`/`R-007` are `Mitigated`
-  at `d4d75e9`, experimental slice not yet `Verified`.
+  `R-004` remains `Open` at `7a4ee41`; `R-002`/`R-003`/`R-005` are
+  `Mitigated`; `R-001` is `Open` pending the `P0-AC-002` campaign;
+  `R-006`/`R-007` were reopened `Open` under RS-5 for the Phodopus VM swap;
+  experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
   `310bf87` 18 crates, including the `v0.0.20` and `v0.0.21` plugin-runtime,
   Kitty-graphics, decoration, config-matrix, and release waves plus post-release

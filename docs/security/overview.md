@@ -20,8 +20,10 @@ absent, proposed, or implemented is tracked per-control in the
 [evidence matrix](evidence-matrix.md) against the
 [risk register](risk-register.md). Several controls already have
 `Implemented`-only mechanism evidence in the `bitty` workspace (for example
-bounded VT payload types in `crates/bitty-vt/src/bounded.rs`); only
-`R-005`/`R-006`/`R-007` are `Mitigated`, and nothing is `Verified` yet.
+bounded VT payload types in `crates/bitty-vt/src/bounded.rs`);
+`R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` because the
+`P0-AC-002` long-running fuzz campaign is unmet, `R-006`/`R-007` are reopened
+`Open` under RS-5 for the Phodopus VM swap, and nothing is `Verified` yet.
 Mechanism presence alone never closes a risk or satisfies a P0 acceptance
 criterion — closure requires the independent `Verified` gate per RS-1..RS-7.
 
@@ -119,8 +121,10 @@ Each narrows authority only; none grants it.
 The following controls are required before Bitty is considered safe for normal
 use. Their per-control status (absent, proposed, or implemented) is tracked in
 the [evidence matrix](evidence-matrix.md): most rows are `Open` with
-`Implemented`-only mechanism evidence, `R-005`/`R-006`/`R-007` are `Mitigated`,
-and no control is `Verified` yet.
+`Implemented`-only mechanism evidence, `R-002`/`R-003`/`R-005` are
+`Mitigated`, `R-001` and `R-006`/`R-007` are `Open` (`R-001` on the unmet
+`P0-AC-002` campaign, `R-006`/`R-007` reopened under RS-5), and no control is
+`Verified` yet.
 
 <!-- markdownlint-disable MD013 -->
 

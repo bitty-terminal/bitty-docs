@@ -255,17 +255,19 @@ invalidating a cited hash or run reopens the row without a new decision.
 
 Concrete remaining items (no row moves on mechanism presence alone):
 
-1. Record the R-001 and R-002 `Open -> Mitigated` moves: merged auditor
-   artifacts already authorize them (`vt-parser-2026-09.md` at `8c41f1e`
-   PR #130; `rich-image-2026-09.md` at `8e6c8a9` PR #132) but the matrix
-   rows do not record the move.
+1. Record the R-002 `Open -> Mitigated` move: the merged auditor artifact
+   (`rich-image-2026-09.md` at `8e6c8a9`, PR #132) authorizes it and the
+   Phase E ledger now records it. R-001 stays `Open`: its merged artifact
+   (`vt-parser-2026-09.md` at `8c41f1e`, PR #130) authorizes the move, but
+   `P0-AC-002`'s long-running `cargo-fuzz` campaign is unmet (F-1).
 2. Complete the R-001 P0-AC-002 long-running `cargo-fuzz` campaign
    (`5daf686`, PR #1160, Issue #1132 added targets with short bounded
    smokes only).
-3. File the pending manual-audit artifacts: resource-loader (R-003),
-   unsafe/FFI inventory (R-018), dependency-policy (R-019),
-   origin-policy (R-020), rich constrained-AST (R-021), install-no-exec
-   (R-022), native-plugin-reject (R-017), capability-diff-block (R-016).
+3. File the remaining manual-audit artifacts: unsafe/FFI inventory (R-018),
+   dependency-policy (R-019), origin-policy (R-020), rich constrained-AST
+   (R-021), install-no-exec (R-022), native-plugin-reject (R-017),
+   capability-diff-block (R-016). The resource-loader artifact for R-003 is
+   merged; its stale header revision is tracked as F-19 in the Phase E ledger.
 4. Add evidence for the new P0-AC-035..039 rows: trust level-by-family
    admission matrix (R-006, R-017), per-tier secret denial plus
    names-only audit (R-006, R-014), credential conflict/widen/narrow/unset
