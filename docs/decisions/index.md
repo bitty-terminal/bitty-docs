@@ -179,7 +179,8 @@ the historical conversation:
   custom/user themes, and automatic light/dark switching. (Shipped reference in
   the [theme preset catalog](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/configuration/themes.md); 30 presets landed in
   bitty `CTX-0350` PR #578 `20cd735` with the AC-2 correction in PR #586
-  `a7d9e6a`; registers [OQ-046](open-questions.md),
+  `a7d9e6a`; a bounded local-file read path is implemented-only under
+  [OQ-047](open-questions.md); registers [OQ-046](open-questions.md),
   [OQ-047](open-questions.md), and [OQ-048](open-questions.md), which remain
   open.)
 - Plugin API v1, capability/manifest model, and event phases. (Accepted:
