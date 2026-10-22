@@ -21,6 +21,14 @@ authorize implementation, add a crate, or change any normative P0 control.
 Frontmatter `status` is `accepted` per the repository metadata schema; document
 status is Accepted.
 
+> **Timing amendment, 2026-10-22.** [ADR 0019](ADR-0019-bittyd-staging-advance.md)
+> advances the local daemon from post-v1.0 to the v0.2.0 slice and records that
+> slice's explicit exclusions. Only the staging sentence in this record is
+> superseded. The definitions, the Terminal and PTY ownership rules, the
+> bounded-persistence requirements, and both trust-boundary gates below stay
+> authoritative and are not weakened. The remote transition stays strictly later
+> and separate, and no accepted local daemon scope covers a remote method.
+
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per [Threat Model](../../security/threat-model.md) T-09 and R-011 and P0-AC-021
   and invariant 5), `bitty-runtime` and `bitty-ipc` maintainers (CTX-0061).
