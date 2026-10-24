@@ -24,7 +24,16 @@ sidebar_order: 50
 > Acceptance of the plugin-facing gate is deferred until the follow-up below
 > explicitly narrows the remaining boundaries. No implementation claim.
 
-## Problem
+## Document status
+
+This is a **draft bounded candidate**, reviewed on 2026-10-24 for issue #443.
+It is not an accepted plugin-facing contract, does not authorize implementation,
+and makes no compatibility promise. The accepted generic Panel Runtime
+container and Event Bus remain authoritative; the plugin-facing registration,
+placement, and capability questions remain open under `RFC-OQ-2`, `RFC-OQ-3`,
+and `RFC-OQ-5`. Follow-up issue #464 owns the remaining boundaries.
+
+## Purpose and scope
 
 The generic Panel Runtime container and Event Bus contract is accepted, but
 the plugin-facing registration/mount contract is not yet sufficiently bounded
@@ -54,68 +63,14 @@ The Core-internal `PanelRegistry::mount_panel` path
 independent-plugin presentation surface, and Plugin API v1 defines no
 `register_panel` entry point. A decision that invents a new trait spelling, a
 new capability identifier, or a new Lua registration call would widen the
-public contract without review. The decision must therefore fix the
-registration entry point, the placement rule, and the capability mapping using
-only accepted identifiers, and park exact spellings to their owners.
+public contract without review. The candidate therefore records a bounded
+direction for the registration entry point, placement rule, and capability
+mapping using only accepted identifiers, while parking exact spellings to
+their owners.
 
-## Goals
+## Normative sources this specification must not weaken
 
-- Give the plugin-facing registration/mount contract a documented home in
-  shared governance (`bitty-docs`), naming the registration entry point, the
-  placement rule, and the capability mapping.
-- Decide `RFC-OQ-2` without minting a trait spelling: fix the
-  manifest-declared `PanelType` plus `panel.provider` grant plus Core-owned
-  admission shape, the generation lifecycle, and the bound enforcement, and
-  park the exact `PanelProvider` trait spelling and error taxonomy to the
-  Core implementation owner.
-- Decide `RFC-OQ-3` without migration churn: adopt the refined Option C
-  identity semantics with the Option A encoding transitionally, fix the
-  plugin-facing mount path as distinct from the Core-internal
-  `PanelRegistry::mount_panel` code path, and fix focus and input routing as
-  unchanged.
-- Decide `RFC-OQ-5` without minting an identifier: fix the closed `panel.*`
-  family mapping (`panel.provider`, `panel.create`, `panel.focus`,
-  `panel.overlay`) and its boundary against `layout.provider`,
-  `browser.embed`, `ui.rich`, and `ui.overlay`, reusing the accepted
-  topic-declared bus rule and per-principal scope separation.
-- Reuse only accepted identifiers, bounds, and lifecycles; every value that
-  stays parked names its owner.
-- Name the blocked consumers and the unblocking chain explicitly, so the Core
-  host bridge, the SDK spellings, and consumer parity each have a named
-  predecessor instead of an implied one.
-- Define the acceptance path: what review and register synchronization must
-  exist before this candidate can become an accepted contract.
-
-## Non-goals
-
-- No capability identifier is minted by this document; the closed `panel.*`
-  family (`panel.provider`, `panel.create`, `panel.focus`, `panel.overlay`)
-  is reused unchanged, and adding a member requires its own acceptance plus
-  the Core host integration that enforces it.
-- No `PanelProvider` trait spelling, method signature, argument order, or
-  error enum is fixed here; illustrative shapes in the accepted Panel Runtime
-  RFC remain illustrative-only, and spellings belong to the Core
-  implementation work that follows acceptance.
-- No Lua registration entry point is minted here; Plugin API v1 defines no
-  `register_panel` entry point, and this RFC adds none. Manifest declaration
-  plus capability grant plus host-mediated creation is the entry point fixed
-  here; SDK spellings belong to follow-up work.
-- No `ViewId` migration is performed here; adopting the placement rule
-  changes no existing `ViewId` allocation, retirement, or generation rule.
-- No new numeric ceiling is invented here; the accepted `PR-1` through
-  `PR-12` bounds and the accepted three-level queue envelope (`PerSub 64`,
-  `PerPlugin 1024` events and `256 KiB`, Global `8192` events and `2 MiB`,
-  `BoundedText 8 KiB`, `drain_batch 32` events and `8 KiB`) are reused
-  unchanged.
-- No open question besides `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5` is closed;
-  `RFC-OQ-1`, `RFC-OQ-4`, `RFC-OQ-6`, `RFC-OQ-7`, `RFC-OQ-8`, and `RFC-OQ-9`
-  stay open with their owners.
-- No shipped, stable, normative, or compatibility-guaranteed behavior is
-  claimed for any registration, placement, focus, grant, or denial shape.
-
-## Normative sources this proposal must not weaken
-
-This proposal must be read together with, and must not weaken:
+This candidate must be read together with, and must not weaken:
 
 - The [security overview](../../security/overview.md),
   the [threat model](../../security/threat-model.md),
@@ -175,18 +130,18 @@ Where a control or threshold appears to need change, it is recorded under
   plugins and in `bitty --safe`; it owns panel lifecycle, the capability
   gate, layout and decoration, focus routing, and resource budgets.
 - **Panel**: the workspace-managed application container with a stable
-  `PanelId`, per the accepted Panel Runtime RFC; the user- and
-  plugin-visible application identity.
+  `PanelId`, per the accepted Panel Runtime RFC; the application identity used
+  by this candidate. Plugin-visible identity remains an open point.
 - **View**: the `LayoutTree` leaf and internal compositor attachment point
   with a stable `ViewId`; never conflated with `TerminalId` or `PanelId`,
-  and hidden from end users and from plugin Lua APIs under the decided
-  placement.
-- **PanelProvider**: the plugin-supplied factory that declares one or more
-  `PanelType` values; requires the `panel.provider` capability. The name is
-  the accepted contract term; the exact trait spelling stays parked.
-- **PanelType**: a closed `v1` set member contributed by a `PanelProvider`
-  (for example `terminal`, `rich`, `browser`, `helper`, `canvas`), validated
-  via manifest. No member is added here.
+  and hidden from end users and from plugin Lua APIs under the candidate
+  placement direction.
+- **PanelProvider**: a candidate term for a plugin-supplied factory that
+  declares one or more `PanelType` values; the candidate requires the
+  `panel.provider` capability. The exact trait spelling stays open.
+- **PanelType**: a candidate closed-set member contributed by a
+  `PanelProvider` (for example `terminal`, `rich`, `browser`, `helper`,
+  `canvas`), validated via manifest. No member is added here.
 - **Attachment**: the compositor-internal binding between a panel identity
   and a concrete layout slot; moving an identity re-parents the attachment,
   never the identity.
@@ -199,16 +154,75 @@ Where a control or threshold appears to need change, it is recorded under
 - **Candidate**: a proposal that is not decided; candidate status is not
   acceptance and is not implementation.
 
-## Bounded candidate
+## Body
 
-The candidate reuses the accepted Panel Runtime container with a
-Core-owned registration admission, a candidate placement, and a candidate
-capability mapping. Its invariant, in one sentence: **a granted plugin may
-declare panel types that Core admits, mounts onto views, focuses, and
-suspends under generation fencing and bounded budgets, or receive a typed
-denial; it may never self-mount a view, invent a capability family, hold a
-PTY descriptor, place a callback on the input hot path, or turn visibility
-into authority.**
+### Goals
+
+- Provide a single, reviewable home for a **bounded candidate** describing the
+  possible plugin-facing registration, placement, and capability boundaries;
+  this section does not decide or accept those boundaries.
+- Identify the candidate shape for `RFC-OQ-2` without minting a trait spelling:
+  record the manifest-declared `PanelType`, the existing `panel.provider`
+  grant, and Core-owned admission as material for future acceptance, while
+  leaving exact spellings, lifecycle observations, and denial wire shapes to
+  their owners.
+- Identify the candidate shape for `RFC-OQ-3` without prescribing migration
+  churn: record the refined Option C identity direction and transitional Option
+  A encoding as material for future acceptance, while leaving plugin-visible
+  identity, focus/input behavior, layout ownership, and persistence to their
+  owners.
+- Identify the candidate shape for `RFC-OQ-5` without minting an identifier:
+  describe how the existing `panel.*` family could remain distinct from
+  `layout.provider`, `browser.embed`, `ui.rich`, and `ui.overlay`, subject to
+  future review of topic rules and per-principal scope separation.
+- Reuse accepted identifiers, bounds, and generic lifecycle controls only as
+  constraints on the candidate; reuse does not turn a candidate detail into an
+  accepted plugin-facing contract.
+- Name the blocked consumers and the evidence chain required before any future
+  acceptance could authorize host, SDK, or consumer-parity work.
+- State the review, security, documentation, and open-boundary evidence that a
+  **future acceptance** must provide; until that evidence exists, the candidate
+  authorizes no implementation, compatibility promise, grant, or mount.
+
+### Non-goals
+
+- No capability identifier is minted by this document; the closed `panel.*`
+  family (`panel.provider`, `panel.create`, `panel.focus`, `panel.overlay`)
+  is reused unchanged, and adding a member requires its own acceptance plus
+  the Core host integration that enforces it.
+- No `PanelProvider` trait spelling, method signature, argument order, or
+  error enum is fixed here; illustrative shapes in the accepted Panel Runtime
+  RFC remain illustrative-only, and spellings belong to the Core
+  implementation work that follows acceptance.
+- No Lua registration entry point is minted here; Plugin API v1 defines no
+  `register_panel` entry point, and this RFC adds none. Manifest declaration
+  plus capability grant plus host-mediated creation is the candidate entry
+  shape; SDK spellings belong to follow-up work and require future acceptance.
+- No `ViewId` migration is performed here; adopting the placement rule
+  changes no existing `ViewId` allocation, retirement, or generation rule.
+- No new numeric ceiling is invented here; the accepted `PR-1` through
+  `PR-12` bounds and the accepted three-level queue envelope (`PerSub 64`,
+  `PerPlugin 1024` events and `256 KiB`, Global `8192` events and `2 MiB`,
+  `BoundedText 8 KiB`, `drain_batch 32` events and `8 KiB`) are reused
+  unchanged.
+- No open question besides `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5` is closed;
+  `RFC-OQ-1`, `RFC-OQ-4`, `RFC-OQ-6`, `RFC-OQ-7`, `RFC-OQ-8`, and `RFC-OQ-9`
+  stay open with their owners.
+- No shipped, stable, normative, or compatibility-guaranteed behavior is
+  claimed for any registration, placement, focus, grant, or denial shape.
+
+### Candidate summary
+
+The candidate reuses the accepted Panel Runtime container as a constraint and
+records a possible Core-owned registration admission, placement, and
+capability mapping. Its candidate invariant, in one sentence: **a future
+accepted contract could permit a granted plugin to declare panel types that
+Core admits, mounts onto views, focuses, and suspends under generation fencing
+and bounded budgets, or receive a typed denial; it could never permit the
+plugin to self-mount a view, invent a capability family, hold a PTY
+descriptor, place a callback on the input hot path, or turn visibility into
+authority.** This sentence is a target for future acceptance, not an
+authorization in this RFC.
 
 ### RFC-OQ-2 candidate: PanelProvider registration entry point
 
@@ -221,7 +235,8 @@ into authority.**
   `crates/bitty-runtime/src/registry/panel.rs` with `create_panel`,
   `mount_panel`, `focus_panel`, `suspend_panel`, `resume_panel`, and
   `dispose_panel`) under manifest validation and bound checks. A `PanelType`
-  contributed without the matching `panel.*` grant fails at registration.
+  contributed without the matching `panel.*` grant would fail at registration
+  under a future accepted contract.
 - No new Lua registration call is minted here. Plugin API v1 defines no
   `register_panel` entry point, and this RFC adds none; SDK spellings for
   any future Lua surface belong to follow-up work owned by the Core bridge
@@ -232,7 +247,7 @@ into authority.**
   (including `PanelId`, `ViewId`, `TerminalId`, `Generation`, and
   `EventTopic` sketches) remain illustrative-only and authorize no code
   shape.
-- Lifecycle follows the accepted generation rule: one logical provider
+- Candidate lifecycle reuses the accepted generation rule: one logical provider
   binding per `(PluginId, generation)`; handles travel as `(id, generation)`
   pairs on every cross-component call; a call with a stale generation is
   rejected with `StaleHandle` before any state access; teardown of generation
@@ -246,20 +261,21 @@ into authority.**
   per-panel or per-plugin queue (`PR-8`), global bus queue (`PR-9`), overlay
   count per window (`PR-10`), overlay text and tooltip (`PR-11`), and command
   contributions per panel type (`PR-12`), each validated at its accepted
-  validation point with its accepted failure shape.
+  validation point with the accepted generic failure shape; plugin-facing
+  operation shapes remain open.
 - Official and bundled panels pass through the identical registration path;
   no private channel and no first-party bypass exists.
 
 ### RFC-OQ-3 candidate: Panel-to-View placement
 
-- Placement adopts the recorded refined Option C identity semantics with the
-  Option A encoding transitionally. Panel is the application and session
+- Placement uses the recorded refined Option C identity semantics with the
+  Option A encoding transitionally as a candidate direction. Panel is the application and session
   identity (`PanelId` survives a move across workspaces, a presentation-mode
   change, and a tab reorder); `View` remains the internal attachment point
   (`ViewId` stays the `LayoutTree` leaf with its allocation, retirement, and
   generation rules unchanged, hidden from end users and from plugin Lua
   APIs); the binding is explicit and directional (a panel mounts onto a
-  view, at most one-to-one in the accepted sense of a `PanelId` binding to
+  view, at most one-to-one in the candidate sense of a `PanelId` binding to
   an empty `ViewId`, with moves re-parenting the binding while preserving
   both identities); `ViewContent::Panel(PanelId)` is retained as the
   transitional encoding of the same binding; no `ViewId` migration churn is
@@ -272,20 +288,22 @@ into authority.**
 - Focus and input routing are unchanged in shape: `Platform -> Router ->
 focused View or Panel -> keymap and overlay -> encoder -> PTY` for
   terminal-backed panels, with exactly zero or one focused target per active
-  workspace and MRU re-homing on detach or destroy. The visible focus target
-  is a `PanelId`; the internal hit-testing rectangle remains a `View`
-  rectangle. A focus change still forces a full present and never mutates a
-  terminal grid. `InputTarget::Panel` remains the routed target when a panel
-  is focused, with the accepted `route_input` precedence (panel wins over
-  view) retained. No plugin callback sits on the input hot path, and overlay
+  workspace and MRU re-homing on detach or destroy. The candidate preserves the generic focus target as a `PanelId` and the
+  internal hit-testing rectangle as a `View` rectangle. Any focus change must
+  still force a full present without mutating a terminal grid. The plugin-facing
+  `InputTarget::Panel` and `route_input` behavior remain acceptance points, not
+  a settled plugin contract. No plugin callback sits on the input hot path, and overlay
   capture stays presentation-only.
-- Persistence follows the accepted rehydration rule: workspace save and
-  restore persists the visible identity (panel) and its attachment; a
-  restored panel receives a fresh attachment and, for a terminal-backed
-  panel, a fresh `TerminalId` under the same persistence identity, without
-  depending on `ViewId` numeric reuse. A `View` may outlive the panel
-  mounted on it and may host a different panel afterwards; a panel without
-  an attachment is suspended, not destroyed.
+- Persistence is not decided here. The accepted Panel Runtime RFC leaves
+  workspace save/restore, persistence format and versioning, and PTY
+  reattachment under `RFC-OQ-9`; this candidate makes no persistence claim.
+  Issue [#464](https://github.com/bitty-terminal/bitty-docs/issues/464)
+  tracks the plugin-facing identity and reload implications that must be
+  reconciled with that question. A future candidate may evaluate preserving
+  panel identity and attachment while allocating a fresh `TerminalId`, but no
+  such rehydration rule may be inferred from this document. A `View` may outlive
+  the panel mounted on it and may host a different panel afterwards; whether
+  an unattached panel is suspended or destroyed remains an open lifecycle point.
 - Placement changes no capability, budget, or trust boundary. A panel still
   holds no PTY descriptor, GPU object, or native window handle; the binding
   map is Core-owned presentation state. Panel visibility never becomes
@@ -297,8 +315,8 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
 - The mapping reuses the closed `panel.*` family in the Core capability
   seed: `panel.provider`, `panel.create`, `panel.focus`, and
   `panel.overlay`. Plugins cannot invent families; a `PanelType` contributed
-  without the matching `panel.*` grant fails at registration. This RFC mints
-  no member and changes no grammar.
+  without the matching `panel.*` grant would fail at registration under a
+  future accepted contract. This RFC mints no member and changes no grammar.
 - `panel.*` does not subsume adjacent gates and grants none implicitly:
   `LayoutProvider` retains `layout.provider`, `Browser` retains
   `browser.embed`, `Rich` retains `ui.rich`, and `ui.overlay` gates
@@ -335,10 +353,10 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
   (independent package `bitty-terminal.git-panel`, carrying `panel.provider`,
   `panel.create`, `process.spawn:git`, `terminal.semantic-read`, and
   `fs.read` scope today) implement headlessly with no panel surface until
-  the host bridge, SDK spellings, and consumer parity land. This RFC decides
-  the contract gate only; presentation parity stays with the owning
+  the host bridge, SDK spellings, and consumer parity land. This RFC bounds
+  the candidate gate only; presentation parity stays with the owning
   repositories and is not claimed here.
-- The unblocking chain after this acceptance is: Core host bridge lands the
+- If this candidate is later accepted, the unblocking chain is: Core host bridge lands the
   enforcement (registration admission, placement binding, focus routing,
   bound enforcement, typed denials) under its own task with host parity
   tests; SDK work mints the accepted spellings with the mock host and
@@ -351,6 +369,58 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
   deferred-candidate note keep their owning-repo rows deferred. They may cite
   this bounded candidate for context only after their owners review it; they
   must not treat it as an accepted contract or distribution/catalog change.
+
+## Security review
+
+- Threat-model touchpoints: plugin escape through self-mounted views (denied
+  by the host-mediated placement rule and the Core-owned binding map);
+  capability escape through invented families or implied grants (denied by
+  the closed-family rule and the no-implicit-grant boundary against
+  `layout.provider`, `browser.embed`, `ui.rich`, and `ui.overlay`); stale
+  generation use across reload (rejected with `StaleHandle` before state
+  access); queue and topic exhaustion (reused `PR-1` through `PR-12` bounds
+  with per-principal attribution and `DropOldest` counting); input-hot-path
+  capture (no plugin callback on the hot path; overlay capture stays
+  presentation-only); PTY, GPU, or window-handle reachability (a panel holds
+  none); and visibility-as-authority confusion (visibility grants nothing).
+- P0 gates exercised: `P0-AC-012` (every registration, mount, focus, and bus
+  operation capability-checked), `P0-AC-013` (faults contained to the
+  calling plugin VM), `P0-AC-014` (panels, topics, payloads, batches, queues,
+  overlays, and command contributions bounded with per-principal
+  attribution), `P0-AC-015` (no plugin callback on the input, parse, or
+  render hot path), `P0-AC-016` (presentation never Terminal Truth),
+  `P0-AC-024` (bus and panel content treated as untrusted observation),
+  `P0-AC-030` (new `panel.*` requests block updates pending diff approval),
+  and `P0-AC-035` (trust-level admission before grant intersection).
+- Compatibility: docs-only acceptance with no versioned surface change. No
+  identifier is minted, no v1 member is altered, aliased, or shadowed, and
+  no `ViewId` allocation or generation rule changes, so no compatibility
+  promise is made and none is needed. Any future trait spelling, Lua
+  spelling, or new `panel.*` member is capability-registry stable from its
+  own acceptance, and that acceptance review must treat the choice as a
+  compatibility decision, not as a spelling detail.
+
+No security-auditor sign-off is claimed by this draft candidate. The named
+controls and P0 gates are review requirements for any future acceptance; the
+candidate neither closes a threat-model item nor authorizes a trust-boundary
+change.
+
+## Verification plan
+
+Verification for this candidate is documentary and bounded:
+
+- `just check` must pass in `bitty-docs`, including formatting, Markdown,
+  links, metadata, language, hygiene, and workflow syntax; `act -n` must parse
+  the repository workflow.
+- The OQ-058 row, the `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5` rows, and the
+  decision register must continue to identify this page as a draft bounded
+  candidate and keep the three plugin-facing questions open.
+- The owning `bitty-terminal-docs` and `bitty-plugins-docs` pages must describe
+  the panel-provider material as deferred candidate context, never accepted
+  contract text.
+- Any future acceptance requires host-bridge parity tests, SDK conformance
+  evidence, security review, and explicit dispositions for the open boundaries;
+  those results do not exist in this document.
 
 ## Alternatives considered
 
@@ -387,64 +457,23 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
   Rejected: the content path is about non-terminal rendering, not identity;
   it leaves tab identity, persistence, and focus targeting ambiguous.
 
-## Security and compatibility impact
+## Affected contracts
 
-- Threat-model touchpoints: plugin escape through self-mounted views (denied
-  by the host-mediated placement rule and the Core-owned binding map);
-  capability escape through invented families or implied grants (denied by
-  the closed-family rule and the no-implicit-grant boundary against
-  `layout.provider`, `browser.embed`, `ui.rich`, and `ui.overlay`); stale
-  generation use across reload (rejected with `StaleHandle` before state
-  access); queue and topic exhaustion (reused `PR-1` through `PR-12` bounds
-  with per-principal attribution and `DropOldest` counting); input-hot-path
-  capture (no plugin callback on the hot path; overlay capture stays
-  presentation-only); PTY, GPU, or window-handle reachability (a panel holds
-  none); and visibility-as-authority confusion (visibility grants nothing).
-- P0 gates exercised: `P0-AC-012` (every registration, mount, focus, and bus
-  operation capability-checked), `P0-AC-013` (faults contained to the
-  calling plugin VM), `P0-AC-014` (panels, topics, payloads, batches, queues,
-  overlays, and command contributions bounded with per-principal
-  attribution), `P0-AC-015` (no plugin callback on the input, parse, or
-  render hot path), `P0-AC-016` (presentation never Terminal Truth),
-  `P0-AC-024` (bus and panel content treated as untrusted observation),
-  `P0-AC-030` (new `panel.*` requests block updates pending diff approval),
-  and `P0-AC-035` (trust-level admission before grant intersection).
-- Compatibility: docs-only acceptance with no versioned surface change. No
-  identifier is minted, no v1 member is altered, aliased, or shadowed, and
-  no `ViewId` allocation or generation rule changes, so no compatibility
-  promise is made and none is needed. Any future trait spelling, Lua
-  spelling, or new `panel.*` member is capability-registry stable from its
-  own acceptance, and that acceptance review must treat the choice as a
-  compatibility decision, not as a spelling detail.
+- The accepted generic Panel Runtime container and Event Bus remain
+  authoritative and unchanged.
+- `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5` remain open; this candidate records
+  bounded directions only. `RFC-OQ-9` remains the owner for persistence format,
+  versioning, workspace save/restore, and PTY reattachment questions.
+- The plugin matrix and bundled-plugin split decision remain deferred in their
+  owning repositories. They may link this page as candidate context only after
+  their coordinated updates land.
+- Issue [#464](https://github.com/bitty-terminal/bitty-docs/issues/464) tracks
+  the remaining plugin-facing identity, lifecycle, authority, layout,
+  focus/input, crash/reload, and bounded-payload boundaries.
+- No capability identifier, Lua entry point, versioned API member, distribution
+  row, or implementation behavior changes as a result of this page.
 
-## Rollout and adoption
-
-1. Review this bounded candidate in `bitty-docs` (this task PR; Refs issue
-   #443; no `Closes` because the acceptance gate remains open).
-2. Synchronize the registers in the same change: the OQ-058 row records the
-   generic acceptance and the plugin-facing deferral; the `RFC-OQ-2`,
-   `RFC-OQ-3`, and `RFC-OQ-5` rows remain open and cite this bounded candidate;
-   the decision register records the draft status.
-3. Keep owning-repo rows deferred with named owners: the split-decision gap
-   table, the `file-manager` and `git-panel` deferred-presentation rows, and
-   the plugin-matrix deferred-candidate note stay deferred in
-   `bitty-plugins-docs` and `bitty-terminal-docs` until the host bridge, SDK
-   spellings, and consumer parity land there; those repositories may cite this
-   bounded candidate as context in their own scoped changes, but not as an
-   accepted contract; no submodule pointer moves as a side effect of this
-   change.
-4. On Core host-bridge follow-through, the implementation lands the
-   enforcement (registration admission, placement binding, focus routing,
-   bound enforcement, typed denials) under its own task with host parity
-   tests.
-5. SDK work mints the accepted spellings with the mock host and conformance
-   suite against this contract.
-6. `file-manager` and `git-panel` build to parity on the SDK surface.
-7. Only after host parity evidence exists does any follow-up flip consumer
-   rows from deferred to parity; acceptance itself still authorizes no
-   implementation beyond the reviewed contract.
-
-## Contract boundaries that remain open
+## Open points
 
 The candidate deliberately does not close the plugin-facing gate. The generic
 container and Event Bus guarantees are retained, but the following boundaries
@@ -455,31 +484,34 @@ acceptance:
   does not establish the plugin-visible identity, persistence identity, or
   cross-reload identity contract.
 - **Lifecycle:** the candidate reuses generation fencing and bounded queues,
-  but does not define the plugin-facing registration, creation, mount,
-  suspend, resume, disposal, or reload ordering and observation contract.
+  but does not define plugin-facing registration, creation, mount, suspend,
+  resume, disposal, or reload ordering and observation.
 - **Authority:** the candidate states that presentation is non-authoritative,
   but does not define the complete authority boundary for provider-created
   content, bus topics, or panel actions.
 - **Layout ownership:** the candidate distinguishes host-mediated placement
-  from the Core-internal path, but does not define the plugin-facing layout
-  request, placement arbitration, or ownership contract.
-- **Focus/input:** the candidate repeats the generic routing guarantee, but
-  does not define plugin-facing focus requests, input delivery, denial, or
-  capture semantics.
+  from the Core-internal path, but does not define plugin-facing layout
+  requests, placement arbitration, or ownership.
+- **Focus/input:** the candidate preserves generic routing context, but does
+  not define plugin-facing focus requests, input delivery, denial, or capture.
 - **Crash/reload:** the candidate names stale-generation rejection, but does
   not define provider or panel crash containment, rehydration, or reload
   behavior as a plugin-facing contract.
+- **Persistence:** `RFC-OQ-9` owns persistence format/versioning, workspace
+  save/restore, and PTY reattachment. This candidate makes no persistence
+  claim; issue #464 owns the plugin-facing follow-up linkage.
 - **Bounded payloads:** the candidate reuses generic `PR-*` bounds, but does
-  not define the plugin-facing payload schemas, per-operation caps, aggregate
+  not define plugin-facing payload schemas, per-operation caps, aggregate
   accounting, or denial/error wire shape.
 
 These omissions are boundaries, not implied permissions. No plugin may infer
 identity, lifecycle control, authority, layout ownership, focus/input access,
-crash/reload behavior, or a payload schema from this candidate.
+crash/reload behavior, persistence behavior, or a payload schema from this
+candidate.
 
 The precise follow-up is [issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464).
 
-## Unresolved questions
+### Additional unresolved questions
 
 - What are the exact `PanelProvider` trait method signatures, argument
   orders, and return shapes beyond the illustrative sketch (parked to the
@@ -501,7 +533,8 @@ The precise follow-up is [issue #464](https://github.com/bitty-terminal/bitty-do
 - Does the side-car binding map ever replace the transitional
   `ViewContent::Panel(PanelId)` encoding, and which successor RFC owns that
   migration (parked to the Workspace Scene and Panel and Activity successor
-  work; the transitional encoding is the decided contract until then)?
+  work; the transitional encoding remains a candidate assumption until a
+  successor decision accepts or replaces it)?
 - Which threat-model matrix cells (every level x `panel`-family admission
   cell) and which `P0-AC-035` update cover this family, if the matrix needs
   a panel-specific amendment beyond the reused admission rule (parked to the
@@ -512,9 +545,9 @@ The precise follow-up is [issue #464](https://github.com/bitty-terminal/bitty-do
   permission-diff gate (owned by the consumer repositories; this RFC assumes
   no change and grants none)?
 
-## Acceptance evidence
+## Acceptance criteria
 
-A future acceptance requires all of the following to be linked here:
+This draft candidate is not accepted. A future acceptance requires all of the following evidence to be linked here:
 independent reviewer APPROVE on the registration shape, placement rule with
 the Core-internal path distinction, capability mapping with the
 `panel.overlay` and `ui.overlay` boundary, bound reuse, and denial taxonomy;
@@ -531,6 +564,19 @@ container and Event Bus remain accepted, while the plugin-facing gate stays
 deferred. The owning-repo consumer rows remain deferred and must not cite this
 candidate as an accepted predecessor; no submodule pointer moves in this
 change.
+
+## P0 Review Sign-off
+
+- **Status:** Not signed off. This page is a draft bounded candidate and does
+  not claim P0 approval.
+- **Required before acceptance:** an independent reviewer approval,
+  security-reviewer sign-off on the named threat-model touchpoints and P0
+  gates, docs-curator approval of taxonomy, links, and register
+  synchronization, and explicit disposition of every open boundary listed in
+  Open points.
+- **Implementation evidence:** host parity tests and SDK conformance evidence
+  belong to their owning implementation tasks and are not evidence for this
+  candidate.
 
 ## References
 
