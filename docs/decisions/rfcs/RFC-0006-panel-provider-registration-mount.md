@@ -1,33 +1,34 @@
 ---
 title: Panel Provider Registration Mount RFC
-description: Accepted docs-only contract for the plugin-facing PanelProvider registration mount placement and panel capability mapping reusing the accepted Panel Runtime container
+description: Bounded candidate for the plugin-facing PanelProvider registration mount placement and panel capability mapping reusing the accepted Panel Runtime container
 category: decisions
 audience: contributor
 document_type: specification
-status: accepted
+status: draft
 website_publish: false
 sidebar_order: 50
 ---
 
 # Panel Provider Registration Mount RFC
 
-> Status: **accepted** on 2026-10-07 (panel-provider acceptance;
+> Status: **bounded candidate** (2026-10-24 review of issue #443;
 > [issue #443](https://github.com/bitty-terminal/bitty-docs/issues/443)).
-> This document decides the plugin-facing registration/mount contract that the
+> This document records a bounded candidate for the plugin-facing registration/mount contract that the
 > accepted [Panel Runtime RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/panel-runtime-rfc.md)
 > left open as `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5`: `PanelProvider`
 > registration entry point, Panel-to-View placement, and `panel.*` capability
-> mapping. It is an accepted contract: it mints no capability identifier,
-> mints no trait spelling, mints no Lua entry point, authorizes no shipped
-> behavior, and makes no compatibility promise. [OQ-058](../open-questions.md)
-> gains the plugin-facing citation below and stays otherwise unchanged.
-> Acceptance rests on review recorded under Acceptance evidence. No
-> implementation claim.
+> mapping. It is not an accepted plugin-facing contract: it mints no capability
+> identifier, mints no trait spelling, mints no Lua entry point, authorizes no
+> shipped behavior, and makes no compatibility promise. The generic container
+> and Event Bus guarantees remain governed by the accepted Panel Runtime RFC.
+> Acceptance of the plugin-facing gate is deferred until the follow-up below
+> explicitly narrows the remaining boundaries. No implementation claim.
 
 ## Problem
 
 The generic Panel Runtime container and Event Bus contract is accepted, but
-the plugin-facing registration/mount contract has no decided text. The
+the plugin-facing registration/mount contract is not yet sufficiently bounded
+for acceptance. The
 accepted Panel Runtime RFC keeps three items open: the exact `PanelProvider`
 trait spelling and error taxonomy beyond the illustrative sketch (`RFC-OQ-2`),
 whether Panel becomes typed `View` content or composes beside `View` with the
@@ -41,12 +42,12 @@ panel surface, and the independent `git-panel` package implements the
 listing and allowlist policy with no panel surface, each recording panel
 presentation as deferred pending the panel-provider contract. The
 [Bundled-Plugin Split Decision](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/product/bundled-plugin-split-decision.md)
-records the same gate as its Panel Runtime public provider contract row: the
-remaining gate is the plugin-facing registration/mount contract only, tracked
-by `bitty-docs` `CTX-0181` (ready) and OQ-058. The
+records the same gate as its Panel Runtime public provider contract row. The
+generic container and Event Bus are accepted, but the plugin-facing
+registration/mount candidate remains deferred under OQ-058 and this issue. The
 [Plugin Matrix](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/plugin-matrix.md)
 records every `panel.*` entry below its deferred-candidate note as pending the
-same contract (`bitty-docs` `CTX-0181`, OQ-058).
+same candidate (`bitty-docs` issue #443, follow-up issue #464, OQ-058).
 
 The Core-internal `PanelRegistry::mount_panel` path
 (`bitty` `crates/bitty-runtime/src/registry/panel.rs`) is not an
@@ -83,7 +84,7 @@ only accepted identifiers, and park exact spellings to their owners.
   host bridge, the SDK spellings, and consumer parity each have a named
   predecessor instead of an implied one.
 - Define the acceptance path: what review and register synchronization must
-  exist before this draft becomes an accepted contract.
+  exist before this candidate can become an accepted contract.
 
 ## Non-goals
 
@@ -140,8 +141,8 @@ This proposal must be read together with, and must not weaken:
   (candidate refined Option C direction with Option A encoding
   transitionally, identity and naming consequences, focus routing
   consequences, persistence consequences). This RFC adopts its recorded
-  direction as the decided placement; the candidate document itself stays
-  draft and changes no accepted text on its own.
+  direction as a candidate; the candidate document itself changes no accepted
+  plugin-facing text on its own.
 - The accepted [Workspace Compositor Specification](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/workspace-compositor.md)
   (`Instance -> Window -> Workspace -> LayoutTree -> View` hierarchy, `H` and
   `V` primitives with `ratio [0.1, 0.9]`, Core-owned decoration, pure
@@ -159,12 +160,11 @@ This proposal must be read together with, and must not weaken:
 - The accepted [Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md):
   v1 is frozen; this surface adds no v1 member and widens none.
 - The accepted [Bundled-Plugin Split Decision](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/product/bundled-plugin-split-decision.md)
-  (OQ-053 migration set, Panel Runtime public provider contract row as the
-  remaining gate, `file-manager` and `git-panel` split rows with panel
-  presentation deferred) and the draft [Plugin Matrix](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/plugin-matrix.md)
-  (every `panel.*` entry as deferred candidate pending `CTX-0181`, OQ-058).
-  This RFC decides the contract gate; distribution, catalog, and presentation
-  parity stay with their owners.
+  (OQ-053 migration set, generic Panel Runtime contract, and still-deferred
+  plugin-facing provider gate) and the draft [Plugin Matrix](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/plugin-matrix.md)
+  (every `panel.*` entry as deferred candidate pending the plugin-facing gate,
+  OQ-058). This candidate changes no distribution, catalog, or presentation
+  parity decision.
 
 Where a control or threshold appears to need change, it is recorded under
 "Unresolved questions" instead.
@@ -199,10 +199,10 @@ Where a control or threshold appears to need change, it is recorded under
 - **Candidate**: a proposal that is not decided; candidate status is not
   acceptance and is not implementation.
 
-## Proposed contract
+## Bounded candidate
 
-The plugin-facing contract is the accepted Panel Runtime container with a
-Core-owned registration admission, a decided placement, and a fixed
+The candidate reuses the accepted Panel Runtime container with a
+Core-owned registration admission, a candidate placement, and a candidate
 capability mapping. Its invariant, in one sentence: **a granted plugin may
 declare panel types that Core admits, mounts onto views, focuses, and
 suspends under generation fencing and bounded budgets, or receive a typed
@@ -210,7 +210,7 @@ denial; it may never self-mount a view, invent a capability family, hold a
 PTY descriptor, place a callback on the input hot path, or turn visibility
 into authority.**
 
-### RFC-OQ-2 decided: PanelProvider registration entry point
+### RFC-OQ-2 candidate: PanelProvider registration entry point
 
 - The registration entry point is the triple of manifest declaration plus
   capability grant plus Core-owned admission. A plugin declares each
@@ -250,7 +250,7 @@ into authority.**
 - Official and bundled panels pass through the identical registration path;
   no private channel and no first-party bypass exists.
 
-### RFC-OQ-3 decided: Panel-to-View placement
+### RFC-OQ-3 candidate: Panel-to-View placement
 
 - Placement adopts the recorded refined Option C identity semantics with the
   Option A encoding transitionally. Panel is the application and session
@@ -292,7 +292,7 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
   authority: a visible panel gains no capability a suspended one lacks, and
   moving a panel across workspaces grants nothing.
 
-### RFC-OQ-5 decided: panel capability mapping
+### RFC-OQ-5 candidate: panel capability mapping
 
 - The mapping reuses the closed `panel.*` family in the Core capability
   seed: `panel.provider`, `panel.create`, `panel.focus`, and
@@ -348,9 +348,9 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
 - The [Bundled-Plugin Split Decision](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/product/bundled-plugin-split-decision.md)
   Panel Runtime public provider contract row and the
   [Plugin Matrix](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/plugin-matrix.md)
-  deferred-candidate note keep their owning-repo rows deferred until that
-  parity exists; this RFC gives those rows the accepted contract to cite,
-  and mints no distribution or catalog change.
+  deferred-candidate note keep their owning-repo rows deferred. They may cite
+  this bounded candidate for context only after their owners review it; they
+  must not treat it as an accepted contract or distribution/catalog change.
 
 ## Alternatives considered
 
@@ -419,20 +419,20 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
 
 ## Rollout and adoption
 
-1. Review this acceptance in `bitty-docs` (this task PR; Refs issue #443, no
-   `Closes` until independent review accepts the contract gate).
-2. Synchronize the registers in the same change: the OQ-058 row cites this
-   acceptance with the `RFC-OQ-2`, `RFC-OQ-3`, and `RFC-OQ-5` decisions and
-   the headless-consumer follow-ups; the new `RFC-OQ-2` and `RFC-OQ-5` rows
-   record their decisions; the `RFC-OQ-3` row records the refined placement;
-   the decision register cites this RFC beside the split-decision reference.
+1. Review this bounded candidate in `bitty-docs` (this task PR; Refs issue
+   #443; no `Closes` because the acceptance gate remains open).
+2. Synchronize the registers in the same change: the OQ-058 row records the
+   generic acceptance and the plugin-facing deferral; the `RFC-OQ-2`,
+   `RFC-OQ-3`, and `RFC-OQ-5` rows remain open and cite this bounded candidate;
+   the decision register records the draft status.
 3. Keep owning-repo rows deferred with named owners: the split-decision gap
    table, the `file-manager` and `git-panel` deferred-presentation rows, and
    the plugin-matrix deferred-candidate note stay deferred in
    `bitty-plugins-docs` and `bitty-terminal-docs` until the host bridge, SDK
-   spellings, and consumer parity land there; those repositories cite this
-   acceptance as their contract predecessor in their own scoped changes, and
-   no submodule pointer moves as a side effect of this change.
+   spellings, and consumer parity land there; those repositories may cite this
+   bounded candidate as context in their own scoped changes, but not as an
+   accepted contract; no submodule pointer moves as a side effect of this
+   change.
 4. On Core host-bridge follow-through, the implementation lands the
    enforcement (registration admission, placement binding, focus routing,
    bound enforcement, typed denials) under its own task with host parity
@@ -443,6 +443,41 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
 7. Only after host parity evidence exists does any follow-up flip consumer
    rows from deferred to parity; acceptance itself still authorizes no
    implementation beyond the reviewed contract.
+
+## Contract boundaries that remain open
+
+The candidate deliberately does not close the plugin-facing gate. The generic
+container and Event Bus guarantees are retained, but the following boundaries
+remain outside this candidate and require an explicit follow-up before
+acceptance:
+
+- **Identity:** the candidate names `PanelId` and `ViewId` relationships but
+  does not establish the plugin-visible identity, persistence identity, or
+  cross-reload identity contract.
+- **Lifecycle:** the candidate reuses generation fencing and bounded queues,
+  but does not define the plugin-facing registration, creation, mount,
+  suspend, resume, disposal, or reload ordering and observation contract.
+- **Authority:** the candidate states that presentation is non-authoritative,
+  but does not define the complete authority boundary for provider-created
+  content, bus topics, or panel actions.
+- **Layout ownership:** the candidate distinguishes host-mediated placement
+  from the Core-internal path, but does not define the plugin-facing layout
+  request, placement arbitration, or ownership contract.
+- **Focus/input:** the candidate repeats the generic routing guarantee, but
+  does not define plugin-facing focus requests, input delivery, denial, or
+  capture semantics.
+- **Crash/reload:** the candidate names stale-generation rejection, but does
+  not define provider or panel crash containment, rehydration, or reload
+  behavior as a plugin-facing contract.
+- **Bounded payloads:** the candidate reuses generic `PR-*` bounds, but does
+  not define the plugin-facing payload schemas, per-operation caps, aggregate
+  accounting, or denial/error wire shape.
+
+These omissions are boundaries, not implied permissions. No plugin may infer
+identity, lifecycle control, authority, layout ownership, focus/input access,
+crash/reload behavior, or a payload schema from this candidate.
+
+The precise follow-up is [issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464).
 
 ## Unresolved questions
 
@@ -479,30 +514,23 @@ focused View or Panel -> keymap and overlay -> encoder -> PTY` for
 
 ## Acceptance evidence
 
-This RFC is accepted when all of the following are linked here: independent
-reviewer APPROVE on the registration triple, the placement rule with the
-Core-internal path distinction, the capability mapping with the
-`panel.overlay` and `ui.overlay` boundary, the bound reuse, and the denial
-taxonomy; security-reviewer sign-off covering the threat-model touchpoints,
-the P0 gates (`P0-AC-012`, `P0-AC-013`, `P0-AC-014`, `P0-AC-015`,
-`P0-AC-016`, `P0-AC-024`, `P0-AC-030`, and `P0-AC-035` named in scope), the
-closed-family and no-new-spelling guarantees, and the visibility-never-authority
-rule; docs-curator APPROVE on taxonomy, links, and register synchronization;
-and a disposition (accepted shape or parked owner) for each unresolved
-question. Acceptance still authorizes no implementation: it records the
-reviewed contract, not shipped behavior. Host parity tests belong to the Core
-implementation task that follows acceptance, and must not be claimed as
-evidence inside this RFC.
+A future acceptance requires all of the following to be linked here:
+independent reviewer APPROVE on the registration shape, placement rule with
+the Core-internal path distinction, capability mapping with the
+`panel.overlay` and `ui.overlay` boundary, bound reuse, and denial taxonomy;
+security-reviewer sign-off covering the threat-model touchpoints and named P0
+gates; docs-curator APPROVE on taxonomy, links, and register synchronization;
+and an explicit disposition for identity, lifecycle, authority, layout
+ownership, focus/input, crash/reload, and bounded payloads. Acceptance still
+authorizes no implementation: it records the reviewed contract, not shipped
+behavior. Host parity tests belong to the Core implementation task that
+follows acceptance, and must not be claimed as evidence inside this RFC.
 
-Accepted 2026-10-07 (panel-provider acceptance,
-[issue #443](https://github.com/bitty-terminal/bitty-docs/issues/443)):
-register synchronization in the same change (OQ-058 plus `RFC-OQ-2`,
-`RFC-OQ-3`, and `RFC-OQ-5` rows plus decision-register citation); owning-repo
-consumer rows stay deferred with named owners (`bitty-plugins-docs`
-split-decision gap table and `file-manager` and `git-panel`
-deferred-presentation rows, `bitty-terminal-docs` plugin-matrix
-deferred-candidate note) citing this acceptance as their contract
-predecessor; no submodule pointer moves in this change.
+Reviewed 2026-10-24 (issue #443): bounded candidate only. The generic
+container and Event Bus remain accepted, while the plugin-facing gate stays
+deferred. The owning-repo consumer rows remain deferred and must not cite this
+candidate as an accepted predecessor; no submodule pointer moves in this
+change.
 
 ## References
 
@@ -512,11 +540,11 @@ predecessor; no submodule pointer moves in this change.
   and the `PR-1` through `PR-12` bounds reused here.
 - [Panel Placement Decision](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/panel-placement-decision.md)
   (draft candidate): the refined Option C direction with Option A encoding
-  transitionally, adopted here as the decided placement.
+  transitionally, recorded here as a bounded candidate placement.
 - [Bundled-Plugin Split Decision](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/product/bundled-plugin-split-decision.md)
-  (accepted): the Panel Runtime public provider contract row as the
-  remaining gate, and the `file-manager` and `git-panel` split rows with
-  panel presentation deferred.
+  (accepted): the generic Panel Runtime contract and the still-deferred
+  plugin-facing provider gate; the `file-manager` and `git-panel` split rows
+  keep panel presentation deferred.
 - [File-manager README](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/docs/plugins/file-manager/README.md)
   (draft): the observation-only package with panel presentation deferred
   pending the panel-provider contract.
@@ -524,15 +552,16 @@ predecessor; no submodule pointer moves in this change.
   (draft): the allowlisted CLI package with panel presentation deferred
   pending the panel-provider contract.
 - [Plugin Matrix](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/plugin-matrix.md)
-  (draft): every `panel.*` entry as deferred candidate pending `CTX-0181`,
-  OQ-058.
+  (draft): every `panel.*` entry as deferred candidate pending the
+  plugin-facing gate, OQ-058, and follow-up issue #464.
 - [Plugin Platform RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/specifications/plugin-platform-rfc.md)
   (accepted): one VM per `(PluginId, generation)`, deny-by-default
   capabilities, and the `DropOldest` default reused here.
 - [Isolation Resource RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/isolation-resource-rfc.md)
   (accepted): the three-level queue envelope and `RC-1` through `RC-10`
   bounds reused here.
-- [OQ-058](../open-questions.md) (accepted with plugin-facing citation):
+- [OQ-058](../open-questions.md) (accepted for generic orchestration and
+  delivery semantics; plugin-facing registration/mount remains deferred):
   the spatial multi-agent orchestration register this acceptance extends.
 - [Issue #443](https://github.com/bitty-terminal/bitty-docs/issues/443)
   (this RFC task issue).
