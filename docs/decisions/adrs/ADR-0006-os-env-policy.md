@@ -34,10 +34,12 @@ Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> 
   closed with `E_CAPABILITY_DENIED` and never enumerate keys. Denial semantics,
   key minimization, and audit behavior are unchanged
   ([LUA-OQ-2](ADR-0009-plugin-api-v1-lua-surface.md#lua-oq-2-absent-versus-denied-namespaces)).
-- Implementation-divergence note (Issue #381, resolved 2026-10-07 by
-  `bitty#1751` via `#1752`): the shipped host bridge now matches the contract
-  below (`^[A-Z_][A-Z0-9_]*$`, 1..64, `E_ENV_KEY_INVALID`); the contract stays
-  normative (see Implementation divergence).
+- Revision note (Issue #381, 2026-10-24): the accepted ADR now records the
+  shipped host bridge contract separately from the manifest grant contract.
+  Runtime key validation accepts the implementation's mixed-case shape and
+  1..128-byte bound, with validation denials before grant evaluation; manifest
+  grants retain their separate 1..64-byte uppercase bound (see Implementation
+  divergence).
 - Revision note (2026-10-21, owner directive `bitty#2375` via `bitty#2376`):
   the restricted `os.date` default path renders local time and is the one
   permitted ambient read in the baseline. It reads the process `TZ` environment
@@ -159,10 +161,11 @@ local present = bitty.env.has("BITTY_PROFILE") -- boolean
 
 Contract:
 
-- `bitty.env.get(name: string) -> string | nil`. `name` must be a bounded
-  ASCII key matching `^[A-Z_][A-Z0-9_]*$` with length 1..64. Host validates the
-  pattern before lookup and returns a typed `E_ENV_KEY_INVALID` denial for
-  violations. No pattern wildcards are interpreted from Lua.
+- `bitty.env.get(name: string) -> string | nil`. The shipped host bridge
+  accepts a bounded ASCII key matching `[A-Za-z_][A-Za-z0-9_]*` with length
+  1..128. Host validates the shape and bound before grant evaluation and
+  returns `E_DEF_INVALID` for a malformed key or `E_DEF_LIMIT` for an
+  over-bound key. No pattern wildcards are interpreted from Lua.
 - `bitty.env.has(name: string) -> boolean` is a convenience that does not
   expose the value to the trace surface beyond presence.
 - There is no `bitty.env.get_all`, `bitty.env.list`, or iteration over the
@@ -275,33 +278,33 @@ Per-plugin VMs are untrusted and start with no environment authority:
   host bridge. Future expansion such as enumeration or write-back requires a
   new minor with its own ADR and capability gate.
 
-### Implementation divergence (Issue #381)
+### Shipped runtime and manifest grant bounds (Issue #381)
 
-Decision Option 1: keep this ADR normative and tighten the host. This section
-records the divergence without changing the contract; accepted status is kept
-and no bound or code is widened here.
+The accepted decision distinguishes validation of a runtime call argument from
+the narrower capability-grant grammar. This is an implementation reconciliation
+dated 2026-10-24; it does not widen authority or change the deny-by-default
+model.
 
-- Contract (normative, unchanged): `bitty.env.get` and `bitty.env.has` accept
-  `^[A-Z_][A-Z0-9_]*$` with length 1..64, denied with `E_ENV_KEY_INVALID`.
-  Manifest grants use the same bound.
-- Shipped host (tightened, matches contract): `bitty@d5ca8e5c`
-  (`bitty#1751` via `#1752`, CTX-1004) `crates/bitty-lua/src/host.rs` accepts
-  `^[A-Z_][A-Z0-9_]*$` with length 1..64 (`ENV_KEY_MAX_BYTES = 64`),
-  denied with `E_ENV_KEY_INVALID` before any grant check. The prior wider
-  shape (`bitty@7da6d6f`, `[A-Za-z_][A-Za-z0-9_]*` 1..128, `E_DEF_INVALID` /
-  `E_DEF_LIMIT`) is retired. The host module header marks its identifiers as
-  working identifiers, not accepted spellings, so this ADR governs.
-- Manifest side (aligned with this ADR): `bitty-plugin-sdk`
-  `src/capabilities.ts` enforces `MAX_ENV_KEY_LEN = 64` with `ENV_KEY_PATTERN`
-  for the grant parameter.
-- Follow-up (closed): host tightening landed in `bitty#1751` via `#1752`
-  (2026-10-07); no host change is made in this repository. Diagnostics for
-  malformed or over-64-byte inputs follow `E_ENV_KEY_INVALID`, and contract
-  tests assert the normative bound. Closes the `#381` divergence.
-- Why not the alternatives: amending this ADR to the wider host shape would be
-  a normative weakening and is rejected; keeping both shapes deliberately
-  would bless an ungrantable runtime surface with no use case. The starter
-  set in the appendix is already all uppercase within the 64-byte bound.
+- **Runtime bridge contract.** At the shipped host revision `bitty@7da6d6f`,
+  `crates/bitty-lua/src/host.rs` accepts `[A-Za-z_][A-Za-z0-9_]*` with a
+  1..128-byte bound (`ENV_KEY_MAX_BYTES = 128`). Shape failures return
+  `E_DEF_INVALID`; over-bound keys return `E_DEF_LIMIT`. These checks run
+  before any grant evaluation, so malformed or over-bound input cannot reach
+  the allowlist or otherwise widen authority.
+- **Manifest grant contract.** The plugin SDK keeps the separate, narrower
+  `env:<KEY>` grant bound: `^[A-Z_][A-Z0-9_]*$` and 1..64 bytes
+  (`MAX_ENV_KEY_LEN = 64`). A runtime key outside that grant grammar is
+  grant-never; the wider runtime argument shape does not create a grant or
+  ambient access. The manifest grant bound is not changed by this revision.
+- **Denial taxonomy.** Runtime validation uses `E_DEF_INVALID` for shape and
+  `E_DEF_LIMIT` for the 128-byte bound. Once validation succeeds, normal
+  capability denials remain `E_CAPABILITY_DENIED`; absent allowlisted values
+  remain the non-error `nil`/presence result described above. No denial leaks
+  key values, grant contents, or allowlist membership.
+- **Authority meaning.** Validation precedes grant evaluation, and the
+  manifest grant intersection remains the authority boundary. This revision
+  records shipped behavior only; it authorizes no new environment access and
+  does not provide an ambient fallback.
 
 ## Consequences
 
@@ -360,8 +363,10 @@ The following gates were satisfied per the
    remain reachable when an allowlist is present.
 2. **Deny-by-default proof:** with an empty allowlist `bitty.env.get` for any
    key returns `nil` without leaking allowlist membership via distinct errors;
-   keys outside `^[A-Z_][A-Z0-9_]*$` or over length or size bounds fail with
-   `E_ENV_KEY_INVALID` or `E_ENV_VALUE_TOO_LARGE`.
+   runtime keys outside `[A-Za-z_][A-Za-z0-9_]*` or over the 128-byte runtime
+   bound fail with `E_DEF_INVALID` or `E_DEF_LIMIT`; manifest grant keys use
+   the separate uppercase 64-byte bound. Values over the size bound fail with
+   `E_ENV_VALUE_TOO_LARGE`.
 3. **Capability gating:** Config VM with allowlist `["EDITOR"]` can read
    `EDITOR` and reads of `AWS_SECRET_ACCESS_KEY` stay `nil`; plugin without
    `env:EDITOR` manifest plus grant cannot read `EDITOR` even when the
@@ -416,12 +421,12 @@ following evidence was recorded for acceptance on 2026-08-29.
 
 <!-- markdownlint-disable MD013 -->
 
-| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                                                                                                        | Date       |
-| ------------------------------------- | ----------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| security-auditor                      | `bitty-security`  | pass    | R-006, R-014, T-11, P0-AC-026, `os.getenv` denial typed `E_ENV_DENIED` `runtime` class, `bitty.env.get` capability-gated allowlist `env:<KEY>`/`env:BITTY_*`, desensitization and minimization, size bound 4 KiB `E_ENV_VALUE_TOO_LARGE`, redaction `0600` mode export preview, audit logging per invocation and grant/revoke without value leakage                                                     | 2026-08-29 |
-| category-owner (security-and-quality) | `bitty-quality`   | pass    | Config VM `env.allowlist` host-owned outside Lua, plugin `env:<KEY>` manifest + grant with diff-blocking update per P0-AC-030, deny-by-default `nil` without membership leakage, pattern `^[A-Z_][A-Z0-9_]*$` 1..64 bounded ASCII, snapshot at VM creation no ambient fallback, `bitty.env.has` presence-only                                                                                           | 2026-08-29 |
-| category-owner (architecture)         | `bitty-architect` | pass    | per-VM deltas Config VM vs plugin VM via `mlua` vendored Lua 5.4 vs `piccolo` 0.3.3, typed denial `rawget(os, "getenv")` errors with `E_ENV_DENIED` hint `bitty.env.get`, audit channel `timestamp`/`vm_class`/`key`/`granted`/`caller_location` never value, non-overridable policy and capability family `env:<KEY>`                                                                                  | 2026-08-29 |
-| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md) and [Security overview](../../security/overview.md) invariant 9 and [Risk register](../../security/risk-register.md) R-014, English-only, decision-register sync | 2026-08-29 |
+| Role                                  | Reviewer          | Verdict | Evidence / scope                                                                                                                                                                                                                                                                                                                                                                                                                 | Date       |
+| ------------------------------------- | ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| security-auditor                      | `bitty-security`  | pass    | R-006, R-014, T-11, P0-AC-026, `os.getenv` denial typed `E_ENV_DENIED` `runtime` class, `bitty.env.get` capability-gated allowlist `env:<KEY>`/`env:BITTY_*`, desensitization and minimization, size bound 4 KiB `E_ENV_VALUE_TOO_LARGE`, redaction `0600` mode export preview, audit logging per invocation and grant/revoke without value leakage                                                                              | 2026-08-29 |
+| category-owner (security-and-quality) | `bitty-quality`   | pass    | Config VM `env.allowlist` host-owned outside Lua, plugin `env:<KEY>` manifest + grant with diff-blocking update per P0-AC-030, deny-by-default `nil` without membership leakage, manifest grant pattern `^[A-Z_][A-Z0-9_]*$` 1..64 bounded ASCII, shipped runtime validation `[A-Za-z_][A-Za-z0-9_]*` 1..128 with validation before grant evaluation, snapshot at VM creation no ambient fallback, `bitty.env.has` presence-only | 2026-08-29 |
+| category-owner (architecture)         | `bitty-architect` | pass    | per-VM deltas Config VM vs plugin VM via `mlua` vendored Lua 5.4 vs `piccolo` 0.3.3, typed denial `rawget(os, "getenv")` errors with `E_ENV_DENIED` hint `bitty.env.get`, audit channel `timestamp`/`vm_class`/`key`/`granted`/`caller_location` never value, non-overridable policy and capability family `env:<KEY>`                                                                                                           | 2026-08-29 |
+| docs-curator                          | `bitty-curator`   | pass    | Frontmatter `accepted`, lifecycle `Draft -> experimental review evidence -> Accepted (2026-08-29) -> normative`, links to [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md) and [Security overview](../../security/overview.md) invariant 9 and [Risk register](../../security/risk-register.md) R-014, English-only, decision-register sync                          | 2026-08-29 |
 
 Closes OQ-031: this ADR closes that open question at the design level; the
 register rows are updated per the open-question register rules. The lifecycle is
