@@ -34,6 +34,20 @@ contradicting either. No dependency is added to any repository by this ADR;
   the accepted `mlua`/Lua 5.4.x and `piccolo 0.3.3` pins, allowlist, cadence,
   and audit gates below remain accurate and in force until an implementing task
   migrates `bitty-lua`.
+- Revision note (2026-10-21, owner directive `bitty#2375` via `bitty#2376`):
+  the `os.date` entry in the final allowlist renders the host's local time by
+  default instead of UTC. That default path reads the process `TZ` environment
+  variable and the host timezone database through `chrono::Local` and returns
+  calendar fields only; no environment name or value is observable. A leading
+  `!` forces deterministic UTC for both string formats and the `*t` table. The
+  visible contract is the shipped
+  [bar clock module](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed),
+  which renders `os.date` local time with no grant. `os.getenv` stays denied and
+  its exposure policy remains OQ-031; every other allowlist entry, denial,
+  cadence, and audit gate in this ADR is unchanged. The `%c` nil-format gap
+  anticipated when this revision was drafted no longer exists: the restricted
+  formatter resolves `%c` (shipped in 0.0.27) and the shipped manual documents
+  it as supported.
 
 ## Context
 
@@ -142,9 +156,17 @@ per-VM deltas remain none by default per the Lua Runtime RFC table.
 - `math` — pure with no `math.randomseed` from OS entropy unless seeded
   deterministically.
 - `string` — all pure ops, `table`, `utf8`.
-- `os` — only `os.clock`, `os.time`, `os.date` UTC with no env;
-  `os.execute`, `os.getenv`, `os.remove`, `os.rename`, `os.exit` denied.
-  `os.getenv` exposure is OQ-031.
+- `os` — only `os.clock`, `os.time`, and `os.date`. `os.date` renders local
+  time by default from the process `TZ` environment and the host timezone
+  database; it returns calendar fields only, so it is not an environment lookup
+  and no environment name or value is observable. A leading `!` forces
+  deterministic UTC for both string formats and the `*t` table. `os.execute`,
+  `os.getenv`, `os.remove`, `os.rename`, and `os.exit` stay denied; `os.getenv`
+  exposure remains OQ-031. Known limitation (2026-10-21):
+  `os.date("*t").isdst` stays constant `false` because `chrono`'s `Local`
+  exposes the UTC offset but not the DST flag, while reference Lua reports
+  `true` during DST; a tz-aware flag source is a follow-up, and the bar clock
+  consumes `%H:%M` only.
 - `debug` — only `debug.traceback` if diagnostics need it. Denied are
   `debug.sethook`, `debug.getupvalue`, `debug.setupvalue`,
   `debug.getlocal`, `debug.setlocal`, `debug.getregistry`,
