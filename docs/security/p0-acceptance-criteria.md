@@ -233,6 +233,12 @@ Filesystem family scope (RFC-0005 draft): a filesystem operation fault
 denial, or secret-shaped refusal) is contained to the calling plugin VM;
 the host survives and other plugins are unaffected.
 
+The operation classes are generic `read`, `write`, and `list` cells under the
+filesystem family: read and list require the read grant, write requires the
+write grant, and no class cross-grants another. Validation, admission, and
+grant failures are typed and fail closed before any file content is delivered
+or written.
+
 ### P0-AC-014 Plugin resource budgets attributable
 
 Source: plugin system "Runtime isolation"; baseline "Plugins". Risk: R-007.
@@ -410,6 +416,10 @@ the plugin VM never implies clipboard, process, IPC, or network authority,
 each of which needs a separately granted authority, and process invocation
 over file content stays argv-first with no shell-string construction.
 
+The generic `read`, `write`, and `list` cells remain separate: write results
+do not imply read-back, and list results contain only bounded names and
+file-kind metadata with denied entries suppressed by default.
+
 ### P0-AC-025 DevTools scopes distinct and ungranted by connection
 
 Source: threat model "MCP, Agents, and DevTools". Risk: R-014.
@@ -506,6 +516,9 @@ Filesystem family scope (RFC-0005 draft): a plugin update newly requesting
 the filesystem family is a capability increase and blocks pending an
 explicit permission diff and approval; no grant migrates from `terminal.*`
 to the filesystem family or back in either direction.
+
+The diff covers the family and its generic read/write/list operation classes
+without minting or authorizing any new identifier.
 
 ## Configuration trust and origin policy
 
@@ -615,6 +628,11 @@ signals, and listings suppress denied entries silently. This admission mints
 no identifier and covers the family shape only; exact spellings, payload and
 listing caps, rates, and label encoding stay parked to the Core bridge and
 SDK implementation.
+
+The matrix's generic read/write/list cells are checked at every L0–L4 level
+before their respective grant intersection; admission denials name only the
+level and family, while other typed denials expose only the generic reason and
+never content, path, or existence information.
 
 ### P0-AC-036 Secret-tier consent, audit, and redaction
 
