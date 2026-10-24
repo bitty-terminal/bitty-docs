@@ -177,6 +177,25 @@ family authorizes delivery of results into the plugin VM only, and no watch,
 subscription, tail-follow, retained handle, or cross-call cursor exists in
 this family.
 
+The family admission cells apply uniformly to the generic operation classes
+below. These cells describe authorization shape, not API identifiers or
+implementation:
+
+| Operation class | Required family grant and scope                                          | Result and denial behavior                                                                                                                                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `read`          | `fs.read` with an explicit path pattern intersecting the requested path  | Bounded file content is delivered only into the calling plugin VM with a Core-attached untrusted-observation label; missing, revoked, expired, mismatched, sensitive-path, secret-shaped, over-bound, over-rate, safe-mode, or trust-admission failures are typed and fail closed. |
+| `write`         | `fs.write` with an explicit path pattern intersecting the requested path | Bounded writes require write authority; read authority is not implied and no read-back is returned by the grant; the same typed, oracle-tight denial treatment applies to invalid, unscoped, sensitive, over-bound, over-rate, safe-mode, or inadmissible requests.                |
+| `list`          | `fs.read` with an explicit path pattern intersecting the listed prefix   | Bounded names and file-kind metadata are read-class results; denied entries are suppressed by default, and the listing never becomes an existence oracle or grant-free enumeration path.                                                                                           |
+
+Every operation class is subject to the level cell first and the explicit
+grant intersection second. Denials name only the trust level and family when
+the admission gate applies; other typed denials name only the generic reason.
+Neither shape includes content bytes, foreign identifiers, path values, or an
+absent-versus-denied signal. Exact method names, parameter spellings, payload
+and listing caps, rates, quotas, and label encoding remain parked to the Core
+bridge and SDK implementation; this additive matrix mints no identifiers and
+authorizes no implementation.
+
 ### Secret-storage tiers (OQ-055, SEC-22)
 
 Secrets live in exactly one of four tiers, with policy that only tightens
