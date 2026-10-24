@@ -38,6 +38,16 @@ Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> 
   `bitty#1751` via `#1752`): the shipped host bridge now matches the contract
   below (`^[A-Z_][A-Z0-9_]*$`, 1..64, `E_ENV_KEY_INVALID`); the contract stays
   normative (see Implementation divergence).
+- Revision note (2026-10-21, owner directive `bitty#2375` via `bitty#2376`):
+  the restricted `os.date` default path renders local time and is the one
+  permitted ambient read in the baseline. It reads the process `TZ` environment
+  and the host timezone database through `chrono::Local` and returns calendar
+  fields only, so it discloses the host timezone but is not an environment
+  lookup and grants no process, filesystem, or network authority. `os.getenv`
+  stays denied; OQ-031, this ADR's decision, and the `bitty.env.get` policy are
+  unchanged. The shipped
+  [bar clock module](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed)
+  is the visible contract.
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-014 and T-11 and P0-AC-026),
   `bitty-lua` and `bitty-config` maintainers (CTX-0053).
@@ -53,8 +63,10 @@ Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> 
 ### Why os.getenv is still open
 
 - **Shared baseline denies ambient env.** The Lua Runtime RFC accepted
-  standard-library subset allows `os.clock`, `os.time`, `os.date` and denies
-  `os.execute`, `os.getenv`, `os.remove`, `os.rename`, `os.exit`. ADR 0005
+  standard-library subset allows `os.clock`, `os.time`, `os.date` (local by
+  default since 2026-10-21; the timezone read is recorded in the revision note
+  above) and denies `os.execute`, `os.getenv`, `os.remove`, `os.rename`,
+  `os.exit`. ADR 0005
   records the same denial as the final allowlist baseline for both Config VM
   and per-plugin VM with per-VM deltas none by default — `os.getenv` exposure
   is OQ-031. Trusted-user status for `init.lua` means fewer prompts, never
@@ -113,6 +125,25 @@ Typed denial is observable. `rawget(os, "getenv")` returns a function that
 errors on call rather than `nil` so `bitty config check` and the diagnostics
 contract can surface the violation with file, line, and column, the same path
 budget violations use (`budget` class remains separate).
+
+### os.date local-time conversion is the one permitted ambient read
+
+Recorded 2026-10-21 from the owner directive behind `bitty#2375` and
+implemented by `bitty#2376`:
+
+- `os.date` without a leading `!` converts the timestamp through the process
+  `TZ` environment and the host timezone database (`chrono::Local`);
+  `os.date("!...")` forces deterministic UTC for both string formats and the
+  `*t` table.
+- The read yields calendar fields only. It discloses the host timezone but is
+  not an environment lookup: no environment name or value is observable, and it
+  grants no process, filesystem, or network authority. `os.getenv`,
+  `os.setenv`, and the rest of the denied `os.*` surface stay denied, so this
+  neither widens the baseline nor changes OQ-031.
+- Known limitation: `os.date("*t").isdst` stays constant `false` because
+  `chrono`'s `Local` exposes the UTC offset but not the DST flag, while
+  reference Lua reports `true` during DST. A tz-aware flag source is a
+  follow-up; the bar clock consumes `%H:%M` only.
 
 ### Desensitized host-mediated alternative — bitty.env.get
 
@@ -235,8 +266,10 @@ Per-plugin VMs are untrusted and start with no environment authority:
   Reload follows the Configuration Model RFC reload classification; whether a
   reload re-snapshots the environment is `Restart-required` for the `env`
   policy surface to avoid silent ambient widening mid-session.
-- No ambient fallback. The `os` table in the VM has no other environment
-  ambient; `bitty.env` is the sole path.
+- No ambient fallback. The `os` table exposes no environment lookup;
+  `os.date`'s local-time conversion reads the host timezone and returns calendar
+  fields only, per the revision note above. `bitty.env` remains the sole path
+  to environment names and values.
 - `bitty` versioning. `bitty.env` appears under `bitty` module version `1.x`
   and is covered by the same semver and compatibility note as the rest of the
   host bridge. Future expansion such as enumeration or write-back requires a
@@ -308,6 +341,7 @@ and no bound or code is widened here.
 - [OQ-031](../open-questions.md) row migrated from OQ-009 CTX-0047 2026-08-27
 - [ADR 0005](ADR-0005-lua-pins-and-stdlib.md) — final restricted standard library and debug allowlist where os.getenv exposure is OQ-031
 - [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md) — Accepted 2026-08-27 sandbox and standard-library baseline and rooted module resolution and host bridge ownership
+- [Bar module catalog — clock](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed) — shipped manual contract for local-time `os.date` rendering with no grant
 - [Security overview](../../security/overview.md) — invariant 9, trust boundaries, sensitive-data handling, capability families
 - [Risk register](../../security/risk-register.md) — R-006 ambient authority, R-014 DevTools traces and environment exposure, R-007 budgets and attribution
 - [P0 acceptance criteria](../../security/p0-acceptance-criteria.md) — P0-AC-026 trace minimization and redaction and P0-AC-011 and P0-AC-025 and P0-AC-030 patterns
