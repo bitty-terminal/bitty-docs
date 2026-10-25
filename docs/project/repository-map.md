@@ -45,9 +45,9 @@ Release-ready` (see Status below):
   dedicated L1 Rust Core Extension repositories rather than embedded into the
   terminal core:
   - `bitty-ipc`: Out-of-process IPC bridge layer (`bitty-ipc-api`, `ipc-auth`,
-    `ipc-core`, `ipc-devtools`, `ipc-mcp`, umbrella `bitty-ipc`), default-off,
-    pinned by `bitty` at `e9714e7` as the inbound socket for external
-    clients.
+    `ipc-core`, `ipc-devtools`, `ipc-winpipe`, umbrella `bitty-ipc`),
+    default-off, pinned by `bitty` at `e9714e7` as the inbound socket for
+    external clients.
   - `bitty-network`: Network runtime shipped as the independently installed
     native component `net` (DIR-030); `bitty` links only the dependency-free
     `bitty-network-wire` codec crate, never a network implementation. The
@@ -193,7 +193,7 @@ the same upstream revisions.
 | Repository or directory   | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bitty`                   | Minimal Rust terminal platform core: PTY, VT, render, runtime, configuration, and workspace mechanism            | Minimal Core terminal platform (sixteen members in `bitty/Cargo.toml` after `W-105` relocation, `bitty#1684`; `bitty-core`/`bitty-panels` retired per `bitty#1603`/`bitty#1604`); `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032); the ADR 0003 ten-crate topology predates this retirement (see its status note); visual chrome presentation is plugin-only (ADR 0014)              |
-| `bitty-ipc`               | L1 Rust Core Extension: out-of-process IPC bridge (6 crates), DevTools/MCP protocols                             | Independent extension repository initialized (`crates/bitty-ipc-api`, `ipc-auth`, `ipc-core`, `ipc-devtools`, `ipc-mcp`, umbrella `bitty-ipc`); bounded framing, peer-credential auth, default-off; pinned by `bitty` at `e9714e7` as Core's inbound socket                                                                                                                                                                                    |
+| `bitty-ipc`               | L1 Rust Core Extension: out-of-process IPC bridge (6 crates), DevTools protocol                                  | Independent extension repository initialized (`crates/bitty-ipc-api`, `ipc-auth`, `ipc-core`, `ipc-devtools`, `ipc-winpipe`, umbrella `bitty-ipc`); bounded framing, peer-credential auth, default-off; pinned by `bitty` at `e9714e7` as Core's inbound socket                                                                                                                                                                                |
 | `bitty-network`           | L1 Rust Core Extension: network runtime shipped as the independently installed native component `net` (DIR-030)  | Independent extension repository initialized (`crates/bitty-network-api`, `bitty-network`, `bitty-network-wire`); crates reset to version `0.0.1`; `bitty` links only the dependency-free `bitty-network-wire` codec, never a network implementation; the embedded `network` feature and `bitty.network` Lua module were removed from Core (`bitty#1604`)                                                                                      |
 | `bitty-observability`     | L1 Rust Core Extension: observability and tracing infrastructure (API + Core + integration)                      | Independent extension repository initialized (`crates/bitty-observability-api`); zero-dependency tracing and metrics definitions                                                                                                                                                                                                                                                                                                               |
 | `bitty-url-detector`      | L1 Rust Core Extension: pure-algorithm plaintext URL detector consumed by Core for `bitty#1760`                  | Independent extension repository initialized (`crates/bitty-url-detector`, version `0.0.1`); zero-dependency hand-rolled scanner over `&str` exposing `detect_urls`; grid mapping, hover cues, and click-to-open stay Core-owned work under `bitty#1760` and are not claimed here                                                                                                                                                              |
@@ -302,7 +302,7 @@ bitty-ipc/                 # Out-of-process IPC bridge layer
 │   ├── bitty-ipc-auth/    # Authentication and scope authorization
 │   ├── bitty-ipc-core/    # Message framing and channel routing
 │   ├── bitty-ipc-devtools/# DevTools JSON-RPC bridge
-│   ├── bitty-ipc-mcp/     # MCP protocol bridge
+│   ├── bitty-ipc-winpipe/ # Windows named-pipe transport
 │   └── bitty-ipc/         # Umbrella re-export crate
 
 bitty-network/              # Network stack (crates reset to version 0.0.1)
