@@ -23,11 +23,12 @@ license policy is restated by the dated amendment in the Decision section
 below. The accepted text is preserved and the deviation is recorded
 explicitly rather than rewritten.
 
-Amended on 2026-10-26 (CTX-0295, bitty CTX-1605): the rule-3 fork criteria are
-applied to a path-vendored `winit 0.30.13` patch by the dated amendment below,
-which records the missing capability, upstream links, patch surface,
-synchronization strategy, exit conditions, named maintenance owner, and the
-accepted risk of carrying an unmerged upstream patch.
+Amended on 2026-10-26 (CTX-0295; bitty CTX-1605, merged as `aa18c61a` in
+bitty#2726): the rule-3 fork criteria are applied to a path-vendored
+`winit 0.30.13` patch by the dated amendment below, which records the missing
+capability, upstream links, patch surface, synchronization strategy, exit
+conditions, named maintenance owner, and the accepted risk of carrying an
+unmerged upstream patch.
 
 ## Context
 
@@ -121,8 +122,9 @@ the implemented supply-chain gate today.
 Rule 3's fork criteria stand as accepted; this dated amendment records their
 application to a dependency source category the rule did not name — a crate
 consumed from a path-vendored upstream tree in `vendor/` instead of a registry
-or Git source. The vendoring is recorded in the bitty repository by CTX-1605,
-and the accepted text above is preserved rather than rewritten.
+or Git source. The vendoring landed as bitty#2726 (CTX-1605), squash-merged on
+2026-10-26 as `aa18c61a` and closing bitty#2715, and the accepted text above is
+preserved rather than rewritten.
 
 1. **Missing capability.** `winit` 0.30.13 and 0.31.0-beta.4 never construct
    `WindowEvent::Occluded` on the Wayland backend: the Wayland configure path
@@ -137,42 +139,51 @@ and the accepted text above is preserved rather than rewritten.
 2. **Upstream links.** Tracker
    [rust-windowing/winit#3442](https://github.com/rust-windowing/winit/issues/3442);
    implementation
-   [#4709](https://github.com/rust-windowing/winit/pull/4709) (open,
-   `CHANGES_REQUESTED`: "may not work on some compositors", plus the objection
-   that winit must never commit on behalf of the user, which the patch
-   restructures around by requesting a redraw instead of committing); 0.30
-   backport [#4710](https://github.com/rust-windowing/winit/pull/4710) (open,
-   unmerged, base `e9809ef5`, head `e2cb6c08`).
-3. **Patch surface.** 5 files changed, +65/−10:
+   [#4709](https://github.com/rust-windowing/winit/pull/4709) (open;
+   `CHANGES_REQUESTED` since 2026-09-23 on two grounds, "may not work on some
+   compositors" and the objection that winit must never commit on behalf of the
+   user; that review predates the current cut-down shape, which answers the
+   second ground by requesting a redraw instead of committing); 0.30 backport
+   [#4710](https://github.com/rust-windowing/winit/pull/4710) (open, unmerged,
+   base `e9809ef5`, head `e2cb6c08`).
+3. **Patch surface.** Carried by bitty#2726, squash-merged on 2026-10-26 as
+   `aa18c61a`, and pinned to `winit 0.30.13`: 5 files changed, +65/−10 —
    `src/changelog/unreleased.md`, `src/event.rs`,
    `src/platform_impl/linux/wayland/event_loop/mod.rs`,
    `src/platform_impl/linux/wayland/state.rs`, and
-   `src/platform_impl/linux/wayland/window/state.rs`. The vendored tree is
-   `winit 0.30.13` taken from the registry with only those five files changed,
-   and the change wires it into the workspace through `[patch.crates-io]` as
+   `src/platform_impl/linux/wayland/window/state.rs`. The vendored tree is the
+   registry release with only those five files changed, and it enters the
+   workspace through `[patch.crates-io]` as
    `winit = { path = "vendor/winit" }` with `exclude = ["vendor/winit"]` in the
    repository root `Cargo.toml`.
 4. **Synchronization strategy.** Any `0.30.x` bump re-applies the recorded
    patch: a reverse-apply check against the previous tree plus a file-by-file
    tree diff against the registry source. `vendor/winit/PATCHES.md` stays the
-   source of record with the fetch date (2026-10-26) and the patch SHA-256
-   (`467156b345e49449422a7ba968ff5a259c085e8f953b75b5daec7a7b4c6c220c`), and
-   the Dependabot note on the cargo ecosystem forces a manual re-vendor rather
-   than a silent bump.
+   source of record with the fetch date (2026-10-26) and two pinned hashes —
+   the patch SHA-256
+   `467156b345e49449422a7ba968ff5a259c085e8f953b75b5daec7a7b4c6c220c` and the
+   tree digest
+   `c0c4343e576b91e6c1e88f7f1f2ba3c1d0cd9519533d0b554492385ee0510a47`.
+   `just vendored-winit` enforces both together with the path resolution and
+   the lock source/checksum, and Dependabot ignores `winit`, so no dependency
+   bump can silently re-resolve the crate to the registry.
 5. **Exit conditions.** Remove the vendor tree, the `[patch.crates-io]` entry,
-   the `exclude` entry, and the vendored-tree Markdown lint ignores once a
-   released `winit` carrying #4709/#4710 is adopted; re-run the #2570 Hyprland
-   capture and confirm the surface gate engages; retire the synthetic redraw
-   starvation probe if it is then redundant.
+   the `exclude` entry, the `just vendored-winit` gate, and the vendored-tree
+   Markdown lint ignores once a released `winit` carrying #4709/#4710 is
+   adopted; re-run the #2570 Hyprland capture and confirm the surface gate
+   engages; retire the synthetic redraw starvation probe if it is then
+   redundant.
 6. **Named maintenance owner.** The Core platform owner (`bitty-core` commander
    jurisdiction) until a platform maintainer is assigned.
-7. **Accepted risk and trade-off.** The upstream patch is unmerged and may not
-   work on some compositors; a compositor advertising `xdg_wm_base` below
-   version 6 never sends `suspended` and keeps the pre-patch behaviour, and the
-   gate is fail-open, so a missed unsuspend only delays resuming presents.
-   `exclude` keeps `cargo fmt` and clippy off upstream code, so the vendored
-   crate is gated by compilation, `cargo deny check licenses sources`, and the
-   recorded patch-fidelity check, not by workspace lints.
+7. **Accepted risk and trade-off.** The upstream patch is unmerged: #4709 still
+   carries `CHANGES_REQUESTED`, which predates the current cut-down shape, and
+   the patch may not work on some compositors. A compositor advertising
+   `xdg_wm_base` below version 6 never sends `suspended` and keeps the pre-patch
+   behaviour, and the gate is fail-open, so a missed unsuspend only delays
+   resuming presents. `exclude` keeps `cargo fmt` and clippy off upstream code,
+   so the vendored crate is gated by compilation, by
+   `cargo deny check licenses sources`, and by the recorded patch-fidelity
+   check, not by workspace lints.
 
 ### Decisions per candidate
 
