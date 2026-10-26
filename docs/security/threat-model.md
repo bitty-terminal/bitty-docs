@@ -320,6 +320,58 @@ supported, first use asks for Once, Always, or Reject while showing canonical
 path and content hash. A content change invalidates approval. Project config
 does not receive process, network, filesystem-write, or runtime-admin authority.
 
+#### Restricted config module loader (candidate, OQ-CONFIG-REQUIRE)
+
+Status: **candidate requirement**, drafted with the design contract
+`specifications/config-lua-require-contract-candidate.md` under the
+`bitty-terminal-docs` corpus (issue `bitty#2670`; the contract is a
+not-yet-merged candidate, so it is referenced by repository path rather
+than by a URL). Nothing is implemented and this record adds no P0
+gate replacement — it extends the required-defense set that a future
+configuration module loader must satisfy before any loader-shipped
+release.
+
+The boundary this record fixes: user configuration is trusted code, but a
+module loader that turns `require("config.options")` into file reads is
+still a host-controlled filesystem surface. Its containment must never
+become a general filesystem read authority, never widen with configuration
+content, and never reuse the plugin-host package loader's trust.
+
+Required defenses for the config-only loader (Unix and Windows):
+
+- one name grammar against exactly one host-derived module root (the
+  `lua/` directory sibling of the configuration root); the root is fixed
+  per generation from the explicit-or-probed configuration source, never
+  from Lua state, the working directory, `$LUA_PATH`, or any
+  Lua-reachable variable;
+- threefold containment — lexical (grammar-joined path), canonical
+  (symlink-aware prefix check under the canonical root, with in-root
+  symlink layouts admitted on Unix only when the canonical target stays
+  inside the root), and handle-bound identity (per-component no-follow
+  with `openat2` `RESOLVE_BENEATH`/`RESOLVE_NO_MAGICLINKS` where
+  available on Unix; unconditional reparse-point refusal with
+  junction/stream/device-name rejection plus post-open identity match on
+  Windows) — so a path swapped between check and read never becomes the
+  read target;
+- special-file rejection: only regular files are read; FIFOs, devices,
+  sockets, reparse points, NTFS alternate data streams, 8.3 aliases,
+  reserved Windows device names, and non-`\.lua`/`init` shapes fail
+  closed;
+- bounded graph: cycle-as-failure (no partially-initialized module
+  tables), depth, distinct-module-count, per-file (the shipped
+  configuration file bounds) and aggregate source caps, and the same
+  RC-1/RC-2 evaluation budget as the configuration VM, charged to the
+  same PB-1 startup accounting — no per-module budget tier and no count
+  evasion of the aggregate cap;
+- startup fail-soft is whole-layer (as for any configuration-layer
+  failure), while `bitty config check`/`doctor` stay strict and reload
+  refuses and keeps the previous plan; `--safe` never constructs the
+  loader and reads no external configuration; plugin and settings VMs
+  keep denying `require` unchanged; and
+- redaction: diagnostics name the module spec and line info only — never
+  resolved host paths, filesystem metadata, or file contents beyond the
+  offending line.
+
 ### IPC, CLI, and child processes
 
 On Unix-like systems, IPC uses a current-user endpoint under
@@ -394,22 +446,24 @@ in-process plugin artifacts are rejected through P0 and P1.
 
 <!-- markdownlint-disable MD013 -->
 
-| ID   | Abuse case                                                    | Required defense                                                               |
-| ---- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| T-01 | Crafted OSC/APC/DCS crashes or wedges Bitty                   | Bounded parser, timeout/budget, fuzzing, panic-free recovery                   |
-| T-02 | Tiny compressed image expands to huge allocation              | Decoded-size and pixel limits before allocation                                |
-| T-03 | Graphics/rich protocol reads a local secret path              | Deny-by-default resource loader, regular-file and safe-path policy             |
-| T-04 | Remote output reads clipboard or injects dangerous paste      | Separate consent, paste inspector, restrictive remote/unknown policy           |
-| T-05 | Malicious link reaches a shell or dangerous scheme            | URI parser, scheme allowlist, user gesture, no shell interpolation             |
-| T-06 | Plugin executes commands or escapes its VM                    | Restricted libraries, capability host, no native in-process plugin             |
-| T-07 | Plugin starves the hot path or memory                         | No hot-path callbacks, budgets, attribution, disable/recovery                  |
-| T-08 | Entering a cloned repository executes project Lua             | Declarative config or path-and-hash workspace consent                          |
-| T-09 | Same-user/remote process takes over runtime IPC               | Local ACL, peer credentials, least-privilege action scopes                     |
-| T-10 | Agent follows instructions printed by hostile terminal output | Untrusted-data labeling, read-only default, separated authorities              |
-| T-11 | Trace or crash report leaks credentials                       | Default minimization, redaction, opt-in input, user-only files                 |
-| T-12 | Update introduces malicious code or new privileges            | Locks, checksums, no install scripts, permission diff, transaction/rollback    |
-| T-13 | Plugin changes canonical grid semantics                       | Terminal Truth is core-owned; presentation-only plugin contract                |
-| T-14 | Unsafe/FFI defect compromises the process                     | Narrow unsafe budget, safety comments, review, fuzzing, process isolation path |
+| ID   | Abuse case                                                                                                              | Required defense                                                                                                                                             |
+| ---- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| T-01 | Crafted OSC/APC/DCS crashes or wedges Bitty                                                                             | Bounded parser, timeout/budget, fuzzing, panic-free recovery                                                                                                 |
+| T-02 | Tiny compressed image expands to huge allocation                                                                        | Decoded-size and pixel limits before allocation                                                                                                              |
+| T-03 | Graphics/rich protocol reads a local secret path                                                                        | Deny-by-default resource loader, regular-file and safe-path policy                                                                                           |
+| T-04 | Remote output reads clipboard or injects dangerous paste                                                                | Separate consent, paste inspector, restrictive remote/unknown policy                                                                                         |
+| T-05 | Malicious link reaches a shell or dangerous scheme                                                                      | URI parser, scheme allowlist, user gesture, no shell interpolation                                                                                           |
+| T-06 | Plugin executes commands or escapes its VM                                                                              | Restricted libraries, capability host, no native in-process plugin                                                                                           |
+| T-07 | Plugin starves the hot path or memory                                                                                   | No hot-path callbacks, budgets, attribution, disable/recovery                                                                                                |
+| T-08 | Entering a cloned repository executes project Lua                                                                       | Declarative config or path-and-hash workspace consent                                                                                                        |
+| T-09 | Same-user/remote process takes over runtime IPC                                                                         | Local ACL, peer credentials, least-privilege action scopes                                                                                                   |
+| T-10 | Agent follows instructions printed by hostile terminal output                                                           | Untrusted-data labeling, read-only default, separated authorities                                                                                            |
+| T-11 | Trace or crash report leaks credentials                                                                                 | Default minimization, redaction, opt-in input, user-only files                                                                                               |
+| T-12 | Update introduces malicious code or new privileges                                                                      | Locks, checksums, no install scripts, permission diff, transaction/rollback                                                                                  |
+| T-13 | Plugin changes canonical grid semantics                                                                                 | Terminal Truth is core-owned; presentation-only plugin contract                                                                                              |
+| T-14 | Unsafe/FFI defect compromises the process                                                                               | Narrow unsafe budget, safety comments, review, fuzzing, process isolation path                                                                               |
+| T-15 | Config module loading escapes the configuration root (traversal, symlink/junction escape, stream/device file)           | Single-root grammar plus lexical/canonical/handle-bound containment, reparse and special-file refusal, regular-file-only reads                               |
+| T-16 | Configuration module graph wedges startup or exhausts budgets (cycles, fan-out, oversized aggregate, many tiny modules) | Cycle-as-failure, depth/count/per-file/aggregate caps, RC-1/RC-2 accounting on the startup path, whole-layer fail-soft salvage and strict check/reload paths |
 
 <!-- markdownlint-enable MD013 -->
 
