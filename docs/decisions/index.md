@@ -193,7 +193,10 @@ the historical conversation:
   and [ADR 0009](adrs/ADR-0009-plugin-api-v1-lua-surface.md) — resolves
   LUA-OQ-1 through LUA-OQ-12; contract authority in `bitty-docs`,
   implementation and parity in `bitty`, SDK generated; frontmatter `accepted`
-  on 2026-09-11.)
+  on 2026-09-11. Amended 2026-10-26 (CTX-1546, bitty issue #2676): the
+  `statusline` slot left the accepted set, the overlay wording was reconciled
+  with the accepted `W-01` capture contract, and overlay pointer routing stays
+  deferred.)
 - Runtime plugin host bridge, per-plugin VM lifecycle, source resolution and
   staging, and host-service wiring. (Accepted and shipped:
   [Plugin Host Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/plugin-host-runtime-rfc.md) and

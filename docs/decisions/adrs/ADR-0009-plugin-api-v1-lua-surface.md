@@ -24,6 +24,39 @@ document selects the resolved behavior and authorizes the SDK/template and
 host-bridge workstreams to derive from it, but it authorizes no implementation
 by itself and does not weaken any normative security control.
 
+**Amended on 2026-10-26 through the owner amendment process** (CarryCtx task
+CTX-1546, [bitty issue #2676](https://github.com/bitty-terminal/bitty/issues/2676),
+amendment reference `OQ-UI-CONTRACT-AMENDMENT`), reconciling the accepted
+text with the implementations that completed under it (bitty CTX-1419 evidence
+PRs #2385 and #2392; CTX-1140 slot removal, bitty PR #1962; the separately
+accepted `W-01` overlay-input-capture contract, 2026-10-03; CTX-1570 SDK slot
+drop). The amendment is recorded in the
+[Plugin API v1 Lua Surface RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md)
+and summarized in the LUA-OQ-7 and LUA-OQ-11 records below; it re-ratifies
+nothing else. What changed:
+
+- The `bitty.ui.mount` closed slot set is the seven names
+  `terminal | top | bottom | left | right | tabline | overlay`; `statusline` is
+  no longer a slot (bridge slot check rejects the name with the unknown-slot
+  `E_UI_COMPONENT_INVALID` before any host call), and status presentation
+  composes on the `bottom` edge band.
+- The overlay slot keeps its declarative, presentation-only character; focus
+  and transient input capture live in the separately accepted
+  [Overlay Input Capture Contract](../../development/overlay-input-capture-contract.md)
+  (`W-01`: Core-owned `bitty.ui.overlay.*` under the v2 capability
+  `ui.overlay.focus`, presentation-only `bitty.ui.overlay.show` under
+  `ui.rich` + `ui.overlay`), and pointer routing between presentation and
+  overlay scene nodes stays deferred.
+- Authoritative slots, capability gates (`ui.rich` / `ui.overlay` /
+  `ui.overlay.focus`), stable error codes, the unchanged `bitty.api_version`
+  `"1.0.0"` contract version line, and migration impact (`bottom`-band status
+  composition; typed `E_UI_UNAVAILABLE` refusals for slots without a host
+  surface; opt-in `ui.overlay.focus` grants) are recorded in the amended RFC
+  [Status section](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md#status).
+- Candidate token namespaces, the one-surface-per-edge rule, terminal-wide
+  budgets, headed evidence, and overlay pointer routing are NOT promoted; they
+  stay candidate or deferred under their own records.
+
 - Deciders: project initiator (user), coordinated by the commander; CarryCtx
   `bitty-docs` task CTX-0144 (follow-up to CTX-0143, RFC draft merged `05ccdd9`).
 - Prepared by: `ctx-0144-proposal` (scoped design subagent), session
@@ -333,6 +366,19 @@ and `List`; status components are ordinary subtrees mounted in the
 `Image`, `CodeBlock`, `Table`, `Rule`, and bordered `Block` nodes are excluded
 from v1.
 
+**Amendment (2026-10-26, CTX-1546, bitty issue #2676,
+`OQ-UI-CONTRACT-AMENDMENT`).** The `statusline` sentence above is superseded:
+`statusline` left the closed slot set (bitty CTX-1140, PR #1962; the name
+rejects at the bridge slot check as an unknown slot with
+`E_UI_COMPONENT_INVALID`, and status presentation composes on the `bottom`
+edge band). The authoritative slot set, the capability gates
+(`ui.rich` / `ui.overlay` / `ui.overlay.focus`), the stable error codes
+(`E_UI_UNAVAILABLE`, `E_UI_CLAIM_REQUIRED`, `E_UI_ALREADY_CAPTURED`,
+`E_UI_NOT_OWNER` in addition to `E_UI_COMPONENT_INVALID`), and the migration
+impact are recorded in the amended RFC
+[Status section](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/sdk/plugin-api-v1-lua-surface-rfc.md#status);
+the handle model, the v1 node subset, and the budget classes are unchanged.
+
 **Rationale.** The accepted Rich Presentation RFC already defines replacement
 as "same `BlockId` with an incremented version" and requires subtree diffing;
 mount-only would fight that model and force full disposal on every change.
@@ -495,6 +541,20 @@ serve as a panel provider: pre-empts the Panel RFC and touches input routing.
 Panel RFC compatibility note.
 
 **User ratification.** Confirm keeping overlay in v1 under these constraints.
+
+**Amendment (2026-10-26, CTX-1546, bitty issue #2676,
+`OQ-UI-CONTRACT-AMENDMENT`).** The focus-and-routing part of the compatibility
+note materialized in a different, narrower form: the focusable-overlay and
+transient input-capture mechanism is now accepted on its own as the
+[Overlay Input Capture Contract](../../development/overlay-input-capture-contract.md)
+(`W-01`, accepted 2026-10-03) with the Core-owned `bitty.ui.overlay.*` surface
+under the v2 capability `ui.overlay.focus`, and the presentation-only
+`bitty.ui.overlay.show` session (bitty PR #2406) under `ui.rich` + `ui.overlay`
+without implying a focus grant. The slot content itself remains declarative,
+never self-focusing, and never a `PanelProvider`; overlay count and size bounds
+stay owned elsewhere (inherited bounds, no accepted numbers recorded here).
+Pointer routing between presentation and overlay scene nodes stays deferred
+and is not accepted or scheduled by this amendment.
 
 ## LUA-OQ-12: plugin entry point
 
