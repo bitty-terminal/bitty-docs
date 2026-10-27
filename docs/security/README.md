@@ -25,6 +25,7 @@ and states no control status of its own.
 | [P0 acceptance criteria](p0-acceptance-criteria.md)                                         | Testable acceptance criteria for every normative P0 control.                                                                                                         |
 | [Risk register](risk-register.md)                                                           | Security risks and evidence-based closure criteria.                                                                                                                  |
 | [Evidence matrix](evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                           |
+| [bittyd P0 evidence plan](bittyd-p0-evidence-plan.md)                                       | Pending P0-AC-019 and P0-AC-021 through P0-AC-026, daemon-absence, no-TCP, and safe-mode evidence for the local-daemon transition.                                   |
 | [Authenticated provider publication ingress](authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted.                                                               |
 
 ## Related
