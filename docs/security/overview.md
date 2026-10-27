@@ -171,3 +171,20 @@ Security-sensitive changes require:
 
 Open threats and acceptance criteria are tracked in
 [threat-model.md](threat-model.md) and [risk-register.md](risk-register.md).
+
+### Vendored and upstream code
+
+Static analysis and dependency scanning run over the entire build tree,
+including vendored sources under `vendor/`. An alert on vendored code is a
+finding against Bitty, not an upstream matter to be ignored:
+
+- Fix it locally through the recorded vendor patch: every vendored crate keeps
+  `PATCHES.md` with the patch origin, digest, and exit plan, and `patches/`
+  holds the diffs the vendoring gate hashes. A local patch is removed only when
+  an adoptable upstream release carries the fix.
+- Dismiss only when the flagged path is provably unreachable or the surrounding
+  contract guarantees the invariant, and record that reasoning on the alert.
+  Silent dismissal or a muting pattern is not acceptable.
+- The path-source advisory gap that vendoring creates is compensated by the
+  dated re-audit bound and the synthetic-lock audit recorded in the vendored
+  crate's `PATCHES.md`.
