@@ -570,7 +570,9 @@ gate, not a substitute for the inspection.
   limits.
 - Scope registry: the `session.*` and `daemon.*` families are additive;
   `terminal.*` is unchanged; every method has exactly one required scope;
-  scope is evaluated before target lookup; no scope implies another.
+  scope is evaluated before target lookup; no scope implies another. The
+  registry is the `bittyd`-owned table decided on 2026-10-28 (bitty#2607,
+  bitty-terminal-docs#344); the `bitty-ipc` v1 families are consumed unchanged.
 - Host consent: `session.host` is never baseline; `daemon.host_grant` is
   operator-only, single-use, TTL-bound, peer-bound, revocable, and audited;
   `session.create` intersects it with `process.spawn`; the both-missing result
@@ -628,21 +630,21 @@ gate, not a substitute for the inspection.
 
 ### Refusals that must be static and non-oracular
 
-| Condition pair or class                                                 | Required observable result                                                                |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Unknown, collected, foreign, or invisible session                       | One `NotFound`; no existence, ownership, or "never existed" distinction                   |
-| Missing scope on a target method                                        | `Denied/ScopeViolation` before target lookup                                              |
-| Missing `process.spawn` and missing host consent at create              | `Denied/ScopeViolation`, never `ConsentRequired`                                          |
-| Missing, expired, revoked, consumed, or wrong-peer host grant           | `Denied/ConsentRequired` at create                                                        |
-| Missing, expired, consumed, wrong-session, or wrong-peer observer grant | `Denied/ObserverGrantRequired`                                                            |
-| Missing, stale, or rotated control token at a vacant control            | `Denied/InvalidControlToken`                                                              |
-| Visible observer or non-controller on a control method                  | `Denied/ControllerRequired`                                                               |
-| Live controller elsewhere, caller has no lease                          | `Denied/ControlHeld`                                                                      |
-| Unknown `Denied` code received from a peer                              | Static `Internal`, never parsed as text or treated as success                             |
-| Missing operator capability versus failed peer check at negotiate       | One static refusal and close; the code must not reveal whether the capability file exists |
-| Endpoint tamper, foreign peer, or descriptor mismatch                   | `Unauthenticated`; connection closes; nothing applies                                     |
-| Unsupported platform or disabled worker kind                            | `Denied/UnsupportedPlatform` or `Denied/UnsupportedCapability`; no weaker fallback        |
-| Audit sink unavailable for a privileged mutation                        | `Denied/Internal`, no state change, `audit_degraded=true`                                 |
+| Condition pair or class                                                 | Required observable result                                                                                                             |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Unknown, collected, foreign, or invisible session                       | One `NotFound`; no existence, ownership, or "never existed" distinction                                                                |
+| Missing scope on a target method                                        | `Denied/ScopeViolation` before target lookup                                                                                           |
+| Missing `process.spawn` and missing host consent at create              | `Denied/ScopeViolation`, never `ConsentRequired`                                                                                       |
+| Missing, expired, revoked, consumed, or wrong-peer host grant           | `Denied/ConsentRequired` at create                                                                                                     |
+| Missing, expired, consumed, wrong-session, or wrong-peer observer grant | `Denied/ObserverGrantRequired`                                                                                                         |
+| Missing, stale, or rotated control token at a vacant control            | `Denied/InvalidControlToken`                                                                                                           |
+| Visible observer or non-controller on a control method                  | `Denied/ControllerRequired`                                                                                                            |
+| Live controller elsewhere, caller has no lease                          | `Denied/ControlHeld`                                                                                                                   |
+| Unknown `Denied` code received from a peer                              | Static `Internal`, never parsed as text or treated as success                                                                          |
+| Missing operator capability versus failed peer check at negotiate       | One static `Unauthenticated` refusal and close (decided 2026-10-28, bitty#2607); it must not reveal whether the capability file exists |
+| Endpoint tamper, foreign peer, or descriptor mismatch                   | `Unauthenticated`; connection closes; nothing applies                                                                                  |
+| Unsupported platform or disabled worker kind                            | `Denied/UnsupportedPlatform` or `Denied/UnsupportedCapability`; no weaker fallback                                                     |
+| Audit sink unavailable for a privileged mutation                        | `Denied/Internal`, no state change, `audit_degraded=true`                                                                              |
 
 Static means the code set is closed and the daemon never echoes caller text,
 a path, a token, a bearer, or another session's fields. Non-oracular means the
