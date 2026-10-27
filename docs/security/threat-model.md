@@ -1,6 +1,6 @@
 ---
 title: Threat Model
-description: Defines Bitty assets, threat actors, trust boundaries, principal data flows, abuse cases, and required verification gates.
+description: Defines Bitty assets, threat actors, trust boundaries, principal data flows, abuse cases, and required verification gates, including the local bittyd daemon boundary.
 category: security
 audience: security-reviewer
 document_type: policy
@@ -13,18 +13,26 @@ sidebar_order: 31
 
 Status: pre-alpha security contract. Controls are requirements; mechanism
 evidence exists in the `bitty` workspace but nothing is `Verified`, and no
-statement here claims shipped, stable, or supported behavior.
+statement here claims shipped, stable, or supported behavior. The local-daemon
+boundary below is an accepted requirement with a pending
+[evidence plan](bittyd-p0-evidence-plan.md): at `bitty` `6d0b6c65` the
+`bitty-daemon` crate carries library primitives, but it starts no listener,
+binds no endpoint, serves no service method, and spawns no worker. No daemon
+control is `Verified`, and no daemon risk is `Mitigated`.
 
 ## Scope
 
 This model covers the future Bitty core, VT and graphics protocols, renderer
 interfaces, PTY integration, Lua configuration and plugins, package management,
-local IPC and remote control, MCP/Agent access, DevTools, traces, and platform
-adapters. It covers local, SSH, container, and unknown terminal origins.
+local IPC and remote control, the per-user `bittyd` local daemon transition,
+MCP/Agent access, DevTools, traces, and platform adapters. It covers local,
+SSH, container, and unknown terminal origins.
 
-Registry operations, network-exposed daemons, WASM plugins, and enterprise
+Registry operations, remote daemons, remote UI, WASM plugins, and enterprise
 policy distribution remain future design areas, but their trust transitions
-must not be precluded by P0 APIs.
+must not be precluded by P0 APIs. The local daemon is not a remote daemon: it
+adds no network listener, and the remote transition keeps its own later trust
+gate.
 
 ## Assets
 
@@ -34,6 +42,8 @@ must not be precluded by P0 APIs.
 - availability of the UI, parser, renderer, PTY, and plugin runtime;
 - integrity of configuration, plugin manifests, lockfiles, installed packages,
   and updates;
+- integrity of the daemon session registry, lease state, and audit records, and
+  availability of the local daemon endpoint;
 - authority exposed by process creation, network access, IPC, DevTools, and
   Agent operations;
 - recoverability through safe mode, rollback, and deterministic state.
@@ -41,12 +51,17 @@ must not be precluded by P0 APIs.
 ## Threat actors and failure sources
 
 - a remote SSH host or container emitting crafted terminal sequences;
-- a local process with access to the PTY or a same-user IPC endpoint;
-- a malicious, compromised, abandoned, or typo-squatted plugin;
+- a local process with access to the PTY or a same-user IPC endpoint,
+  including a same-user process that binds the daemon endpoint path first or
+  reads the daemon's operator capability;
+- a malicious, compromised, abandoned, or typo-squatted plugin, including a
+  native sidecar that can open its own connection to the daemon;
 - a repository containing hostile project configuration or prompt injection;
-- an over-privileged or compromised MCP/Agent/DevTools client;
+- an over-privileged or compromised MCP/Agent/DevTools client, including a
+  consumer adapter that runs as the owner;
 - a compromised registry, publisher account, dependency, or build artifact;
 - a buggy plugin or parser causing resource exhaustion without malicious intent;
+- a daemon or worker crash that leaves an orphaned process tree;
 - unsafe/FFI defects in platform, font, graphics, PTY, or Lua boundaries.
 
 ## Boundary map
@@ -54,14 +69,15 @@ must not be precluded by P0 APIs.
 ```text
                           untrusted world
                                  |
-          +----------------------+----------------------+
-          |                      |                      |
-       PTY bytes             Lua plugin           IPC / MCP
-          |                      |                      |
-    protocol limits        restricted VM          authentication
-          |                 capabilities              scopes
-          |                      |                      |
-          +----------------------+----------------------+
+          +----------------------+----------------------+----------------------+
+          |                      |                      |                      |
+       PTY bytes             Lua plugin           IPC / MCP          bittyd endpoint
+          |                      |                      |                      |
+    protocol limits        restricted VM          authentication       owner-private
+          |                 capabilities              scopes          endpoint + peer
+          |                      |                      |             + session scopes
+          |                      |                      |             + intent gate
+          +----------------------+----------------------+----------------------+
                                  |
                              Bitty core
                                  |
@@ -385,6 +401,146 @@ input or terminate a process. A child process may receive a short-lived,
 current-terminal scope, never a runtime administrator token. Credentials must
 not be placed where shell startup or SSH environment forwarding leaks them.
 
+### Local daemon (`bittyd`) trust boundary
+
+This boundary is accepted by ADR 0008 and ADR 0019 and specified by the
+[bittyd Session-Host Contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/bittyd-session-host-contract.md)
+and the [bittyd IPC Contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/bittyd-ipc-contract.md).
+It is a requirement, not evidence: the `bitty-daemon` crate exists on `bitty`
+`main` as library primitives, but at `6d0b6c65` it starts no listener, binds no
+endpoint, serves no service method, and spawns no worker. No daemon control is
+`Verified`; the pending proofs are in the
+[bittyd P0 evidence plan](bittyd-p0-evidence-plan.md).
+
+`bittyd` is same-user infrastructure. It is a policy and consent boundary
+inside one account, not a privilege boundary against the account owner. Every
+process running as the owner can open the endpoint, read an owner-private file,
+and present itself as a client. The design therefore states the residual
+instead of claiming isolation, and it fails closed wherever identity, endpoint,
+version, scope, or audit cannot be checked.
+
+#### Endpoint and peer identity
+
+On Unix the endpoint is `$XDG_RUNTIME_DIR/bitty/bittyd.sock`, inside an
+owner-private `0700` directory, as a `0600` socket. Windows uses a
+current-user-only named pipe. There is no TCP listener, no abstract-namespace
+socket, no `/tmp` fallback, and no discovery service. The daemon holds a
+single-instance lock for its lifetime and removes a stale socket only while
+holding that lock. `BITTYD_ENDPOINT` is a path override for tests and alternate
+runtime roots, never a credential; an endpoint that fails owner or mode checks
+is refused even when overridden.
+
+Peer credentials are captured at accept, before any frame is parsed. On Linux
+the socket enables `SO_PASSCRED` and every request must carry
+`SCM_CREDENTIALS` matching the handshake peer; a missing or changed credential,
+an inherited descriptor used by another process, or a peer that has exited
+closes the connection with `Unauthenticated`. On cells with only
+connection-scoped credentials, the daemon re-checks the captured process
+identity before every privileged action (create, controller attach, abort,
+kill, transfer, detach-other, grant, stop), and the live-descriptor residual is
+tested rather than claimed closed. Endpoint tamper detection runs at startup
+and on a bounded interval; a mode, owner, or replacement mismatch stops
+acceptance, closes clients, records the event, and exits with code `6`. The
+client's owner/mode check is tamper detection, not server authentication: a
+same-uid impostor can bind the path first, and `server_identity` is
+observational.
+
+#### Scopes, host grants, and control
+
+The service adds a deny-by-default `session.*` and `daemon.*` scope family.
+`terminal.*` keeps its accepted meaning and is never stretched to cover
+sessions. The baseline consumer grant is `session.inspect`, `session.attach`,
+and `session.control`; `session.host` is never baseline. Creating a session
+requires both an explicit per-client host consent grant and `process.spawn`,
+each decided before any spawn; a caller missing both gets `ScopeViolation`, and
+`ConsentRequired` is returned only to a caller that already holds
+`process.spawn`, so consent state is not an oracle. The operator-only
+`daemon.host_grant` mints a single-use, TTL-bound, peer-bound, revocable grant
+that is consumed at negotiate. Observation is never self-granted: an observer
+attach needs a single-use, TTL-bound grant from the controller or operator.
+Controller authority is the session's 256-bit control token: minted at create
+and returned in the create response, stored as a digest, rotated on every claim
+and transfer with the new token returned once to the new controller, and bound
+to the controller lease. Claiming control, or acting while control is vacant,
+requires the current token; a live controller lease keeps authority through
+lease liveness. The token is never placed in a child environment, argv, audit
+record, or diagnostic. The baseline
+`session.control` scope is necessary but never sufficient: without the
+controller lease or the current token it cannot abort, transfer, or revoke
+another lease. A stale, rotated, or missing token at a vacant control is
+`InvalidControlToken`; a visible non-controller is `ControllerRequired`;
+control never transfers implicitly.
+
+#### Operator capability
+
+The per-boot operator capability is an explicit-intent gate, not an isolation
+boundary. It lives in an owner-private `0700` directory as a `0600` file
+rotated on every start, is presented only at handshake, and is never inherited
+by a worker or accepted as a consumer wire field. Any same-uid process,
+including a consumer adapter, can read it; the `daemon.*` separation is
+therefore a consent and attribution boundary, never a privilege boundary. The
+daemon does not claim to hide the capability from the owner or the owner's
+adapter.
+
+#### Audit, attribution, and diagnostics
+
+The daemon records lifecycle and refusal facts only: peer identity,
+server-assigned client id, instance, session, generation, revision, action,
+static result code, counts, limits, and the target of a transfer, revoke,
+detach, or grant. A raw `terminal_id` is represented by `terminal_id_digest`; a
+consumer correlation value is hashed on receipt and only the digest is stored.
+Every audited string is valid UTF-8, control-character free, and bounded. The
+daemon never records terminal text, PTY bytes, scrollback, clipboard, argv,
+environment values, file contents, prompts, transcripts, tool output, provider
+payloads, secret values, the control token, or the operator capability.
+Refusal records are budgeted and aggregated so a flood cannot exhaust the sink.
+The sink is owner-private (`0700` directory, `0600` files), bounded, and rotates
+with loss limited to the unflushed tail; it is not readable over the service
+and is not tamper-evident against the owner. Diagnostics follow the same
+minimization rule: token-bearing structures have a redacted `Debug`, core dumps
+are disabled, and trace, panic, and crash output never carries the token,
+capability, argv, environment, clipboard, or PTY content.
+
+#### Orphan recovery and idempotency
+
+Sessions do not survive a daemon restart, and the daemon never adopts an old
+session. Before a spawn it creates the containment identity (a delegated cgroup
+v2 scope on Linux x86_64, or a pidfd-tracked subreaper), reserves a bounded
+journal record, and fsyncs it; after the spawn it commits the exact pid, start
+time, process group, and executable-path digest and fsyncs again. A
+boot-id-matched record is reaped only through its recorded containment
+identity, never by name, pattern, port, pid alone, or "newest process". Pid
+reuse, a missing pid, and an unverifiable record are quarantined and reported,
+never signalled. The startup scan finishes before the endpoint binds. The
+subreaper fallback has a stated double-run residual: a crash between spawn and
+adoption cannot be fenced by pid, so the record stays quarantined and the
+adapter must not retry an unfenced create. Keyed create, attach, grant, and
+transfer use bounded idempotency stores; termination and revocation are keyless
+and are never blocked by a full store. A duplicate with the same fingerprint
+replays the descriptor, a different fingerprint is `IdempotencyConflict`, and
+create keys are token-equivalent secrets. A restart loses the store; the old
+session is neither adopted nor assumed dead.
+
+#### Daemon absence
+
+`bitty --safe`, headless tests, CI, and a plain invocation must work with no
+daemon endpoint and no daemon process. The daemon is never a startup,
+diagnostics, or safe-mode dependency, and a missing endpoint is a normal
+supported state, not a reason to change transport or start a hidden listener.
+
+#### Same-uid hostile-process residual
+
+The following are inside the boundary, not closed by it: a same-uid process
+that binds the endpoint path first; a consumer adapter that reads the operator
+capability and mints its own host grant; a plugin or native sidecar that can
+call a daemon client API directly unless the plugin host denies `connect()` to
+the endpoint (a required negative test, not a policy claim); a spawned worker
+that opens its own connection and receives baseline scopes (or becomes an
+operator if it reads the capability); and a same-uid debugger, `ptrace` where
+permitted, `/proc/<pid>/mem`, or a client crash dump that reads the control
+token. Audit is not tamper-evident against the owner either. These residuals
+are tested and recorded; none is presented as an isolation guarantee.
+
 ### MCP, Agents, and DevTools
 
 MCP defaults to operations such as listing terminals, reading snapshots,
@@ -464,6 +620,14 @@ in-process plugin artifacts are rejected through P0 and P1.
 | T-14 | Unsafe/FFI defect compromises the process                                                                               | Narrow unsafe budget, safety comments, review, fuzzing, process isolation path                                                                               |
 | T-15 | Config module loading escapes the configuration root (traversal, symlink/junction escape, stream/device file)           | Single-root grammar plus lexical/canonical/handle-bound containment, reparse and special-file refusal, regular-file-only reads                               |
 | T-16 | Configuration module graph wedges startup or exhausts budgets (cycles, fan-out, oversized aggregate, many tiny modules) | Cycle-as-failure, depth/count/per-file/aggregate caps, RC-1/RC-2 accounting on the startup path, whole-layer fail-soft salvage and strict check/reload paths |
+| T-17 | Same-user process binds the daemon endpoint path first                                                                  | Client endpoint owner/mode tamper detection, typed refusal, residual recorded; no server-authentication claim                                                |
+| T-18 | A client passes a connected descriptor to another process                                                               | Linux per-message `SCM_CREDENTIALS`; captured-peer re-check before privileged actions; residual tested on connection-scoped cells                            |
+| T-19 | A same-user adapter or worker reads the operator capability                                                             | Capability is an intent gate; `0700`/`0600`, per-boot rotation, peer binding, audit; plugin `connect()` denial; no isolation claim                           |
+| T-20 | A client self-grants observation or forges a control transfer                                                           | Single-use observer grant; controller relation; 256-bit token rotation; static denial                                                                        |
+| T-21 | A crash leaves orphan workers that are reaped by a reused pid or process group                                          | Two-phase journal, containment identity, exact match, quarantine; never signal an unverified record                                                          |
+| T-22 | A full idempotency store blocks termination or a retry spawns a duplicate worker                                        | Keyless termination, bounded stores, fingerprint conflict, pre-session create keys                                                                           |
+| T-23 | Daemon audit, diagnostics, or crash output leaks a token, argv, env, or terminal content                                | Content-free records, digest-only targets, redacted `Debug`, no core dumps, `0600`/`0700`, refusal budget                                                    |
+| T-24 | Daemon absence or a hidden listener makes safe mode or diagnostics depend on it                                         | No daemon dependency; safe mode/headless/CI without an endpoint; no TCP/abstract/`tmp` fallback; typed no-endpoint result                                    |
 
 <!-- markdownlint-enable MD013 -->
 
@@ -477,8 +641,25 @@ Before a security boundary can be marked implemented, evidence must cover:
 - capability denial and permission-elevation behavior;
 - secret-redaction tests and explicit export review;
 - plugin failure, transactional rollback, and safe-mode startup;
+- daemon endpoint, peer-credential, per-message credential, endpoint-tamper,
+  single-instance, no-TCP, and no-hidden-listener negative tests;
+- session scope-matrix, host-grant, observer-grant, control-token rotation, and
+  no-existence-oracle refusal pairs;
+- child environment and descriptor scans proving `CLOEXEC`/`close_range` and
+  the absence of daemon descriptors and secrets;
+- daemon audit and diagnostic seeded-secret scans, owner-private modes,
+  refusal budgeting, and audit-degraded fail-closed behavior;
+- two-phase orphan crash injection, pid-reuse, quarantine, and duplicate-spawn
+  negative tests;
+- daemon absence under `bitty --safe`, headless tests, CI, and a plain
+  invocation with no endpoint;
+- plugin-host denial of `connect()` to the daemon endpoint;
+- an independent review that confirms the same-uid residuals are stated and
+  not presented as isolation;
 - dependency advisory/source policy checks;
 - review by a separate security-auditor persona.
 
 Residual risks and stage ownership are tracked in
-[risk-register.md](risk-register.md).
+[risk-register.md](risk-register.md). The daemon-intake rows `DR-01` through
+`DR-08` and the pending P0 evidence rows are in the
+[bittyd P0 evidence plan](bittyd-p0-evidence-plan.md).

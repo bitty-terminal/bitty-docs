@@ -1,6 +1,6 @@
 ---
 title: Security Evidence Matrix
-description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls with unit, integration, adversarial, CI-gate and manual-audit evidence plus named revisions
+description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls plus the pending bittyd daemon-intake rows, with unit, integration, adversarial, CI-gate and manual-audit evidence and named revisions
 category: security
 audience: security-reviewer
 document_type: register
@@ -29,8 +29,10 @@ statement: no risk is `Verified`, no risk is `Accepted`, and 19 of the 22
 risks remain `Open` at this revision.
 
 Current state: `R-002`, `R-003`, and `R-005` are `Mitigated`; `R-001`,
-`R-004`, and `R-006`..`R-022` are `Open`. This revision records three state
-changes:
+`R-004`, and `R-006`..`R-022` are `Open`. Separately, the `bittyd` daemon
+intake rows `DR-01`..`DR-08` are `Open` with no P0 evidence; see
+[bittyd daemon intake](#bittyd-daemon-intake-ctx-1629). This revision records
+three state changes:
 
 - `R-001` `Mitigated -> Open` because `P0-AC-002`'s pass threshold is unmet.
   The merged audit authorizes the move, but its basis is retained-corpus replay,
@@ -117,7 +119,10 @@ pinned to `27807ef0` instead.
 
 ## Phase E verification ledger
 
-All 22 risks and all P0-AC-001..P0-AC-039 criteria are represented. Criteria
+All 22 Phase E risks and all P0-AC-001..P0-AC-039 criteria are represented.
+The eight `bittyd` daemon-intake rows `DR-01` through `DR-08` are tracked in a
+separate table after this ledger; they are all `absent` at the P0 tier and move
+no Phase E row. Criteria
 added after the original matrix (P0-AC-035..039) are attached to their linked
 risks below. Presence of code or a test is not evidence of a passing run; the
 status token says which kind of evidence the citation is.
@@ -157,6 +162,36 @@ no P0-AC row owns: its wired call sites, proving tests, per-OS refusal shape,
 future-platform requirements, and uncovered classes are recorded in
 [Sandbox confinement posture](sandbox-posture.md). That record is
 `Implemented`-only and moves no row above.
+
+## bittyd daemon intake (CTX-1629)
+
+The `bittyd` local-daemon transition adds the eight intake rows defined in the
+[risk register](risk-register.md#bittyd-local-daemon-risk-intake-ctx-1629).
+They are not Phase E `R-*` rows and no row above moves. At `bitty` `6d0b6c65`
+the `bitty-daemon` crate carries precursor unit suites, but its README states
+that it starts no listener, binds no endpoint, and serves no service method;
+those suites are `presence` in the component tier, `absent` at the P0
+real-service tier. The full proof obligations are in the
+[bittyd P0 evidence plan](bittyd-p0-evidence-plan.md).
+
+| ID    | Linked P0-AC         | Precursor at `bitty` `6d0b6c65`                                                                                                                               | Required P0 producer                                                          | State  | Remaining gap                                                     |
+| ----- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------- |
+| DR-01 | P0-AC-022, P0-AC-024 | `presence` `--test leases` token and control-relation cases; `--test peer` `captures_and_rechecks_a_child_process_peer`                                       | `C-09`, `C-16`, `C-19` real-service driver plus the Agent read-only audit     | `Open` | No service loop; operator-capability and adapter evidence pending |
+| DR-02 | P0-AC-021, P0-AC-022 | `presence` `--test endpoint` owner-private, second-instance, symlink, and reattest cases; `--test peer` foreign-namespace refusal                             | `V-25`, `V-26`, `V-28`, `C-02`, `C-16` real-service driver                    | `Open` | No bound listener or live peer exchange                           |
+| DR-03 | P0-AC-022, P0-AC-024 | `presence` `--test leases` claim, transfer, detach, and revocation cases; `--test events` transfer and stopping control frames                                | `C-09`, `C-10`, `C-11`, `C-19` real-service driver                            | `Open` | No scope evaluation or observer-grant store                       |
+| DR-04 | P0-AC-026            | `presence` `--test audit` content-free record and digest cases; `--test idempotency` `a_conflict_never_prints_the_raw_key`                                    | `C-07`, `C-14` real-service driver plus the seeded-secret scan                | `Open` | No sink writer or daemon diagnostic path                          |
+| DR-05 | P0-AC-021, P0-AC-022 | `presence` `--test limits` handshake advertisement; `--test binary` `no_arguments_reports_the_seam_and_creates_no_endpoint`; `--test endpoint` override cases | `V-01`, `V-02`, `C-09` real-service driver plus platform refusal              | `Open` | No handshake dispatch or platform cell run                        |
+| DR-06 | P0-AC-023            | `presence` `--test orphan_journal` exact-identity, missing-pid, reused-pid, and owner-private cases                                                           | `C-03`, `C-13` real-service driver plus crash injection                       | `Open` | No production spawn, containment, or reaper                       |
+| DR-07 | P0-AC-023            | `presence` `--test leases` token redaction; `--test audit` no-content-field cases                                                                             | `C-12` real-service driver plus the child `environ` and `/proc/self/fd` probe | `Open` | No daemon spawn path                                              |
+| DR-08 | P0-AC-019, P0-AC-021 | `presence` `--test binary` seam and no-endpoint cases; existing `bitty` safe-mode CLI matrix                                                                  | `C-08`, `V-28` plus the safe-mode/headless matrix re-run                      | `Open` | No daemon integration to prove absence against                    |
+
+The precursor names are presence evidence only. A fake-server result, a
+component unit test, or a cross-compiled build never satisfies a `DR-*` row.
+Each row stays `Open` until the corresponding evidence plan row is recorded and
+independently reviewed. `DR-05` uses `P0-AC-021`/`P0-AC-022` as the closest
+transport and scope non-degradation criteria, and `DR-06` uses `P0-AC-023` as
+the closest child-process authority criterion; the direct proofs are the
+contract vectors `V-01`/`V-02` and `C-03`/`C-13`, not the criteria thresholds.
 
 ## Scoped follow-ups
 

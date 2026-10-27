@@ -23,7 +23,11 @@ Every criterion below converts a normative P0 control from
 testable statement. Until each criterion has recorded passing evidence per its
 verification method, all linked risks in the
 [risk register](risk-register.md) remain **Open**. No criterion is satisfied by
-design intent, partial tests, or documentation alone.
+design intent, partial tests, or documentation alone. The `bittyd`
+local-daemon adaptation of `P0-AC-019` and `P0-AC-021` through `P0-AC-026`,
+with producers, owners, and pending status, is in the
+[bittyd P0 evidence plan](bittyd-p0-evidence-plan.md); it changes no criterion
+text or pass threshold.
 
 ## Conventions
 
