@@ -16,15 +16,16 @@ precedence over source summaries and non-security design suggestions. Status
 framing per control is owned by CTX-0218 (issue #332); this index routes only
 and states no control status of its own.
 
-| Document                                                                                    | Authority                                                                                              |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| [Security overview](overview.md)                                                            | Normative security contract and capability taxonomy.                                                   |
-| [Threat model](threat-model.md)                                                             | Normative trust boundaries, threats, and required controls.                                            |
-| [Extension execution mediation](extension-execution-mediation.md)                           | Normative tool-allowlist, inherited-confinement, spawn-audit, and extension supply-chain contract.     |
-| [P0 acceptance criteria](p0-acceptance-criteria.md)                                         | Testable acceptance criteria for every normative P0 control.                                           |
-| [Risk register](risk-register.md)                                                           | Security risks and evidence-based closure criteria.                                                    |
-| [Evidence matrix](evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.             |
-| [Authenticated provider publication ingress](authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted. |
+| Document                                                                                    | Authority                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Security overview](overview.md)                                                            | Normative security contract and capability taxonomy.                                                                                                                 |
+| [Threat model](threat-model.md)                                                             | Normative trust boundaries, threats, and required controls.                                                                                                          |
+| [Extension execution mediation](extension-execution-mediation.md)                           | Normative tool-allowlist, inherited-confinement, spawn-audit, and extension supply-chain contract.                                                                   |
+| [Sandbox confinement posture](sandbox-posture.md)                                           | Per-OS inherited-exec confinement record: wired Linux Landlock call sites and proving tests, refusal elsewhere, future-platform requirements, and uncovered classes. |
+| [P0 acceptance criteria](p0-acceptance-criteria.md)                                         | Testable acceptance criteria for every normative P0 control.                                                                                                         |
+| [Risk register](risk-register.md)                                                           | Security risks and evidence-based closure criteria.                                                                                                                  |
+| [Evidence matrix](evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                           |
+| [Authenticated provider publication ingress](authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted.                                                               |
 
 ## Related
 
