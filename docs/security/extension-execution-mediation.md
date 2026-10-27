@@ -189,7 +189,11 @@ Refusal is by design, not a gap in the gate: on non-Linux platforms
 admitted spawns are denied with a diagnostic naming the missing mechanism
 until the sequel mechanism lands and is verified. The per-OS table is the
 pure, testable contract (`ConfinementPosture::for_os`): `linux` enforces,
-every other label refuses.
+every other label refuses. The wiring inventory (named call sites and proving
+tests), the caller-visible refusal shape, and the requirements a sequel
+mechanism must meet are recorded in
+[Sandbox confinement posture](sandbox-posture.md); this section remains the
+normative guarantee, and the stricter wording applies where the two overlap.
 
 ## Audit story
 
@@ -276,7 +280,9 @@ closes silently.
 1. **Non-Linux platforms refuse by design.** macOS, Windows, and other
    Unix systems deny admitted spawns fail-closed until their confinement
    mechanisms land. Portability of the confinement guarantee is open work;
-   the refusal behavior itself is the current guarantee.
+   the refusal behavior itself is the current guarantee. Recorded posture,
+   test evidence, and the revisit trigger are in
+   [Sandbox confinement posture](sandbox-posture.md).
 2. **Token material in arguments records as a truncated preview.** The
    spawn ledger stores up to 64 bytes per argument preview. A secret
    passed as an argument would therefore persist in truncated form in the
@@ -332,6 +338,9 @@ are necessary evidence, never sufficiency on their own.
 ## References
 
 - [Security overview](overview.md) — normative posture and invariants.
+- [Sandbox confinement posture](sandbox-posture.md) — accepted per-OS
+  enforcement record, wired call sites, proving tests, and future-platform
+  requirements.
 - [Threat model](threat-model.md) — trust boundaries and abuse cases
   T-06, T-11, T-12.
 - [P0 acceptance criteria](p0-acceptance-criteria.md) — testable gates.
