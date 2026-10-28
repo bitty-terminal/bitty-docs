@@ -114,26 +114,78 @@ The component descriptor `bitty-component.toml` (v1):
 [component]
 name = "net"            # [a-z][a-z0-9-]{0,31}
 version = "0.0.1"       # semver
-protocol = [1, 1]       # supported wire protocol min,max
+protocol = [1, 1]       # wire protocol range this component speaks
 executable = "bitty-net"
 sha256 = "<64 lowercase hex>"   # digest of the executable
 ```
+
+`protocol` is the component's declaration of the wire protocol range it
+speaks, not a host preference. Core matches that range against the protocol
+range implemented by the **host seam** that owns the component family (see
+below). A descriptor whose range shares no version with its family seam is
+refused with the typed ABI mismatch at install and spawn, and reported as an
+ABI mismatch by `bitty extension list`; there is no permissive fallback.
 
 Before every spawn Core verifies the name, the version, the executable name
 (no path separators), and the SHA-256 digest of the executable. The digest
 is streamed through a fixed buffer (D5); the whole executable is never read
 into memory. Any mismatch fails closed with a diagnostic.
 
+### Component-family protocol selection
+
+Core selects the wire protocol per component family instead of comparing every
+descriptor to one global constant. The family table is explicit and strict:
+
+| Component family | Host seam         | Protocol range | Implemented by                                                           |
+| ---------------- | ----------------- | -------------- | ------------------------------------------------------------------------ |
+| `graphics`       | `network-wire-v1` | `[1, 1]`       | shared native-component broker over `bitty-network-wire` v1              |
+| `net`            | `network-wire-v1` | `[1, 1]`       | shared native-component broker over `bitty-network-wire` v1              |
+| `storage`        | `network-wire-v1` | `[1, 1]`       | storage component adapter over the shared v1 wire                        |
+| `a11y`           | `network-wire-v1` | `[1, 1]`       | accessibility component client over the shared v1 wire                   |
+| `execution`      | `execution-v2`    | `[2, 2]`       | `bitty_runtime::execution_component` over the `bitty-execution` v2 codec |
+
+This selection slice is `Implemented`-only (bitty#2777): it is not `Verified`
+and adds no capability, protocol message, or execution surface. It changes
+which existing host validates a descriptor against which existing codec.
+
+The install and inventory (`bitty extension list`) gates read the same table:
+`bitty_runtime::component::COMPONENT_FAMILIES` in
+`crates/bitty-runtime/src/component/family.rs`, with
+`ComponentHostSeam::protocol_min/protocol_max` naming each seam's range. Each
+host seam also resolves with its own range: the `execution` host uses the
+existing `resolve_search_for_protocol` entry point, while the shared v1 broker
+keeps the v1 default and therefore refuses a `[2, 2]` execution descriptor
+instead of speaking v1 at a v2 component.
+
+A component name that is not listed uses the strict `network-wire-v1` default.
+An unknown family therefore cannot borrow another family's protocol, and an
+unlisted protocol version still fails closed with the typed ABI mismatch.
+
+To add a family:
+
+1. add the component name and its host seam to `COMPONENT_FAMILIES` in
+   `bitty_runtime::component::family` (the seam owns the protocol range and
+   the table is the single source of truth for the install/inventory gate);
+2. wire the host seam that implements that protocol, and make it resolve with
+   its own `protocol_min` through `resolve_search_for_protocol`;
+3. add an install-gate fixture for the family (a descriptor the seam accepts
+   and one it refuses) plus an inventory compatibility assertion.
+
+`execution` is not yet published: it has a family row, host seam, and
+descriptor contract, but no `extensions/catalog.v1` entry or release artifact.
+The table does not by itself make `bitty extension install execution`
+available.
+
 ### Component commands (v1, D6)
 
 Installation executes no component code; every command works on files only.
 
-| Command                                     | Rule                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty component add <dir-or-executable>`   | Local path source. A directory holds a source `bitty-component.toml` (name, version, protocol, executable) and the executable; a bare executable named `bitty-<name>` takes its version from a required `--version <semver>` flag and the protocol range Core supports. The command computes the digest, copies the executable into `<root>/<name>/<version>/`, writes `bitty-component.toml` with the computed `sha256` and `current` naming the added version. A source descriptor that carries a `sha256` must match the computed digest. Re-adding an installed version with a different digest fails. |
-| `bitty component list`                      | Lists every installed component and version, marks the version named by `current`, and reports components no installed plugin requires as unused.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `bitty component remove <name> [<version>]` | Removes one version, or every version when none is named; removing the version named by `current` also removes `current`. Refuses while an installed plugin's requirement would become unmet, naming those plugins.                                                                                                                                                                                                                                                                                                                                                                                        |
-| `bitty component clean`                     | Removes every version not referenced by `current`, and every component that no installed plugin requires.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Command                                     | Rule                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bitty component add <dir-or-executable>`   | Local path source. A directory holds a source `bitty-component.toml` (name, version, protocol, executable) and the executable; a bare executable named `bitty-<name>` takes its version from a required `--version <semver>` flag and the protocol range of that component family's host seam (v1 by default, v2 for `execution`). The command computes the digest, copies the executable into `<root>/<name>/<version>/`, writes `bitty-component.toml` with the computed `sha256` and `current` naming the added version. A source descriptor that carries a `sha256` must match the computed digest. Re-adding an installed version with a different digest fails. |
+| `bitty component list`                      | Lists every installed component and version, marks the version named by `current`, and reports components no installed plugin requires as unused.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `bitty component remove <name> [<version>]` | Removes one version, or every version when none is named; removing the version named by `current` also removes `current`. Refuses while an installed plugin's requirement would become unmet, naming those plugins.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `bitty component clean`                     | Removes every version not referenced by `current`, and every component that no installed plugin requires.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 Registry and download sources are a follow-up; v1 never downloads a
 component.
@@ -183,10 +235,12 @@ the first slice.
 
 ## Wire protocol v1 summary
 
-The codec is the `bitty-network-wire` crate: hand-written, no serde,
+The v1 codec is the `bitty-network-wire` crate: hand-written, no serde,
 `#![forbid(unsafe_code)]`, no panics, every length bounded, decode fails
 closed. It carries no TLS material. Core links this codec only, never a
-network implementation crate.
+network implementation crate. This section is the `network-wire-v1` seam
+spoken by `graphics`, `net`, `storage`, and `a11y`; `execution` uses the
+separate `bitty-execution` v2 codec summarized after it.
 
 - Framing: a u32 big-endian length prefix plus payload, bounded by
   `MAX_FRAME_BYTES` = 256 KiB (the same bound as `bitty-ipc`). The payload is
@@ -211,6 +265,17 @@ network implementation crate.
 
 Tag values and field order are authoritative only in the bitty-network
 repository specification.
+
+### Wire protocol v2 (execution family)
+
+The `execution` component speaks the versioned `bitty-execution` v2 codec: a
+separate framing and handshake surface carrying `Spawn`, `Terminate`,
+`ReadOutput`, and `Shutdown` with job-correlated replies. The codec, its
+bounds, and its tag values are authoritative in the bitty-execution
+repository; Core's client is `bitty_runtime::execution_component`. A v2
+component refuses a v1 `Hello`, and a v1 host decodes that refusal as
+component loss, so the family must be selected before the handshake (the
+family table above), not inferred from the component's reply.
 
 ## Core and consumer responsibilities
 
