@@ -1,6 +1,6 @@
 ---
 title: bittyd P0 Evidence Plan
-description: Pending P0-AC-019 and P0-AC-021 through P0-AC-026 evidence obligations for the bittyd local-daemon transition, with producers, owners, and no-claim status
+description: Executed P0-AC-019 and P0-AC-021 through P0-AC-026 evidence campaign for the bittyd local daemon, with per-item real-service status, commands, residual gaps, and no-claim status
 category: security
 audience: security-reviewer
 document_type: register
@@ -13,19 +13,22 @@ sidebar_order: 38
 
 ## Document status
 
-**DRAFT evidence plan; no P0 daemon evidence is claimed.** The
+**DRAFT evidence plan; the first real-service campaign is recorded, and no P0
+control is verified.** The
 [bittyd Session-Host Contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/bittyd-session-host-contract.md)
-is accepted, but a code presence is not evidence. At `bitty` `6d0b6c65`
-(2026-10-28) the
-`bitty-daemon` crate carries library primitives and unit suites; its own
-[`crates/bitty-daemon/README.md`](https://github.com/bitty-terminal/bitty/blob/6d0b6c65/crates/bitty-daemon/README.md)
-states that it starts no listener, binds no endpoint, serves no IPC method, and
-spawns no worker. No P0 daemon artifact is recorded on `main`.
+is accepted. At `bitty` `6d0b6c65` the `bitty-daemon` crate carried library
+primitives only; at `bitty` `d360b442` (2026-10-28, bitty#2607 / PR #2761) the
+merged `bittyd start` service loop binds the endpoint and serves the method
+catalog, while still starting no worker. The predecessor statement is
+superseded by the campaign below.
 
 This page lists, for every daemon P0 criterion, the exact proof the criterion
-needs, the command or artifact that will produce it, the owner, and a pending
-status. All evidence rows below are `pending`. No risk moves, no criterion is
-satisfied, and no control is `Verified` or `Mitigated` by this page.
+needs, the command or artifact that produces it, the owner, and the observed
+status. The [Campaign evidence](#campaign-evidence-2026-10-28) section records
+one Linux x86_64 run of the merged binary per row. A row is `supported`,
+`partial`, or `blocked`; no row is `Verified` or `Mitigated`, no risk state
+moves, and no criterion is satisfied by this page. Four campaign findings are
+tracked as bitty#2763, bitty#2764, bitty#2765, and bitty#2766.
 
 ## Purpose and scope
 
@@ -101,6 +104,13 @@ pass threshold.
   or capability exists.
 - **Recorded run**: a command, revision, cell, UTC date, exit code, and
   artifact hash or CI run URL, retained per the risk evidence RFC.
+- **Campaign status vocabulary**: `supported` means a real-service run at the
+  evidence revision produced the expected observable for the row's declared
+  scope; `partial` means some sub-cases were observed and at least one named
+  sub-case is blocked or pending; `blocked` means the merged code cannot
+  exercise the row, or a recorded defect stops that item; `pending` means no
+  run exists. None of these tokens is `Verified`; that word stays reserved for
+  the independent auditor sign-off in the P0 Review Sign-off section.
 
 ## Evidence rules
 
@@ -120,8 +130,9 @@ pass threshold.
    workflow run URL. This page names the intended artifact; it does not create
    one.
 6. A `Verified` claim needs the independent security-auditor sign-off after
-   the recorded run. This page can record `pending` or `recorded`; it records
-   no `recorded` row today.
+   the recorded run. This page records the campaign status
+   (`supported`/`partial`/`blocked`) and never `Verified`; a campaign run is
+   not an auditor artifact.
 7. Artifacts never contain a real secret, token, bearer, argv, environment
    value, PTY byte, prompt, or provider payload. Seeded canaries are synthetic
    and unique per run.
@@ -135,21 +146,107 @@ pass threshold.
 
 ## Evidence summary
 
-| Row   | Criterion                       | Proof in one line                                                                                              | Producer                                                   | Owner                  | Status    |
-| ----- | ------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------- | --------- |
-| EV-01 | `P0-AC-021` endpoint and peer   | Foreign uid/SID denied before parsing; owner-private endpoint; tamper exits 6; per-message credentials; no TCP | `C-02`, `C-16`, `V-25`, `V-26`, `V-28` real-service driver | Core terminal platform | `pending` |
-| EV-02 | `P0-AC-022` per-action scopes   | Full scope-by-method matrix; inspect-only create denied; host consent and `process.spawn` both required        | `C-09`, `C-10`, `C-11`, `C-19` real-service driver         | Core terminal platform | `pending` |
-| EV-03 | `P0-AC-023` child scope         | Child environment and `/proc/self/fd` show only PTY slave and stdio; no token, capability, socket, or secret   | `C-12` real-service driver plus child descriptor probe     | Core terminal platform | `pending` |
-| EV-04 | `P0-AC-024` read-only default   | Baseline has no `session.host`; metadata only; content needs `terminal.inspect`; worker kind refused           | `C-09` real-service driver plus Wheel adapter audit        | Core and `bitty-ai`    | `pending` |
-| EV-05 | `P0-AC-025` DevTools scopes     | Connection alone grants no `debug.*`; `session.*` never reaches a debug method                                 | `C-09` plus the existing `bitty-ipc` DevTools scope matrix | `bitty-ipc` and Core   | `pending` |
-| EV-06 | `P0-AC-026` secret minimization | Seeded-secret corpus never appears in audit, diagnostics, panic, or crash output; owner-private modes          | `C-07`, `C-14` real-service driver plus seeded-corpus scan | Core terminal platform | `pending` |
-| EV-07 | Daemon absence                  | `bitty --safe`, headless tests, CI, and a plain invocation work with no endpoint and no daemon process         | `C-08` plus the safe-mode/headless matrix                  | Core terminal platform | `pending` |
-| EV-08 | No TCP or hidden listener       | No TCP listener, no abstract socket, no `/tmp` fallback, and only the documented local endpoint after startup  | `V-28` plus the startup socket/fd scan                     | Core terminal platform | `pending` |
-| EV-09 | Safe mode under hostile state   | `bitty --safe` starts with minimal built-in config and zero third-party plugins while the daemon is absent     | `P0-AC-019` hostile-fixture matrix re-run                  | Core terminal platform | `pending` |
+| Row   | Criterion                       | Proof in one line                                                                                              | Producer                                                   | Owner                  | Status      |
+| ----- | ------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------- | ----------- |
+| EV-01 | `P0-AC-021` endpoint and peer   | Foreign uid/SID denied before parsing; owner-private endpoint; tamper exits 6; per-message credentials; no TCP | `C-02`, `C-16`, `V-25`, `V-26`, `V-28` real-service driver | Core terminal platform | `supported` |
+| EV-02 | `P0-AC-022` per-action scopes   | Full scope-by-method matrix; inspect-only create denied; host consent and `process.spawn` both required        | `C-09`, `C-10`, `C-11`, `C-19` real-service driver         | Core terminal platform | `partial`   |
+| EV-03 | `P0-AC-023` child scope         | Child environment and `/proc/self/fd` show only PTY slave and stdio; no token, capability, socket, or secret   | `C-12` real-service driver plus child descriptor probe     | Core terminal platform | `blocked`   |
+| EV-04 | `P0-AC-024` read-only default   | Baseline has no `session.host`; metadata only; content needs `terminal.inspect`; worker kind refused           | `C-09` real-service driver plus Wheel adapter audit        | Core and `bitty-ai`    | `partial`   |
+| EV-05 | `P0-AC-025` DevTools scopes     | Connection alone grants no `debug.*`; `session.*` never reaches a debug method                                 | `C-09` plus the existing `bitty-ipc` DevTools scope matrix | `bitty-ipc` and Core   | `partial`   |
+| EV-06 | `P0-AC-026` secret minimization | Seeded-secret corpus never appears in audit, diagnostics, panic, or crash output; owner-private modes          | `C-07`, `C-14` real-service driver plus seeded-corpus scan | Core terminal platform | `partial`   |
+| EV-07 | Daemon absence                  | `bitty --safe`, headless tests, CI, and a plain invocation work with no endpoint and no daemon process         | `C-08` plus the safe-mode/headless matrix                  | Core terminal platform | `partial`   |
+| EV-08 | No TCP or hidden listener       | No TCP listener, no abstract socket, no `/tmp` fallback, and only the documented local endpoint after startup  | `V-28` plus the startup socket/fd scan                     | Core terminal platform | `supported` |
+| EV-09 | Safe mode under hostile state   | `bitty --safe` starts with minimal built-in config and zero third-party plugins while the daemon is absent     | `P0-AC-019` hostile-fixture matrix re-run                  | Core terminal platform | `blocked`   |
 
 The remainder of this page defines each row's proof, producer, negative tests,
 artifact, owner, and status. `EV-07` through `EV-09` are the absence proofs the
 session-host contract requires in addition to the six numbered criteria.
+
+## Campaign evidence (2026-10-28)
+
+**Run identity.** `bitty` `d360b442` (`origin/main`, bitty#2607 / PR #2761),
+Linux x86_64, 2026-10-28. `cargo build -p bitty-daemon --locked` exited 0;
+`bittyd --version` reported crate `0.0.30`, service API `1.0`. The precursor
+suite `cargo test -p bitty-daemon --locked` reported 456 passed, 0 failed across
+15 targets. Every daemon run used a fresh throwaway root:
+`XDG_RUNTIME_DIR=$RT/run`, `XDG_STATE_HOME=$RT/state`, `HOME=$RT`, with `$RT`
+under `/tmp/bitty/ctx-2608/<item>`; the real runtime and state directories were
+never used. `$BITTYD` is the built binary. Raw transcripts are ephemeral and
+are summarized here; formal auditor artifacts under `docs/security/audits/`
+remain outstanding.
+
+**Scope of this campaign.** This is a producer run, not an audit. It records
+what the merged service loop actually does on one cell, names the defects it
+exposed, and leaves every control `supported`, `partial`, or `blocked`. No row
+is `Verified` or `Mitigated`, and no risk state moves.
+
+For every row, the expected result is the proof obligation in its `EV-*`
+section or the required evidence in its `ME-*` row above. The campaign tables
+record the exact command, the observed result, and the residual gap; a
+`blocked` row records why the merged code cannot produce the expected result.
+
+### Criterion rows
+
+| Row   | Status      | Command and evidence reference                                                                                                                                                                                                                            | Observed at `d360b442`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Residual gap                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ----- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EV-01 | `supported` | `env XDG_RUNTIME_DIR=$RT/run XDG_STATE_HOME=$RT/state $BITTYD start &`; `stat -c '%a %U %F'` on the endpoint, lock, operator, and audit paths; second `$BITTYD start`; userns, foreign-uid, and fd-pass probes; closing-refusal probes; tamper and `wait` | Directory `0700`, socket `0600`, lock and operator `0600`, audit directory `0700`, segment `0600`, all uid 1000. Second start exit 0 with `already running`; first keeps serving. `unshare -Ur` peer gets EOF at accept. A passed descriptor used by another pid gives `Unauthenticated` and one `a=wire c=unauthenticated` record. A foreign kernel uid (100001 via a two-line userns map) cannot connect (`EACCES` on the `0700` directory) and its frame on a passed descriptor is `Unauthenticated`. Closing refusals (second negotiate, pre-negotiate frame, wire version, service version, wrong capability) each deliver the typed frame and then a real EOF; a non-closing `NotFound` leaves the connection usable. No TCP listener; `/proc/net/unix` shows only the endpoint. Tamper with a regular file exits 6; directory mode `0755` exits 6; a SIGKILL stale socket is reclaimed under the lock; an override in a `0700` directory binds; an override in `0755` exits 1; a relative override exits 1; a missing `XDG_RUNTIME_DIR` exits 1 with no socket. | Native second-account uid/SID (`V-25`) is not available on this host (no root and no second account); userns plus foreign-uid-per-frame is the substitute. Formal audit artifact absent. Same-uid endpoint impostor residual stands.                                                                                                                                                                                                    |
+| EV-02 | `partial`   | Real client over the socket (`session.create`, `attach`, `grant`, `grant.revoke`, `transfer`, `abort`, `kill`, `heartbeat`, `status`, `resize`, `debug.*`, `daemon.audit`) plus `cargo test -p bitty-daemon --test service_loop`                          | Baseline is exactly `session.inspect`, `session.attach`, `session.control`, `process.spawn`; no `terminal.*` and no `debug.*`. `daemon.status` and `daemon.host_grant` mint are `ScopeViolation`; create without consent is `ConsentRequired`; `kind: worker` is `UnsupportedCapability`; `session.resize` is `ScopeViolation`; `debug.inspect`, `daemon.audit`, and unknown methods are `NotFound`; a top-level `role` field is `InvalidRequest`. Create replay returns the original token before claim and `control_token: null` after claim; a different fingerprint is `IdempotencyConflict`; observer abort/transfer are `ControllerRequired`; a second controller is `ControlHeld`; transfer never returns the target token; the terminal session answers `NotRunning` to a former leaseholder.                                                                                                                                                                                                                                                                  | The `(spawn=false, host=false)` create case is unreachable because every connection gets transport `process.spawn` (bitty#2604 owns the executable policy). An absent `observer_grant` field is `InvalidRequest`, not `ObserverGrantRequired` (conformance item). Stale token at vacant control is `NotFound`, not `InvalidControlToken` (bitty#2765). Full scope-by-method matrix and the `C-09`/`C-19` artifact belong to bitty#2605. |
+| EV-03 | `blocked`   | No worker-spawn path exists in the merged crate; `session.create` records metadata only                                                                                                                                                                   | `kind: worker` is refused before any process exists. There is no child pid, environment, or descriptor table to probe.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Blocked on the spawn path (bitty#2604) and `C-12`; no `close_range` or child `/proc/self/fd` proof exists.                                                                                                                                                                                                                                                                                                                              |
+| EV-04 | `partial`   | Same real client as EV-02; inspect every session response field; Wheel adapter audit not in this repository                                                                                                                                               | Daemon half: baseline has no `session.host`; create needs the consumed grant; status/list carry metadata only (`session`, `attach_count`, `attached`, timestamps, `kind`, `generation`, `state`, `state_revision`, `terminal_id`) and no content field; `kind: worker` and `daemon.orphans.verify` are `UnsupportedCapability`; no session method returns terminal text, PTY bytes, scrollback, clipboard, prompt, or provider payload.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Wheel adapter labeling half is `bitty-ai`-owned and not run here (`P0-AC-024` split stays open).                                                                                                                                                                                                                                                                                                                                        |
+| EV-05 | `partial`   | Handshake scope list from EV-02; every `session.*` scope held; `debug.inspect` and `daemon.audit` probes; `bitty-ipc` DevTools matrix not re-run in this workspace                                                                                        | A fresh connection and a connection holding all session scopes advertise no `debug.*`; `daemon.inspect`/`daemon.control` do not add one; a debug method resolves to `NotFound` through the normal catalog path; `terminal.*` stays absent.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | The pinned `bitty-ipc` DevTools scope matrix (`trace_scope_matrix_denies_inspect_and_unscoped`, `trace_redaction_and_input_gating`, `record_roundtrip_redacts_and_gates_input`) was not re-run for this campaign; the daemon handshake half is observed.                                                                                                                                                                                |
+| EV-06 | `partial`   | Canary/secret scan over every audit segment plus stdout/stderr; rotation run at 90 requests/s; fail-closed run under `RLIMIT_FSIZE=4096` with `SIGXFSZ` ignored; 300-frame rate burst                                                                     | 10-record privacy run: no operator capability, host-grant, control-token, or observer-grant value appears; no raw `terminal_id`, idempotency key, correlation value, or refusal-param canary appears; every line uses only the closed field set; `terminal_id_digest` and a 32-hex correlation digest are present; modes `0700`/`0600`. Rotation: 6908 refusals plus the negotiate record, segments `audit.1.log` 1,048,482 B plus `audit.log` 151,554 B, 2 segments, 6909 well-formed records, 0 malformed. Fail-closed: at 4096 B the sink reports `audit_degraded: true`, `session.create` is `Denied/Internal`, active sessions stay 1, `daemon.stop` is `Denied/Internal`, and `SIGTERM` still exits 0. The tail ends in one partial record (bounded loss).                                                                                                                                                                                                                                                                                                       | Refusal aggregation is missing: 300 frames (199 `NotFound`, 101 `RateLimited`) produce only 20 `a=wire` records and no aggregate/suppressed-count record (bitty#2766). Crash or panic output was not injected; the core-dump control is absent (bitty#2764), so a crash artifact could carry tokens.                                                                                                                                    |
+| EV-07 | `partial`   | `$BITTYD` with no arguments under a throwaway root; `BITTYD_ENDPOINT=$RT/missing.sock $BITTYD`; `bitty --safe` and headless suite not run here                                                                                                            | Plain invocation exits 0, creates no socket, capability file, or audit directory; a missing endpoint is a supported status-only path; `--version` and `--help` exit 0; an unknown argument exits 2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `bitty --safe`, the headless suite, and the CI absence proof are terminal-side and belong to bitty#2605; not run in this campaign.                                                                                                                                                                                                                                                                                                      |
+| EV-08 | `supported` | `/proc/<pid>/fd` socket inodes against `/proc/net/tcp`, `/proc/net/tcp6`, and `/proc/net/unix`; positive control with a Python TCP listener; override run                                                                                                 | The daemon holds no `LISTEN` row in either TCP table and no abstract socket; `/proc/net/unix` shows only the documented endpoint. The same scan detects a seeded Python TCP listener, so it is not vacuous. The override run binds the documented override path and adds no second listener at the derived path.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `V-28` formal artifact and a second cell remain with bitty#2605; abstract-socket check is Linux-only.                                                                                                                                                                                                                                                                                                                                   |
+| EV-09 | `blocked`   | `bitty --safe` hostile fixture matrix not run                                                                                                                                                                                                             | The daemon-absence half is EV-07; the terminal safe-mode matrix is outside this workspace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Blocked on the terminal `P0-AC-019` fixture run and bitty#2605.                                                                                                                                                                                                                                                                                                                                                                         |
+
+### Mechanism rows
+
+| Row   | Status      | Command and evidence reference                                                                                                                       | Observed at `d360b442`                                                                                                                                                                                                                                                                                                                                        | Residual gap                                                                                                                                                                                                       |
+| ----- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ME-01 | `partial`   | Create and claim/transfer over the wire; token length and rotation; audit scan; `cargo test -p bitty-daemon --test leases`                           | Create returns a 64-hex token; claim rotates it; transfer rotates the target token and the requester never receives it; the target receives it on its next heartbeat; no token value appears in any audit record.                                                                                                                                             | Digest-only storage, constant-time compare, and zeroization are not observable over the wire; a stale token at a vacant control is `NotFound` (bitty#2765), so the claimed `InvalidControlToken` path is unproven. |
+| ME-02 | `partial`   | Stat the runtime directory and capability file; read the bearer; restart; present the old bearer                                                     | Directory `0700`, file `0600`, uid 1000; the bearer is 64 hex; every start rotates it; the previous bearer is `Unauthenticated` on the new instance; the capability never appears in audit; the handshake is the only path that consumes it.                                                                                                                  | Constant-time comparison and the same-uid read residual are not measured; C-15/C-16 artifacts remain.                                                                                                              |
+| ME-03 | `blocked`   | `daemon.host_grant` mint 8, ninth mint, revoke pending, consume, revoke consumed, create after revoke; observer grant mint/consume/revoke            | Eight pending grants are distinct; the ninth is `LimitExceeded`; a pending revoke is `revoked: true`; the grant is single-use at negotiate; TTL 300 s is advertised. **Consumed revoke returns `revoked: false, not_active: true`, and the consuming connection still creates a session.** The item stops here.                                               | bitty#2763: a consumed host grant cannot be revoked before its TTL; ME-03 stays blocked until it is fixed and re-run.                                                                                              |
+| ME-04 | `partial`   | `session.grant` mint; attach wrong session, consume, replay, wait past the 60 s TTL, attach again                                                    | Grant is 64 hex with a 32-hex id and 60 s TTL; wrong-session, replay, and expired attaches are all `ObserverGrantRequired`; a valid attach is `observer`; grant revoke is idempotent.                                                                                                                                                                         | Wrong-peer is not reachable on a same-uid single-account host; `C-10` artifact remains.                                                                                                                            |
+| ME-05 | `blocked`   | No worker is spawned by the merged crate; journal unit suite only                                                                                    | `daemon.orphans.verify` is `UnsupportedCapability`; there is no live worker to reserve, commit, or reap.                                                                                                                                                                                                                                                      | Blocked on the spawn/containment path (bitty#2604) and `C-03`/`C-13`; no crash injection or reused-pid real run.                                                                                                   |
+| ME-06 | `partial`   | Same run as EV-06                                                                                                                                    | Content-free records, closed field set, owner-private modes, 1 MiB rotation with two segments and zero malformed lines, and fail-closed `Denied/Internal` with `audit_degraded: true` are observed.                                                                                                                                                           | bitty#2766 (no aggregate/suppressed-count record). `daemon.stop` is refused while degraded, which is consistent with fail-closed but means the signal path is the only shutdown.                                   |
+| ME-07 | `supported` | Create replay before and after claim; fingerprint conflict; 128 create keys with 8 rounds of 16 creates and keyless kills; restart with the same key | Replay returns the original session and no token after claim; a different fingerprint is `IdempotencyConflict`; the 129th distinct key is `IdempotencyCapacity`; `session.kill` still succeeds at the full store; a repeat kill is `not_running`; `daemon.stop` still succeeds; after restart the same key creates a new session and the instance id changes. | Restart crash injection and the F-9 gate remain; `C-18` artifact pending.                                                                                                                                          |
+
+### Findings filed by this campaign
+
+| Finding    | Severity | Reproduction summary                                                                                                                                                                                            | Disposition                   |
+| ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| bitty#2763 | P1       | Mint and consume a host grant; `daemon.host_grant revoke` returns `revoked: false, not_active: true`; the consuming connection still creates a session.                                                         | Tracked; ME-03 stopped.       |
+| bitty#2764 | P1       | Running `bittyd` has `Max core file size unlimited` and a same-uid process can open `/proc/<pid>/mem`; a `PR_SET_DUMPABLE=0` control is denied. D-16 requires `RLIMIT_CORE=0` and a non-dumpable Linux process. | Tracked; EV-06/ME-06 partial. |
+| bitty#2765 | P1       | Claim, detach, then present the old token at vacant control: `NotFound`, while the contract and README claim `InvalidControlToken`; no wire input reaches the token comparison.                                 | Tracked; EV-02/ME-01 partial. |
+| bitty#2766 | P1       | 300-frame refusal burst: 199 `NotFound`, 101 `RateLimited`, only 20 `a=wire` records; 81 refusals leave no trace and no aggregate record carries the suppressed count or histogram.                             | Tracked; EV-06/ME-06 partial. |
+
+### Residual observations from the bitty#2607 review
+
+- **Wire-refusal suppression histogram.** The per-connection budget drops
+  records past `refusal_audit_budget_per_sec` with no aggregate record. The
+  README calls this a tracked follow-up; bitty#2766 now owns it.
+- **`attach_role` spelling.** `session.attach` takes `attach_role`
+  (`controller` or `observer`) in the request and returns `role` in the
+  response. The ambient-authority validator reserves `role`, `auth`, and
+  `scope`, so a top-level `role` request field is `InvalidRequest`. The
+  conformance corpus (bitty#2664) must freeze this asymmetry; the daemon must
+  not silently accept both spellings.
+- **Absent observer grant field.** A `session.attach` with
+  `attach_role: "observer"` and no `observer_grant` returns
+  `Validation/InvalidRequest`, while a syntactically valid but unknown or
+  consumed bearer returns `Denied/ObserverGrantRequired`. Freeze the
+  absent-field class in bitty#2664; it reveals no existence fact, but the
+  served code set differs from the refusal table's "lacks a valid grant" row.
+- **Transport `process.spawn`.** Every connection receives transport
+  `process.spawn`, so the both-missing create combination is reachable only in
+  unit tests. The spawn path (bitty#2604) must take the grant from executable
+  policy instead of the transport default.
+- **Consumed host-grant revoke.** The #2761 merge risk named this blocker; the
+  merged code still has it (bitty#2763).
+- **Core dumps.** The daemon was dumpable with an unlimited core size on a host
+  whose `core_pattern` pipes to `systemd-coredump` (bitty#2764).
+- **`InvalidControlToken`.** The closed code is unreachable over the wire
+  because visibility rejects a stale token first (bitty#2765).
 
 ## P0-AC-021 endpoint and peer credentials
 
@@ -189,12 +286,12 @@ descriptor-passing, and peer-exit cases.
 
 **Artifact.** `docs/security/audits/bittyd-peer-credential-2026-xx.md` with the
 recorded run and the `EV-08` socket scan. Until that report exists, the row is
-`pending`.
+not `Verified`.
 
 **Owner.** Core terminal platform, with the `bitty-ipc` maintainers for the
 per-message credential primitive.
 
-**Status.** `pending`.
+**Status.** `supported` on Linux x86_64; the native second-account uid/SID vector remains blocked.
 
 ## P0-AC-022 per-action scopes
 
@@ -241,7 +338,7 @@ machine-readable matrix under
 
 **Owner.** Core terminal platform.
 
-**Status.** `pending`.
+**Status.** `partial` (bitty#2765, the transport `process.spawn` default, and the observer-grant spelling observation).
 
 ## P0-AC-023 child process scope limitation
 
@@ -279,7 +376,7 @@ child `environ`/`fd` dump under `recording/evidence/R-012/P0-AC-023/`.
 **Owner.** Core terminal platform, with the `bitty-pty` maintainers for the
 spawn path.
 
-**Status.** `pending`.
+**Status.** `blocked` on the worker-spawn path (bitty#2604).
 
 ## P0-AC-024 Agent read-only default
 
@@ -322,7 +419,7 @@ Wheel adapter labeling audit recorded by `bitty-ai`.
 
 **Owner.** Core terminal platform and `bitty-ai` (Wheel consumer).
 
-**Status.** `pending`.
+**Status.** `partial` (daemon half supported; the Wheel adapter half is `bitty-ai`-owned and not run).
 
 ## P0-AC-025 DevTools scopes
 
@@ -359,7 +456,7 @@ cites the `bitty-ipc` matrix and the daemon handshake run.
 **Owner.** `bitty-ipc` maintainers, with Core terminal platform for the daemon
 handshake.
 
-**Status.** `pending`.
+**Status.** `partial` (daemon handshake half supported; the `bitty-ipc` DevTools matrix was not re-run for this campaign).
 
 ## P0-AC-026 secret minimization
 
@@ -417,7 +514,7 @@ the canary manifest and scan log under
 **Owner.** Core terminal platform, with the `bitty-ipc` maintainers for the
 shared redaction primitives.
 
-**Status.** `pending`.
+**Status.** `partial` (bitty#2766 and bitty#2764; crash and panic output were not injected).
 
 ## Daemon absence, no-TCP, and safe-mode proofs
 
@@ -449,7 +546,7 @@ invocation log under `recording/evidence/R-009/EV-07/`.
 
 **Owner.** Core terminal platform.
 
-**Status.** `pending`.
+**Status.** `partial` (`bittyd` absence supported; `bitty --safe` and the headless suite remain blocked).
 
 ### EV-08 no TCP or hidden listener
 
@@ -480,7 +577,7 @@ connection.
 
 **Owner.** Core terminal platform.
 
-**Status.** `pending`.
+**Status.** `supported` on Linux x86_64; a second cell and the formal `V-28` artifact remain.
 
 ### EV-09 safe mode under hostile state
 
@@ -508,7 +605,7 @@ startup log under `recording/evidence/R-009/EV-09/`.
 
 **Owner.** Core terminal platform.
 
-**Status.** `pending`.
+**Status.** `blocked` on the terminal `P0-AC-019` safe-mode fixture run.
 
 ## Mechanism review evidence
 
@@ -516,15 +613,15 @@ The review named by bitty#2608 also inspects the mechanisms the contract
 introduces. These rows are not separate P0-AC criteria; they are the evidence
 that the criterion rows above depend on.
 
-| Row   | Mechanism           | Required evidence                                                                                                                                | Producer                                        | Owner                  | Status    |
-| ----- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ---------------------- | --------- |
-| ME-01 | Control token       | 256-bit CSPRNG, returned once, digest-only storage, constant-time verify, rotation on claim and transfer, old token refused, no child/audit leak | `C-11`, `C-18`, `--test leases`, `--test audit` | Core terminal platform | `pending` |
-| ME-02 | Operator capability | Per-boot `0700`/`0600`, rotated, handshake-only, not inherited, not a consumer wire field, same-uid residual stated and tested                   | `C-15`, `C-16`, `--test peer`                   | Core terminal platform | `pending` |
-| ME-03 | Host grant          | Operator-only mint, single-use, TTL, peer-bound, revocable, audited, consumed at negotiate, one static code per missing authority                | `C-19`, `--test idempotency`                    | Core terminal platform | `pending` |
-| ME-04 | Observer grant      | Single-use, TTL, attributed, revocable, no self-grant, wrong-peer/session/consumed/expired all one code                                          | `C-10`, `--test leases`                         | Core terminal platform | `pending` |
-| ME-05 | Orphan reaping      | Two-phase reserve/commit fsync, containment identity, reserved-record reap, pid-reuse never signalled, quarantine, crash injection               | `C-03`, `C-13`, `--test orphan_journal`         | Core terminal platform | `pending` |
-| ME-06 | Audit sink          | Content-free records, bounded strings, `0700`/`0600`, rotation, refusal budget, `audit_degraded` fail-closed, no read method                     | `C-07`, `C-14`, `--test audit`                  | Core terminal platform | `pending` |
-| ME-07 | Idempotency stores  | Bounded descriptor stores, `(uid or SID, key)` create index, fingerprint conflict, keyless termination, restart residual, F-9 gate               | `C-18`, `--test idempotency`, `--test events`   | Core terminal platform | `pending` |
+| Row   | Mechanism           | Required evidence                                                                                                                                | Producer                                        | Owner                  | Status      |
+| ----- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ---------------------- | ----------- |
+| ME-01 | Control token       | 256-bit CSPRNG, returned once, digest-only storage, constant-time verify, rotation on claim and transfer, old token refused, no child/audit leak | `C-11`, `C-18`, `--test leases`, `--test audit` | Core terminal platform | `partial`   |
+| ME-02 | Operator capability | Per-boot `0700`/`0600`, rotated, handshake-only, not inherited, not a consumer wire field, same-uid residual stated and tested                   | `C-15`, `C-16`, `--test peer`                   | Core terminal platform | `partial`   |
+| ME-03 | Host grant          | Operator-only mint, single-use, TTL, peer-bound, revocable, audited, consumed at negotiate, one static code per missing authority                | `C-19`, `--test idempotency`                    | Core terminal platform | `blocked`   |
+| ME-04 | Observer grant      | Single-use, TTL, attributed, revocable, no self-grant, wrong-peer/session/consumed/expired all one code                                          | `C-10`, `--test leases`                         | Core terminal platform | `partial`   |
+| ME-05 | Orphan reaping      | Two-phase reserve/commit fsync, containment identity, reserved-record reap, pid-reuse never signalled, quarantine, crash injection               | `C-03`, `C-13`, `--test orphan_journal`         | Core terminal platform | `blocked`   |
+| ME-06 | Audit sink          | Content-free records, bounded strings, `0700`/`0600`, rotation, refusal budget, `audit_degraded` fail-closed, no read method                     | `C-07`, `C-14`, `--test audit`                  | Core terminal platform | `partial`   |
+| ME-07 | Idempotency stores  | Bounded descriptor stores, `(uid or SID, key)` create index, fingerprint conflict, keyless termination, restart residual, F-9 gate               | `C-18`, `--test idempotency`, `--test events`   | Core terminal platform | `supported` |
 
 Mechanism rules:
 
@@ -665,6 +762,14 @@ even when the audit record keeps the distinction internally.
 - a termination method that consults the idempotency store or returns
   `IdempotencyCapacity`;
 - a fake-server result presented as real-service evidence;
+- an operator revoke that returns `not_active` for a consumed host grant and
+  leaves the consuming connection authorized (bitty#2763);
+- a daemon that runs dumpable or with a nonzero core limit on Linux
+  (bitty#2764);
+- a closed refusal code that no request can produce, or a served code that
+  differs from the frozen contract (bitty#2765);
+- a refusal budget that drops records without the aggregate suppressed-count
+  and histogram record (bitty#2766);
 - a `Verified` or `Mitigated` claim without the audit artifact and independent
   sign-off.
 
@@ -690,7 +795,8 @@ The reviewer must confirm all of the following before the P0 rows can move:
    stated.
 9. Daemon absence is a supported state, and no hidden listener exists.
 10. No accepted P0 criterion is downgraded. A mechanism that cannot be
-    evidenced stays `pending` and the affected slice stays blocked.
+    evidenced stays `pending` or `blocked` and the affected slice stays
+    blocked.
 
 The review also records the residuals the contract states instead of claiming
 they are closed: same-uid endpoint impostor, live descriptor passing on
@@ -698,6 +804,14 @@ connection-scoped cells, plugin/native `connect()` until the seccomp negative
 test lands, a spawned worker that reads the operator capability, and a
 same-uid debugger or memory reader that obtains the control token. Audit is
 not tamper-evident against the owner.
+
+The 2026-10-28 campaign is review input, not a verdict. It leaves four
+controls short of their own claims: consumed host-grant revocation
+(bitty#2763), core-dump suppression (bitty#2764), the vacant-control
+`InvalidControlToken` refusal (bitty#2765), and refusal aggregation
+(bitty#2766). A `supported` row means the real service produced the expected
+observable for that row's declared scope; it does not mean the control is
+audited, and it does not close any of the ten review items above.
 
 ## Verification plan
 
@@ -715,37 +829,53 @@ not tamper-evident against the owner.
    `cargo test -p bitty-daemon --test limits`,
    `cargo test -p bitty-daemon --test events`, and
    `cargo test -p bitty-daemon --test binary`.
-   These are precursor runs only; they do not satisfy any row above.
+   These are precursor runs only; they do not satisfy any row above. The
+   2026-10-28 campaign ran the whole crate suite at `d360b442`: 456 passed,
+   0 failed across 15 targets.
 3. Run the real-service driver from bitty#2605 for `C-02`, `C-07`, `C-08`,
    `C-09`, `C-10`, `C-11`, `C-12`, `C-13`, `C-14`, `C-16`, `C-18`, `C-19`,
    `V-25`, `V-26`, and `V-28` on Linux x86_64. The driver target and crate
-   names are frozen by that issue; the vector IDs are the stable keys.
+   names are frozen by that issue; the vector IDs are the stable keys. The
+   2026-10-28 campaign exercised the same behaviors with ad-hoc clients, not
+   with the frozen driver; the campaign does not substitute for this step.
 4. Produce the manual-audit report and the local artifact set for each row.
    Link the report from the evidence matrix and record the PR, revision, cell,
-   and run URL in CarryCtx.
+   and run URL in CarryCtx. The campaign transcripts are ephemeral; the
+   formal artifacts are still absent.
 5. Obtain independent security-auditor sign-off. Until then every row is
-   `pending` and every linked risk stays `Open`.
+   `supported`, `partial`, or `blocked`, never `Verified`, and every linked
+   risk stays `Open`.
 
 ## Open points
 
 1. **Operator-capability refusal code.** The IPC contract leaves the exact
    static code for a missing capability versus a failed peer check open. The
    reviewer must choose one code that does not reveal whether the capability
-   file exists, and the conformance corpus must pin it.
+   file exists, and the conformance corpus must pin it. The 2026-10-28 campaign
+   observed one static `Unauthenticated` refusal plus close for a wrong bearer,
+   and the previous bearer is refused the same way after a restart.
 2. **Session-scope registry home.** The `session.*` and `daemon.*` families
    may be registered in `bitty-ipc` or in a bittyd-owned additive registry.
    The reviewer must confirm one additive registry and no change to any
-   existing `bitty-ipc` scope.
+   existing `bitty-ipc` scope. The campaign observed the bittyd-owned catalog:
+   no v1 method was redefined, and the handshake advertised no `debug.*` or
+   `terminal.*` scope.
 3. **Unkeyed duplicates.** `session.resize` and `daemon.host_grant` mint are
    unkeyed and not deduped by generation. The reviewer must accept the
    duplicate-effect semantics or require a key or fingerprint.
 4. **Observer-attach replay.** The grant is consumed before the idempotency
    store, so a replayed observer attach is `ObserverGrantRequired` rather than
-   a duplicate descriptor. The reviewer must accept that ordering or require a
+   a duplicate descriptor. The campaign observed exactly that code for a
+   consumed grant. The reviewer must accept that ordering or require a
    compatible replay rule.
 5. **Exact JSON and frame layout.** Key spellings and frame layout are frozen
    by bitty#2664 and the conformance corpus, not by this plan. A divergence
-   between the corpus and the contract is a defect.
+   between the corpus and the contract is a defect. The campaign observed two
+   spellings that need freezing: `session.attach` takes `attach_role` and
+   returns `role`, and an absent `observer_grant` field is
+   `Validation/InvalidRequest` while an unusable bearer is
+   `Denied/ObserverGrantRequired`. A top-level `role` request field is
+   `InvalidRequest` because the ambient-authority validator reserves it.
 6. **P0-AC-024 split.** The daemon has no content plane, so it cannot prove
    the untrusted-labeling half of P0-AC-024 by itself. The Wheel adapter audit
    owns that half. The reviewer must confirm both halves are required and
@@ -764,19 +894,24 @@ not tamper-evident against the owner.
    tamper-evident sink in a later contract.
 10. **Platform cells.** Windows integrity-level and AppContainer details, the
     macOS/BSD per-message credential equivalent, and cgroup v2 delegation
-    fallbacks remain review input beyond the Linux x86_64 rule.
+    fallbacks remain review input beyond the Linux x86_64 rule. The campaign
+    compile-checked the typed `UnsupportedPlatform` path for
+    `x86_64-apple-darwin`, `aarch64-apple-darwin`, and
+    `x86_64-pc-windows-msvc`; no native refusal was run on those cells.
 
 ## Acceptance criteria
 
 - Every `P0-AC-021` through `P0-AC-026` row states the proof, the producer, the
-  negative tests, the artifact, the owner, and a `pending` status.
+  negative tests, the artifact, the owner, and a status (`supported`, `partial`,
+  `blocked`, or `pending`).
 - The daemon-absence, no-TCP, and safe-mode proofs are separate rows with
   commands and artifacts.
 - The mechanism review covers the control token, operator capability, host
   grant, observer grant, orphan reaping, audit sink, and idempotency stores.
 - Every refusal class in the checklist is static and non-oracular, and the
   no-existence-oracle pairs are named.
-- No row is `recorded`, `Verified`, or `Mitigated`; no risk state moves.
+- No row is `Verified` or `Mitigated`; no risk state moves. The 2026-10-28
+  campaign records `supported`, `partial`, and `blocked` observations only.
 - The page is English-only, self-contained, and free of research-repository
   references.
 - `just check` passes in the `bitty-docs` worktree.
@@ -814,5 +949,17 @@ This is a plan, not a P0 gate. It records no approval of any control.
   service-loop slice this checklist reviews.
 - [bitty #2605](https://github.com/bitty-terminal/bitty/issues/2605) - the
   conformance harness that owns the real-service driver and vector IDs.
-- [`bitty-daemon` README at `6d0b6c65`](https://github.com/bitty-terminal/bitty/blob/6d0b6c65/crates/bitty-daemon/README.md)
-  - the current crate-scope statement and the list of deferred slices.
+- [bitty PR #2761](https://github.com/bitty-terminal/bitty/pull/2761) - the
+  merged service loop reviewed at `d360b442`.
+- [bitty #2763](https://github.com/bitty-terminal/bitty/issues/2763) - a
+  consumed host grant cannot be revoked before its TTL.
+- [bitty #2764](https://github.com/bitty-terminal/bitty/issues/2764) - the
+  daemon does not disable core dumps or clear the Linux dumpable flag.
+- [bitty #2765](https://github.com/bitty-terminal/bitty/issues/2765) - the
+  vacant-control stale-token refusal is `NotFound`, not `InvalidControlToken`.
+- [bitty #2766](https://github.com/bitty-terminal/bitty/issues/2766) - the
+  wire-refusal budget drops records without the D-16 aggregate and histogram.
+- [bitty #2664](https://github.com/bitty-terminal/bitty/issues/2664) - the
+  conformance corpus that freezes the JSON and frame spelling.
+- [`bitty-daemon` README at `d360b442`](https://github.com/bitty-terminal/bitty/blob/d360b442/crates/bitty-daemon/README.md)
+  - the service-loop scope statement and the remaining deferred slices.
