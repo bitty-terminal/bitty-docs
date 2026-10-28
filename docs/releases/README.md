@@ -28,6 +28,17 @@ A release note names the exact version, revision, artifact/source evidence,
 supported platforms, user-visible changes, breaking changes, deprecations,
 security impact, known issues, and migration links.
 
+## Readiness gates
+
+A release note records a publication that already happened. A readiness gate
+records the conditions a publication decision must satisfy, and it authorizes
+nothing by itself: no gate row creates a tag, uploads an artifact, writes to the
+CDN, updates a catalog, or moves a stable pointer.
+
+| Gate                                                                        | Scope                                                                                                                                                                    |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [bittyd current-release eligibility](bittyd-current-release-eligibility.md) | Conditional gate for the terminal-only `bittyd` slice in the `v0.2.0` train; draft, no implementation-dependent row met, and no publication authorization at 2026-10-29. |
+
 ## Authority and status
 
 Release notes summarize an actual release; they do not redefine specifications

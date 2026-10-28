@@ -111,16 +111,17 @@ precedence over source summaries and non-security design suggestions.
 
 ## Project and technology
 
-| Document                                                        | Purpose                                                                                                                                                                |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Repository map](project/repository-map.md)                     | Local/remote topology, repository ownership, and current initialization state (18 crates `310bf87`, Website Delivery OQ-023 and Governance OQ-024 `Accepted`).         |
-| [Project governance](project/README.md)                         | Index route to shared project-state and technology governance; states no topology or pin value.                                                                        |
-| [Project documentation routing](projects/README.md)             | Root submodule mounts (`bitty-terminal`, `bitty-ai`, `bitty-plugins`) for the three project documentation repositories, separate from shared cross-project governance. |
-| [Technology strategy](project/technology-strategy.md)           | Accepted language/platform direction (18 crates, `bitty-lua` `piccolo` 0.3.3 `Accepted`, successor [ADR 0012](decisions/adrs/ADR-0012-phodopus-runtime.md)).           |
-| [Reference projects](project/reference-projects.md)             | Self-contained, non-normative upstream reference revisions and research questions.                                                                                     |
-| [Website content contract](project/website-content-contract.md) | Normative ownership and validation boundary between `bitty-docs` and `bitty-website`.                                                                                  |
-| [Roadmap](roadmap/README.md)                                    | Evidence-based sequencing without unsupported date or release promises.                                                                                                |
-| [Releases](releases/README.md)                                  | Future immutable release notes backed by published artifacts.                                                                                                          |
+| Document                                                                             | Purpose                                                                                                                                                                |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Repository map](project/repository-map.md)                                          | Local/remote topology, repository ownership, and current initialization state (18 crates `310bf87`, Website Delivery OQ-023 and Governance OQ-024 `Accepted`).         |
+| [Project governance](project/README.md)                                              | Index route to shared project-state and technology governance; states no topology or pin value.                                                                        |
+| [Project documentation routing](projects/README.md)                                  | Root submodule mounts (`bitty-terminal`, `bitty-ai`, `bitty-plugins`) for the three project documentation repositories, separate from shared cross-project governance. |
+| [Technology strategy](project/technology-strategy.md)                                | Accepted language/platform direction (18 crates, `bitty-lua` `piccolo` 0.3.3 `Accepted`, successor [ADR 0012](decisions/adrs/ADR-0012-phodopus-runtime.md)).           |
+| [Reference projects](project/reference-projects.md)                                  | Self-contained, non-normative upstream reference revisions and research questions.                                                                                     |
+| [Website content contract](project/website-content-contract.md)                      | Normative ownership and validation boundary between `bitty-docs` and `bitty-website`.                                                                                  |
+| [Roadmap](roadmap/README.md)                                                         | Evidence-based sequencing without unsupported date or release promises.                                                                                                |
+| [Releases](releases/README.md)                                                       | Future immutable release notes backed by published artifacts.                                                                                                          |
+| [bittyd current-release eligibility](releases/bittyd-current-release-eligibility.md) | Draft conditional gate for the terminal-only `bittyd` slice in the `v0.2.0` train; no implementation-dependent row met and no publication authorization.               |
 
 ## Decisions, work, and provenance
 
