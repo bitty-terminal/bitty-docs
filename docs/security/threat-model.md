@@ -645,8 +645,8 @@ Before a security boundary can be marked implemented, evidence must cover:
   single-instance, no-TCP, and no-hidden-listener negative tests;
 - session scope-matrix, host-grant, observer-grant, control-token rotation, and
   no-existence-oracle refusal pairs;
-- child environment and descriptor scans proving `CLOEXEC`/`close_range` and
-  the absence of daemon descriptors and secrets;
+- child environment and descriptor scans proving the child holds only the PTY
+  slave on stdio and no daemon descriptor, token, capability, or secret;
 - daemon audit and diagnostic seeded-secret scans, owner-private modes,
   refusal budgeting, and audit-degraded fail-closed behavior;
 - two-phase orphan crash injection, pid-reuse, quarantine, and duplicate-spawn
