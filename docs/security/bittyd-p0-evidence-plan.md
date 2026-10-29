@@ -25,14 +25,24 @@ corpus known defects (bitty#2767 and bitty#2768, PR #2776), and the frozen
 conformance harness (bitty#2605, PRs #2769 and #2771) are merged. The
 predecessor statements are superseded by the campaign and the refresh below.
 
+At `bitty` `6c229e9c` (2026-10-30) the containment slice (PR #2801,
+bitty#2791), the worker-spawn slice (PR #2808), the event wire (PR #2811), the
+request deadline (PR #2815), and the 1.2 metadata keys (PR #2816) are merged;
+the [reverification campaign](#reverification-campaign-2026-10-30) records a
+fresh Linux x86_64 run of that binary. That run moves `EV-03` and `ME-05` off
+`blocked`, leaves every other row at or below its prior state, and verifies no
+control: every row stays `supported`, `partial`, or `blocked`.
+
 This page lists, for every daemon P0 criterion, the exact proof the criterion
 needs, the command or artifact that produces it, the owner, and the observed
 status. The [Campaign evidence](#campaign-evidence-2026-10-28) section records
 one Linux x86_64 run of the merged binary per row and the 2026-10-28 refresh
-that re-cites the merged regression tests. A row is `supported`, `partial`, or
-`blocked`; no row is `Verified` or `Mitigated`, no risk state moves, and no
-criterion is satisfied by this page. No consumer, security, or documentation
-sign-off is recorded here.
+that re-cites the merged regression tests; the
+[reverification campaign](#reverification-campaign-2026-10-30) records the
+worker, containment, event, deadline, and metadata slices merged after them. A
+row is `supported`, `partial`, or `blocked`; no row is `Verified` or
+`Mitigated`, no risk state moves, and no criterion is satisfied by this page.
+No consumer, security, or documentation sign-off is recorded here.
 
 ## Purpose and scope
 
@@ -154,8 +164,8 @@ pass threshold.
 | ----- | ------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------- | ----------- |
 | EV-01 | `P0-AC-021` endpoint and peer   | Foreign uid/SID denied before parsing; owner-private endpoint; tamper exits 6; per-message credentials; no TCP | `C-02`, `C-16`, `V-25`, `V-26`, `V-28` real-service driver | Core terminal platform | `supported` |
 | EV-02 | `P0-AC-022` per-action scopes   | Full scope-by-method matrix; inspect-only create denied; host consent and `process.spawn` both required        | `C-09` (control-token refusal), `C-10`, `C-11`, `C-19`     | Core terminal platform | `partial`   |
-| EV-03 | `P0-AC-023` child scope         | Child environment and `/proc/self/fd` show only PTY slave and stdio; no token, capability, socket, or secret   | `C-12` real-service driver plus child descriptor probe     | Core terminal platform | `blocked`   |
-| EV-04 | `P0-AC-024` read-only default   | Baseline has no `session.host`; metadata only; content needs `terminal.inspect`; worker kind refused           | campaign real client plus Wheel adapter audit              | Core and `bitty-ai`    | `partial`   |
+| EV-03 | `P0-AC-023` child scope         | Child environment and `/proc/self/fd` show only PTY slave and stdio; no token, capability, socket, or secret   | `C-12` real-service driver plus child descriptor probe     | Core terminal platform | `partial`   |
+| EV-04 | `P0-AC-024` read-only default   | Baseline has no `session.host`; metadata only; content needs `terminal.inspect`; worker kind needs consent     | campaign real client plus Wheel adapter audit              | Core and `bitty-ai`    | `partial`   |
 | EV-05 | `P0-AC-025` DevTools scopes     | Connection alone grants no `debug.*`; `session.*` never reaches a debug method                                 | campaign handshake probe plus `bitty-ipc` DevTools matrix  | `bitty-ipc` and Core   | `partial`   |
 | EV-06 | `P0-AC-026` secret minimization | Seeded-secret corpus never appears in audit, diagnostics, panic, or crash output; owner-private modes          | `C-07`, `C-14` real-service driver plus seeded-corpus scan | Core terminal platform | `partial`   |
 | EV-07 | Daemon absence                  | `bitty --safe`, headless tests, CI, and a plain invocation work with no endpoint and no daemon process         | `C-08` plus the safe-mode/headless matrix                  | Core terminal platform | `partial`   |
@@ -207,15 +217,15 @@ every other observation is the `d360b442` campaign.
 
 ### Mechanism rows
 
-| Row   | Status      | Command and evidence reference                                                                                                                                                                                                                     | Observed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Residual gap                                                                                                                                                                                                                                                                       |
-| ----- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ME-01 | `partial`   | Create and claim/transfer over the wire; token length and rotation; audit scan; `cargo test -p bitty-daemon --test service_loop` (`every_control_method_maps_a_stale_token_at_a_vacant_control`); `--test leases`; `src/lease/token.rs` unit tests | Create returns a 64-hex token; claim rotates it; transfer rotates the target token and the requester never receives it; the target receives it on its next heartbeat; Refresh: a missing, stale, or rotated token at a vacant control is `Denied/InvalidControlToken` for every control method (PR #2770); no token value appears in any audit record.                                                                                                                                            | Digest-only storage, constant-time compare, and zeroization are source-inspection items (unit tests pin the 256-bit mint and the redacted `Debug`), not wire observations; the child-descriptor non-leak sub-case waits on the worker-spawn slice; `C-11`/`C-18` artifacts remain. |
-| ME-02 | `partial`   | Stat the runtime directory and capability file; read the bearer; restart; present the old bearer                                                                                                                                                   | Directory `0700`, file `0600`, uid 1000; the bearer is 64 hex; every start rotates it; the previous bearer is `Unauthenticated` on the new instance; the capability never appears in audit; the handshake is the only path that consumes it.                                                                                                                                                                                                                                                      | Constant-time comparison and the same-uid read residual are not measured; C-15/C-16 artifacts remain.                                                                                                                                                                              |
-| ME-03 | `supported` | `daemon.host_grant` mint 8, ninth mint, revoke pending, consume, revoke consumed, create after revoke; `cargo test -p bitty-daemon --test service_loop` (`a_consumed_host_grant_revoke_withdraws_create_before_the_ttl`)                           | Eight pending grants are distinct; the ninth is `LimitExceeded`; a pending revoke is `revoked: true`; the grant is single-use at negotiate; TTL 300 s is advertised. Refresh: a consumed grant is now revocable before the TTL: revoke returns `revoked: true, not_active: false`, and both a fresh create key and a keyed replay on the consuming connection are `Denied/ConsentRequired` (PR #2770).                                                                                            | The `C-19` artifact is absent; peer binding is same-uid only on this host, and the grant remains an intent gate a same-uid adapter can mint after reading the operator capability.                                                                                                 |
-| ME-04 | `partial`   | `session.grant` mint; attach wrong session, consume, replay, wait past the 60 s TTL, attach again; corpus `C-04`, `V-07`, and `V-35`; `--test leases`                                                                                              | Grant is 64 hex with a 32-hex id and 60 s TTL; wrong-session, replay, and expired attaches are all `ObserverGrantRequired`; a valid attach is `observer`; grant revoke is idempotent; Refresh: mint, consume, and revoke each bump `state_revision` (bitty#2767, PR #2776), and a repeat detach answers `not_attached` without a bump (bitty#2768).                                                                                                                                               | Wrong-peer is not reachable on a same-uid single-account host; `C-10` artifact remains.                                                                                                                                                                                            |
-| ME-05 | `blocked`   | No worker is spawned by the merged crate; journal unit suite only                                                                                                                                                                                  | `daemon.orphans.verify` is `UnsupportedCapability`; there is no live worker to reserve, commit, or reap.                                                                                                                                                                                                                                                                                                                                                                                          | No merged worker-spawn or containment slice (`worker_sessions=false`); bitty#2604 closed with the endpoint/peer primitives and no open task owns the spawn path. `C-03`/`C-13`; no crash injection or reused-pid real run.                                                         |
-| ME-06 | `supported` | Same run as EV-06 plus `a_wire_refusal_burst_is_budgeted_and_aggregated`, `an_endpoint_tamper_flushes_the_pending_refusal_aggregate`, and corpus `C-07`                                                                                            | Content-free records, closed field set, owner-private modes, 1 MiB rotation with two segments and zero malformed lines, fail-closed `Denied/Internal` with `audit_degraded: true`. Refresh: a bounded wire refusal budget whose suppressed tail is one aggregate record (`sup=<count>`, `bl=<budget>`, bounded `h=code:count` histogram) flushed on close and on endpoint tamper. A refused method still writes one individual record and is never counted in the aggregate histogram (PR #2770). | Per-method refusal aggregation remains a documented follow-up outside the D-16 wire budget; crash injection belongs to EV-06; the `C-07`/`C-14` formal artifact is absent.                                                                                                         |
-| ME-07 | `supported` | Create replay before and after claim; fingerprint conflict; 128 create keys with 8 rounds of 16 creates and keyless kills; restart with the same key                                                                                               | Replay returns the original session and no token after claim; a different fingerprint is `IdempotencyConflict`; the 129th distinct key is `IdempotencyCapacity`; `session.kill` still succeeds at the full store; a repeat kill is `not_running`; `daemon.stop` still succeeds; after restart the same key creates a new session and the instance id changes.                                                                                                                                     | Restart crash injection and the F-9 gate remain; `C-18` artifact pending.                                                                                                                                                                                                          |
+| Row   | Status      | Command and evidence reference                                                                                                                                                                                                                     | Observed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Residual gap                                                                                                                                                                                                      |
+| ----- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ME-01 | `partial`   | Create and claim/transfer over the wire; token length and rotation; audit scan; `cargo test -p bitty-daemon --test service_loop` (`every_control_method_maps_a_stale_token_at_a_vacant_control`); `--test leases`; `src/lease/token.rs` unit tests | Create returns a 64-hex token; claim rotates it; transfer rotates the target token and the requester never receives it; the target receives it on its next heartbeat; Refresh: a missing, stale, or rotated token at a vacant control is `Denied/InvalidControlToken` for every control method (PR #2770); no token value appears in any audit record; 2026-10-30: a spawned worker's `environ` and `/proc/<pid>/fd` carry no control token.                                                      | Digest-only storage, constant-time compare, and zeroization are source-inspection items (unit tests pin the 256-bit mint and the redacted `Debug`), not wire observations; `C-11`/`C-18` artifacts remain.        |
+| ME-02 | `partial`   | Stat the runtime directory and capability file; read the bearer; restart; present the old bearer                                                                                                                                                   | Directory `0700`, file `0600`, uid 1000; the bearer is 64 hex; every start rotates it; the previous bearer is `Unauthenticated` on the new instance; the capability never appears in audit; the handshake is the only path that consumes it.                                                                                                                                                                                                                                                      | Constant-time comparison and the same-uid read residual are not measured; C-15/C-16 artifacts remain.                                                                                                             |
+| ME-03 | `supported` | `daemon.host_grant` mint 8, ninth mint, revoke pending, consume, revoke consumed, create after revoke; `cargo test -p bitty-daemon --test service_loop` (`a_consumed_host_grant_revoke_withdraws_create_before_the_ttl`)                           | Eight pending grants are distinct; the ninth is `LimitExceeded`; a pending revoke is `revoked: true`; the grant is single-use at negotiate; TTL 300 s is advertised. Refresh: a consumed grant is now revocable before the TTL: revoke returns `revoked: true, not_active: false`, and both a fresh create key and a keyed replay on the consuming connection are `Denied/ConsentRequired` (PR #2770).                                                                                            | The `C-19` artifact is absent; peer binding is same-uid only on this host, and the grant remains an intent gate a same-uid adapter can mint after reading the operator capability.                                |
+| ME-04 | `partial`   | `session.grant` mint; attach wrong session, consume, replay, wait past the 60 s TTL, attach again; corpus `C-04`, `V-07`, and `V-35`; `--test leases`                                                                                              | Grant is 64 hex with a 32-hex id and 60 s TTL; wrong-session, replay, and expired attaches are all `ObserverGrantRequired`; a valid attach is `observer`; grant revoke is idempotent; Refresh: mint, consume, and revoke each bump `state_revision` (bitty#2767, PR #2776), and a repeat detach answers `not_attached` without a bump (bitty#2768).                                                                                                                                               | Wrong-peer is not reachable on a same-uid single-account host; `C-10` artifact remains.                                                                                                                           |
+| ME-05 | `partial`   | `C-03`, `C-11`, `--test containment`; 2026-10-30 crash-recovery probe (`SIGKILL` daemon, restart, journal counts)                                                                                                                                  | `daemon.orphans.verify` is served on the Linux cell (`mechanism: cgroup_v2`, `claim: swept`); a live worker's kill removes the pid and the session subtree; a `SIGKILL`ed daemon leaves a committed record and a HUP/TERM-ignoring worker, and the restart scan reaps the record through the subtree (`reaped: 1`, `committed: 0`) and removes it; retire removes only a quarantined record and refuses a live committed id with `InvalidRequest`.                                                | The daemon-live subreaper fallback and a live reused-pid race were not produced on this host; the `C-03` formal artifact is absent; panic/crash injection beyond the daemon `SIGKILL` was not run. `C-03`/`C-11`. |
+| ME-06 | `supported` | Same run as EV-06 plus `a_wire_refusal_burst_is_budgeted_and_aggregated`, `an_endpoint_tamper_flushes_the_pending_refusal_aggregate`, and corpus `C-07`                                                                                            | Content-free records, closed field set, owner-private modes, 1 MiB rotation with two segments and zero malformed lines, fail-closed `Denied/Internal` with `audit_degraded: true`. Refresh: a bounded wire refusal budget whose suppressed tail is one aggregate record (`sup=<count>`, `bl=<budget>`, bounded `h=code:count` histogram) flushed on close and on endpoint tamper. A refused method still writes one individual record and is never counted in the aggregate histogram (PR #2770). | Per-method refusal aggregation remains a documented follow-up outside the D-16 wire budget; crash injection belongs to EV-06; the `C-07`/`C-14` formal artifact is absent.                                        |
+| ME-07 | `supported` | Create replay before and after claim; fingerprint conflict; 128 create keys with 8 rounds of 16 creates and keyless kills; restart with the same key                                                                                               | Replay returns the original session and no token after claim; a different fingerprint is `IdempotencyConflict`; the 129th distinct key is `IdempotencyCapacity`; `session.kill` still succeeds at the full store; a repeat kill is `not_running`; `daemon.stop` still succeeds; after restart the same key creates a new session and the instance id changes.                                                                                                                                     | Restart crash injection and the F-9 gate remain; `C-18` artifact pending.                                                                                                                                         |
 
 ### Findings that gated this campaign
 
@@ -299,7 +309,139 @@ sign-off is implied.
 `partial` because its pid-attributed evidence producer is gone, not because the
 mechanism changed. EV-02 and ME-01 keep `partial` with their named blocker
 removed. EV-03, EV-09, and ME-05 stay `blocked`; EV-04, EV-05, and EV-07 stay
-`partial`; EV-01 and ME-07 stay `supported`.
+`partial`; EV-01 and ME-07 stay `supported`. This delta describes the
+2026-10-28 refresh only; the 2026-10-30 reverification below moves EV-03 and
+ME-05 to `partial`.
+
+### Reverification campaign (2026-10-30)
+
+**Run identity.** `bitty` `6c229e9c` (`origin/main`, 2026-10-30), crate
+`0.0.31`, service API `1.2`, Linux x86_64 (`7.3.0-4-cachyos`, glibc `2.44`),
+cgroup v2 delegated. `cargo build -p bitty-daemon --locked` exited 0. The
+shipped binary is `sha256:1865c5fe…`; the `--features test-seams` binary is
+`sha256:ccf62447…`. Every daemon run used a fresh throwaway root:
+`XDG_RUNTIME_DIR=$RT/run`, `XDG_STATE_HOME=$RT/state`, `HOME=$RT`, with `$RT`
+under `/tmp/bitty/ctx-1526/runs/<item>`; the real runtime and state directories
+were never used. Raw transcripts are ephemeral and summarized here; formal
+auditor artifacts under `docs/security/audits/` remain outstanding.
+
+**Commands and counts.** Seven probe scripts made 254 live assertions against
+the real service (254 observed, 0 failed). `cargo test -p bitty-daemon --test
+containment --locked` passed 10; `--test service_loop --locked` passed 51;
+`--lib --locked` passed 418. `cargo test -p bitty-daemon --test conformance
+--features test-seams --locked` passed 12 with 1 ignored helper; the real
+driver recorded 51 vectors, 47 pass, 4 typed skip (`V-06`, `V-33`, `C-10`,
+`F-01`), 0 fail, 0 known defect, and the parity report compared 34 shared
+vectors with 0 divergences (`linux-x86_64.real.json`
+`sha256:e2dd9ad2…`, `linux-x86_64.parity.json` `sha256:ee41d89f…`).
+
+**Scope of this campaign.** This is a producer run, not an audit. It covers the
+five slices merged after the 2026-10-28 refresh: containment (PR #2801,
+bitty#2791), worker spawn (PR #2808), the event wire (PR #2811), the request
+deadline (PR #2815), and the 1.2 metadata keys (PR #2816). No row is
+`Verified`, no risk state moves, and the security sign-off on bitty#2664 still
+does not cover these surfaces.
+
+### S-01 bitty#2791 containment, reaping, and orphan verification
+
+| Check               | Observed                                                                                                                                                                                                                 | State      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| Served plan         | `daemon.status.orphans` = `verify: served`, `mechanism: cgroup_v2`, `claim: swept`, `fallback: null`                                                                                                                     | `observed` |
+| cgroup join         | Worker pid appears in its own `cgroup.procs` and `/proc/<pid>/cgroup` names `bittyd-<instance>-<session>`                                                                                                                | `observed` |
+| Kill and reap       | Operator `session.kill` makes the pid disappear, removes the session subtree, settles the snapshot `terminated`/`swept`, and leaves journal `reserved: 0`, `committed: 0`                                                | `observed` |
+| Crash recovery      | A `SIGKILL`ed daemon leaves a HUP/TERM-ignoring worker and its committed record; restart reaps the record through the subtree (`reaped: 1`, `committed: 0`), removes the record and the subtree, and leaves the pid gone | `observed` |
+| Verify              | Counts-only response, idempotent; a live worker's committed record is skipped (`committed: 1`)                                                                                                                           | `observed` |
+| Retire              | One quarantined record (`retired: 1`); a repeat is `NotFound`; a malformed id is `InvalidRequest`; a live worker's committed id is `InvalidRequest`                                                                      | `observed` |
+| Bounded record id   | `record_id` is the 32-hex session id; nothing longer or non-hex reaches the journal                                                                                                                                      | `observed` |
+| No pid or path leak | Orphan responses carry only counts and the static mechanism fields; the audit text carries neither the seeded record ids nor a pid/path                                                                                  | `observed` |
+| Subreaper fallback  | Forced-fallback process tests pass (`the_subreaper_fallback_*`, decoy, double fork); a daemon-live fallback cannot be selected on this host because cgroup delegation is present                                         | `partial`  |
+| pidfd TOCTOU        | The recorded decoy is never signalled and a reserved crash record is reaped through its subtree; a live reused-pid race was not produced                                                                                 | `partial`  |
+
+### S-02 bitty#2808 worker spawn and child scope
+
+| Check                            | Observed                                                                                                                                                                                                                                     | State      |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Consent                          | A connection with transport `process.spawn` and no `session.host` gets `Denied/ConsentRequired` before any process exists                                                                                                                    | `observed` |
+| Bounded specification            | Missing/empty `argv`, relative `cwd`, `cols: 0`, `cols: 1001`, and an `env` entry without `=` are `InvalidRequest`; 65 argv entries, a 4,097-byte field, 129 env entries, and a 68,024-byte whole spec are `LimitExceeded` with their counts | `observed` |
+| Generation 1 bind                | A valid worker create answers `running`, `generation: 1`, `state_revision: 1`, a 64-hex token, and `replayed: false`; a same-key replay and a spec conflict behave as frozen                                                                 | `observed` |
+| Failed-spawn shape               | A missing executable answers `failed`/`spawn_failed`/`not_started` at generation 0 with `control_token: null` and no reserved or committed journal record                                                                                    | `observed` |
+| Exit cleanup                     | A worker that exits on its own becomes `exited`/`worker_exit`/`swept`; its record is removed and the live worker's record remains committed                                                                                                  | `observed` |
+| cgroup join and kill             | The worker joins the per-session cgroup; kill removes the pid and the subtree                                                                                                                                                                | `observed` |
+| `worker_sessions` plan awareness | The Linux handshake advertises `true`; a `ContainmentKind::Refused` plan is unit-tested to refuse and not advertise; a live refused-plan daemon was not produced                                                                             | `partial`  |
+| Child environment                | The child `environ` is exactly the provided `env` plus `TERM`; no operator capability, control token, host grant, `XDG_RUNTIME_DIR`, or `HOME` appears                                                                                       | `observed` |
+| Child descriptors                | No endpoint socket, operator file, journal, audit file, or token descriptor appears; stdin/stdout/stderr point at the PTY slave                                                                                                              | `observed` |
+| Child fd shape                   | Three extra PTY slave fds (11/12/13) survive `exec` from the stdio dups; see bitty#2824. The `close_range` ordering proof named by EV-03 is absent; see bitty#2823                                                                           | `defect`   |
+
+### S-03 bitty#2811 event wire
+
+| Check                    | Observed                                                                                                                                                                                                     | State          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| Capability truth         | The Linux handshake advertises `events: true`; a connection that does not opt in receives no event frame and no attach replay keys                                                                           | `observed`     |
+| Response-first ordering  | An event frame is a `v: 1` envelope with a server `evt-` id and no `ok`; it follows the response that caused the revision                                                                                    | `observed`     |
+| Ordering and no gaps     | Revisions arrive strictly increasing; the collected tail `6, 7, 8` is contiguous                                                                                                                             | `observed`     |
+| Per-lease routing        | The controller receives copies addressed to its own `attach_id`; the observer receives its own; no cross-copy appears                                                                                        | `observed`     |
+| Attach replay            | An opted-in attach returns `backlog`, `backlog_truncated`, and `earliest_revision`; an observer's own attach revision is in its replay, not pushed                                                           | `observed`     |
+| Truncation               | After 280 revisions the reattach reports `backlog_truncated: true`, `earliest_revision: 32`, 256 bounded entries, and a last revision at the current record                                                  | `observed`     |
+| Terminal guarantee       | `session.kill` pushes `session_terminal` last with `terminal: true`, the terminal marker, and the lease's own attach id                                                                                      | `observed`     |
+| Disconnect token reclaim | Closing the controller connection returns `attach_count` to 0; the rotated token reattaches as controller; the stale create token is `NotFound` while occupied and `InvalidControlToken` at a vacant control | `observed`     |
+| Non-serving cells        | The `EVENTS_SERVED=false` branch is compiled for non-Linux cells; no such daemon was run                                                                                                                     | `not produced` |
+
+### S-04 bitty#2815 request deadline
+
+| Check                | Observed                                                                                                                                                                                           | State      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Typed timeout        | With the seam bound at 100 ms, `daemon.status` answers `class: Timeout`, `code: Timeout`, `message: request deadline exceeded`, `request_id` equal to the envelope id, and `timeout_ms: 100`       | `observed` |
+| Connection continues | The next `session.list` on the same connection succeeds; a second timed-out request also gets `Timeout`                                                                                            | `observed` |
+| Exemptions           | `daemon.orphans.verify` and `daemon.stop` are not converted; the stop returns its result and exits 0                                                                                               | `observed` |
+| One audit record     | Two timed-out requests produce two `a=daemon.status r=refused c=timeout` records; a late failure is answered `Timeout` and keeps the handler's single `c=not_found` record                         | `observed` |
+| No secret leak       | The error carries exactly `class`, `code`, `message`, `request_id`, `timeout_ms`; the audit carries no request id or capability                                                                    | `observed` |
+| Shipped binary       | The seam is compiled out; the shipped build advertises `request_timeout_ms: 10000` and ignores the seam variables. A shipped-build `Timeout` needs a >10 s non-exempt handler and was not produced | `partial`  |
+
+### S-05 bitty#2816 session and daemon metadata
+
+| Check                        | Observed                                                                                                                                                                                      | State      |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Additive negotiation         | Clients at `1.0`, `1.1`, and `1.2` are accepted; `1.3` and `2.0` are `VersionMismatch`; `min_client_minor` is 0                                                                               | `observed` |
+| Controller presence          | `controller_present` is a boolean, never the controller `attach_id`; the token and attach id never appear in `session.status` or `session.list`                                               | `observed` |
+| Pending observer grants      | `pending_observer_grants` is numeric, bounded by the compiled cap, and clamps to 0 on a terminal snapshot                                                                                     | `observed` |
+| Owner peer                   | Only the operator all-session `session.list` carries `owner: {uid, pid}`; an ordinary list omits the key and hides a session the connection does not lease; `session.status` never carries it | `observed` |
+| Attach and heartbeat clocks  | `session.attach` returns `scopes` and `server_monotonic_ms`; `lease.heartbeat` returns `server_monotonic_ms` beside `lease_expires_at_ms`                                                     | `observed` |
+| Observational pid and uptime | `daemon.status.daemon_pid` equals the process pid; `uptime_ms` is non-negative and strictly increases across calls                                                                            | `observed` |
+| Lifetime orphan counters     | `orphans.records` carries `reserved`, `committed`, `unverified`, `reaped`, `stale`; a seeded foreign-boot record reports `stale: 1`, and a verification pass leaves it at 1                   | `observed` |
+
+**Status delta.** EV-03 moves `blocked` → `partial`: the worker now exists and
+the child environment/fd probe ran; the `close_range` proof and the exact fd
+shape are tracked as bitty#2823 and bitty#2824. ME-05 moves `blocked` →
+`partial`: the cgroup-v2 plan is reaped end-to-end and the crash scan is
+observed, while the daemon-live subreaper sub-case and a live reused-pid race
+remain unproduced. EV-04 stays `partial` with its worker-refusal clause replaced
+by the consent-gated served path. EV-02, EV-05, EV-06, EV-07, EV-08, EV-09,
+ME-01, ME-02, ME-04, and ME-06 do not move. EV-01, ME-03, and ME-07 stay
+`supported`.
+
+**Findings and residuals.**
+
+- **bitty#2824 (P2).** The worker child carries three extra PTY slave fds
+  (11/12/13) from the non-CLOEXEC stdio dups; the child-scope probe observed no
+  daemon secret but the fd table is not exactly stdio. EV-03 stays `partial`.
+- **bitty#2823 (P2).** EV-03 names a `close_range(..., CLOEXEC)` pre-exec proof
+  that the merged path does not produce; the current probe cannot prove the
+  `CLOEXEC` completeness that substitutes for it.
+- **Worker serve-before-amendment.** The Linux build advertises
+  `worker_sessions: true` and spawns workers while accepted `D-01` still
+  describes the v0.2.0 slice as terminal-only; the frozen IPC contract records
+  this as a served-versus-accepted tension owned by bitty#2790 and bitty#2608.
+  The release gate G-06 cannot be `met` in this state.
+- **Subreaper daemon-live path.** cgroup delegation is present on this host, so
+  the daemon always selects `cgroup_v2`; the fallback is exercised only by the
+  forced process tests. A second host without delegation is required.
+- **Shipped-build deadline.** `Timeout` is observable only through the
+  `test-seams` build; no non-exempt shipped handler exceeds the 10 s bound.
+- **Non-Linux cells and Windows.** No native cell was available; both the
+  worker capability and the event wire remain Linux-only and unproduced on
+  macOS/Windows.
+- **Formal artifacts.** `docs/security/audits/` still holds no per-control
+  report; this campaign is a producer run, not an auditor sign-off.
 
 ## P0-AC-021 endpoint and peer credentials
 
@@ -430,21 +572,32 @@ child `environ`/`fd` dump under `recording/evidence/R-012/P0-AC-023/`.
 **Owner.** Core terminal platform, with the `bitty-pty` maintainers for the
 spawn path.
 
-**Status.** `blocked`: no merged worker-spawn or containment slice exists (`worker_sessions=false`; `kind: worker` is refused before spawn), and bitty#2604 closed with the endpoint/peer primitives without implementing the spawn path.
+**Status.** `partial`: the worker-spawn and containment slices are merged
+(bitty#2791, PR #2801; PR #2808). The 2026-10-30 live probe read the child's
+`environ` and `/proc/<pid>/fd`: the environment was exactly the supplied `env`
+plus `TERM`, with no operator capability, control token, host grant,
+`XDG_RUNTIME_DIR`, or `HOME`, and no endpoint socket, operator file, journal,
+or audit descriptor appeared in the fd table. Two gaps remain: the child holds
+three extra PTY slave fds (11/12/13) from the non-CLOEXEC stdio dups
+(bitty#2824), and the `close_range(..., CLOEXEC)` ordering proof named above is
+not produced by the merged path (bitty#2823). The formal
+`docs/security/audits/bittyd-child-scope-2026-xx.md` artifact is absent.
 
 ## P0-AC-024 Agent read-only default
 
 **Proof obligation.** An Agent consumer that merely connects receives only the
 baseline scopes and no content authority. `session.host` is absent from the
 baseline; `session.create` is refused without an explicit host grant and
-`process.spawn`; `worker_sessions` is `false` and `kind: worker` is
-`Denied/UnsupportedCapability` before any process exists. `session.status`,
-attach responses, and events carry metadata only. Terminal content requires a
-live lease and `terminal.inspect`; input requires the controller lease and
-`terminal.input`; resize requires the controller lease and `terminal.manage`.
-An observer grant never carries content authority by itself. The baseline
-`session.control` scope is necessary but never sufficient: without the
-controller lease or the current control token it cannot abort, transfer, or
+`process.spawn`. `worker_sessions` is true only on a plan-gated Linux cell
+(bitty#2790 / PR #2808); on a cell that does not serve workers, `kind: worker`
+is `Denied/UnsupportedCapability` before any process exists, and on a serving
+cell it needs the consumed host grant and a bounded spawn specification.
+`session.status`, attach responses, and events carry metadata only. Terminal
+content requires a live lease and `terminal.inspect`; input requires the
+controller lease and `terminal.input`; resize requires the controller lease and
+`terminal.manage`. An observer grant never carries content authority by itself.
+The baseline `session.control` scope is necessary but never sufficient: without
+the controller lease or the current control token it cannot abort, transfer, or
 revoke another lease, and it never grants content. The daemon never places
 terminal content in the session stream.
 
@@ -473,7 +626,7 @@ Wheel adapter labeling audit recorded by `bitty-ai`.
 
 **Owner.** Core terminal platform and `bitty-ai` (Wheel consumer).
 
-**Status.** `partial` (daemon half supported; the Wheel adapter half is `bitty-ai`-owned and not run).
+**Status.** `partial` (daemon half supported: baseline has no `session.host`, create needs the consumed grant, and the worker kind is served only with that consent on a plan-gated Linux cell; the Wheel adapter half is `bitty-ai`-owned and not run). The 2026-10-30 campaign confirms the worker metadata surface carries no pid, argv, environment value, content, or token, and that the accepted `D-01` tension is still open.
 
 ## P0-AC-025 DevTools scopes
 
@@ -678,7 +831,7 @@ that the criterion rows above depend on.
 | ME-02 | Operator capability | Per-boot `0700`/`0600`, rotated, handshake-only, not inherited, not a consumer wire field, same-uid residual stated and tested                   | `C-15`, `C-16`, `--test peer`                         | Core terminal platform | `partial`   |
 | ME-03 | Host grant          | Operator-only mint, single-use, TTL, peer-bound, revocable, audited, consumed at negotiate, one static code per missing authority                | `C-19`, `--test service_loop`, `--test idempotency`   | Core terminal platform | `supported` |
 | ME-04 | Observer grant      | Single-use, TTL, attributed, revocable, no self-grant, wrong-peer/session/consumed/expired all one code                                          | `C-10`, `--test leases`                               | Core terminal platform | `partial`   |
-| ME-05 | Orphan reaping      | Two-phase reserve/commit fsync, containment identity, reserved-record reap, pid-reuse never signalled, quarantine, crash injection               | `C-03`, `C-13`, `--test orphan_journal`               | Core terminal platform | `blocked`   |
+| ME-05 | Orphan reaping      | Two-phase reserve/commit fsync, containment identity, reserved-record reap, pid-reuse never signalled, quarantine, crash injection               | `C-03`, `C-11`, `--test containment`                  | Core terminal platform | `partial`   |
 | ME-06 | Audit sink          | Content-free records, bounded strings, `0700`/`0600`, rotation, refusal budget, `audit_degraded` fail-closed, no read method                     | `C-07`, `C-14`, `--test audit`, `--test service_loop` | Core terminal platform | `supported` |
 | ME-07 | Idempotency stores  | Bounded descriptor stores, `(uid or SID, key)` create index, fingerprint conflict, keyless termination, restart residual, F-9 gate               | `C-18`, `--test idempotency`, `--test events`         | Core terminal platform | `supported` |
 
@@ -873,6 +1026,15 @@ no longer stand. That does not close any of the ten review items above: a
 that row's declared scope at the cited revision; it is not an audit, and no
 row is `Verified`.
 
+The 2026-10-30 reverification is review input for the containment, worker,
+event, deadline, and metadata surfaces, and it also produced no verdict. It
+observed a constructed child environment with no daemon secret, a startup scan
+that reaped a crashed daemon's cgroup record, and the served verify/retire
+counts; it filed bitty#2823 for the missing `close_range` proof and bitty#2824
+for three extra PTY slave fds in the child. The `D-01` worker
+serve-before-amendment tension (open point 13) still needs the amendment, so
+release gate G-06 cannot be `met` from this campaign.
+
 ## Verification plan
 
 1. Run the repository gates in the docs worktree: `just check`. This page adds
@@ -970,6 +1132,26 @@ row is `Verified`.
     `(spawn=false, host=false)` case is reachable only in unit tests. No merged
     slice replaces the transport default; the reviewer must decide whether that
     is acceptable before `session.host` can be called per-client consent.
+13. **Worker serve-before-amendment.** The Linux cell advertises
+    `worker_sessions: true` and spawns workers, while accepted `D-01` still
+    describes the v0.2.0 slice as terminal-only and asks for an ADR 0019
+    amendment plus a spawn/credential/cleanup review first. The frozen IPC
+    contract records the tension and leaves it with bitty#2790 and bitty#2608.
+    The reviewer must record the amendment (or close the surface) before
+    release gate G-06 can be `met`.
+14. **Shipped-build request deadline.** The typed `Timeout` is observable only
+    in the `test-seams` build because no shipped non-exempt handler exceeds the
+    10 s bound. The reviewer must decide whether the seam run plus the unit
+    tests suffice for EV-02/EV-04/ME-06, or require a shipped-build artifact
+    produced by a documented long handler.
+15. **Child fd shape and `close_range`.** The merged worker path relies on
+    `CLOEXEC` completeness but does not run the `close_range(..., CLOEXEC)`
+    call EV-03 names, and the child keeps three extra PTY slave fds
+    (bitty#2823, bitty#2824). The reviewer must accept the enforced mechanism
+    or require both the call and a probe that fails on an extra descriptor.
+16. **Native cells.** macOS and Windows were not run; the worker capability and
+    event wire remain Linux-only, and a compile-only target is not evidence for
+    another cell.
 
 ## Acceptance criteria
 
@@ -1052,6 +1234,23 @@ This is a plan, not a P0 gate. It records no approval of any control.
 - [bitty PR #2779](https://github.com/bitty-terminal/bitty/pull/2779) - the CI
   guard that keeps a skipped conformance step from failing the evidence
   upload.
+- [bitty #2791](https://github.com/bitty-terminal/bitty/issues/2791) and
+  [PR #2801](https://github.com/bitty-terminal/bitty/pull/2801) - the merged
+  containment, signal, reaping, and served `daemon.orphans.verify` slice.
+- [bitty PR #2808](https://github.com/bitty-terminal/bitty/pull/2808) - the
+  merged worker spawn/bind, generation 1, and `session.resize` content plane.
+- [bitty PR #2811](https://github.com/bitty-terminal/bitty/pull/2811) - the
+  merged per-lease event wire, bounded backlog, and terminal guarantee.
+- [bitty PR #2815](https://github.com/bitty-terminal/bitty/pull/2815) - the
+  merged request deadline and the typed `Timeout`.
+- [bitty PR #2816](https://github.com/bitty-terminal/bitty/pull/2816) - the
+  merged 1.2 session and daemon metadata keys.
+- [bitty #2822](https://github.com/bitty-terminal/bitty/issues/2822) - the
+  release gate cites a nonexistent `DR-01` through `DR-08` register.
+- [bitty #2823](https://github.com/bitty-terminal/bitty/issues/2823) - the
+  P0-AC-023 `close_range` ordering proof is absent from the worker path.
+- [bitty #2824](https://github.com/bitty-terminal/bitty/issues/2824) - the
+  worker child inherits three extra PTY slave descriptors from the stdio dups.
 - [bitty #2664](https://github.com/bitty-terminal/bitty/issues/2664) - the
   conformance corpus that freezes the JSON and frame spelling.
 - [`bitty-daemon` README at `adb15d15`](https://github.com/bitty-terminal/bitty/blob/adb15d15/crates/bitty-daemon/README.md)
