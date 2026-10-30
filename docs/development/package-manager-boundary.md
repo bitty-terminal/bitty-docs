@@ -479,6 +479,18 @@ milestone, and no implementation evidence forces one yet.
 - **Dual-run/import migration semantics** parked to `W-101`: the exact
   transition mechanics that keep a single lock authority while install-time
   management moves out of Core.
+- **Bootstrap seed exception and sunset** parked to the `bitty-plugin-manager`
+  implementation task (`W-72`; Core slice `CTX-1658`): Core temporarily keeps
+  one explicit-consent `bitty extension install <name> --version X.Y.Z` seed
+  that fetches exactly one pinned release plus its `SHA256SUMS`, so the
+  manager itself can be installed on first use. The seed has no catalog, no
+  latest selector, and no dependency resolution; it is the only Core network
+  path and a scoped exception to the Core-never-network invariant, not a
+  change to it. Sunset: retire the seed to the manual-placement
+  (`bitty extension add`) path once the manager owns install, update, and
+  list. The exception does not weaken `P0-AC-027` through `P0-AC-030`: the
+  seed executes no package code, verifies every available digest, and records
+  a TOFU pin.
 
 ## Acceptance criteria
 
