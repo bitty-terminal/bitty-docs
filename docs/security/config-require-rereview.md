@@ -22,17 +22,17 @@ four claims its own steps do not deliver — one in containment, one in the read
 two in the escaping rule. The candidate stays `draft`, is **not** eligible for
 promotion, and no dependent implementation issue is authorized by this record.
 
-| Item              | Value                                                                                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Reviewed contract | [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md) |
-| Reviewed revision | `bitty-terminal-docs` `955ef0b` (amend, squash); identical to `origin/main` `25aa80f`, the later commit touching only a sibling specification                      |
-| Earlier review    | [Restricted config require loader review](config-require-loader-review.md), `NEEDS-FIX` on `G-1` to `G-3`                                                          |
-| Threat model      | [Threat model](threat-model.md), restricted config module loader, required defenses `D-1` to `D-6`                                                                 |
-| Code evidence     | `bitty` `origin/main` at `7ac871d4`, read-only; no checkout, no build, no test run                                                                                 |
-| Review date       | 2026-11-03                                                                                                                                                         |
-| Reviewer role     | Independent security reviewer; no authorship of the reviewed contract or of the code it cites                                                                      |
-| Gate              | This repository's documentation gate (format, links, metadata, language, hygiene, cross-repo links, state, actionlint)                                             |
-| Outcome           | Status stays `draft`; promotion withheld until `B-1` through `B-4` are corrected; `N-3`, `N-5`, `N-6` remain open                                                  |
+| Item              | Value                                                                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reviewed contract | [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md)  |
+| Reviewed revision | `bitty-terminal-docs` `955ef0b` (amend, squash); identical to `origin/main` `25aa80f`, the later commit touching only a sibling specification |
+| Earlier review    | [Restricted config require loader review](config-require-loader-review.md), `NEEDS-FIX` on `G-1` to `G-3`                                     |
+| Threat model      | [Threat model](threat-model.md), restricted config module loader, required defenses `D-1` to `D-6`                                            |
+| Code evidence     | `bitty` `origin/main` at `7ac871d4`, read-only; no checkout, no build, no test run                                                            |
+| Review date       | 2026-11-03                                                                                                                                    |
+| Reviewer role     | Independent security reviewer; no authorship of the reviewed contract or of the code it cites                                                 |
+| Gate              | This repository's documentation gate (format, links, metadata, language, hygiene, cross-repo links, state, actionlint)                        |
+| Outcome           | Status stays `draft`; promotion withheld until `B-1` through `B-4` are corrected; `N-3`, `N-5`, `N-6` remain open                             |
 
 The reviewer wrote none of the amended text and did not implement any part of
 the loader. The contract's own acceptance criteria require independent security
@@ -520,7 +520,7 @@ of them can be satisfied by the tests the plan already names.
 
 ## References
 
-- [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md) — the reviewed document, at `955ef0b`.
+- [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md) — the reviewed document, at `955ef0b`.
 - [Restricted config require loader review](config-require-loader-review.md) — the review this one continues, and the source of `G-1` to `G-3` and `N-1` to `N-6`.
 - [Threat model](threat-model.md) — restricted config module loader, required defenses `D-1` to `D-6`.
 - [Security overview](overview.md) — least privilege per input class, bounded size, time, nesting and memory, `--safe` baseline.

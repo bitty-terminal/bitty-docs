@@ -26,7 +26,7 @@ withholds acceptance.
 
 | Item              | Value                                                                                                                                                                                                     |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Reviewed contract | [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md)                                        |
+| Reviewed contract | [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md)                                                              |
 | Reviewed revision | `bitty-terminal-docs` `d327a1a` (PR [#379](https://github.com/bitty-terminal/bitty-terminal-docs/pull/379)), file blob `59cd71e`; judged as a diff against `955ef0b`, the revision the second review read |
 | Round 1           | [Restricted config require loader review](config-require-loader-review.md), `NEEDS-FIX` on `G-1` to `G-3`, non-blocking `N-1` to `N-6`                                                                    |
 | Round 2           | [Restricted config require contract re-review](config-require-rereview.md), `G-1` to `G-3` closed, `NEEDS-FIX` on `B-1` to `B-4`, non-blocking `N-1` to `N-8`                                             |
@@ -588,7 +588,7 @@ obligations are added, one per new textual ambiguity that a test can pin.
 
 ## References
 
-- [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md) — the reviewed document, at `d327a1a`.
+- [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md) — the reviewed document, at `d327a1a`.
 - [Restricted config require loader review](config-require-loader-review.md) — round 1, the origin of `G-1` to `G-3` and `N-1` to `N-6`.
 - [Restricted config require contract re-review](config-require-rereview.md) — round 2, the origin of `B-1` to `B-4` and `N-7` to `N-8`.
 - [Threat model](threat-model.md) — restricted config module loader, required defenses `D-1` to `D-6`; `N-12` lands on its `D-2` bullet.

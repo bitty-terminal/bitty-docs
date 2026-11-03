@@ -339,7 +339,7 @@ does not receive process, network, filesystem-write, or runtime-admin authority.
 #### Restricted config module loader (candidate, OQ-CONFIG-REQUIRE)
 
 Status: **candidate requirement**, drafted with the design contract
-`specifications/config-lua-require-contract-candidate.md` under the
+`specifications/config-lua-require-contract.md` under the
 `bitty-terminal-docs` corpus (issue `bitty#2670`; the contract is a
 not-yet-merged candidate, so it is referenced by repository path rather
 than by a URL). Nothing is implemented and this record adds no P0

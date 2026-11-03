@@ -18,15 +18,15 @@ all textual and all inside two sections of the reviewed contract. Every other
 required defense passes. No implementation exists, so nothing here is evidence
 of shipped behavior; this record judges a design gate.
 
-| Item                   | Value                                                                                                                                                                            |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Reviewed contract      | [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md) at `297df827` |
-| Security record        | [Threat model](threat-model.md), restricted config module loader section, at `b38bd6cc`                                                                                          |
-| Shipped-behavior check | `bitty` `a168b197`, read-only                                                                                                                                                    |
-| Review date            | 2026-11-03                                                                                                                                                                       |
-| Reviewer role          | Independent security reviewer, no authorship of the reviewed contract                                                                                                            |
-| Gate                   | This repository's documentation gate (format, links, metadata, language, hygiene)                                                                                                |
-| Outcome                | Status stays `draft`; the promotion is withheld until `G-1` through `G-3` are corrected                                                                                          |
+| Item                   | Value                                                                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reviewed contract      | [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md) at `297df827` |
+| Security record        | [Threat model](threat-model.md), restricted config module loader section, at `b38bd6cc`                                                                    |
+| Shipped-behavior check | `bitty` `a168b197`, read-only                                                                                                                              |
+| Review date            | 2026-11-03                                                                                                                                                 |
+| Reviewer role          | Independent security reviewer, no authorship of the reviewed contract                                                                                      |
+| Gate                   | This repository's documentation gate (format, links, metadata, language, hygiene)                                                                          |
+| Outcome                | Status stays `draft`; the promotion is withheld until `G-1` through `G-3` are corrected                                                                    |
 
 The reviewer has no stake in the candidate's acceptance and did not write,
 edit, or implement any part of it. The contract's own acceptance criteria
@@ -453,7 +453,7 @@ this record.
 
 ## References
 
-- [Config Lua require contract (candidate)](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract-candidate.md) — the reviewed document.
+- [Config Lua require contract](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/config-lua-require-contract.md) — the reviewed document.
 - [Threat model](threat-model.md) — configuration and workspace trust, restricted config module loader.
 - [Security overview](overview.md) — least privilege per input class, bounded size/time/nesting/memory, `--safe` baseline.
 - [P0 acceptance criteria](p0-acceptance-criteria.md) — `P0-AC-005` deny-by-default local file loading, `P0-AC-008` control-character inspection, `P0-AC-019` safe mode always available, `P0-AC-026` trace minimization and redaction.
