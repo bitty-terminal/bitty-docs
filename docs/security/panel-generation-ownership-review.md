@@ -13,7 +13,7 @@ sidebar_order: 47
 
 ## Review status
 
-**Recommendation: not accepted yet (`NEEDS-FIX`).** Eight blocking gaps remain.
+**Verdict: `NEEDS-FIX`.** Eight blocking gaps remain.
 Two of them change what authority survives a plugin generation boundary, three
 are factual errors about the current code, and three make a decided outcome
 unimplementable or untested. The ownership direction itself is sound and
@@ -43,7 +43,9 @@ This is a design review of the ownership split, identity survival, lifecycle
 mapping, rebind authority, bounded recovery, and test matrix. It judges whether
 the record is complete enough to become an enforceable contract, not whether
 panels should outlive plugin generations; the latter is a product decision the
-record already argues and this review accepts as given.
+record already argues and this review accepts as given. It changes no code,
+files no implementation issue, and flips no status: it is a review artifact
+only, and the reviewed document stays `draft`.
 
 Method:
 
