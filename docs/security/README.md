@@ -27,6 +27,7 @@ and states no control status of its own.
 | [Evidence matrix](evidence-matrix.md)                                                       | Risk-to-P0-AC traceability with implementation, test, CI, adversarial, and audit evidence.                                                                           |
 | [bittyd P0 evidence plan](bittyd-p0-evidence-plan.md)                                       | Pending P0-AC-019 and P0-AC-021 through P0-AC-026, daemon-absence, no-TCP, and safe-mode evidence for the local-daemon transition.                                   |
 | [Authenticated provider publication ingress](authenticated-provider-publication-ingress.md) | Draft decision-ready ingress, replay, proof-lifetime, audit, and broker-boundary design; not accepted.                                                               |
+| [Restricted config require loader review](config-require-loader-review.md)                  | Independent defense-by-defense security review of the restricted configuration module loader contract; not accepted yet, blocking gaps recorded.                     |
 
 ## Related
 
