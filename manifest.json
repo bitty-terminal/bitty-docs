@@ -4,40 +4,41 @@
   "carryctx_version": "0.12.0",
   "schema_version": 18,
   "project_id": "01M0W9F2XC05P834QEG7FA8XVX",
-  "export_id": "01M5RMCNG4XV69E3S9WEMA933Z",
-  "created_at": "2026-10-25T04:16:37.380679185+00:00",
+  "export_id": "01M6XRFVEWTS5ZYBQRMWEDVNRS",
+  "created_at": "2026-11-08T14:20:10.076594882+00:00",
   "parents": [
-    "01M46T5MYXEWE145RXN5MGCXH9"
+    "01M5RMCNG4XV69E3S9WEMA933Z"
   ],
   "sequences": {
-    "display_id_CTX": 290,
+    "display_id_CTX": 308,
     "display_id_decision": 29,
     "display_id_handoff": 45,
-    "display_id_progress": 966
+    "display_id_progress": 996
   },
   "source": {
-    "git_commit": "be68c93cee1638c65932f5dba44cd4e2fadbe265",
+    "git_branch": "main",
+    "git_commit": "9df5a360b61a6a9c46777ed41f4ec731c29a956e",
     "hostname": "unknown"
   },
   "counts": {
-    "agents": 224,
+    "agents": 233,
     "checkpoint_corrections": 0,
-    "checkpoints": 695,
+    "checkpoints": 724,
     "decisions": 28,
-    "events": 5314,
+    "events": 5587,
     "graph_edges": 808,
     "graph_nodes": 87,
     "handoffs": 44,
-    "progress_items": 965,
-    "scopes": 342,
+    "progress_items": 995,
+    "scopes": 345,
     "sequences": 4,
-    "sessions": 232,
+    "sessions": 247,
     "task_dependencies": 54,
-    "tasks": 289,
+    "tasks": 307,
     "team_members": 7,
     "teams": 1,
-    "tombstones": 102,
-    "worktrees": 11
+    "tombstones": 115,
+    "worktrees": 2
   },
   "redacted": true
 }
