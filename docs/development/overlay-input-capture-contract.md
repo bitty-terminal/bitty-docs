@@ -55,7 +55,11 @@ The v1 `overlay` slot accepted by
 is presentation-only and non-focusable, so no plugin can host an editable
 command line, a modal search surface, or a key-capturing session on it. The
 blocked consumers are the palette overlay (which reads `E_UI_UNAVAILABLE` on the
-v1 slot), Beacon key capture, and the help, search, and copy-mode extractions.
+v1 slot), Beacon key capture, and the search and copy-mode extractions. The
+help/which-key extraction is no longer among them: it shipped on the v1
+presentation-only `overlay` slot plus `bitty.ui.present.show`/`hide` and the
+`overlay.dismissed` event (`bitty` `3101ab26`, PR #3105), so it needs no
+capture grant.
 This specification fixes the single v2 host surface they all share: one
 capability-gated, Core-owned mechanism by which a plugin claims exclusive
 keyboard and overlay focus for the duration of one bounded user interaction.
@@ -472,7 +476,7 @@ content.
 | Consumer                                   | Owner                                                             | What it owns (not decided here)                                                   |
 | ------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | Composer extension package and its UX      | `W-82` architecture, `composer` plugin task, extraction `W-103`   | Delivery shape, submit and editor use, manifest declaration, package semver       |
-| Search, copy-mode, and help surfaces       | Their owning extraction tasks under `W-82` and `W-73`             | Which surface each extraction hosts on this contract                              |
+| Search and copy-mode surfaces              | Their owning extraction tasks under `W-82` and `W-73`             | Which surface each extraction hosts on this contract                              |
 | Beacon key-capture sessions                | `W-29` host API, `W-30` policy retirement, `W-120` and `W-43` SDK | Target mechanism, dispatch bridge, session policy above this contract             |
 | Plugin-facing SDK binding for this surface | `W-139` SDK, with `W-120` and `W-43` for overlay and Beacon       | Binding shapes, mock host, conformance suite, after this contract                 |
 | Core host-mechanism implementation         | `W-28` (bitty)                                                    | Mechanism matching this contract exactly; may refine mechanics, never identifiers |
@@ -602,7 +606,7 @@ forces one yet.
 - **Mechanism internals** parked to `W-28`: data structures, scheduling, and
   tighter internal ceilings, which must match the identifiers, spellings,
   bounds, codes, and reasons decided here.
-- **Search, copy-mode, and help adoption details** parked to their owning
+- **Search and copy-mode adoption details** parked to their owning
   extraction tasks: which surface each hosts on this contract is decided there.
 - **`overlay.input.available` amendment** parked to `W-01`: the
   implementation evidence and the amendment scope are assessed in the
@@ -628,7 +632,7 @@ forces one yet.
 - The no-hot-path rule (`P0-AC-015`), Core-owned single-owner focus
   arbitration, safe-mode behavior, and versioning within v2 are stated without
   weakening any P0 control.
-- The downstream consumers (Composer, search, copy-mode, help, Beacon
+- The downstream consumers (Composer, search, copy-mode, Beacon
   sessions, `W-139` and `W-120` and `W-43` SDK work, `W-28` mechanism
   alignment) are named without deciding their content.
 - What stays provisional names an owner for each item; no new global open
