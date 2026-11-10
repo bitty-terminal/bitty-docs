@@ -31,7 +31,10 @@ It is not an accepted plugin-facing contract, does not authorize implementation,
 and makes no compatibility promise. The accepted generic Panel Runtime
 container and Event Bus remain authoritative; the plugin-facing registration,
 placement, and capability questions remain open under `RFC-OQ-2`, `RFC-OQ-3`,
-and `RFC-OQ-5`. Follow-up issue #464 owns the remaining boundaries.
+and `RFC-OQ-5`. Follow-up [issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464)
+inventories the seven remaining boundaries (`B1`–`B7`) with decided and open
+status per boundary in
+[Panel Provider Contract Boundaries](../../../specifications/panel-provider-contract-boundaries.md).
 
 ## Purpose and scope
 
@@ -467,18 +470,21 @@ Verification for this candidate is documentary and bounded:
 - The plugin matrix and bundled-plugin split decision remain deferred in their
   owning repositories. They may link this page as candidate context only after
   their coordinated updates land.
-- Issue [#464](https://github.com/bitty-terminal/bitty-docs/issues/464) tracks
-  the remaining plugin-facing identity, lifecycle, authority, layout,
-  focus/input, crash/reload, and bounded-payload boundaries.
+- Issue [#464](https://github.com/bitty-terminal/bitty-docs/issues/464) and
+  [Panel Provider Contract Boundaries](../../../specifications/panel-provider-contract-boundaries.md)
+  record the decided and open rows for the remaining plugin-facing identity,
+  lifecycle, authority, layout, focus/input, crash/reload, and bounded-payload
+  boundaries (`B1`–`B7`).
 - No capability identifier, Lua entry point, versioned API member, distribution
   row, or implementation behavior changes as a result of this page.
 
 ## Open points
 
 The candidate deliberately does not close the plugin-facing gate. The generic
-container and Event Bus guarantees are retained, but the following boundaries
-remain outside this candidate and require an explicit follow-up before
-acceptance:
+container and Event Bus guarantees are retained, and the seven boundaries
+below are inventoried with decided and open status per boundary in
+[Panel Provider Contract Boundaries](../../../specifications/panel-provider-contract-boundaries.md)
+([issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464)):
 
 - **Identity:** the candidate names `PanelId` and `ViewId` relationships but
   does not establish the plugin-visible identity, persistence identity, or
@@ -509,7 +515,9 @@ identity, lifecycle control, authority, layout ownership, focus/input access,
 crash/reload behavior, persistence behavior, or a payload schema from this
 candidate.
 
-The precise follow-up is [issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464).
+The per-boundary inventory is recorded in
+[Panel Provider Contract Boundaries](../../../specifications/panel-provider-contract-boundaries.md)
+([issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464)).
 
 ### Additional unresolved questions
 
@@ -609,5 +617,9 @@ change.
 - [OQ-058](../open-questions.md) (accepted for generic orchestration and
   delivery semantics; plugin-facing registration/mount remains deferred):
   the spatial multi-agent orchestration register this acceptance extends.
+- [Panel Provider Contract Boundaries](../../../specifications/panel-provider-contract-boundaries.md)
+  (draft boundary record, [issue #464](https://github.com/bitty-terminal/bitty-docs/issues/464)):
+  per-boundary decided and open rows for the seven plugin-facing boundaries
+  (`B1`–`B7`) left outside this candidate.
 - [Issue #443](https://github.com/bitty-terminal/bitty-docs/issues/443)
   (this RFC task issue).
