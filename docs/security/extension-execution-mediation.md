@@ -24,8 +24,12 @@ Decided direction: [bitty #1984](https://github.com/bitty-terminal/bitty/issues/
 audit ledger for tool spawns), and
 [bitty #1986](https://github.com/bitty-terminal/bitty/issues/1986) (extension
 source transparency: `show-source`, `update-diff` preview, no-obfuscation
-gate). This document states what the decided mediation stops, what it does
-not stop on each platform, and which residuals stay open.
+gate), and [bitty #2069](https://github.com/bitty-terminal/bitty/issues/2069)
+(Lua plugin store source transparency: `show-source` with digest
+verification, a mandatory update diff before consent, an optional
+`[source] sha256` pin, and an install-side readability gate). This document
+states what the decided mediation stops, what it does not stop on each
+platform, and which residuals stay open.
 
 ## Scope
 
@@ -34,7 +38,8 @@ extensions through the Layer-2 system-CLI surface: which tool may run, with
 which arguments and environment, under which inherited OS confinement, with
 which audit record, and from which verified supply-chain artifact. It covers
 the `git`-only tool slice (v1), the `bitty-sandbox` confinement adapter, the
-tool-spawn audit ledger, and the `bitty extension` transparency verbs.
+tool-spawn audit ledger, and the `bitty extension` and `bitty plugin`
+transparency verbs.
 
 Out of scope: generic (non-tool) execution requests, which carry no
 allowlist basis and stay governed by their scope and consent gates;
@@ -225,7 +230,8 @@ per-queue dropped counters are aggregated for doctor output.
 
 ## Supply-chain story
 
-No silent push is possible through the extension surface:
+No silent push is possible through the extension and plugin store
+surfaces:
 
 - **Hash pins.** `bitty extension install` fetches exactly one prebuilt R2
   release (`https://cdn.bitty.run`) through fixed-argv system `curl`
@@ -245,7 +251,7 @@ No silent push is possible through the extension surface:
 --force`) and revocation (`bitty plugin revoke`, `bitty ctl consent
 revoke`) touch only the user tier and recorded grants, never the system
   tier.
-- **Source transparency (bitty #1986).** `bitty extension show-source
+- **Extension source transparency (bitty #1986).** `bitty extension show-source
 <name> [<version>]` prints the exact pinned executable bytes to stdout
   after re-verifying the hash against the installed descriptor; provenance
   (name, version, tier, path, sha256) goes to stderr so stdout stays
@@ -263,6 +269,67 @@ plugin` operation executes extension or plugin code; resolution
   re-verifies name, version, executable name, protocol range, and SHA-256
   on every spawn, and a tampered user install fails closed without system
   fallback.
+
+### Lua plugin store source transparency (bitty #2069)
+
+The store-installed Lua half of the same control is implemented on the
+install and inspection paths at `bitty` `3101ab26`. It is mechanism evidence
+for the revision named, not a `Verified` claim, and it does not constrain
+what a registry publishes.
+
+- **`bitty plugin show-source <id>` re-verifies before printing.** The
+  recorded `content_digest` is recomputed over the installed module tree
+  before a single byte reaches stdout; a mismatch fails closed as
+  `StoreIntegrity` with empty stdout instead of printing bytes the record
+  does not pin. Output is a deterministic stream of
+  `-- <path> sha256 <digest>` headers followed by each file's exact bytes,
+  and the tree digest, plugin id, version, source class, and package root go
+  to stderr so stdout stays pipe-friendly. The command is read-only — no
+  execution, no network, no mutation — and bundled plugins ship compiled
+  into `bitty`, so they have no store source to print. Source:
+  `crates/bitty-terminal/src/plugin.rs` (`op_show_source`).
+- **A mandatory update diff precedes consent.** A version change, or a
+  same-version content change, attaches an `UpdatePreview` to the
+  `ConsentRequest` and therefore requires consent even when the recorded
+  capability set does not grow; added capabilities and same-version content
+  conflicts are no longer the only triggers. The preview is computed from
+  the same staged snapshot the transaction commits, never re-read from the
+  source after approval, and truncated or omitted files are marked and
+  counted rather than dropped. Sources:
+  `crates/bitty-runtime/src/plugin_runtime/package.rs` (`UpdatePreview`,
+  `ConsentRequest::update`, `build_update_preview`, `consent_needed`),
+  rendered by `render_update_preview` in
+  `crates/bitty-terminal/src/plugin.rs`.
+- **The `[source] sha256` pin is optional per manifest.** A manifest may
+  declare the digest of the module tree it ships. Shape is validated as
+  exactly 64 lowercase hexadecimal characters, and the installer verifies
+  the declared value against the staged tree: a mismatch fails closed as
+  `SourcePinMismatch` and commits nothing. The pin is part of the canonical
+  manifest bytes, so it is covered by the manifest hash that consent binds
+  to. Sources: `crates/bitty-plugin-host/src/manifest.rs` (`source_sha256`,
+  canonical bytes, shape validation) and
+  `crates/bitty-runtime/src/plugin_runtime/package.rs` (staged-tree
+  verification).
+- **Minified or obfuscated Lua is refused at install.** Every `*.lua` file
+  in the staged module tree passes the shared readability rule — a line over
+  1000 bytes, or an average over 200 bytes per line, refuses — before
+  consent and before commit, bounded to 1024 Lua files and 1 MiB per file,
+  and non-UTF-8 source is refused as well. A distribution therefore cannot
+  reach a store install as an unreadable artifact even when no publish-side
+  gate saw it. Source: `check_readable_lua` in
+  `crates/bitty-runtime/src/plugin_runtime/package.rs`, applying
+  `is_obfuscated_source_text` and its bounds in
+  `crates/bitty-runtime/src/component/descriptor.rs`.
+
+All four mechanisms are install-side. They bound what a local install may
+commit, not what a registry may publish, and the pin stays opt-in per
+manifest. The `bitty-plugins` publish-side readability gate and a mandatory
+pin are not landed — registry validation applies no readability rule at
+publish time, and no official plugin manifest declares `[source] sha256`
+today — so readability is enforced when a consumer installs, not when the
+registry accepts a version. That residual keeps
+[bitty #2069](https://github.com/bitty-terminal/bitty/issues/2069) open and
+is restated under [Known residuals](#known-residuals).
 
 **Identity residual.** Integrity (the bytes are the pinned bytes) is
 closed by the chain above. Identity (the pinned bytes are the publisher's
@@ -308,6 +375,14 @@ closes silently.
    instruction-following behavior of AI extensions under hostile output is
    owned by the `bitty-ai` track, never by this mediation. No statement
    here asserts robustness of an AI consumer.
+6. **The registry publish gate and a mandatory source pin are not landed.**
+   The Lua store controls act at install and inspection time only. The
+   `bitty-plugins` registry applies no readability rule when it accepts a
+   published version, and `[source] sha256` stays optional per manifest, so
+   an unreadable artifact can be published and a consumer's protection
+   rests on the install-side gate alone. Both halves of
+   [bitty #2069](https://github.com/bitty-terminal/bitty/issues/2069)
+   remain open.
 
 ## Verification plan
 
@@ -319,9 +394,11 @@ triples, external-process variables, case-folded variants); per-OS
 posture tests (Linux enforced, every other label refused); ledger bound
 tests (1024 retention, 8-arg cap, 64-byte previews, counted evictions, no
 environment parameter); both-must-match and TOFU re-pin tests;
-`show-source` byte-identity tests; and review by a separate
-security-auditor persona. Mechanism tests merged with the implementation
-are necessary evidence, never sufficiency on their own.
+`show-source` byte-identity and digest-mismatch refusal tests,
+update-preview consent tests, source-pin mismatch tests, and minified-Lua
+refusal tests; and review by a separate security-auditor persona. Mechanism
+tests merged with the implementation are necessary evidence, never
+sufficiency on their own.
 
 ## Open points
 
@@ -349,7 +426,9 @@ are necessary evidence, never sufficiency on their own.
   evidence.
 - [bitty #1984](https://github.com/bitty-terminal/bitty/issues/1984),
   [bitty #1985](https://github.com/bitty-terminal/bitty/issues/1985),
-  [bitty #1986](https://github.com/bitty-terminal/bitty/issues/1986) —
-  decided direction for confinement, audit, and transparency.
+  [bitty #1986](https://github.com/bitty-terminal/bitty/issues/1986),
+  [bitty #2069](https://github.com/bitty-terminal/bitty/issues/2069) —
+  decided direction for confinement, audit, extension transparency, and Lua
+  plugin store transparency.
 - [GTFOBins](https://gtfobins.github.io/) — public catalog defining the
   escape-hatch class cited above.
