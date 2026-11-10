@@ -41,7 +41,7 @@ contradicting either. No dependency is added to any repository by this ADR;
   calendar fields only; no environment name or value is observable. A leading
   `!` forces deterministic UTC for both string formats and the `*t` table. The
   visible contract is the shipped
-  [bar clock module](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed),
+  [bar clock module](https://github.com/bitty-terminal/bar/blob/main/README.md#modules-declarative),
   which renders `os.date` local time with no grant. `os.getenv` stays denied and
   its exposure policy remains OQ-031; every other allowlist entry, denial,
   cadence, and audit gate in this ADR is unchanged. The `%c` nil-format gap

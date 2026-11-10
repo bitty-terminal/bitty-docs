@@ -48,7 +48,7 @@ Lifecycle is `Draft -> experimental review evidence -> Accepted (2026-08-29) -> 
   lookup and grants no process, filesystem, or network authority. `os.getenv`
   stays denied; OQ-031, this ADR's decision, and the `bitty.env.get` policy are
   unchanged. The shipped
-  [bar clock module](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed)
+  [bar clock module](https://github.com/bitty-terminal/bar/blob/main/README.md#modules-declarative)
   is the visible contract.
 - Deciders: project initiator (DEC-001), security-auditor persona (audit gate
   per Lua Runtime RFC security review and R-014 and T-11 and P0-AC-026),
@@ -344,7 +344,7 @@ model.
 - [OQ-031](../open-questions.md) row migrated from OQ-009 CTX-0047 2026-08-27
 - [ADR 0005](ADR-0005-lua-pins-and-stdlib.md) — final restricted standard library and debug allowlist where os.getenv exposure is OQ-031
 - [Lua Runtime RFC](https://github.com/bitty-terminal/bitty-plugins-docs/blob/main/runtime/lua-runtime-rfc.md) — Accepted 2026-08-27 sandbox and standard-library baseline and rooted module resolution and host bridge ownership
-- [Bar module catalog — clock](https://github.com/bitty-terminal/bitty-manual/blob/main/en/plugins/bar-modules.md#clock-local-no-grant-needed) — shipped manual contract for local-time `os.date` rendering with no grant
+- [Bar module catalog — clock](https://github.com/bitty-terminal/bar/blob/main/README.md#modules-declarative) — shipped bar plugin contract for local-time `os.date` rendering with no grant
 - [Security overview](../../security/overview.md) — invariant 9, trust boundaries, sensitive-data handling, capability families
 - [Risk register](../../security/risk-register.md) — R-006 ambient authority, R-014 DevTools traces and environment exposure, R-007 budgets and attribution
 - [P0 acceptance criteria](../../security/p0-acceptance-criteria.md) — P0-AC-026 trace minimization and redaction and P0-AC-011 and P0-AC-025 and P0-AC-030 patterns
