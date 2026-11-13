@@ -15,7 +15,10 @@ Status: **normative**, accepted 2026-08-26 by the project initiator. This
 document remains a pre-`Verified` test contract: mechanisms exist in the
 pre-alpha implementation, but no criterion may be marked
 satisfied until a separate security-auditor persona review confirms recorded,
-passing evidence per its verification method.
+passing evidence per its verification method. Campaign results for the
+`bittyd` criteria are tabulated under
+[Recorded campaign status](#recorded-campaign-status); a campaign row is not
+the auditor review and closes no criterion.
 
 Every criterion below converts a normative P0 control from
 [security overview](overview.md), [threat model](threat-model.md), and
@@ -697,6 +700,28 @@ Verification: unit + integration.
 Pass threshold: write-by-non-occupant, acquire-occupied, and
 foreign-release/handoff denials each tested; every transition emits its
 event only when it actually happened.
+
+## Recorded campaign status
+
+This section records campaign disposition only; it satisfies no criterion.
+Every status below is short of `Verified`, and the independent security-auditor
+review that each verification method names is still required. Two dated
+`bittyd` campaigns supply the cells, and where they disagree the later record
+governs. Evidence is cited by section heading in the
+[2026-11-13 record](bittyd-p0-evidence-2026-11-13.md), which carries the
+commands and raw output.
+
+| Criterion | 2026-11-08              | 2026-11-13 (current)              | Evidence the current record supplies                                                                                                                                                                                                                                                                     | Residual cells                                                                                                                                                                                              |
+| --------- | ----------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P0-AC-021 | Verified (Linux x86_64) | Partially verified                | `P0-AC-021 endpoint modes and the external no-TCP scan`: directory `0700`, socket, lock, and operator file `0600`, zero per-PID `ss` rows in the attached-session snapshot, no internet socket in `lsof`, no new global listener, `tcp_listeners: 0`, and a same-uid handshake against the live endpoint | Foreign-user denial: needs a second local account, and this environment has no passwordless `sudo`, so the cell is unrun and unclaimed; descriptor table unreadable; Windows named pipe and non-Linux cells |
+| P0-AC-022 | Partially verified      | Partially verified                | `P0-AC-022 live session lifecycle and exit codes`: observer content access is `Denied/ControllerRequired`, the observer attach carries no `control_token`, detach is idempotent with `state_revision` unchanged, and the real-service conformance cell is 67 pass, 0 fail, 16 typed skips                | Full scope-by-method matrix as one artifact; terminal-instance `bitty ctl` cells; live `session.resize`, `session.control.transfer`, `session.grant.revoke`, and `lease.heartbeat`; independent review      |
+| P0-AC-023 | Partially verified      | Not verified (no new observation) | `P0-AC-023 child process scope`: nothing new; the child-environment capture was not re-run, and the non-dumpable daemon made `/proc/<pid>/environ` reads of its workers unavailable. The earlier cell stands on its own evidence and is not restated as current                                          | Child-environment dump plus the child `/proc/<pid>/fd` table at a named revision, on a dumpable worker or through a different probe channel                                                                 |
+| P0-AC-024 | Not verified            | Partially verified                | `P0-AC-024 untrusted-observation label, re-checked`: the live `session.read` response carries `is_untrusted_surface: true` beside the payload keys, and the observer read stays `Denied/ControllerRequired`                                                                                              | MCP/Agent adapter audit; the auditor review of instruction/data channel separation that the criterion names; confused-deputy suite                                                                          |
+| P0-AC-025 | Partially verified      | Partially verified                | `P0-AC-025 DevTools scopes distinct and ungranted by connection`: `debug.*`, `plugin.manage`, and `config.modify` all return `NotFound`, and the handshake advertises no `debug.*`, `plugin.*`, or `config.*` scope                                                                                      | Live DevTools endpoint and client; formal DevTools scope audit                                                                                                                                              |
+| P0-AC-026 | Partially verified      | Partially verified                | `P0-AC-026 Trace minimization and redaction`: audit directory `0700`, segment `0600`, 31 line-oriented records with the closed field set, zero content, path, environment, token, or capability markers, and no operator bearer                                                                          | Trace/export preview equality; crash-report scan; seeded-secret corpus; formal trace-minimization audit                                                                                                     |
+
+`P0-AC-019` is outside both campaigns: neither record exercises `bitty --safe`
+or proves daemon absence, so that criterion has no campaign row here.
 
 ## Coverage traceability
 
