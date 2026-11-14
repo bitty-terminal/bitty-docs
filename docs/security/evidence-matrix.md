@@ -1,6 +1,6 @@
 ---
 title: Security Evidence Matrix
-description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls plus the bittyd daemon-intake rows and the two dated bittyd P0 evidence campaigns, with unit, integration, adversarial, CI-gate and manual-audit evidence and named revisions
+description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls plus the bittyd daemon-intake rows and the three dated bittyd P0 evidence campaigns, with unit, integration, adversarial, CI-gate and manual-audit evidence and named revisions
 category: security
 audience: security-reviewer
 document_type: register
@@ -30,13 +30,14 @@ risks remain `Open` at this revision.
 
 Current state: `R-002`, `R-003`, and `R-005` are `Mitigated`; `R-001`,
 `R-004`, and `R-006`..`R-022` are `Open`. Separately, the `bittyd` daemon
-intake rows `DR-01`..`DR-08` are `Open`; the two
+intake rows `DR-01`..`DR-08` are `Open`; the three
 [dated campaigns](#bittyd-p0-evidence-campaigns-bitty2921) record live evidence
 for several of them, but no row moves without the plan's formal producers and
-independent review. Neither campaign marks a criterion `Verified`:
+independent review. No campaign marks a criterion `Verified`:
 `P0-AC-021`, `P0-AC-022`, `P0-AC-024`, `P0-AC-025`, and `P0-AC-026` stand at
-Partially verified, and `P0-AC-023` is Not verified because the later campaign
-did not re-exercise it. This revision records three state changes:
+Partially verified, and `P0-AC-023` is Not verified because no campaign has
+re-captured the child-environment cell. This revision records three state
+changes:
 
 - `R-001` `Mitigated -> Open` because `P0-AC-002`'s pass threshold is unmet.
   The merged audit authorizes the move, but its basis is retained-corpus replay,
@@ -197,24 +198,31 @@ transport and scope non-degradation criteria, and `DR-06` uses `P0-AC-023` as
 the closest child-process authority criterion; the direct proofs are the
 contract vectors `V-01`/`V-02` and `C-03`/`C-13`, not the criteria thresholds.
 
-Both campaigns add live evidence for `DR-01` through `DR-07`; those rows stay
+Both live campaigns add evidence for `DR-01` through `DR-07`; those rows stay
 `Open` because the plan's `C-*`/`V-*` producers and independent review are
 still absent. `DR-08` keeps its named gap because neither campaign exercises
-daemon absence. Neither campaign moves any `R-*` or `DR-*` state.
+daemon absence. No campaign moves any `R-*` or `DR-*` state; the 2026-11-15
+record runs no daemon and therefore adds no live row.
 
 ## bittyd P0 evidence campaigns (bitty#2921)
 
-Two dated Linux x86_64 campaigns are recorded against the daemon:
+Three dated Linux x86_64 campaigns are recorded against the daemon:
 
 - [2026-11-08](bittyd-p0-evidence-2026-11-08.md) against the installed
-  `bitty`/`bittyd` 0.0.36 release (`bitty` `fcd622e`, service API 1.4); and
+  `bitty`/`bittyd` 0.0.36 release (`bitty` `fcd622e`, service API 1.4);
 - [2026-11-13](bittyd-p0-evidence-2026-11-13.md) against a source build at
-  `bitty` `9d0e8a88` (workspace version `0.0.40`, service API 1.5).
+  `bitty` `9d0e8a88` (workspace version `0.0.40`, service API 1.5); and
+- [2026-11-15](bittyd-p0-evidence-2026-11-15.md) at `bitty` `ce182ec1`
+  (workspace version `0.0.42`, service API 1.5), a delta record that re-runs
+  the component suites, refuses a foreign kernel uid at the endpoint modes, and
+  moves no status.
 
-Neither record is an auditor verdict and neither moves a risk state. Where the
-two disagree the later record governs: it moves `P0-AC-021` from Verified to
-Partially verified, re-checks `P0-AC-023` without new evidence, and moves
-`P0-AC-024` from Not verified to Partially verified.
+No record is an auditor verdict and none moves a risk state. Where two disagree
+the later governs: 2026-11-13 moves `P0-AC-021` from Verified to Partially
+verified, re-checks `P0-AC-023` without new evidence, and moves `P0-AC-024` from
+Not verified to Partially verified. 2026-11-15 changes no status: it
+re-observes the `P0-AC-021` endpoint-mode and peer cells and the `P0-AC-026`
+record shape, and leaves `P0-AC-023` blocked.
 
 ### 2026-11-08 campaign
 
@@ -249,6 +257,24 @@ output live there and are not repeated here.
 | `P0-AC-025` | Partially verified                | `P0-AC-025 DevTools scopes distinct and ungranted by connection` | `debug.inspect`, `debug.trace`, `debug.control`, `plugin.manage`, and `config.modify` all return `NotFound`; the handshake advertises no `debug.*`, `plugin.*`, or `config.*` scope, so the refusal is deny-by-default through the method catalog                                                                           | A live DevTools endpoint and client; formal DevTools scope audit                                                                                                                                       |
 | `P0-AC-026` | Partially verified                | `P0-AC-026 Trace minimization and redaction`                     | Audit directory `0700`, segment `0600`, 31 line-oriented records with the closed field set, and zero occurrences of the content, path, environment, `control_token`, or `operator_capability` markers; the operator bearer is absent                                                                                        | Live trace/export preview equality; crash-report scan; seeded-secret corpus; formal trace-minimization audit                                                                                           |
 
+### 2026-11-15 campaign
+
+A delta campaign at `bitty` `ce182ec1` with no privilege and no daemon build. It
+re-ran the three daemon suites that need no served endpoint, produced a foreign
+kernel uid with an unprivileged user namespace, and left the second-uid
+peer-check cell and `P0-AC-023` blocked. The `git diff` between `9d0e8a88` and
+`ce182ec1` over `crates/bitty-daemon` is the version line only, so the live
+captures in the 2026-11-13 table still describe this source.
+
+| Criterion   | Status (2026-11-15)                                                 | Record section                                | What this campaign adds                                                                                                                                                                                                                                                                                                    | Residual cell                                                                                                                                          |
+| ----------- | ------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `P0-AC-021` | Partially verified, reproduced in part; second-uid cell **BLOCKED** | `P0-AC-021 endpoint modes and the peer check` | `--test endpoint` 19 pass with the shipped `0700`/`0600` constants and the `AlreadyRunning` second-instance refusal; `--test peer` 3 pass including a user-namespace peer refused `Unauthenticated`; a foreign kernel uid `100000` gets `EACCES` at both the `0700` directory and a `0600` socket, with a same-uid control | A real second uid at the peer check (`V-25`, `real_skip` at `corpus.json:4419`); the `V-28` real-driver artifact; Windows named pipe                   |
+| `P0-AC-022` | Carried forward from 2026-11-13                                     | `Carried forward, explicitly`                 | Nothing live: no endpoint was served. The carried cells and their residuals are unchanged                                                                                                                                                                                                                                  | Unchanged                                                                                                                                              |
+| `P0-AC-023` | **BLOCKED**                                                         | `P0-AC-023 child process scope: BLOCKED`      | No child environment captured. Source facts: `env` is the child's environment and never a patch over the daemon's, only a digest is retained, and worker hosting is deferred by `d01-amendment-required`                                                                                                                   | A served session plus a reader the non-dumpable daemon authenticates; `corpus.json:10014` records that no corpus action reads a child descriptor table |
+| `P0-AC-024` | Carried forward from 2026-11-13                                     | `Carried forward, explicitly`                 | Nothing live                                                                                                                                                                                                                                                                                                               | Adapter audit and the instruction/data separation review remain absent                                                                                 |
+| `P0-AC-025` | Carried forward from 2026-11-13                                     | `Carried forward, explicitly`                 | Nothing live                                                                                                                                                                                                                                                                                                               | Live DevTools endpoint and the formal scope audit remain absent                                                                                        |
+| `P0-AC-026` | Partially verified, record shape re-observed                        | `P0-AC-026 audit records stay content-free`   | `--test audit` 6 pass: `Copy`, fixed-size, no content field, a supplied terminal id rendered only as a digest, refusal with a code and counts                                                                                                                                                                              | Live segment modes, seeded-secret corpus, export-preview equality, crash-report path                                                                   |
+
 ### Plugin `connect()` and filesystem-escape refusals
 
 The same record captures the two plugin refusals bitty#2921 names, from the
@@ -274,12 +300,18 @@ package and observes no attempt at the socket layer, and it assigns them no
   returned `sudo: a password is required` (`sudo_rc=1`), and the campaign does
   not ask for a password. The cell therefore stays unrun and unclaimed; the
   `sudo -n -u nobody` connect probe and `bittyd stop --force` it lists under
-  its own `Residuals` heading are the run that would close it.
+  its own `Residuals` heading are the run that would close it. The 2026-11-15
+  record reproduces the mode half with a foreign kernel uid (uid `100000` via
+  `/etc/subuid` and `newuidmap`, `EACCES` at both `0700` traversal and a `0600`
+  socket) and leaves the peer-check half blocked: `V-25`'s `real_skip` at
+  `crates/bitty-daemon/tests/harness/corpus.json:4419` records why the harness
+  cannot present a second uid.
 - **`P0-AC-023` child-environment scope: not re-run.** The child-environment
   capture was not repeated in this campaign, so no current observation of the
   child `env`, `TERM`, or absence of `BITTY*`, bearer, or secret-shaped names
   exists. The criterion is Not verified in this record rather than carried
-  forward.
+  forward. The 2026-11-15 record leaves the same cell blocked, with the
+  operator command it needs.
 - **Descriptor table absent.** `/proc/<pid>/fd` is unreadable from the campaign
   shell because the daemon runs non-dumpable, so the no-TCP conclusion rests on
   the per-PID `ss` filters, `lsof`, the global listen-set diff, and the
@@ -292,7 +324,7 @@ package and observes no attempt at the socket layer, and it assigns them no
   observation until a real DevTools endpoint exists.
 - **`P0-AC-026` export and crash paths absent.** Trace export preview equality,
   a crash-report path, and a seeded-secret corpus are still unexercised.
-- **Independent review absent.** No criterion in either record is `Verified`,
+- **Independent review absent.** No criterion in any record is `Verified`,
   and a record is not the review verdict.
 
 ### Why no `R-011`..`R-014` row flips
