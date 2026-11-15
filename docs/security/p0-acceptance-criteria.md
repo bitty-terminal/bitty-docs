@@ -407,6 +407,17 @@ Verification: integration + manual-audit.
 Pass threshold: default-deny matrix passes; labeling asserted in API responses
 and confirmed by auditor review of the instruction/data channel separation.
 
+Campaign record: [bittyd MCP/Agent, DevTools, and Trace evidence
+2026-11-16](audits/bittyd-ac024-026-2026-11-16.md) observes the default-deny
+matrix (51 frozen v1 methods, 10 allowed under the four read scopes, 41
+`Denied/ScopeDenied` naming their own scope), the server-attached
+`is_untrusted_surface: true` label on a live `session.read` including a zero-byte
+read, and the live refusals (`ConsentRequired` for create, `ControllerRequired`
+for an observer's content verbs, `ScopeViolation` for `session.kill`, and the
+uniform `NotFound` for a connection with no lease). The adapter audit and the
+channel-separation review are still absent, so the criterion stays Partially
+verified.
+
 History-read family scope (RFC-0004 draft): every history-read query result
 carries a Core-attached typed untrusted-observation label that survives
 redaction, truncation, and attribution; labeled content is never executed,
@@ -438,6 +449,16 @@ Source: threat model "MCP, Agents, and DevTools". Risk: R-014.
 Verification: integration.
 Pass threshold: three-scope matrix shows connection alone grants none.
 
+Campaign record: [bittyd MCP/Agent, DevTools, and Trace evidence
+2026-11-16](audits/bittyd-ac024-026-2026-11-16.md) walks the eight frozen
+`debug.*` verbs against all fifteen scopes (120 cells, 8 allowed under each
+verb's own scope, 112 `Denied/ScopeDenied`) and shows that no service scope name
+is a v1 scope, no `debug.*` name is a service method, a fresh handshake
+advertises no `debug.*` scope, and a served `debug.*` verb answers
+`NotFound/NotFound` for both a consumer and the operator. The live DevTools
+endpoint and the formal scope audit remain absent, so the criterion stays
+Partially verified.
+
 ## Sensitive data handling
 
 ### P0-AC-026 Trace minimization and redaction
@@ -455,6 +476,17 @@ Source: overview "Sensitive data handling", invariant 9; T-11. Risk: R-014
 Verification: unit + adversarial (secret-injection tests).
 Pass threshold: seeded-secret corpus never appears in default outputs; file
 mode `0600` asserted; export preview equals actual export byte-for-byte.
+
+Campaign record: [bittyd MCP/Agent, DevTools, and Trace evidence
+2026-11-16](audits/bittyd-ac024-026-2026-11-16.md) drives a six-shape
+seeded-secret corpus through the audit write point (`AuditSink::record` →
+`render_record` → `AuditWriter::append_line`), shows the rendered line carries
+only the opaque digest inside a closed 26-key vocabulary whose values admit no
+path, whitespace, or free text, and shows a live audit segment at `0700`/`0600`
+holding nine records with no seeded seed or 6-byte window of one. Input
+recording, clipboard, export preview equality, the crash-report path, and the
+formal trace-minimization audit remain unrun because no trace/export surface is
+served, so the criterion stays Partially verified.
 
 ## Supply chain
 
@@ -705,32 +737,37 @@ event only when it actually happened.
 
 This section records campaign disposition only; it satisfies no criterion.
 Every status below is short of `Verified`, and the independent security-auditor
-review that each verification method names is still required. Five dated
+review that each verification method names is still required. Six dated
 `bittyd` campaigns supply the cells; the third is a delta record that changes no
 status, the fourth is a single-criterion record that moves `P0-AC-023` only, the
 fifth is a single-criterion record that closes the `P0-AC-022` residual cells
-without moving its status, and where two disagree the later record governs.
+without moving its status, the sixth is a three-criterion record that observes
+the Agent/MCP default, the DevTools scope family, and the audit write point
+without moving a status, and where two disagree the later record governs.
 Evidence is cited by section heading in the
 [2026-11-13 record](bittyd-p0-evidence-2026-11-13.md), which
 carries the commands and raw output for the live cells, in the
 [2026-11-15 record](bittyd-p0-evidence-2026-11-15.md), which re-runs the
 component suites and records the cells it could not run as blocked, in the
 [2026-11-16 child-scope record](audits/bittyd-child-scope-2026-11-16.md), which
-captures the `P0-AC-023` child environment and descriptor table, and in the
+captures the `P0-AC-023` child environment and descriptor table, in the
 [2026-11-16 `P0-AC-022` record](audits/bittyd-ac022-scopes-2026-11-16.md), which
 carries the scope-by-method
 [matrix](audits/ac022-scope-matrix-2026-11-16.md), the terminal-instance
 elevation cells, and the live resize, transfer, grant-revoke, and heartbeat
-cells.
+cells, and in the
+[2026-11-16 MCP/Agent, DevTools, and trace record](audits/bittyd-ac024-026-2026-11-16.md),
+which carries the 51-method Agent-default matrix, the 120-cell DevTools matrix,
+and the seeded-secret audit corpus.
 
 | Criterion | 2026-11-08              | 2026-11-13 / 2026-11-16 (latest per criterion) | Evidence the current record supplies                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Residual cells                                                                                                                                                                                                                                                                                                                    |
 | --------- | ----------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P0-AC-021 | Verified (Linux x86_64) | Partially verified                             | `P0-AC-021 endpoint modes and the external no-TCP scan`: directory `0700`, socket, lock, and operator file `0600`, zero per-PID `ss` rows in the attached-session snapshot, no internet socket in `lsof`, no new global listener, `tcp_listeners: 0`, and a same-uid handshake against the live endpoint                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Foreign-user denial at the peer check: needs a second local account, and this environment has no passwordless `sudo`, so that cell is unrun and unclaimed; the `0700`/`0600` mode denial against a foreign kernel uid is reproduced in the 2026-11-15 record; descriptor table unreadable; Windows named pipe and non-Linux cells |
 | P0-AC-022 | Partially verified      | Partially verified                             | `C1`–`C6` of the [2026-11-16 `P0-AC-022` record](audits/bittyd-ac022-scopes-2026-11-16.md): the 15-scope by 51-method [matrix](audits/ac022-scope-matrix-2026-11-16.md) holds 765 cells with 51 allowed and 714 `Denied/ScopeDenied`; the real-service row is 68 pass, 0 fail, 18 typed skips of 86 at `a8abf31c`; `session.resize`, `session.control.transfer`, `session.grant.revoke`, and `lease.heartbeat` each have their allow and deny arms observed; a headless `bitty --test-mode` instance denies `terminal spawn`, `terminal close`, `workspace close`, and `config reload` with exit `7` and `Denied/ScopeDenied` while every one-scope `BITTY_CTL_ELEVATE` allowlist moves only its own scope; the earlier live lifecycle cells (observer `ControllerRequired`, no observer `control_token`, idempotent detach) still stand | Independent review; the arbitrary single-scope live grant (`C-09` `deferred`, bitty#2917); the MCP/Agent adapter audit; a live `ctl window new` on a served surface; live `terminal send`/`terminal text` over the socket; second-uid and Windows cells                                                                           |
 | P0-AC-023 | Partially verified      | Partially verified                             | `The child environment as the child itself sees it` and `The child descriptor table` in the [2026-11-16 child-scope record](audits/bittyd-child-scope-2026-11-16.md): the child's own `/proc/<pid>/environ` is the supplied `env` plus `TERM=xterm-256color` and nothing else, with no `BITTY*`, `SSH_AUTH_SOCK`, `AWS_*`, token, secret, password, bearer, `control_token`, or `operator_capability`; the child's own `/proc/<pid>/fd` is descriptors `0`, `1`, `2` on one `/dev/pts/N`; a same-uid ancestor's `ls -ln` agrees; bitty#2824's fd-table test and bitty#2823's close-range test both pass at `631f1f9c`                                                                                                                                                                                                                    | Child-scope expiry on a path that mints a child token (`worker_sessions: false`, `d01-amendment-required`); an SSH agent-forwarding run; a worker-kind session; second-uid foreign-access denial (needs privilege); independent review                                                                                            |
-| P0-AC-024 | Not verified            | Partially verified                             | `P0-AC-024 untrusted-observation label, re-checked`: the live `session.read` response carries `is_untrusted_surface: true` beside the payload keys, and the observer read stays `Denied/ControllerRequired`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | MCP/Agent adapter audit; the auditor review of instruction/data channel separation that the criterion names; confused-deputy suite                                                                                                                                                                                                |
-| P0-AC-025 | Partially verified      | Partially verified                             | `P0-AC-025 DevTools scopes distinct and ungranted by connection`: `debug.*`, `plugin.manage`, and `config.modify` all return `NotFound`, and the handshake advertises no `debug.*`, `plugin.*`, or `config.*` scope                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Live DevTools endpoint and client; formal DevTools scope audit                                                                                                                                                                                                                                                                    |
-| P0-AC-026 | Partially verified      | Partially verified                             | `P0-AC-026 Trace minimization and redaction`: audit directory `0700`, segment `0600`, 31 line-oriented records with the closed field set, zero content, path, environment, token, or capability markers, and no operator bearer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Trace/export preview equality; crash-report scan; seeded-secret corpus; formal trace-minimization audit                                                                                                                                                                                                                           |
+| P0-AC-024 | Not verified            | Partially verified                             | `A1`–`A4` of the [2026-11-16 MCP/Agent record](audits/bittyd-ac024-026-2026-11-16.md): the Agent/MCP default over all 51 frozen methods is 10 allowed and 41 `Denied/ScopeDenied`; the daemon baseline is three `session.*` scopes with no `session.host` and no `daemon.*`; the untrusted label is decided by `carries_terminal_content()` (`session.read` only), is single-valued, and overwrites a forged field; live, a controlled read carries `is_untrusted_surface: true` on a zero-byte read, a fresh consumer gets `ConsentRequired` for create, `ScopeViolation` for kill, and the uniform `NotFound` for target-addressed content verbs, and an observer read/write is still `Denied/ControllerRequired`                                                                                                                      | MCP/Agent adapter audit; the auditor review of instruction/data channel separation that the criterion names; confused-deputy suite; the filesystem/network non-combination half (no such plane on `bittyd`)                                                                                                                       |
+| P0-AC-025 | Partially verified      | Partially verified                             | `B1`–`B4` of the [2026-11-16 MCP/Agent record](audits/bittyd-ac024-026-2026-11-16.md): the eight frozen `debug.*` verbs walk all fifteen scopes (120 cells, 8 allowed, 112 `Denied/ScopeDenied`); no service scope name is a v1 scope and no `debug.*` name is a service method; a live handshake advertises `session.inspect session.attach session.control terminal.inspect terminal.input terminal.manage process.spawn` and no `debug.*`/`view.*`/`config.*`/`plugin.*`/`ai.*` scope; `debug.inspect`, `debug.trace`, `debug.control`, `debug.snapshot`, and `debug.break` are `NotFound/NotFound` for both consumer and operator                                                                                                                                                                                                    | Live DevTools endpoint and client; formal DevTools scope audit; a granted-but-unserved `debug.*` arm (no granting path exists on this surface)                                                                                                                                                                                    |
+| P0-AC-026 | Partially verified      | Partially verified                             | `C1`–`C3` of the [2026-11-16 MCP/Agent record](audits/bittyd-ac024-026-2026-11-16.md): a six-shape seeded corpus driven through `AuditSink::record` → `render_record` → `AuditWriter::append_line` renders only the opaque digest, with no full seed and no 6-byte window of one; the line is `render_record`'s bytes with a closed 26-key vocabulary whose values admit no path, whitespace, or free text; the live audit directory is `0700` with a `0600` segment of nine records and no seeded value from `terminal_id`, argv, `env`, `cwd`, the idempotency key, or the client correlation                                                                                                                                                                                                                                          | Trace/export preview equality; crash-report scan; input-recording and clipboard defaults (no such surface is served); formal trace-minimization audit                                                                                                                                                                             |
 
 `P0-AC-019` is outside every campaign: no record exercises `bitty --safe`
 or proves daemon absence, so that criterion has no campaign row here.
