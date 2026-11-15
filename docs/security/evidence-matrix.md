@@ -1,6 +1,6 @@
 ---
 title: Security Evidence Matrix
-description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls plus the bittyd daemon-intake rows and the three dated bittyd P0 evidence campaigns, with unit, integration, adversarial, CI-gate and manual-audit evidence and named revisions
+description: Phase E verification ledger mapping R-001 through R-022 to P0-AC controls plus the bittyd daemon-intake rows and the four dated bittyd P0 evidence campaigns, with unit, integration, adversarial, CI-gate and manual-audit evidence and named revisions
 category: security
 audience: security-reviewer
 document_type: register
@@ -30,13 +30,15 @@ risks remain `Open` at this revision.
 
 Current state: `R-002`, `R-003`, and `R-005` are `Mitigated`; `R-001`,
 `R-004`, and `R-006`..`R-022` are `Open`. Separately, the `bittyd` daemon
-intake rows `DR-01`..`DR-08` are `Open`; the three
+intake rows `DR-01`..`DR-08` are `Open`; the four
 [dated campaigns](#bittyd-p0-evidence-campaigns-bitty2921) record live evidence
 for several of them, but no row moves without the plan's formal producers and
 independent review. No campaign marks a criterion `Verified`:
-`P0-AC-021`, `P0-AC-022`, `P0-AC-024`, `P0-AC-025`, and `P0-AC-026` stand at
-Partially verified, and `P0-AC-023` is Not verified because no campaign has
-re-captured the child-environment cell. This revision records three state
+`P0-AC-021`, `P0-AC-022`, `P0-AC-023`, `P0-AC-024`, `P0-AC-025`, and
+`P0-AC-026` stand at Partially verified. `P0-AC-023` moved there in the
+2026-11-16 child-scope record, which captures the child environment and the
+child descriptor table from inside the child at `bitty` `631f1f9c`; the
+child-scope expiry half is still unobserved. This revision records three state
 changes:
 
 - `R-001` `Mitigated -> Open` because `P0-AC-002`'s pass threshold is unmet.
@@ -179,16 +181,16 @@ those suites are `presence` in the component tier, `absent` at the P0
 real-service tier. The full proof obligations are in the
 [bittyd P0 evidence plan](bittyd-p0-evidence-plan.md).
 
-| ID    | Linked P0-AC         | Precursor at `bitty` `6d0b6c65`                                                                                                                               | Required P0 producer                                                          | State  | Remaining gap                                                                                                                                                                                                  |
-| ----- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DR-01 | P0-AC-022, P0-AC-024 | `presence` `--test leases` token and control-relation cases; `--test peer` `captures_and_rechecks_a_child_process_peer`                                       | `C-09`, `C-16`, `C-19` real-service driver plus the Agent read-only audit     | `Open` | Live endpoint, handshake, operator-capability mint and consume, and session scope checks observed at `bitty` `9d0e8a88`; the Agent read-only adapter audit and independent review remain absent                |
-| DR-02 | P0-AC-021, P0-AC-022 | `presence` `--test endpoint` owner-private, second-instance, symlink, and reattest cases; `--test peer` foreign-namespace refusal                             | `V-25`, `V-26`, `V-28`, `C-02`, `C-16` real-service driver                    | `Open` | Bound Unix endpoint and same-uid peer exchange observed at `9d0e8a88`; the second-uid cell is unrun on this host (no second account, no passwordless sudo); `V-26`/`V-28` and independent review remain absent |
-| DR-03 | P0-AC-022, P0-AC-024 | `presence` `--test leases` claim, transfer, detach, and revocation cases; `--test events` transfer and stopping control frames                                | `C-09`, `C-10`, `C-11`, `C-19` real-service driver                            | `Open` | Scope evaluation, observer grants, `ControllerRequired` refusals, and idempotent detach observed at `9d0e8a88`; transfer, grant-revoke, and heartbeat cells unrun; `C-10`/`C-11` and independent review absent |
-| DR-04 | P0-AC-026            | `presence` `--test audit` content-free record and digest cases; `--test idempotency` `a_conflict_never_prints_the_raw_key`                                    | `C-07`, `C-14` real-service driver plus the seeded-secret scan                | `Open` | `0700` directory, `0600` segment, content-free records, and bearer absence observed at `9d0e8a88`; the seeded-secret corpus, crash output, and `C-07`/`C-14` artifacts absent                                  |
-| DR-05 | P0-AC-021, P0-AC-022 | `presence` `--test limits` handshake advertisement; `--test binary` `no_arguments_reports_the_seam_and_creates_no_endpoint`; `--test endpoint` override cases | `V-01`, `V-02`, `C-09` real-service driver plus platform refusal              | `Open` | Service API 1.5 advertised with an immutable capability set and typed refusals observed at `9d0e8a88`; the Windows named-pipe and non-Linux cells and `V-01`/`V-02` are unrun                                  |
-| DR-06 | P0-AC-023            | `presence` `--test orphan_journal` exact-identity, missing-pid, reused-pid, and owner-private cases                                                           | `C-03`, `C-13` real-service driver plus crash injection                       | `Open` | cgroup v2 containment (`claim: swept`), the cleanup sweep, and force-stop observed at `9d0e8a88`; crash injection `C-03` and the pid-reuse cases are unrun                                                     |
-| DR-07 | P0-AC-023            | `presence` `--test leases` token redaction; `--test audit` no-content-field cases                                                                             | `C-12` real-service driver plus the child `environ` and `/proc/self/fd` probe | `Open` | A live worker was swept on abort and stop, but the child `environ` and `/proc/self/fd` probe was not re-run in the 2026-11-13 campaign, so `P0-AC-023` is Not verified there and `C-12` remains absent         |
-| DR-08 | P0-AC-019, P0-AC-021 | `presence` `--test binary` seam and no-endpoint cases; existing `bitty` safe-mode CLI matrix                                                                  | `C-08`, `V-28` plus the safe-mode/headless matrix re-run                      | `Open` | The `bitty --safe`/headless absence matrix (`C-08`, `P0-AC-019`) was run in neither campaign; a daemon campaign cannot prove daemon absence                                                                    |
+| ID    | Linked P0-AC         | Precursor at `bitty` `6d0b6c65`                                                                                                                               | Required P0 producer                                                          | State  | Remaining gap                                                                                                                                                                                                                                                            |
+| ----- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DR-01 | P0-AC-022, P0-AC-024 | `presence` `--test leases` token and control-relation cases; `--test peer` `captures_and_rechecks_a_child_process_peer`                                       | `C-09`, `C-16`, `C-19` real-service driver plus the Agent read-only audit     | `Open` | Live endpoint, handshake, operator-capability mint and consume, and session scope checks observed at `bitty` `9d0e8a88`; the Agent read-only adapter audit and independent review remain absent                                                                          |
+| DR-02 | P0-AC-021, P0-AC-022 | `presence` `--test endpoint` owner-private, second-instance, symlink, and reattest cases; `--test peer` foreign-namespace refusal                             | `V-25`, `V-26`, `V-28`, `C-02`, `C-16` real-service driver                    | `Open` | Bound Unix endpoint and same-uid peer exchange observed at `9d0e8a88`; the second-uid cell is unrun on this host (no second account, no passwordless sudo); `V-26`/`V-28` and independent review remain absent                                                           |
+| DR-03 | P0-AC-022, P0-AC-024 | `presence` `--test leases` claim, transfer, detach, and revocation cases; `--test events` transfer and stopping control frames                                | `C-09`, `C-10`, `C-11`, `C-19` real-service driver                            | `Open` | Scope evaluation, observer grants, `ControllerRequired` refusals, and idempotent detach observed at `9d0e8a88`; transfer, grant-revoke, and heartbeat cells unrun; `C-10`/`C-11` and independent review absent                                                           |
+| DR-04 | P0-AC-026            | `presence` `--test audit` content-free record and digest cases; `--test idempotency` `a_conflict_never_prints_the_raw_key`                                    | `C-07`, `C-14` real-service driver plus the seeded-secret scan                | `Open` | `0700` directory, `0600` segment, content-free records, and bearer absence observed at `9d0e8a88`; the seeded-secret corpus, crash output, and `C-07`/`C-14` artifacts absent                                                                                            |
+| DR-05 | P0-AC-021, P0-AC-022 | `presence` `--test limits` handshake advertisement; `--test binary` `no_arguments_reports_the_seam_and_creates_no_endpoint`; `--test endpoint` override cases | `V-01`, `V-02`, `C-09` real-service driver plus platform refusal              | `Open` | Service API 1.5 advertised with an immutable capability set and typed refusals observed at `9d0e8a88`; the Windows named-pipe and non-Linux cells and `V-01`/`V-02` are unrun                                                                                            |
+| DR-06 | P0-AC-023            | `presence` `--test orphan_journal` exact-identity, missing-pid, reused-pid, and owner-private cases                                                           | `C-03`, `C-13` real-service driver plus crash injection                       | `Open` | cgroup v2 containment (`claim: swept`), the cleanup sweep, and force-stop observed at `9d0e8a88`; crash injection `C-03` and the pid-reuse cases are unrun                                                                                                               |
+| DR-07 | P0-AC-023            | `presence` `--test leases` token redaction; `--test audit` no-content-field cases                                                                             | `C-12` real-service driver plus the child `environ` and `/proc/self/fd` probe | `Open` | A live worker was swept on abort and stop; the child `environ` and `/proc/self/fd` capture is now recorded at `631f1f9c` by the 2026-11-16 child-scope record, but the `--test leases`/`--test audit` cells it also cites are not re-run there and `C-12` remains absent |
+| DR-08 | P0-AC-019, P0-AC-021 | `presence` `--test binary` seam and no-endpoint cases; existing `bitty` safe-mode CLI matrix                                                                  | `C-08`, `V-28` plus the safe-mode/headless matrix re-run                      | `Open` | The `bitty --safe`/headless absence matrix (`C-08`, `P0-AC-019`) was run in neither campaign; a daemon campaign cannot prove daemon absence                                                                                                                              |
 
 The precursor names are presence evidence only. A fake-server result, a
 component unit test, or a cross-compiled build never satisfies a `DR-*` row.
@@ -206,7 +208,7 @@ record runs no daemon and therefore adds no live row.
 
 ## bittyd P0 evidence campaigns (bitty#2921)
 
-Three dated Linux x86_64 campaigns are recorded against the daemon:
+Four dated Linux x86_64 campaigns are recorded against the daemon:
 
 - [2026-11-08](bittyd-p0-evidence-2026-11-08.md) against the installed
   `bitty`/`bittyd` 0.0.36 release (`bitty` `fcd622e`, service API 1.4);
@@ -215,14 +217,20 @@ Three dated Linux x86_64 campaigns are recorded against the daemon:
 - [2026-11-15](bittyd-p0-evidence-2026-11-15.md) at `bitty` `ce182ec1`
   (workspace version `0.0.42`, service API 1.5), a delta record that re-runs
   the component suites, refuses a foreign kernel uid at the endpoint modes, and
-  moves no status.
+  moves no status;
+- [2026-11-16](audits/bittyd-child-scope-2026-11-16.md) at `bitty` `631f1f9c`
+  (workspace version `0.0.42`, service API 1.5), a single-criterion record that
+  captures the `P0-AC-023` child environment and descriptor table from inside a
+  terminal worker, plus the parent-observed read.
 
 No record is an auditor verdict and none moves a risk state. Where two disagree
 the later governs: 2026-11-13 moves `P0-AC-021` from Verified to Partially
 verified, re-checks `P0-AC-023` without new evidence, and moves `P0-AC-024` from
 Not verified to Partially verified. 2026-11-15 changes no status: it
 re-observes the `P0-AC-021` endpoint-mode and peer cells and the `P0-AC-026`
-record shape, and leaves `P0-AC-023` blocked.
+record shape, and leaves `P0-AC-023` blocked. 2026-11-16 changes one status: it
+moves `P0-AC-023` from Not verified to Partially verified on the child
+environment and descriptor-table cells, and leaves the expiry cell unobserved.
 
 ### 2026-11-08 campaign
 
@@ -293,6 +301,23 @@ package and observes no attempt at the socket layer, and it assigns them no
 `P0-AC` status. This matrix assigns none either, so `R-006`/`R-012` and their
 `F-3`/`F-8` follow-ups are unchanged by them.
 
+### 2026-11-16 campaign
+
+A single-criterion campaign against a source build at `bitty` `631f1f9c`
+(workspace version `0.0.42`, service API 1.5). It serves one daemon under a
+throwaway `0700` runtime root, creates one terminal session with an explicit
+`env`, and reads the child from three directions: from inside the child, from a
+same-uid ancestor that is not the daemon, and from the repository's own worker
+tests at the same revision.
+
+| Criterion   | Status (2026-11-16) | Record section                                                                    | What the record supplies                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Residual cell                                                                                                                                                                                                                          |
+| ----------- | ------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `P0-AC-023` | Partially verified  | `The child environment as the child itself sees it`; `The child descriptor table` | The child's own `/proc/<pid>/environ` is the supplied `env` plus `TERM=xterm-256color` and nothing else; zero occurrences of `BITTY`, `SSH_AUTH_SOCK`, `AWS_`, `TOKEN`, `SECRET`, `PASSWORD`, `BEARER`, `control_token`, or `operator_capability`; the child's own `/proc/<pid>/fd` is descriptors `0`, `1`, `2`, all on one `/dev/pts/N`; the parent-observed `ls -ln` agrees; the daemon's own `/proc/<pid>/fd` is `Permission denied` even to its child; bitty#2824 and bitty#2823 both re-verified by test | Child-scope expiry on a path that mints a child token (`worker_sessions: false`, `d01-amendment-required`); an SSH agent-forwarding run; a worker-kind session; second-uid foreign-access denial (needs privilege); independent review |
+
+The record also states what it does not observe: `bittyd` serves no worker-kind
+session and mints no child token at this revision, so the "expires as specified"
+half of the threshold is unrun rather than passed.
+
 ### Residual cells
 
 - **Second-uid isolation: Not verified.** Closing it needs a second local
@@ -306,17 +331,20 @@ package and observes no attempt at the socket layer, and it assigns them no
   socket) and leaves the peer-check half blocked: `V-25`'s `real_skip` at
   `crates/bitty-daemon/tests/harness/corpus.json:4419` records why the harness
   cannot present a second uid.
-- **`P0-AC-023` child-environment scope: not re-run.** The child-environment
-  capture was not repeated in this campaign, so no current observation of the
-  child `env`, `TERM`, or absence of `BITTY*`, bearer, or secret-shaped names
-  exists. The criterion is Not verified in this record rather than carried
-  forward. The 2026-11-15 record leaves the same cell blocked, with the
-  operator command it needs.
+- **`P0-AC-023` child-environment scope: captured 2026-11-16, expiry unrun.**
+  The 2026-11-16 record supplies the child `env`, the `TERM` the daemon adds,
+  the absence of `BITTY*`, bearer, and secret-shaped names, and the child
+  descriptor table at `bitty` `631f1f9c`, from inside the child and from a
+  same-uid ancestor. What remains is the "expires as specified" half: no path
+  at this revision mints a child token, and worker hosting is gated on the
+  ADR 0019 amendment, so the expiry cell is unobserved rather than passed.
 - **Descriptor table absent.** `/proc/<pid>/fd` is unreadable from the campaign
   shell because the daemon runs non-dumpable, so the no-TCP conclusion rests on
   the per-PID `ss` filters, `lsof`, the global listen-set diff, and the
   self-reported counter. A same-uid reviewer with a dumpable process can add
-  the descriptor listing and a `/proc/net/tcp` inode join.
+  the descriptor listing and a `/proc/net/tcp` inode join. The 2026-11-16 record
+  supplies the child's table and confirms the daemon's own stays unreadable,
+  now also to its own child; the daemon's table itself is still unobserved.
 - **`P0-AC-024` adapter half absent.** The labeling half now passes live; the
   MCP/Agent adapter that consumes labeled content is a different component and
   is not audited, and `bittyd` serves no MCP surface.
@@ -336,9 +364,10 @@ audit that is still absent:
   AC-021 because the second-uid cell is unrun, AC-022 because the full
   scope-by-method matrix and the transfer, grant-revoke, and heartbeat cells
   are unrun; `F-7` remains absent.
-- `R-012` (`P0-AC-023`, `P0-AC-037`): AC-023 is Not verified in the current
-  record because the child-environment capture was not re-run; the plugin
-  filesystem denials are not child-scope evidence; `F-8` remains absent.
+- `R-012` (`P0-AC-023`, `P0-AC-037`): AC-023 is Partially verified — the
+  2026-11-16 record captures the child environment and descriptor table at
+  `631f1f9c`, while the expiry cell is unrun; the plugin filesystem denials are
+  not child-scope evidence; `F-8` remains absent.
 - `R-013` (`P0-AC-024`, `P0-AC-038`, `P0-AC-039`): AC-024 is Partially
   verified on the live label, while the adapter audit and the confused-deputy
   suite are still absent, so `F-9` stands.
