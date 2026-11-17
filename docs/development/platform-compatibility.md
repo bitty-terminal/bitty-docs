@@ -79,20 +79,32 @@ Two supporting directions:
 The direction proposes an explicit layer model so a review can recognize a
 boundary violation from a dependency diff alone:
 
-| Layer | Crates                                                     | Allowed                                      |
-| ----- | ---------------------------------------------------------- | -------------------------------------------- |
-| L0    | `bitty-core`, `bitty-vt`, `bitty-ipc`, `bitty-package`     | No GUI, GPU, network, or AI dependencies     |
-| L1    | `bitty-term-state`, `bitty-ui`, `bitty-config`             | Domain dependencies; no network or AI        |
-| L2    | `bitty-platform`, `bitty-render`, `bitty-pty`, `bitty-lua` | One external subsystem each                  |
-| L3    | `bitty-runtime`, `bitty-plugin-host`, `bitty-rich`         | Composition and orchestration                |
-| L4    | `bitty-ai`, `bitty-app`                                    | High-level capabilities and composition root |
+| Layer | Crates                                                                                        | Allowed                                      |
+| ----- | --------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| L0    | `bitty-vt`, `bitty-term-state`, `bitty-package`, `bitty-sandbox`, `bitty-winjob`, `bitty-lua` | No GUI, GPU, network, or AI dependencies     |
+| L1    | `bitty-platform`, `bitty-pty`, `bitty-ui`                                                     | Domain and OS boundary; no network or AI     |
+| L2    | `bitty-rich`, `bitty-config`                                                                  | One external subsystem each                  |
+| L3    | `bitty-render`, `bitty-plugin-host`, `bitty-daemon`                                           | Composition and orchestration                |
+| L4    | `bitty-runtime`, `bitty-terminal`                                                             | High-level capabilities and composition root |
+
+Rows name Bitty crates, not third-party duplicates, because the boundary is
+about Bitty-owned edges: `bitty-terminal` builds the `bitty` binary
+and sits above `bitty-runtime` inside L4, `bitty-daemon` builds `bittyd`, and
+the two test-only crates (`bitty-test-support`, `bitty-test-vm`) carry no
+production edges and therefore no row. `bitty-ai` is not a Core workspace crate:
+it is a separately installed native component and binary per DIR-030, so it
+never appears in this table. The five levels are coarsened review aids rather
+than a measured topological depth; a production edge may only point at a lower
+layer of the same list.
 
 ### Immediate actions recorded
 
 1. Add `[workspace.dependencies]`, starting with `winit` and `pollster`;
    extend to `serde`/`tokio`/`tracing` as they spread.
-2. Check whether `bitty-app -> bitty-perf` is a real production edge or an
-   instrumentation-ownership accident, and drop it in the latter case.
+2. The `bitty-app -> bitty-perf` question is closed: the binary crate is
+   `bitty-terminal` (building the `bitty` binary) and `bitty-perf` moved out of
+   the workspace, so the edge no longer exists. Keep the observation current
+   when the crate graph changes.
 3. Remove the `bitty-term-state` <-> `bitty-ui` dev-dependency cycle long term
    by moving composition tests to a higher layer.
 4. Establish the `bitty-ai` dependency island before network and async

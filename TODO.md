@@ -1,13 +1,13 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-10-02`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `310bf87`, baseline `de134ec`, previous `2cb49af`, 18 crates); latest release `v0.0.21` (`7da6d6f`, 2026-09-24) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), `R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` pending the `P0-AC-002` long-running campaign, and `R-006`/`R-007` are reopened `Open` under RS-5; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-11-18`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `67f51b5`, baseline `de134ec`, previous `310bf87`, 18 crates); latest release `v0.0.44` (`7b3d3df`, 2026-11-17) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), `R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` pending the `P0-AC-002` long-running campaign, and `R-006`/`R-007` are reopened `Open` under RS-5; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
 flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), the
 project-state refresh plus refresh automation (CTX-0180), and the
-project-state refresh to `23c3eb6` (CTX-0233), the refresh to `679f12f` (CTX-0244), the refresh to `c6db24d` (CTX-0246), the refresh to `799f743` (CTX-0252), and the current refresh to `310bf87` (CTX-0269). OQ counts live in the
+project-state refresh to `23c3eb6` (CTX-0233), the refresh to `679f12f` (CTX-0244), the refresh to `c6db24d` (CTX-0246), the refresh to `799f743` (CTX-0252), the refresh to `310bf87` (CTX-0269), and the current refresh to `67f51b5` (CTX-0319). OQ counts live in the
 [open-question register](docs/decisions/open-questions.md) and milestone
 detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
 summary.
@@ -35,10 +35,8 @@ summary.
       RFCs, findings, roadmap, releases, migrations, troubleshooting, tutorials,
       how-to guides, and examples.
 - [x] Require portable root README/AGENTS links and cap `TODO.md` at 300 lines.
-- [x] Accept and document the zero-functionality Core and website repository
-      bootstrap baseline in ADR 0001.
-- [ ] Perform a final cross-repository documentation review after all initial
-      repositories have their first commits and stable links.
+- [x] Accept and document the zero-functionality Core and website repository bootstrap baseline in ADR 0001.
+- [ ] Perform a final cross-repository documentation review after all initial repositories have their first commits and stable links.
 
 ## Required before product implementation — now Accepted (M1 Hardening)
 
@@ -111,9 +109,10 @@ summary.
       `wgpu` 25.0 `crossfont` 0.9, `pty` `portable-pty` 0.9, `platform`
       `winit` 0.30, `ui` layout, `runtime` orchestration; pending `Verified`).
 - [x] Build configuration and plugin runtimes (`Implemented`: `config`
-      `ConfigPlan`, `lua` `piccolo` 0.3.3 per ADR 0005/0006/0007,
-      `plugin-host` capability/event queue; pending `Verified` and P0-AC;
-      successor direction Phodopus, [ADR 0012](docs/decisions/adrs/ADR-0012-phodopus-runtime.md)).
+      `ConfigPlan`, `lua` on the `phodopus` 0.2.0 plugin VM (`f3d6a9b`) since PR
+      #1204, audited `piccolo` 0.3.3 predecessor per ADR 0005/0006/0007 and
+      successor direction [ADR 0012](docs/decisions/adrs/ADR-0012-phodopus-runtime.md),
+      `plugin-host` capability/event queue; pending `Verified` and P0-AC).
 - [x] Build rich-content, CLI/IPC, DevTools, MCP, or headless services
       (`Implemented`: `rich` ImageStore/scene, `ipc` framing/scopes/auth
       `be3bdb4`, `agent` bounded messages, `cli` contract, `devtools`
@@ -262,6 +261,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 - [x] CTX-0133 sync bundle to `29772a3` previous `c49ead1` (release `v0.0.19`): workspace rename plus gaps, radius S0, frameHash plus V1-V3, mod_key, font defaults; snapshot, validator, fixture, and summaries in lockstep; no risk-state or normative changes (PR #164).
 - [x] CTX-0180 refresh to `bea338d` previous `29772a3` (release `v0.0.20`, 19 crates, 40 OQs Accepted): add `refresh-state.mjs` with `just state-refresh`/`just state-refresh-check` and the scheduled State freshness workflow; the validator now derives revision/date/count consistency instead of freezing literals; no risk-state or normative changes.
 - [x] CTX-0233 refresh to `23c3eb6` previous `bea338d` (21 crates, 41 OQs Accepted): snapshot, provenance, milestone/subsystem prose, derived summaries, and release vocabulary in lockstep; no risk-state or normative changes (Issue #355).
+- [x] CTX-0319 refresh to `67f51b5` previous `310bf87` (release `v0.0.44`, 18 crates, 14 `publish = true`): snapshot, provenance, milestone/subsystem prose, derived summaries, and release vocabulary in lockstep; corrects the inverted `piccolo`/Phodopus claim (Phodopus 0.2.0 is the shipped plugin VM), the `phodopus` pin in the reopened R-006/R-007 evidence, and the platform dependency layers; strengthens `check-state.mjs` with internal snapshot consistency checks; no risk-state or normative changes (CTX-0319).
 
 ## Follow-ups recorded by CTX-0199 (DIR-015)
 
@@ -280,7 +280,7 @@ Implementation` at `c0aadd2`/`a8735d0` (not `Verified`/`Compatible`);
 ## Lua runtime successor — Phodopus (ADR 0012, CTX-0236)
 
 - [x] Record the owner decision (2026-09-20) moving Bitty's Lua path from the Piccolo watch-list candidate to Phodopus, a sandbox-first successor runtime forked from `kyren/piccolo`: [ADR 0012](docs/decisions/adrs/ADR-0012-phodopus-runtime.md), with refinement pointers in ADR 0004/ADR 0005 and the OQ-030 row. Direction only; accepted `mlua`/Lua 5.4 and `piccolo 0.3.3` pins unchanged.
-- [ ] Implement the six-phase Phodopus roadmap (fork/attribution, upstream PR absorption, `package`/`require` plus stdlib gaps, hard quotas/Fuel sandboxing, generic async bridge, `bitty-lua` integration) in the owning `phodopus` repository; `bitty-lua` migration is deferred until usable.
+- [ ] Implement the six-phase Phodopus roadmap (fork/attribution, upstream PR absorption, `package`/`require` plus stdlib gaps, hard quotas/Fuel sandboxing, generic async bridge, `bitty-lua` integration) in the owning `phodopus` repository. The `bitty-lua` integration phase is already consumed by the product: `bitty-lua` depends on `phodopus` 0.2.0 at rev `f3d6a9b` (PR #1204; pin bumped by PR #3152), and the remaining phases stay open in the owning repository.
 
 ## Follow-up recorded by CTX-0232 (self-containment)
 

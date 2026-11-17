@@ -1,27 +1,27 @@
 {
   "schema_version": 1,
-  "snapshot_date": "2026-10-02",
+  "snapshot_date": "2026-11-18",
   "implementation": {
     "repository": "https://github.com/bitty-terminal/bitty",
-    "revision": "310bf87a9c91699c468f010646d8d45396aca1fc",
-    "short": "310bf87",
+    "revision": "67f51b56fa2579ae942342cb18c17295170fcab3",
+    "short": "67f51b5",
     "baseline_revision": "de134ec3a09b96ce58ef2cece20d15b0c041879a",
     "baseline_short": "de134ec",
-    "previous_revision": "2cb49afed11fcac4a69dd556ff71e576760e063d",
-    "previous_short": "2cb49af",
-    "crates": 16
+    "previous_revision": "310bf87a9c91699c468f010646d8d45396aca1fc",
+    "previous_short": "310bf87",
+    "crates": 18
   },
   "latest_release": {
-    "tag": "v0.0.21",
-    "commit": "7da6d6f46065c495c82f31ce047abaab5124bf2a",
-    "short": "7da6d6f",
-    "date": "2026-09-24",
-    "summary": "Bitty 0.0.21 released 2026-09-24 from tag v0.0.21 (7da6d6f): plugin services and manifest forms; CLI contract v1 commands; workspace and panel operations; Kitty graphics, input, render, and grid correctness; Rich Scene and semantic-terminal wiring; compatibility and DevTools evidence batches; execution and security-closure evidence; 21-crate workspace. This is a pre-alpha release; no stable, compatible, or security-verified claim is made."
+    "tag": "v0.0.44",
+    "commit": "7b3d3df708c84cf8c289335f8e4cfda866ce3c12",
+    "short": "7b3d3df",
+    "date": "2026-11-17",
+    "summary": "Bitty 0.0.44 released 2026-11-17 from tag v0.0.44 (7b3d3df): the v0.0.22-v0.0.44 series after v0.0.21 (7da6d6f, 2026-09-24) adds the bittyd local daemon serving the bitty-ipc v1 contract with enforced containment and orphan verification, real containment plans for Windows, macOS, and FreeBSD, plugin scenes painting in a shipped build with panel lifecycle ownership by controller generation, configurable scratchpads, local theme files with hot reload, Kitty graphics placements above and below text, xterm modifyOtherKeys, and the Phodopus 0.2.0 plugin VM (f3d6a9b); 18-crate workspace (14 crates publish = true). This is a pre-alpha release; no stable, compatible, or security-verified claim is made."
   },
   "maturity": {
     "label": "Pre-alpha / Engineering Milestones M1-M8",
-    "date": "2026-10-02",
-    "oqs_accepted": 54,
+    "date": "2026-11-18",
+    "oqs_accepted": 55,
     "lifecycle": "Draft -> Experimental Implementation -> Accepted -> Verified -> Compatible -> Release-ready",
     "milestone_frame": "M1 Terminal Truth; M2 Correct Terminal; M3 Usable Terminal; M4 Workspace / Panel; M5 Plugin Ecosystem; M6 Rich / IPC / Agent; M7 Stable Compatibility; M8 Public Beta"
   },
@@ -48,7 +48,7 @@
       "id": "M4",
       "name": "Workspace / Panel",
       "status": "early-implementation",
-      "evidence": "PanelId/ViewId/TerminalId separation with PanelRegistry::mount_panel (crates/bitty-runtime/src/registry/panel.rs; PanelRuntime is the RFC contract name, not a code type) and MAX_OVERLAYS_PER_WINDOW 4 in bitty-ui panel.rs; bounded async panel workers off tick path d04886a; canonical bitty-terminal.workspace with deprecated tabs shim (removal >= v0.2.0) plus panel gaps regression abde197; v0.0.20 decoration/presentation wave: Core-owned gaps px, border, radius 485fbfd plus live px present wiring 638ef81, SDF rounded fills and inner-arc glyph clipping 3d08d8e, scrollbar tracks decorated frame fdd503a, panel animations open/close/focus/workspace 3c5878e, per-View appearance overrides 4e75fe8, per-panel background image 8914632, focus outline width 6a74341, globally unique ViewId for new splits 4e0d4b2, hover-to-activate dwell 262e63c; V1-V3 panel-live digest gates 29772a3 Implemented-only, not Verified; Panel Runtime spec remains Draft pre-study CTX-0119; ai/mail panel experiences extracted into the bitty-panels crate 74361aa (CTX-0438), workspace now 16 crates after W-105 relocation (bitty#1684)"
+      "evidence": "PanelId/ViewId/TerminalId separation with PanelRegistry::mount_panel (crates/bitty-runtime/src/registry/panel.rs; PanelRuntime is the RFC contract name, not a code type) and MAX_OVERLAYS_PER_WINDOW 4 in bitty-ui panel.rs; bounded async panel workers off tick path d04886a; canonical bitty-terminal.workspace with deprecated tabs shim (removal >= v0.2.0) plus panel gaps regression abde197; v0.0.20 decoration/presentation wave: Core-owned gaps px, border, radius 485fbfd plus live px present wiring 638ef81, SDF rounded fills and inner-arc glyph clipping 3d08d8e, scrollbar tracks decorated frame fdd503a, panel animations open/close/focus/workspace 3c5878e, per-View appearance overrides 4e75fe8, per-panel background image 8914632, focus outline width 6a74341, globally unique ViewId for new splits 4e0d4b2, hover-to-activate dwell 262e63c; V1-V3 panel-live digest gates 29772a3 Implemented-only, not Verified; Panel Runtime spec remains Draft pre-study CTX-0119; ai/mail panel experiences extracted into the bitty-panels crate 74361aa (CTX-0438), workspace 18 crates at this snapshot after W-105 relocation (bitty#1684) plus the bitty-daemon (a35041d8) and bitty-sandbox (2a3fddaf) additions and the bitty-compat-lab/bitty-perf relocation out"
     },
     {
       "id": "M5",
@@ -198,7 +198,7 @@
         "rule": "RS-5",
         "mechanism": "803c29f5",
         "mechanism_note": "PR #1204 squash commit; predates the current main-history baseline, so it is provenance rather than a main-reachable revision",
-        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 27807ef0 pins phodopus 91b8a2c and carries no piccolo dependency",
+        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 67f51b5 pins phodopus 0.2.0 at rev f3d6a9b (bumped from 0.2.0-alpha.1/91b8a2c by PR #3152) and carries no piccolo dependency; Cargo.lock resolves no piccolo",
         "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
         "still_evidenced": [
           "host-side capability closed set and grant intersection",
@@ -225,7 +225,7 @@
         "rule": "RS-5",
         "mechanism": "803c29f5",
         "mechanism_note": "PR #1204 squash commit; predates the current main-history baseline, so it is provenance rather than a main-reachable revision",
-        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 27807ef0 pins phodopus 91b8a2c and carries no piccolo dependency",
+        "mechanism_evidence": "crates/bitty-lua/Cargo.toml at 67f51b5 pins phodopus 0.2.0 at rev f3d6a9b (bumped from 0.2.0-alpha.1/91b8a2c by PR #3152) and carries no piccolo dependency; Cargo.lock resolves no piccolo",
         "reason": "the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); VM-tier evidence and the PR review no longer cover the shipped runtime",
         "still_evidenced": [
           "host-side capability closed set and grant intersection",
@@ -414,11 +414,11 @@
     },
     "panel_runtime": {
       "assessment": "early-implementation",
-      "evidence": "PanelId/ViewId/TerminalId separation with PanelRegistry::mount_panel in crates/bitty-runtime/src/registry/panel.rs (PanelRuntime is the RFC contract name, not a code type) and MAX_OVERLAYS_PER_WINDOW 4 in crates/bitty-ui/src/panel.rs; bounded async panel workers off tick path d04886a; canonical bitty-terminal.workspace with deprecated tabs shim abde197; panel gaps gaps_in/gaps_out 0..=16 with stack inset-only abde197; v0.0.20 decoration and presentation wave: Core-owned gaps px/border/radius 485fbfd plus live px present wiring 638ef81, panel animations 3c5878e, per-View appearance overrides 4e75fe8, per-panel background image 8914632, focus outline width 6a74341, unique ViewId for splits 4e0d4b2, hover-to-activate dwell 262e63c, new pane inherits cwd 65a8b73, click-to-focus da49e7b; V1-V3 panel-live digest gates 29772a3 Implemented-only, not Verified; Panel Runtime spec remains Draft pre-study CTX-0119; ai/mail panel experiences extracted into bitty-panels 74361aa (CTX-0438), workspace 16 crates after W-105 relocation (bitty#1684)"
+      "evidence": "PanelId/ViewId/TerminalId separation with PanelRegistry::mount_panel in crates/bitty-runtime/src/registry/panel.rs (PanelRuntime is the RFC contract name, not a code type) and MAX_OVERLAYS_PER_WINDOW 4 in crates/bitty-ui/src/panel.rs; bounded async panel workers off tick path d04886a; canonical bitty-terminal.workspace with deprecated tabs shim abde197; panel gaps gaps_in/gaps_out 0..=16 with stack inset-only abde197; v0.0.20 decoration and presentation wave: Core-owned gaps px/border/radius 485fbfd plus live px present wiring 638ef81, panel animations 3c5878e, per-View appearance overrides 4e75fe8, per-panel background image 8914632, focus outline width 6a74341, unique ViewId for splits 4e0d4b2, hover-to-activate dwell 262e63c, new pane inherits cwd 65a8b73, click-to-focus da49e7b; V1-V3 panel-live digest gates 29772a3 Implemented-only, not Verified; Panel Runtime spec remains Draft pre-study CTX-0119; ai/mail panel experiences extracted into bitty-panels 74361aa (CTX-0438), 18 crates at this snapshot after the W-105 relocation (bitty#1684), the bitty-daemon (a35041d8) and bitty-sandbox (2a3fddaf) additions, and the bitty-compat-lab/bitty-perf relocation out"
     },
     "plugin_host": {
       "assessment": "implemented-unverified",
-      "evidence": "dogfood of five bundled-disabled first-party plugins 7e3104d retained; fuel cap per Executor step slice 58e488a; Signed TOFU fail-closed ec95c5c; v0.0.20 plugin runtime Gap A e51b5cc (per-plugin !Send VM lifecycle, atomic activation, bundled plugins load, --safe without third-party VM), required_services b425d43, 0600 managed manifest 6c76a52, store source resolution plus manifest/content verification 064b9de; experimental only, not Verified; post-v0.0.20 security wave (host secret store and opaque credential handles eb321f7, effective-capability intersection and self-grant prohibition b32d90d, sensitive-path policy and secret detection at FS authorization 43739d0, Lua registration quotas 2e12ae4, fs/intercept/git predicate hardening b76c4b1/6a9ee85/20dddcd, compat re-check at resolve/activate 9507ed4, external local-path install 1c5d3ff, Layer-2 process.spawn with [tools.*] fail-closed 9830edb/64e1709, bundled catalog removals dd46c7a/d4d754e/65aac5c/e84da34)"
+      "evidence": "dogfood of five bundled-disabled first-party plugins 7e3104d retained; fuel cap per Executor step slice 58e488a; Signed TOFU fail-closed ec95c5c; v0.0.20 plugin runtime Gap A e51b5cc (per-plugin !Send VM lifecycle, atomic activation, bundled plugins load, --safe without third-party VM), required_services b425d43, 0600 managed manifest 6c76a52, store source resolution plus manifest/content verification 064b9de; experimental only, not Verified; post-v0.0.20 security wave (host secret store and opaque credential handles eb321f7, effective-capability intersection and self-grant prohibition b32d90d, sensitive-path policy and secret detection at FS authorization 43739d0, Lua registration quotas 2e12ae4, fs/intercept/git predicate hardening b76c4b1/6a9ee85/20dddcd, compat re-check at resolve/activate 9507ed4, external local-path install 1c5d3ff, Layer-2 process.spawn with [tools.*] fail-closed 9830edb/64e1709, bundled catalog removals dd46c7a/d4d754e/65aac5c/e84da34); the plugin VM is the `phodopus` 0.2.0 runtime at rev f3d6a9b since PR #1204, so the `piccolo`-era VM-tier evidence no longer covers the shipped runtime and R-006/R-007 stay reopened `Open` under RS-5 (F-3)"
     },
     "rich": {
       "assessment": "hardening",
@@ -430,7 +430,7 @@
     },
     "ipc": {
       "assessment": "hardening",
-      "evidence": "read-only introspection queries b716665; profiling/frame-capture/input-synthesis over IPC 7dbe4e2/144ee1c; symlink-traversal rejection c5ec211; splitView axis fix 77bd6c5; ctl denials surfaced as permission errors with pinned elevation verbs 99f5b1d; frameHash digest method 3f5ed24 Implemented-only (FrameDigest family, 120s TTL, 2/s, local-only, pixel channel deferred); bitty ctl/dev/inspect/list/doctor/run CLI surface 04b4973/e31ecc4/5fed101/b620597/9c1abee; v0.0.20 ctl correctness (grid text d753986, stable ws{seq} ids 030f54e, observable terminal spawn 082586b, session-less split oracle parity 2c6c6db); linked risks R-011..R-014 remain Open; post-v0.0.20 generic services (terminal.snapshot 9bbc1a6, host tool dispatch 50b32ec, ExecutionContext/Result cf3ac8b, bridge client a61c291, scene fragments eef983e, agent.context migration b9ea7b6, Phase-A binding 2cbb1fb, --test-mode 92cd709, raw-wire framing d07e849) plus robustness fixes (attestation-verified endpoint abb37a4, ctl timeout withdrawal 6073017, snapshot-store retirement 78fa967, ambient-scan key/value check 9dd4996, debug child-token redaction ec6660b)"
+      "evidence": "read-only introspection queries b716665; profiling/frame-capture/input-synthesis over IPC 7dbe4e2/144ee1c; symlink-traversal rejection c5ec211; splitView axis fix 77bd6c5; ctl denials surfaced as permission errors with pinned elevation verbs 99f5b1d; frameHash digest method 3f5ed24 Implemented-only (FrameDigest family, 120s TTL, 2/s, local-only, pixel channel deferred); bitty ctl/dev/inspect/list/doctor/run CLI surface 04b4973/e31ecc4/5fed101/b620597/9c1abee; v0.0.20 ctl correctness (grid text d753986, stable ws{seq} ids 030f54e, observable terminal spawn 082586b, session-less split oracle parity 2c6c6db); linked risks R-011..R-014 remain Open; post-v0.0.20 generic services (terminal.snapshot 9bbc1a6, host tool dispatch 50b32ec, ExecutionContext/Result cf3ac8b, bridge client a61c291, scene fragments eef983e, agent.context migration b9ea7b6, Phase-A binding 2cbb1fb, --test-mode 92cd709, raw-wire framing d07e849) plus robustness fixes (attestation-verified endpoint abb37a4, ctl timeout withdrawal 6073017, snapshot-store retirement 78fa967, ambient-scan key/value check 9dd4996, debug child-token redaction ec6660b); bitty-daemon (bittyd) joined the workspace at a35041d8 and, per the v0.0.31 release notes, serves the bitty-ipc v1 contract with enforced Linux cgroup containment and orphan verification; it remains Implemented-only evidence and moves no risk, so DR-01..DR-08 stay Open"
     },
     "agent": {
       "assessment": "infrastructure",
@@ -442,26 +442,26 @@
     },
     "release_packaging": {
       "assessment": "operating",
-      "evidence": "tag v0.0.19 at c2aabee (2026-09-03); binary artifact bitty-app -> bitty a724771; AUR bitty-bin prebuilt package 559ccff; closed capability set enforced at manifest time 33a6731; cross-platform dist assets plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, SHA256SUMS and provenance per CHANGELOG; tag v0.0.20 at d9f5b49 (2026-09-11) prepared by CTX-0331 (#556), first workspace Cargo bump since 0.0.1 aligned by scripts/check-release-version.sh; app icons regenerated 233f118; AUR source recipe sync guard 150855e; workspace now 16 crates after W-105 relocation (bitty#1684; bitty-compat-lab and bitty-perf relocated external; bitty-test-support CTX-0267, bitty-test-vm ae094b7 CTX-0507; bitty-core and bitty-panels retired, bitty#1603/bitty#1604); post-v0.0.20 pipeline hardening (AppStream metainfo and Linux app ID 97f852a, Windows x86_64 portable ZIP 6eea1c6, clean-container install smoke tests 1aa56a2, per-distro runtime deps gated by ldd/readelf daac2cd, real terminfo 868c8d4, macOS Universal 2 DMG ab770ee, Linux ARM64 matrix entry db0c6c2, real musl apk 3d3cfa1, real .pkg.tar.zst 01fdbe7, stale 0.0.1 manifests retired fb0be5c); v0.0.21 at 7da6d6f (2026-09-24) adds the release engineering and pre-0.0.21 documentation/configuration/plugin wave; synchronized head 310bf87 remains Implemented-only, not Verified"
+      "evidence": "tag v0.0.19 at c2aabee (2026-09-03); binary artifact bitty-app -> bitty a724771; AUR bitty-bin prebuilt package 559ccff; closed capability set enforced at manifest time 33a6731; cross-platform dist assets plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, SHA256SUMS and provenance per CHANGELOG; tag v0.0.20 at d9f5b49 (2026-09-11) prepared by CTX-0331 (#556), first workspace Cargo bump since 0.0.1 aligned by scripts/check-release-version.sh; app icons regenerated 233f118; AUR source recipe sync guard 150855e; workspace 18 crates at this snapshot after W-105 relocation (bitty#1684; bitty-compat-lab and bitty-perf relocated external; bitty-test-support CTX-0267, bitty-test-vm ae094b7 CTX-0507; bitty-core and bitty-panels retired, bitty#1603/bitty#1604; bitty-daemon a35041d8, bitty-sandbox 2a3fddaf); post-v0.0.20 pipeline hardening (AppStream metainfo and Linux app ID 97f852a, Windows x86_64 portable ZIP 6eea1c6, clean-container install smoke tests 1aa56a2, per-distro runtime deps gated by ldd/readelf daac2cd, real terminfo 868c8d4, macOS Universal 2 DMG ab770ee, Linux ARM64 matrix entry db0c6c2, real musl apk 3d3cfa1, real .pkg.tar.zst 01fdbe7, stale 0.0.1 manifests retired fb0be5c); v0.0.21 at 7da6d6f (2026-09-24) adds the release engineering and pre-0.0.21 documentation/configuration/plugin wave; the v0.0.22-v0.0.44 series (through 7b3d3df, 2026-11-17) releases from the bittyd/containment, plugin-scene, panel-lifecycle, scratchpad, theme-hot-reload, Kitty-graphics, input, and packaging work; synchronized head 67f51b5 remains Implemented-only, not Verified"
     }
   },
   "sync_provenance": {
-    "carryctx_task": "CTX-0269",
-    "github_issue": "https://github.com/bitty-terminal/bitty-docs/issues/408",
-    "previous_task": "CTX-0253",
-    "previous_issue": null,
+    "carryctx_task": "CTX-0319",
+    "github_issue": null,
+    "previous_task": "CTX-0269",
+    "previous_issue": "https://github.com/bitty-terminal/bitty-docs/issues/408",
     "audit_task": "CTX-0092",
-    "synchronized_at": "2026-10-02",
-    "synchronized_by": "state-freshness-impl",
-    "synchronized_revision": "310bf87",
-    "previous_revision": "2cb49af",
+    "synchronized_at": "2026-11-18",
+    "synchronized_by": "snapshot-refresh-impl",
+    "synchronized_revision": "67f51b5",
+    "previous_revision": "310bf87",
     "baseline_revision": "de134ec",
-    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is 310bf87 (previous 2cb49af) through the v0.0.21 release at 7da6d6f (2026-09-24) and post-release changes including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604); the 16-crate workspace after W-105 relocation (bitty#1684) and all release/security-closure artifacts are Implemented-only, none Verified"
+    "experimental_chain": "d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0 retained as experimental evidence; synchronized main is 67f51b5 (previous 310bf87) through the v0.0.44 release at 7b3d3df (2026-11-17), covering the v0.0.22-v0.0.44 series, the bittyd daemon and containment work, the plugin-scene and panel-lifecycle waves, the Phodopus 0.2.0 pin bump (f3d6a9b, PR #3152), and the 18-crate workspace at this snapshot; all release/security-closure artifacts are Implemented-only, none Verified"
   },
   "ownership": {
     "owner": "docs-curator + security-auditor",
     "update_protocol": "Update only via CarryCtx task with independent docs-curator and security-auditor review, CI green, and explicit provenance record. Risk state changes require per-risk RS-1..RS-7 checklist and auditor sign-off; this file records state, it does not authorize mitigation. Experimental Implementation does not imply Verified or Accepted.",
     "source_of_truth": "This file is the canonical machine-readable source for synchronized revision, snapshot date, maturity, per-risk state, evidence revision/audit references, latest release, subsystem assessments, and sync provenance. Human-readable summaries in README, risk-register, evidence-matrix, TODO, docs/README, release-ladder are derived and validated against it."
   },
-  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-10-02 uses bitty 310bf87 (previous 2cb49af, baseline de134ec) and release v0.0.21 at 7da6d6f (2026-09-24). R-002 (8e6c8a9), R-003 (2bf194de, with a stale audit header tracked as F-19), and R-005 (5bdcdbd) are Mitigated; R-001 stays Open because P0-AC-002's long-running fuzz campaign is unmet (F-1); R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; R-006 and R-007 were Mitigated at 0afc94d/d4d75e9 on their historical auditor verdicts but are reopened Open under RS-5 because the audited piccolo 0.3.3 VM was replaced by Phodopus (PR #1204); all other risks remain Open. The v0.0.21 release and post-release changes, including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604), are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 54 Accepted and 46 Open OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
+  "notes": "Must not auto-accept risks or replace CarryCtx/security review. CTX-0246 addresses #379; #371 (CTX-0244) was the previous canonical-state and self-containment sync; #372 is the related self-containment issue. Snapshot 2026-11-18 uses bitty 67f51b5 (previous 310bf87, baseline de134ec) and release v0.0.44 at 7b3d3df (2026-11-17). R-002 (8e6c8a9), R-003 (2bf194de, with a stale audit header tracked as F-19), and R-005 (5bdcdbd) are Mitigated; R-001 stays Open because P0-AC-002's long-running fuzz campaign is unmet (F-1); R-004 remains Open at 7a4ee41 with residual platform, UX, and 8192-byte bound-scope limits; R-006 and R-007 were Mitigated at 0afc94d/d4d75e9 on their historical auditor verdicts but are reopened Open under RS-5 because the audited piccolo 0.3.3 VM was replaced by the Phodopus runtime (PR #1204), which now ships as phodopus 0.2.0 at rev f3d6a9b (PR #3152) with no piccolo dependency; all other risks remain Open. The v0.0.21-v0.0.44 releases and post-release changes, including the native component broker and bitty-core/bitty-panels retirement (bitty#1603, bitty#1604), are Implemented-only. CTX-0680, CTX-0691, and CTX-0701 security-closure records are evidence pending independent auditor review and do not move R-014, R-015, R-022, or any other risk row. Experimental Implementations c0aadd2, 7e3104d, and a8735d0 remain Implemented, not Verified/Compatible/Release-ready; semantic-terminal P1-P5 and scrollbar overlay remain Implemented-only evidence and close no open question. The canonical open-question register has 55 Accepted, 43 Open, and 2 Partially resolved OQ rows at this snapshot; RFC-OQ rows are tracked separately. Subsystem rows cover bitty origin/main evidence only; plugin SDK, MCP adapter, DevTools client, and website rows remain owner-separate. Overall product remains Pre-alpha, not Verified/Compatible/Release-ready. Test counts are per audit or implementation evidence, not duplicated here unless generated via cargo test."
 }
