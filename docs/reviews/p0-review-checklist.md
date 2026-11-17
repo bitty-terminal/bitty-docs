@@ -1,6 +1,6 @@
 ---
 title: P0 Review Checklist
-description: Coordination checklist for P0 review at Pre-alpha / M1 Hardening; Phase A freeze 2026-08-29 (16 crates be3bdb4, 32 OQs Accepted); historical 2026-09-16 snapshot with 19 crates and 41 of 100 OQs Accepted; current baseline 18 crates at 310bf87 (2026-10-02), 54 of 100 OQs Accepted and 46 Open
+description: Coordination checklist for P0 review at Pre-alpha / M1 Hardening; Phase A freeze 2026-08-29 (16 crates be3bdb4, 32 OQs Accepted); historical 2026-09-16 snapshot with 19 crates and 41 of 100 OQs Accepted; current baseline 18 crates at 67f51b5 (2026-11-18), 55 of 100 OQs Accepted, 43 Open, and 2 Partially resolved
 category: decisions
 audience: maintainer
 document_type: register
@@ -22,22 +22,24 @@ sidebar_order: 30
 > `Specified -> Accepted -> Implemented -> Verified -> Compatible -> Release-ready`
 > (was `Draft -> experimental review evidence -> Accepted -> normative`).
 
-## Current baseline (2026-10-02 refresh)
+## Current baseline (2026-11-18 refresh)
 
-The current baseline is **18 crates** at `bitty` `310bf87` (previous
-`2cb49af`, baseline `de134ec`) — 18 members pinned in `bitty/Cargo.toml`
+The current baseline is **18 crates** at `bitty` `67f51b5` (previous
+`310bf87`, baseline `de134ec`) — 18 members pinned in `bitty/Cargo.toml`
 evolved from the Phase A sixteen through subsequent splits, the `bitty-core`
-and `bitty-panels` retirement (`bitty#1603`, `bitty#1604`), and the
-`bitty-compat-lab`, `bitty-perf`, `bitty-test-support`, and `bitty-test-vm`
-(CTX-0507) additions — and **54 of 100 registered OQs are `Accepted`** with 46
-remaining `Open` per the [open-question register](../decisions/open-questions.md),
-which owns the count. The latest release is `v0.0.21` at `7da6d6f` (2026-09-24). The Phase A
+and `bitty-panels` retirement (`bitty#1603`, `bitty#1604`), the
+`bitty-daemon` (`a35041d8`) and `bitty-sandbox` (`2a3fddaf`) additions, and the
+`bitty-test-support`/`bitty-test-vm` (CTX-0507) additions after the
+`bitty-compat-lab` and `bitty-perf` relocation out — and **55 of 100 registered
+OQs are `Accepted`** with 43 `Open` and 2 `Partially resolved` per the
+[open-question register](../decisions/open-questions.md), which owns the count.
+The latest release is `v0.0.44` at `7b3d3df` (2026-11-17). The Phase A
 freeze above (16 crates `be3bdb4`, 32 OQs `Accepted`, soak ~808 headless
 tests) stays as the historical coordination baseline for the accepted P0
 batch; the `Implemented -> Verified` gate and the risk evidence matrix remain
-pending. This refresh comes from CTX-0269 project-state synchronization
-(2026-10-02); the prior 2026-09-16 count was 19 crates at `eb321f7`-era
-evidence.
+pending. This refresh comes from CTX-0319 project-state synchronization
+(2026-11-18); the prior 2026-10-02 count was 18 crates at `310bf87`, and the
+2026-09-16 count was 19 crates at `eb321f7`-era evidence.
 
 ## Purpose (Phase A reconciliation 2026-08-29)
 

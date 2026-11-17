@@ -15,8 +15,9 @@ sidebar_order: 10
 
 Bitty has accepted an organization-level polyrepo. ADR 0001 accepts a minimal
 Core Cargo workspace for initialization; the expanded crate graph is now
-**Pre-alpha / Engineering Milestones M1-M8** at 16 crates (after `W-105`
-relocation, `bitty#1684` `03bfda5c`; snapshot `310bf87` predates relocation) with
+**Pre-alpha / Engineering Milestones M1-M8** at 18 crates (after `W-105`
+relocation, `bitty#1684` `03bfda5c`, and the `bitty-daemon`/`bitty-sandbox`
+additions; snapshot `67f51b5`) with
 lifecycle `Specified -> Accepted -> Implemented -> Verified -> Compatible ->
 Release-ready` (see Status below):
 
@@ -25,13 +26,13 @@ Release-ready` (see Status below):
 - Product repositories are independent. Run Git and CarryCtx commands inside
   the target child repository.
 - The `bitty/` workspace is the minimal Core terminal platform following the
-  Unix philosophy (sixteen members in `bitty/Cargo.toml` after `W-105`
+  Unix philosophy (eighteen members in `bitty/Cargo.toml` after `W-105`
   relocation, `bitty#1684` `03bfda5c`): `bitty-vt`,
   `bitty-term-state`, `bitty-pty`, `bitty-platform`, `bitty-config`,
   `bitty-render`, `bitty-ui`, `bitty-plugin-host`, `bitty-runtime`,
-  `bitty-package`, `bitty-lua`, `bitty-rich`, `bitty-winjob`, plus binary
-  artifact `bitty-terminal`, and harness crates `bitty-test-support` and
-  `bitty-test-vm`. `bitty-compat-lab` and `bitty-perf` were relocated out of
+  `bitty-package`, `bitty-lua`, `bitty-rich`, `bitty-winjob`, `bitty-daemon`,
+  `bitty-sandbox`, plus binary artifact `bitty-terminal`, and harness crates
+  `bitty-test-support` and `bitty-test-vm`. `bitty-compat-lab` and `bitty-perf` were relocated out of
   the workspace to standalone repositories (`W-105`, `bitty#1684`; pinned via
   `validation-pins.env`). `bitty-core` and `bitty-panels` were retired from the
   workspace (`bitty#1603`, `bitty#1604`); the ten-crate topology recorded in
@@ -99,7 +100,7 @@ bitty-terminal/                     # local umbrella workspace, not a Git repo
 │
 │   # every repository is a direct child (org-flat mirror); no grouping directories
 ├── activity/                       # independent repo: first official plugin
-├── bitty/                          # independent repo: Rust core workspace (16 crates)
+├── bitty/                          # independent repo: Rust core workspace (18 crates)
 ├── bitty-ai/                       # independent repo: AI core (runtime, providers, context)
 ├── bitty-ai-docs/                  # independent repo: AI-core documentation
 ├── bitty-devtools/                 # independent repo: debug UI/client
@@ -192,7 +193,7 @@ the same upstream revisions.
 
 | Repository or directory   | Planned responsibility                                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitty`                   | Minimal Rust terminal platform core: PTY, VT, render, runtime, configuration, and workspace mechanism            | Minimal Core terminal platform (sixteen members in `bitty/Cargo.toml` after `W-105` relocation, `bitty#1684`; `bitty-core`/`bitty-panels` retired per `bitty#1603`/`bitty#1604`); `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032); the ADR 0003 ten-crate topology predates this retirement (see its status note); visual chrome presentation is plugin-only (ADR 0014)              |
+| `bitty`                   | Minimal Rust terminal platform core: PTY, VT, render, runtime, configuration, and workspace mechanism            | Minimal Core terminal platform (eighteen members in `bitty/Cargo.toml` after `W-105` relocation, `bitty#1684`; `bitty-core`/`bitty-panels` retired per `bitty#1603`/`bitty#1604`); `bitty-package` lifecycle/integrity model accepted (OQ-021, 2026-08-27) plus `bitty-lua` (OQ-009/030-032); the ADR 0003 ten-crate topology predates this retirement (see its status note); visual chrome presentation is plugin-only (ADR 0014)             |
 | `bitty-ipc`               | L1 Rust Core Extension: out-of-process IPC bridge (6 crates), DevTools protocol                                  | Independent extension repository initialized (`crates/bitty-ipc-api`, `ipc-auth`, `ipc-core`, `ipc-devtools`, `ipc-winpipe`, umbrella `bitty-ipc`); bounded framing, peer-credential auth, default-off; pinned by `bitty` at `e9714e7` as Core's inbound socket                                                                                                                                                                                |
 | `bitty-network`           | L1 Rust Core Extension: network runtime shipped as the independently installed native component `net` (DIR-030)  | Independent extension repository initialized (`crates/bitty-network-api`, `bitty-network`, `bitty-network-wire`); crates reset to version `0.0.1`; `bitty` links only the dependency-free `bitty-network-wire` codec, never a network implementation; the embedded `network` feature and `bitty.network` Lua module were removed from Core (`bitty#1604`)                                                                                      |
 | `bitty-observability`     | L1 Rust Core Extension: observability and tracing infrastructure (API + Core + integration)                      | Independent extension repository initialized (`crates/bitty-observability-api`); zero-dependency tracing and metrics definitions                                                                                                                                                                                                                                                                                                               |
@@ -243,20 +244,21 @@ repository-scoped implementation tasks. See the
 
 ## Workspace structure (Small Core and L1 Rust Core Extensions)
 
-The Core terminal platform workspace has sixteen members in `bitty/Cargo.toml`
+The Core terminal platform workspace has eighteen members in `bitty/Cargo.toml`
 after `W-105` relocation (`bitty#1684` `03bfda5c`) following the extraction of out-of-process IPC and the native network
 component into dedicated L1 Rust Core Extension repositories; `bitty-core` and
 `bitty-panels` were retired from the workspace (`bitty#1603`, `bitty#1604`):
 
 ```text
 bitty/
-├── Cargo.toml            # sixteen members, edition 2024, resolver 3, rust-version 1.85
+├── Cargo.toml            # eighteen members, edition 2024, resolver 3, rust-version 1.85
 ├── Cargo.lock
 ├── rust-toolchain.toml   # channel 1.98.1, components rustfmt+clippy
 ├── justfile
 ├── crates/
 │   ├── bitty-config/       # typed ConfigPlan, validation, migration (std-only)
-│   ├── bitty-lua/          # Implemented: piccolo 0.3.3 deterministic VM budgets RC-1/RC-2
+│   ├── bitty-daemon/       # bittyd session host: bitty-ipc v1 service, containment, orphan recovery
+│   ├── bitty-lua/          # Implemented: phodopus 0.2.0 VM budgets RC-1/RC-2 (piccolo 0.3.3 predecessor)
 │   ├── bitty-package/      # lifecycle/integrity accepted (OQ-021, 2026-08-27); signatures draft (std-only)
 │   ├── bitty-platform/     # winit 0.30, raw-window-handle =0.6.2
 │   ├── bitty-plugin-host/  # registry/capability/lifecycle (+ bitty-package edge)
@@ -265,6 +267,7 @@ bitty/
 │   ├── bitty-rich/         # Implemented: rich presentation helpers (vt+term-state)
 │   ├── bitty-runtime/      # orchestration (vt/term-state/pty/render/platform/ui/plugin-host);
 │   │                       # owns the `component` broker (DIR-030, bitty#1604)
+│   ├── bitty-sandbox/      # inherited OS confinement adapter for plugin-spawned tools (Landlock)
 │   ├── bitty-terminal/     # binary artifact `bitty`: runtime+platform composition root
 │   ├── bitty-term-state/   # Terminal Truth + damage + image store
 │   ├── bitty-test-support/ # shared test-harness helpers (live-PTY gating)
@@ -370,7 +373,7 @@ conflict with the candidate use of TOML for plugin metadata.
 ## Documentation and website publishing relationship
 
 ```text
-bitty-docs shared governance + submodule pointers (16 crates; OQ counts live in the open-question register)
+bitty-docs shared governance + submodule pointers (18 crates; OQ counts live in the open-question register)
       |-- bitty-terminal/ -> bitty-terminal-docs @ pinned main
       |-- bitty-ai/       -> bitty-ai-docs       @ pinned main
       `-- bitty-plugins/  -> bitty-plugins-docs  @ pinned main
@@ -426,7 +429,7 @@ database exists. Therefore:
   per Governance RFC OQ-024 (2026-08-29).
 - Verification of `bitty-package` (lifecycle accepted, signatures draft) and
   the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-lua`
-  OQ-009/030-032, compat-lab/perf hardening through `310bf87`) alongside the
+  OQ-009/030-032, hardening through `67f51b5`) alongside the
   independent L1 extensions (`bitty-ipc`, `bitty-network`) from
   `Implemented` to `Verified` per risk evidence RFC OQ-025 (evidence matrix
   pending), plus successor topology ADR when needed, release profiles, package

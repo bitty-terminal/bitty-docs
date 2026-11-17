@@ -4,6 +4,10 @@ import { resolve } from "node:path";
 const ROOT = resolve(import.meta.dir, "..", "..");
 const SNAPSHOT = resolve(ROOT, "docs/project/project-state.json");
 
+// Mechanical fields are written from one git checkout by refresh-state.mjs, so
+// their short forms are exactly this many characters.
+const SHORT_LENGTH = 7;
+
 const CANONICAL_FILES = [
   "README.md",
   "TODO.md",
@@ -12,6 +16,16 @@ const CANONICAL_FILES = [
   "docs/security/evidence-matrix.md",
   "bitty-terminal/product/release-ladder.md",
 ];
+
+// Files whose header states the snapshot itself. They must also carry the
+// snapshot's crate count and latest release tag; the security evidence ledger
+// describes per-artifact revisions and is checked for the revision tokens only.
+const RELEASE_FACT_FILES = new Set([
+  "README.md",
+  "TODO.md",
+  "docs/README.md",
+  "docs/security/risk-register.md",
+]);
 
 // Project documentation lives in submodule repositories. Their canonical
 // summaries are validated when the submodule is checked out and skipped
@@ -300,6 +314,93 @@ function validateSnapshot(data) {
     failures.push("notes must contain 'Must not auto-accept'");
   }
 
+  // Snapshot self-consistency. Every mechanical field below is produced by one
+  // refresh from one checkout, so disagreement is a stale or hand-edited
+  // snapshot: it must fail here instead of printing a success line. External
+  // freshness (a newer `bitty` head or release) belongs to
+  // `refresh-state.mjs --check`, which reads the implementation repository.
+  const shortOf = (revision) =>
+    typeof revision === "string" ? revision.slice(0, SHORT_LENGTH) : "";
+
+  if (impl && typeof impl === "object") {
+    if (impl.short !== shortOf(impl.revision)) {
+      failures.push(
+        `implementation.short must be the ${SHORT_LENGTH}-char prefix of implementation.revision`,
+      );
+    }
+    if (impl.previous_short !== shortOf(impl.previous_revision)) {
+      failures.push(
+        "implementation.previous_short must be the prefix of implementation.previous_revision",
+      );
+    }
+    if (impl.baseline_short !== shortOf(impl.baseline_revision)) {
+      failures.push(
+        "implementation.baseline_short must be the prefix of implementation.baseline_revision",
+      );
+    }
+  }
+
+  if (release && typeof release === "object") {
+    if (release.short !== shortOf(release.commit)) {
+      failures.push(
+        "latest_release.short must be the prefix of latest_release.commit",
+      );
+    }
+    if (
+      /^\d{4}-\d{2}-\d{2}$/.test(release.date ?? "") &&
+      /^\d{4}-\d{2}-\d{2}$/.test(data.snapshot_date ?? "") &&
+      release.date > data.snapshot_date
+    ) {
+      failures.push("latest_release.date must not be after snapshot_date");
+    }
+    // The curated summary must describe the release the snapshot records. A
+    // summary left on an older tag is the exact drift this check exists for.
+    const summary = release.summary ?? "";
+    if (typeof release.tag === "string" && !summary.includes(release.tag)) {
+      failures.push("latest_release.summary must name latest_release.tag");
+    }
+    if (typeof release.short === "string" && !summary.includes(release.short)) {
+      failures.push("latest_release.summary must name latest_release.short");
+    }
+    const crates = impl?.crates;
+    if (
+      Number.isInteger(crates) &&
+      !new RegExp(`\\b${crates}[\\s-]crates?\\b`).test(summary)
+    ) {
+      failures.push(
+        `latest_release.summary must state the ${crates}-crate workspace`,
+      );
+    }
+  }
+
+  if (maturity && maturity.date !== data.snapshot_date) {
+    failures.push("maturity.date must equal snapshot_date");
+  }
+
+  if (provenance) {
+    if (provenance.synchronized_at !== data.snapshot_date) {
+      failures.push("sync_provenance.synchronized_at must equal snapshot_date");
+    }
+    if (provenance.previous_revision !== impl?.previous_short) {
+      failures.push(
+        "sync_provenance.previous_revision must equal implementation.previous_short",
+      );
+    }
+    if (provenance.baseline_revision !== impl?.baseline_short) {
+      failures.push(
+        "sync_provenance.baseline_revision must equal implementation.baseline_short",
+      );
+    }
+    if (
+      provenance.previous_task &&
+      provenance.previous_task === provenance.carryctx_task
+    ) {
+      failures.push(
+        "sync_provenance.previous_task must differ from carryctx_task",
+      );
+    }
+  }
+
   return failures;
 }
 
@@ -349,7 +450,15 @@ async function checkCanonicalSummaries(data) {
           "R-004",
           "Open",
         ]
-      : requiredTokens;
+      : [...requiredTokens];
+    // A snapshot-anchor file states the crate count and the release it
+    // summarizes; a stale count or tag is drift, not prose style.
+    if (!submoduleLag && RELEASE_FACT_FILES.has(rel)) {
+      tokens.push(
+        `${data.implementation.crates} crates`,
+        data.latest_release.tag,
+      );
+    }
 
     for (const token of tokens) {
       if (!content.includes(token)) {
@@ -510,7 +619,11 @@ async function main() {
   }
 
   console.log(
-    `Validated snapshot ${data.snapshot_date} at ${data.implementation.short} and ${canonical.checked} canonical summaries without drift`,
+    [
+      `Validated snapshot ${data.snapshot_date}: bitty ${data.implementation.short} (baseline ${data.implementation.baseline_short}, previous ${data.implementation.previous_short}), ${data.implementation.crates} crates, release ${data.latest_release.tag} at ${data.latest_release.short} (${data.latest_release.date}), ${data.risks.filter((r) => r.state === "Mitigated").length} Mitigated risks, R-004 ${data.risks.find((r) => r.id === "R-004")?.state}`,
+      `and ${canonical.checked} canonical summaries without drift.`,
+      "Scope: internal snapshot and summary consistency only; upstream freshness is `just state-refresh-check`.",
+    ].join(" "),
   );
 }
 

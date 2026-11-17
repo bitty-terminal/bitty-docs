@@ -16,7 +16,7 @@
     "commit": "c2aabeececaff8128671ee7a322aac116e8ed321",
     "short": "c2aabee",
     "date": "2026-09-03",
-    "summary": "AUR checkout root-owned (bitty CTX-0135 PR #224); binary artifact renamed bitty-app -> bitty; cross-platform dist assets bitty-<target> plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, AUR bitty/bitty-bin, SHA256SUMS and provenance per CHANGELOG"
+    "summary": "v0.0.19 (18-crate workspace, commit c2aabee): AUR checkout root-owned (bitty CTX-0135 PR #224); binary artifact renamed bitty-app -> bitty; cross-platform dist assets bitty-<target> plus deb/rpm/apk/pkg.tar.zst, Homebrew/Scoop, AUR bitty/bitty-bin, SHA256SUMS and provenance per CHANGELOG"
   },
   "maturity": {
     "label": "Pre-alpha / Engineering Milestones M1-M8",
@@ -79,17 +79,30 @@
     {
       "id": "R-001",
       "state": "Open",
-      "stage": "P0"
+      "stage": "P0",
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-2",
+        "follow_up": "F-1"
+      }
     },
     {
       "id": "R-002",
-      "state": "Open",
-      "stage": "P0"
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "8e6c8a9",
+        "baseline": "de134ec"
+      }
     },
     {
       "id": "R-003",
-      "state": "Open",
-      "stage": "P0"
+      "state": "Mitigated",
+      "stage": "P0",
+      "evidence": {
+        "revision": "2bf194de",
+        "baseline": "de134ec"
+      }
     },
     {
       "id": "R-004",
@@ -130,7 +143,7 @@
     },
     {
       "id": "R-006",
-      "state": "Mitigated",
+      "state": "Open",
       "stage": "P0",
       "evidence": {
         "revision": "0afc94d",
@@ -145,12 +158,18 @@
           "capability grant UX and revocation flow hardening pending",
           "official-plugin parity suite to be extended under CTX follow-up"
         ],
-        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review",
+        "historical_state": "Mitigated"
+      },
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-5",
+        "follow_up": "F-3"
       }
     },
     {
       "id": "R-007",
-      "state": "Mitigated",
+      "state": "Open",
       "stage": "P0",
       "evidence": {
         "revision": "d4d75e9",
@@ -165,7 +184,13 @@
           "reclaim invariant PB-3 15% after GC ten-cycle observably fires, long-horizon soak pending",
           "queue-budget DropOldest attribution verified, headless measurement only"
         ],
-        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review"
+        "rs_checklist": "RS-1..RS-7 evidenced per PR independent review",
+        "historical_state": "Mitigated"
+      },
+      "reopened": {
+        "date": "2026-10-21",
+        "rule": "RS-5",
+        "follow_up": "F-3"
       }
     },
     {

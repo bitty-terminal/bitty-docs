@@ -374,18 +374,19 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`310bf87` at `2026-10-02`, baseline `de134ec`, previous `2cb49af`), maturity
-and release status (`Pre-alpha / Engineering Milestones M1-M8`, 54 OQs
-`Accepted` and 46 `Open` in the synchronized docs register, 18 crates, release
-`v0.0.21` at `7da6d6f` dated 2026-09-24), per-risk state and evidence revision and audit
+`67f51b5` at `2026-11-18`, baseline `de134ec`, previous `310bf87`), maturity
+and release status (`Pre-alpha / Engineering Milestones M1-M8`, 55 OQs
+`Accepted`, 43 `Open`, and 2 `Partially resolved` in the synchronized docs
+register, 18 crates, release `v0.0.44` at `7b3d3df` dated 2026-11-17), per-risk
+state and evidence revision and audit
 references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `8192`-byte bound-scope limits per `bitty`
 `docs/security/audits/clipboard-2026-09.md` CTX-0097; `R-002`/`R-003`
 `Mitigated` on their auditor artifacts; `R-001` `Open` because the
 `P0-AC-002` long-running campaign is unmet; `R-005` `Mitigated` at `d4d75e9`;
 `R-006`/`R-007` reopened `Open` under RS-5 after the Phodopus VM swap), and
-explicit sync provenance (`CTX-0269`, previous
-`CTX-0253`). The release and post-release security evidence are
+explicit sync provenance (`CTX-0319`, previous
+`CTX-0269`). The release and post-release security evidence are
 `Implemented`-only until the matrix and independent review gates are recorded.
 
 Mechanical fields (synchronized revision, snapshot date, crate count, latest
@@ -432,6 +433,18 @@ Canonical human-readable summaries in `README.md`, `TODO.md`,
 `bitty-terminal/product/release-ladder.md` are derived from the snapshot and
 validated deterministically by `bun .github/scripts/check-state.mjs` (also
 `just state` and CI). Divergence is a defect; the submodule summary is checked
-when the submodule is materialized and skipped otherwise. Test counts remain in
+when the submodule is materialized and skipped otherwise.
+
+The validator enforces the snapshot's internal consistency rather than a fixed
+literal: `maturity.date` and `sync_provenance.synchronized_at` must equal
+`snapshot_date`; the short forms must be the seven-character prefixes of their
+full revisions; `sync_provenance` must echo the implementation chain; the
+release date must not follow the snapshot date; `latest_release.summary` must
+name its own tag, commit short form, and crate count; and each canonical summary
+must carry the snapshot's crate count, with the release tag additionally
+required in the files that carry a snapshot anchor. External freshness (a newer
+`bitty` main or release) is `just state-refresh-check`'s job, not this
+validator's, so a green `just state` never claims the snapshot is current
+upstream. Test counts remain in
 audit and implementation evidence and are not duplicated in the snapshot unless
 generated via an authoritative command such as `cargo test`.
