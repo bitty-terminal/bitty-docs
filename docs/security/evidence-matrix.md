@@ -73,7 +73,7 @@ authorization is therefore recorded without a `Mitigated` state until the
 their audited revisions, so their moves stand.
 
 Canonical snapshot: [`project-state.json`](../project/project-state.json)
-(synchronized `67f51b5`, previous `310bf87`, baseline `de134ec`,
+(synchronized `5d19152`, previous `67f51b5`, baseline `de134ec`,
 `2026-11-18`, `Pre-alpha / Engineering Milestones M1-M8`) remains the
 machine-readable anchor for the synchronized implementation revision. The
 Phase E ledger is reviewed against the later `bitty` `27807ef0` head and cites
