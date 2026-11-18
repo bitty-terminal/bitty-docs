@@ -374,10 +374,10 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`67f51b5` at `2026-11-18`, baseline `de134ec`, previous `310bf87`), maturity
+`5d19152` at `2026-11-18`, baseline `de134ec`, previous `67f51b5`), maturity
 and release status (`Pre-alpha / Engineering Milestones M1-M8`, 55 OQs
 `Accepted`, 43 `Open`, and 2 `Partially resolved` in the synchronized docs
-register, 18 crates, release `v0.0.44` at `7b3d3df` dated 2026-11-17), per-risk
+register, 18 crates, release `v0.0.45` at `5d19152` dated 2026-11-18), per-risk
 state and evidence revision and audit
 references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `8192`-byte bound-scope limits per `bitty`

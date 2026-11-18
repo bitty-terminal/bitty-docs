@@ -19,8 +19,8 @@ sidebar_order: 11
 > security control, and does not authorize website publication. Website
 > publication remains gated on a pinned immutable `bitty-docs` revision per the
 > [Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md). Current
-> snapshot is `bitty` `67f51b5` (previous `310bf87`, baseline `de134ec`,
-> 18 crates, 55 OQs `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.44`) at **Pre-alpha / Engineering Milestones M1-M8**;
+> snapshot is `bitty` `5d19152` (previous `67f51b5`, baseline `de134ec`,
+> 18 crates, 55 OQs `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.45`) at **Pre-alpha / Engineering Milestones M1-M8**;
 > the retired `a8735d0` / 16-crate / M1 baseline no longer describes the head.
 
 ## Admission criteria mapping
@@ -75,7 +75,7 @@ daemon deferral, or any security evidence gate.
 
 One label can no longer describe the workspace, so the snapshot carries an
 explicit milestone frame with honest per-milestone statuses (all verified
-read-only against `bitty` origin `main` at `67f51b5`; subsystem detail lives
+read-only against `bitty` origin `main` at `5d19152`; subsystem detail lives
 in [`project-state.json`](../project/project-state.json)):
 
 | Milestone               | Status                    | Honest reading                                                                                 |
@@ -98,19 +98,19 @@ otherwise.
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md) stage
-  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `67f51b5` (`18 crates`, `55 OQs`
-  `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.44`, UX wave through
+  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `5d19152` (`18 crates`, `55 OQs`
+  `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.45`, UX wave through
   `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay
   `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font
   `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, V1-V3 gates
   `Implemented`-only and the `v0.0.20` and `v0.0.21` plugin-runtime,
   Kitty-graphics, decoration, config-matrix, release, and plugin-CLI waves plus
-  the `v0.0.22`-`v0.0.44` bittyd daemon, containment, plugin-scene,
+  the `v0.0.22`-`v0.0.45` bittyd daemon, containment, plugin-scene,
   panel-lifecycle, config, input, and packaging waves plus
   the post-release security, IPC-service, execution-supervisor, and
   release-pipeline hardening wave plus experimental
   `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
-  baseline `de134ec` previous `310bf87`) mapped to the candidate `v0.1` through
+  baseline `de134ec` previous `67f51b5`) mapped to the candidate `v0.1` through
   `v1.0` maturity ladder. The ladder does not weaken any normative control in
   the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
@@ -252,8 +252,8 @@ security, and release-pipeline waves. The previous synchronized head was
 `2339f0a`, and `679f12f`, and the native component broker plus the
 `bitty-core`/`bitty-panels` retirement (`bitty#1603`, `bitty#1604`) that
 narrowed the workspace to 18 crates. The current synchronized head is
-`67f51b5` (previous `310bf87`) at the `v0.0.44` release (`7b3d3df`,
-2026-11-17): the `v0.0.22`-`v0.0.44` series adds the `bittyd` daemon serving
+`5d19152` (previous `67f51b5`) at the `v0.0.45` release (`5d19152`,
+2026-11-18): the `v0.0.22`-`v0.0.45` series adds the `bittyd` daemon serving
 the `bitty-ipc` v1 contract with enforced containment and orphan verification,
 real containment plans for Windows, macOS, and FreeBSD, plugin scenes painting
 in a shipped build with panel lifecycle ownership by controller generation,
@@ -275,7 +275,7 @@ replaced by Phodopus. R-003 is `Mitigated` on the resource-loader audit and is
 tracked in the evidence matrix rather than as a separate Now item. Experimental slice
 `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
-(`67f51b5` head, `de134ec` baseline `310bf87` previous);
+(`5d19152` head, `de134ec` baseline `67f51b5` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
@@ -378,7 +378,7 @@ docs planning reflects it, it does not promise beyond it, overall product not
 
 ### Now-4: R-006 Capability deny-by-default and restricted stdlib — reopened `Open` for Phodopus re-review
 
-- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical. The plugin VM is Phodopus since PR #1204 (the swap squash commit `803c29f5` predates the current `main`-history baseline; `crates/bitty-lua/Cargo.toml` at `67f51b5` pins `phodopus` `0.2.0` at rev `f3d6a9b`, moved off `0.2.0-alpha.1`/`91b8a2c` by PR #3152) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo 0.3.3` restricted-stdlib evidence no longer covers the shipped runtime.
+- **Requirement:** Closed capability set with deny-by-default, hash + declared intersection, controls/unicode whitespace deny, and `piccolo 0.3.3` restricted stdlib (`base`/`math`/`string`/`table`/`utf8`/`os.clock`/`debug.traceback`) denying `io`/`os.execute`/`package.loadlib`/bytecode per ADR-0005. Threat T-06, severity Critical. The plugin VM is Phodopus since PR #1204 (the swap squash commit `803c29f5` predates the current `main`-history baseline; `crates/bitty-lua/Cargo.toml` at `5d19152` pins `phodopus` `0.2.0` at rev `f3d6a9b`, moved off `0.2.0-alpha.1`/`91b8a2c` by PR #3152) per [ADR 0012](../decisions/adrs/ADR-0012-phodopus-runtime.md); the cited `piccolo 0.3.3` restricted-stdlib evidence no longer covers the shipped runtime.
 - **P0 criteria:** [P0-AC-011](../security/p0-acceptance-criteria.md#plugins) Restricted stdlib, [P0-AC-012](../security/p0-acceptance-criteria.md#plugins) Capability-checked host API, [P0-AC-013](../security/p0-acceptance-criteria.md#plugins) Per-plugin VM isolation and failure containment.
 - **Risk and evidence:** [R-006](../security/risk-register.md) via [Evidence Matrix R-006](../security/evidence-matrix.md) is `Open` (reopened under RS-5). The historical `Mitigated` state at `0afc94d` (PR #145, Issue #138) covered `bitty-plugin-host` `capability.rs`/`grant.rs`/`manifest.rs` plus the `bitty-lua` `piccolo` restricted stdlib; the host-side controls still hold, the VM-tier evidence is stale.
 - **Historical evidence (`bitty` CTX-0092):** squash `0afc94d` PR #145 `feat(plugin): verify capability deny-by-default and restricted stdlib for R-006` (`6 files +197 -17`, `capability.rs` `denied_without_grant` + `closed_identifiers` + `protocol.register`, `grant.rs` declared+granted+hash intersection, `manifest.rs` fs pattern control deny, `lib.rs` `restricted_stdlib_denies_ambient_io` test `io==nil`). RS-1..RS-7 evidenced for the piccolo runtime only.

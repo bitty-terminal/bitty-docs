@@ -1,13 +1,13 @@
 # Pre-alpha / Engineering Milestones M1-M8 TODO
 
-Project state at a glance (snapshot `2026-11-18`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `67f51b5`, baseline `de134ec`, previous `310bf87`, 18 crates); latest release `v0.0.44` (`7b3d3df`, 2026-11-17) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), `R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` pending the `P0-AC-002` long-running campaign, and `R-006`/`R-007` are reopened `Open` under RS-5; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
+Project state at a glance (snapshot `2026-11-18`): stage **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `5d19152`, baseline `de134ec`, previous `67f51b5`, 18 crates); latest release `v0.0.45` (`5d19152`, 2026-11-18) — pre-alpha releases exist, but no stable or supported public contract has been declared; risks `R-004` remains `Open` (not `Mitigated`/`Verified`), `R-002`/`R-003`/`R-005` are `Mitigated`, `R-001` is `Open` pending the `P0-AC-002` long-running campaign, and `R-006`/`R-007` are reopened `Open` under RS-5; [`docs/project/project-state.json`](docs/project/project-state.json) is the single machine fact source, derived by this summary and checked by `just state` (`bun .github/scripts/check-state.mjs`).
 
 This file groups the work into delivery stages and records reconciliation at
 Phase A (CTX-0116), the post-0223 reconciliation (CTX-0130), the
 semantic-terminal plus scrollbar sync (CTX-0131), the scrollbar shipped
 flip (CTX-0132), the workspace/frameHash sync bundle (CTX-0133), the
 project-state refresh plus refresh automation (CTX-0180), and the
-project-state refresh to `23c3eb6` (CTX-0233), the refresh to `679f12f` (CTX-0244), the refresh to `c6db24d` (CTX-0246), the refresh to `799f743` (CTX-0252), the refresh to `310bf87` (CTX-0269), and the current refresh to `67f51b5` (CTX-0319). OQ counts live in the
+project-state refresh to `23c3eb6` (CTX-0233), the refresh to `679f12f` (CTX-0244), the refresh to `c6db24d` (CTX-0246), the refresh to `799f743` (CTX-0252), the refresh to `310bf87` (CTX-0269), the refresh to `67f51b5` (CTX-0319), and the current refresh to `5d19152` (CTX-0320). OQ counts live in the
 [open-question register](docs/decisions/open-questions.md) and milestone
 detail lives in the [roadmap](docs/roadmap/now-next-later.md), not in this
 summary.
