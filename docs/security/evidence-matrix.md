@@ -208,7 +208,7 @@ record runs no daemon and therefore adds no live row.
 
 ## bittyd P0 evidence campaigns (bitty#2921)
 
-Six dated Linux x86_64 campaigns are recorded against the daemon, and one
+Seven dated Linux x86_64 campaigns are recorded against the daemon, and one
 code-path audit of the adapter layer that sits between the daemon and the
 model:
 
@@ -239,7 +239,14 @@ model:
 - [2026-11-16](audits/bittyd-ac024-adapter-audit-2026-11-16.md) at `bitty-ai`
   `a4c385d1` (workspace version `0.0.1`, MSRV `1.85`), a code-path record that
   audits the `P0-AC-024` adapter layer — the MCP client and the AI slice host —
-  through claim labels rather than by executing the audited repository's suite.
+  through claim labels rather than by executing the audited repository's suite;
+  and
+- [2026-11-18](bittyd-p0-evidence-2026-11-18.md) at `bitty` `3c588f26`
+  (workspace version `0.0.45`, service API 1.5), a live campaign that serves the
+  built `bittyd` on a throwaway runtime root and drives create, controller and
+  observer attach, detach, consumer and operator abort, force stop, drain, and a
+  clean shutdown, quoting the per-session journal record on disk and every
+  observed exit code.
 
 No record is an auditor verdict and none moves a risk state. Where two disagree
 the later governs: 2026-11-13 moves `P0-AC-021` from Verified to Partially
@@ -255,7 +262,11 @@ independent review is still absent. The day's third record changes no status
 either: it observes the `P0-AC-024`, `P0-AC-025`, and `P0-AC-026` cells the
 2026-11-13 table left open and leaves all three Partially verified, because the
 adapter audit, the channel-separation review, a DevTools endpoint, and a
-trace/export surface remain absent.
+trace/export surface remain absent. The 2026-11-18 record changes no status
+either: it re-observes the live lifecycle and stop-mode cells at `0.0.45`, adds
+the per-session journal record, and leaves `P0-AC-021`..`P0-AC-026` where they
+stand, because the second-uid cell, exit codes `1`/`5`/`6`, and the independent
+review remain absent.
 
 ### 2026-11-08 campaign
 
@@ -380,6 +391,32 @@ the live cells over the real Unix socket.
 The record also states what it does not observe: no DevTools endpoint, trace
 start/stop/fetch, export preview, or crash-report producer exists on `bittyd` at
 this revision, so those cells are recorded as unrun rather than passed.
+
+### 2026-11-18 campaign
+
+A live campaign at `bitty` `3c588f26` (workspace version `0.0.45`, service API
+1.5) — a later revision than the last recorded live lifecycle capture at
+`9d0e8a88` (`0.0.40`). It builds `bittyd` with `cargo build -p bitty-daemon --bin bittyd`
+into a scratch target directory, serves six daemons on throwaway runtime roots,
+and drives the whole binary surface the revision ships: `start`, the no-argument
+status, `stop`, `stop --drain`, `stop --force`, `--version`, and `--help`. The
+session verbs have no CLI and were driven over the real Unix endpoint with the
+accepted v1 envelope by a campaign instrument, disclosed as such in the record.
+
+| Criterion   | Status (2026-11-18)                                                         | Record section                                                                                                                                                                                               | What the record supplies                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Residual cell                                                                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `P0-AC-021` | Partially verified, corroborated in part; second-uid cell **NOT EXERCISED** | `Endpoint modes and the no-TCP scan (corroboration)`                                                                                                                                                         | Runtime directory `0700`; socket, lock, and operator file `0600`; audit directory `0700` with a `0600` segment; zero `ss -ltnp`/`-tnp`/`-lxnp` rows naming the daemon pid while the Unix socket is `LISTEN`; `tcp_listeners: 0`; the same-uid handshake that produced the scan succeeded                                                                                                                                                                                                                                                                                                                                                                                                                                        | A second uid at the peer check (no passwordless `sudo` on this host); the `V-28` real-driver artifact; `/proc/<pid>/fd` still unreadable for the non-dumpable daemon; Windows named pipe and every non-Linux cell |
+| `P0-AC-022` | Partially verified, live cells reproduced and extended                      | `Session lifecycle: create, attach, read, write`; `A second concurrent attach under a session.grant`; `Detach is idempotent`; `Abort: consumer cancel and operator stop`; `Stop modes and the exit-code map` | Controller attach at `state_revision` 2; a concurrent observer attach authorised by a live `session.grant` reaching `attach_count: 2` with roles `[observer, controller]` and no `control_token` in its result; observer `session.read`/`write`/`abort` all `Denied/ControllerRequired` while the observer holds `terminal.input`; detach idempotent with `state_revision` unchanged at 3; consumer abort `terminated`/`consumer_cancel`/`cleanup: swept` and operator abort `terminated`/`operator_abort`/`cleanup: swept`; the per-session journal record at `0600` in a `0700` directory, with pid, start time, and cgroup, removed on termination; exit codes `0`/`2`/`3`/`4` observed and `1`/`5`/`6` recorded unexercised | Independent review; exit codes `1`, `5`, and `6`; the arbitrary single-scope live grant (`C-09`, bitty#2917); the real-service driver at this revision (the campaign used its own client)                         |
+| `P0-AC-023` | No new observation                                                          | `Carried forward, explicitly`                                                                                                                                                                                | Nothing: seven children were spawned and none of their `/proc` entries was read                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | The 2026-11-16 child-scope cells stand on their own evidence; child-scope expiry is still unrun                                                                                                                   |
+| `P0-AC-024` | Partially verified, label corroborated                                      | `Session lifecycle: create, attach, read, write`                                                                                                                                                             | Every content response carried `is_untrusted_surface: true`, including a read of echoed controller input on a second daemon; the observer read was refused before content was served                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Adapter audit, channel-separation review, and confused-deputy suite remain absent                                                                                                                                 |
+| `P0-AC-025` | No new observation                                                          | `Carried forward, explicitly`                                                                                                                                                                                | Nothing: no `debug.*`, `plugin.manage`, or `config.modify` call was made                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | A live DevTools endpoint and the formal scope audit remain absent                                                                                                                                                 |
+| `P0-AC-026` | Partially verified, record shape corroborated                               | `Audit records (corroboration)`                                                                                                                                                                              | Audit directory `0700`, segment `0600`, 72 line-oriented records across six daemons, attributable by instance id; refusals carry a code and counts (`c=active_sessions ca=2 cl=16`) and the two observer abort arms read `not_found` and `controller_required`; termination rows carry `z=terminated zr=daemon_stop zk=swept`; zero occurrences of the campaign's `argv` marker, `env` value, `control_token`, or `operator_capability`                                                                                                                                                                                                                                                                                         | Seeded-secret corpus, export-preview equality, crash-report path, and the formal trace-minimization audit remain absent                                                                                           |
+
+The record also states what it does not observe: exit codes `1`, `5`, and `6` are
+declared by the binary's own help text and were not produced; the session verbs
+have no second, repository-owned client behind them in this campaign; and the
+build under test is the `dev` profile, so the recorded elapsed times are not
+release timings.
 
 ### Residual cells
 
