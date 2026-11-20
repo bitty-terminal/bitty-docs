@@ -15,9 +15,9 @@ sidebar_order: 10
 
 Bitty has accepted an organization-level polyrepo. ADR 0001 accepts a minimal
 Core Cargo workspace for initialization; the expanded crate graph is now
-**Pre-alpha / Engineering Milestones M1-M8** at 18 crates (after `W-105`
+**Pre-alpha / Engineering Milestones M1-M8** at 19 crates (after `W-105`
 relocation, `bitty#1684` `03bfda5c`, and the `bitty-daemon`/`bitty-sandbox`
-additions; snapshot `5d19152`) with
+additions; snapshot `f854d5a`) with
 lifecycle `Specified -> Accepted -> Implemented -> Verified -> Compatible ->
 Release-ready` (see Status below):
 
@@ -100,7 +100,7 @@ bitty-terminal/                     # local umbrella workspace, not a Git repo
 │
 │   # every repository is a direct child (org-flat mirror); no grouping directories
 ├── activity/                       # independent repo: first official plugin
-├── bitty/                          # independent repo: Rust core workspace (18 crates)
+├── bitty/                          # independent repo: Rust core workspace (19 crates)
 ├── bitty-ai/                       # independent repo: AI core (runtime, providers, context)
 ├── bitty-ai-docs/                  # independent repo: AI-core documentation
 ├── bitty-devtools/                 # independent repo: debug UI/client
@@ -373,7 +373,7 @@ conflict with the candidate use of TOML for plugin metadata.
 ## Documentation and website publishing relationship
 
 ```text
-bitty-docs shared governance + submodule pointers (18 crates; OQ counts live in the open-question register)
+bitty-docs shared governance + submodule pointers (19 crates; OQ counts live in the open-question register)
       |-- bitty-terminal/ -> bitty-terminal-docs @ pinned main
       |-- bitty-ai/       -> bitty-ai-docs       @ pinned main
       `-- bitty-plugins/  -> bitty-plugins-docs  @ pinned main
@@ -429,7 +429,7 @@ database exists. Therefore:
   per Governance RFC OQ-024 (2026-08-29).
 - Verification of `bitty-package` (lifecycle accepted, signatures draft) and
   the implemented tail crates (`bitty-rich` OQ-008/015/016, `bitty-lua`
-  OQ-009/030-032, hardening through `5d19152`) alongside the
+  OQ-009/030-032, hardening through `f854d5a`) alongside the
   independent L1 extensions (`bitty-ipc`, `bitty-network`) from
   `Implemented` to `Verified` per risk evidence RFC OQ-025 (evidence matrix
   pending), plus successor topology ADR when needed, release profiles, package

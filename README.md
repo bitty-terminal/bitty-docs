@@ -1,11 +1,11 @@
 # bitty-docs
 
 `bitty-docs` is the canonical design and governance repository for the Bitty
-terminal project. Project state at a glance (snapshot `2026-11-18`):
+terminal project. Project state at a glance (snapshot `2026-11-20`):
 
-- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `5d19152`,
-  baseline `de134ec`, previous `67f51b5`, 18 crates).
-- Latest release: `v0.0.45` (`5d19152`, 2026-11-18); pre-alpha releases
+- Stage: **Pre-alpha / Engineering Milestones M1-M8** (`bitty` `f854d5a`,
+  baseline `de134ec`, previous `5d19152`, 19 crates).
+- Latest release: `v0.0.46` (`f854d5a`, 2026-11-20); pre-alpha releases
   exist, but no stable or supported public contract has been declared.
 - Risks: `R-004` remains `Open` (not `Mitigated`/`Verified`);
   `R-002`/`R-003`/`R-005` are `Mitigated`; `R-001` is `Open` pending the
@@ -205,10 +205,11 @@ for crates):
   `R-006`/`R-007` were reopened `Open` under RS-5 for the Phodopus VM swap;
   experimental slice not yet `Verified`.
 - **Implemented**: requires evidence from a product repository (`bitty`
-  `5d19152` 18 crates, including the `v0.0.20`/`v0.0.21` plugin-runtime,
+  `f854d5a` 19 crates, including the `v0.0.20`/`v0.0.21` plugin-runtime,
   Kitty-graphics, decoration, config-matrix, and release waves, the
-  `v0.0.22`-`v0.0.45` bittyd daemon, containment, plugin-scene,
-  panel-lifecycle, config, input, and packaging waves, and the post-release
+  `v0.0.22`-`v0.0.46` bittyd daemon, containment, plugin-scene,
+  panel-lifecycle, panel-content, config, input, Windows-companion, and
+  packaging waves, and the post-release
   execution-supervisor, IPC-service, and security foundations; IPC/rich/resolver
   hardening and the experimental slice implemented but not yet verified) and
   must not be inferred from design prose.
