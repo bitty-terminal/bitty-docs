@@ -374,10 +374,10 @@ cross-repository decision.
 state snapshot that prevents fact drift between `bitty` and `bitty-docs`.
 
 It defines exactly one synchronized implementation revision (`bitty`
-`5d19152` at `2026-11-18`, baseline `de134ec`, previous `67f51b5`), maturity
+`f854d5a` at `2026-11-20`, baseline `de134ec`, previous `5d19152`), maturity
 and release status (`Pre-alpha / Engineering Milestones M1-M8`, 55 OQs
 `Accepted`, 43 `Open`, and 2 `Partially resolved` in the synchronized docs
-register, 18 crates, release `v0.0.45` at `5d19152` dated 2026-11-18), per-risk
+register, 19 crates, release `v0.0.46` at `f854d5a` dated 2026-11-20), per-risk
 state and evidence revision and audit
 references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `8192`-byte bound-scope limits per `bitty`
@@ -385,8 +385,8 @@ references (`R-004` remains `Open` at `7a4ee41` with residual platform, UX, and
 `Mitigated` on their auditor artifacts; `R-001` `Open` because the
 `P0-AC-002` long-running campaign is unmet; `R-005` `Mitigated` at `d4d75e9`;
 `R-006`/`R-007` reopened `Open` under RS-5 after the Phodopus VM swap), and
-explicit sync provenance (`CTX-0319`, previous
-`CTX-0269`). The release and post-release security evidence are
+explicit sync provenance (`CTX-0327`, previous
+`CTX-0320`). The release and post-release security evidence are
 `Implemented`-only until the matrix and independent review gates are recorded.
 
 Mechanical fields (synchronized revision, snapshot date, crate count, latest

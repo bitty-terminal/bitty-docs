@@ -11,7 +11,7 @@ sidebar_order: 11
 
 # Now / Next / Later
 
-> Status: **draft planning horizon** as of 2026-11-18. This document is a
+> Status: **draft planning horizon** as of 2026-11-20. This document is a
 > roadmap communication, not shipped behavior or a release promise. It links
 > accepted requirements, dependencies, owners, success evidence, and an explicit
 > confidence and horizon per the [Roadmap index](README.md) admission criteria.
@@ -19,8 +19,8 @@ sidebar_order: 11
 > security control, and does not authorize website publication. Website
 > publication remains gated on a pinned immutable `bitty-docs` revision per the
 > [Website Delivery RFC](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/specifications/website-delivery-rfc.md). Current
-> snapshot is `bitty` `5d19152` (previous `67f51b5`, baseline `de134ec`,
-> 18 crates, 55 OQs `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.45`) at **Pre-alpha / Engineering Milestones M1-M8**;
+> snapshot is `bitty` `f854d5a` (previous `5d19152`, baseline `de134ec`,
+> 19 crates, 55 OQs `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.46`) at **Pre-alpha / Engineering Milestones M1-M8**;
 > the retired `a8735d0` / 16-crate / M1 baseline no longer describes the head.
 
 ## Admission criteria mapping
@@ -75,7 +75,7 @@ daemon deferral, or any security evidence gate.
 
 One label can no longer describe the workspace, so the snapshot carries an
 explicit milestone frame with honest per-milestone statuses (all verified
-read-only against `bitty` origin `main` at `5d19152`; subsystem detail lives
+read-only against `bitty` origin `main` at `f854d5a`; subsystem detail lives
 in [`project-state.json`](../project/project-state.json)):
 
 | Milestone               | Status                    | Honest reading                                                                                 |
@@ -98,19 +98,20 @@ otherwise.
 ### Anchor: release ladder and candidate spine
 
 - **Horizon anchor:** [Release Ladder](https://github.com/bitty-terminal/bitty-terminal-docs/blob/main/product/release-ladder.md) stage
-  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `5d19152` (`18 crates`, `55 OQs`
-  `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.45`, UX wave through
+  **Pre-alpha / Engineering Milestones M1-M8** at `bitty` `f854d5a` (`19 crates`, `55 OQs`
+  `Accepted`, 43 `Open`, and 2 `Partially resolved`, release `v0.0.46`, UX wave through
   `29772a3` plus semantic-terminal P1-P5 `Implemented`-only plus scrollbar overlay
   `Implemented`-only plus workspace rename, panel gaps, `mod_key`, font
   `1.375`/`2.0`, `radius_px` S0, `frameHash` digest, V1-V3 gates
   `Implemented`-only and the `v0.0.20` and `v0.0.21` plugin-runtime,
   Kitty-graphics, decoration, config-matrix, release, and plugin-CLI waves plus
-  the `v0.0.22`-`v0.0.45` bittyd daemon, containment, plugin-scene,
-  panel-lifecycle, config, input, and packaging waves plus
+  the `v0.0.22`-`v0.0.46` bittyd daemon, containment, plugin-scene,
+  panel-lifecycle, panel-content, config, input, Windows-companion, and
+  packaging waves plus
   the post-release security, IPC-service, execution-supervisor, and
   release-pipeline hardening wave plus experimental
   `c0aadd2`/`7e3104d`/`a8735d0` chain `d4d75e9 -> c0aadd2 -> 7e3104d -> a8735d0`,
-  baseline `de134ec` previous `67f51b5`) mapped to the candidate `v0.1` through
+  baseline `de134ec` previous `5d19152`) mapped to the candidate `v0.1` through
   `v1.0` maturity ladder. The ladder does not weaken any normative control in
   the [Security overview](../security/overview.md) or
   [Threat model](../security/threat-model.md). `R-004` was re-audited at
@@ -252,14 +253,17 @@ security, and release-pipeline waves. The previous synchronized head was
 `2339f0a`, and `679f12f`, and the native component broker plus the
 `bitty-core`/`bitty-panels` retirement (`bitty#1603`, `bitty#1604`) that
 narrowed the workspace to 18 crates. The current synchronized head is
-`5d19152` (previous `67f51b5`) at the `v0.0.45` release (`5d19152`,
-2026-11-18): the `v0.0.22`-`v0.0.45` series adds the `bittyd` daemon serving
+`f854d5a` (previous `5d19152`) at the `v0.0.46` release (`f854d5a`,
+2026-11-20): the `v0.0.22`-`v0.0.46` series adds the `bittyd` daemon serving
 the `bitty-ipc` v1 contract with enforced containment and orphan verification,
 real containment plans for Windows, macOS, and FreeBSD, plugin scenes painting
 in a shipped build with panel lifecycle ownership by controller generation,
-configurable scratchpads, local theme files with hot reload, Kitty graphics
-placements above and below text, xterm `modifyOtherKeys`, and the `phodopus`
-0.2.0 plugin VM (`f3d6a9b`); the workspace is 18 crates, 14 of them
+the plugin-facing panel content layer (`bitty.ui.panel` present/update/release
+with a bounded content input queue and `panel.content.*` events), configurable
+scratchpads, local theme files with hot reload, Kitty graphics
+placements above and below text, xterm `modifyOtherKeys`, the Windows
+`bitty.com` console companion, and the `phodopus`
+0.2.0 plugin VM (`f3d6a9b`); the workspace is 19 crates, 14 of them
 `publish = true`. Every change is `Implemented` not `Verified`; no risk or
 acceptance moved.
 
@@ -275,7 +279,7 @@ replaced by Phodopus. R-003 is `Mitigated` on the resource-loader audit and is
 tracked in the evidence matrix rather than as a separate Now item. Experimental slice
 `c0aadd2`/`7e3104d`/`a8735d0` is separate `Experimental Implementation`
 not counted here. Horizon: **current maturity slice** already on `bitty` `main`
-(`5d19152` head, `de134ec` baseline `67f51b5` previous);
+(`f854d5a` head, `de134ec` baseline `5d19152` previous);
 docs planning reflects it, it does not promise beyond it, overall product not
 `Verified`/`Compatible`/`Release-ready`; experimental code is review evidence only.
 
