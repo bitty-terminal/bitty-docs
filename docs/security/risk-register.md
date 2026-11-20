@@ -89,6 +89,22 @@ through `R-014`, and `DR-01` through `DR-08`, stay `Open`. The per-criterion
 cells and the residuals are in the
 [evidence matrix](evidence-matrix.md#bittyd-p0-evidence-campaigns-bitty2921).
 
+The [2026-11-20 no-TCP and lifecycle
+record](audits/bittyd-no-tcp-lifecycle-2026-11-20.md) is the latest campaign and
+moves nothing either. It observes the `P0-AC-021` no-TCP property through the
+kernel TCP table of the daemon's own network namespace, read from outside that
+namespace with a control that reports a row when one exists, and it keeps the
+PID-attributed `ss` channel labelled blind because `bittyd` is non-dumpable. It
+re-drives the `P0-AC-022` lifecycle (controller and observer attach, observer
+`ControllerRequired` refusals, idempotent detach, consumer `cancel`, and the
+`stop`, `stop --drain`, and `stop --force` modes), and it executes the
+`P0-AC-024` plugin `connect()` and filesystem-escape denials as typed refusals
+with a positive control. Three things keep every row `Open`: the second-uid
+containment run is still unrun and needs a privileged operator or a second local
+account, no `bitty ctl` daemon verb exists at that revision so the lifecycle was
+driven over the served endpoint by a scripted client, and the independent
+security review is still owed. A record is not that review.
+
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim
 that the risk can be ignored until then.
