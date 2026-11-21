@@ -105,6 +105,21 @@ account, no `bitty ctl` daemon verb exists at that revision so the lifecycle was
 driven over the served endpoint by a scripted client, and the independent
 security review is still owed. A record is not that review.
 
+The [2026-11-21 independent agent
+review](audits/bittyd-p0-independent-review-2026-11-21.md) is that review at
+the tier this environment can provide: a fresh reviewer session, distinct from
+the record's author, reading the code read-only at `bitty` `origin/main`
+`74c92dbd0` — an agent review, not an owner or human sign-off. It confirms the
+record's verifying cells at the code level (the `PR_SET_DUMPABLE` hardening
+and Unix-only bind, the served method catalog, the `ControllerRequired` and
+`ActiveSessions` refusals with the `16`-session limit, the stop exit codes, and
+the plugin denial symbols), rules the scripted v1 client over the served
+endpoint an acceptable campaign vehicle because no `bitty ctl` daemon verb
+exists and the endpoint is the product's own IPC, and moves no row:
+`R-011`..`R-014` and `DR-01`..`DR-08` stay `Open`, with the second-uid run,
+`C-09`, the `P0-AC-023` child-token expiry, the hostile-output replay, the
+live DevTools endpoint, and the Windows cells as the named residuals.
+
 Severity combines confidentiality, integrity, availability, and recoverability.
 Stage is the latest stage by which the mitigation must exist; it is not a claim
 that the risk can be ignored until then.
