@@ -61,11 +61,11 @@
 - Do not commit, merge, publish, or change external state unless explicitly asked.
 - Fresh clones have no CarryCtx state DB. Restore the local DB from the
   in-repo snapshot branch with `just workflow-import` (validate-only:
-  `just workflow-import-dry`). It fetches `refs/heads/carryctx-snapshots`,
-  refuses to replace a non-empty local DB without `--force`, and prints
-  provenance and restored counts. Snapshots are redacted publication artifacts
-  from `carryctx export --publication`: never merge them back, and rotate at
-  the source any secret that leaked before rotation.
+  `just workflow-import-dry`), all on the pinned carryctx 0.12.0. It fetches
+  `refs/heads/carryctx-snapshots`, refuses to replace a non-empty local DB
+  without `--force`, and prints provenance and restored counts. Snapshots are
+  redacted publication artifacts from `carryctx export --publication`: never
+  merge them back; rotate at the source any leaked secret.
 
 The primary post-initialization lifecycle is GitHub Issue, CarryCtx task,
 branch/worktree, commit, pull request, independent review plus CI, merge, then

@@ -175,6 +175,10 @@ publication artifacts produced by `carryctx export --publication`: CarryCtx
 refuses them as merge sources, so restore always uses replace mode, and a
 secret that leaked before rotation must still be rotated at the source.
 
+Publication and restore are pinned to the installed carryctx 0.12.0, which
+ships the publication flow (`export --publication` and `import --from-git`).
+Re-verify this section whenever the pinned carryctx version changes.
+
 ## Status and authority
 
 Each document should distinguish among these lifecycle states
