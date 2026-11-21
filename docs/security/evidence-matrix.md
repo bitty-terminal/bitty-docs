@@ -208,9 +208,9 @@ record runs no daemon and therefore adds no live row.
 
 ## bittyd P0 evidence campaigns (bitty#2921)
 
-Nine dated Linux x86_64 campaigns are recorded against the daemon, and one
+Nine dated Linux x86_64 campaigns are recorded against the daemon, one
 code-path audit of the adapter layer that sits between the daemon and the
-model:
+model, and one independent agent review of the newest campaign's record:
 
 - [2026-11-08](bittyd-p0-evidence-2026-11-08.md) against the installed
   `bitty`/`bittyd` 0.0.36 release (`bitty` `fcd622e`, service API 1.4);
@@ -269,6 +269,12 @@ model:
   detach, consumer abort, and the three stop modes, and executes the plugin
   `connect()` and filesystem-escape denials as typed refusals with a positive
   control.
+- [2026-11-21](audits/bittyd-p0-independent-review-2026-11-21.md) — the
+  independent **agent** review of that record (a fresh reviewer session,
+  distinct from the record's author; not an owner or human sign-off): read-only
+  against `bitty` `origin/main` `74c92dbd0`, it confirms every verifying cell's
+  code path with `file:line` citations, accepts the scripted v1 client over the
+  served endpoint as the campaign vehicle, and flips no row.
 
 No record is an auditor verdict and none moves a risk state. Where two disagree
 the later governs: 2026-11-13 moves `P0-AC-021` from Verified to Partially
@@ -298,7 +304,16 @@ record](audits/bittyd-no-tcp-lifecycle-2026-11-20.md) adds an external read of
 the daemon's own namespace table, a second live lifecycle campaign, and the
 executed plugin denials at `e630e89a`, and changes no status either: the
 second-uid containment run and the independent review remain absent, so
-`P0-AC-021` gains a channel and not a disposition.
+`P0-AC-021` gains a channel and not a disposition. The [2026-11-21 independent
+agent review](audits/bittyd-p0-independent-review-2026-11-21.md) then reads
+that record against `bitty` `origin/main` `74c92dbd0`, confirms the namespace
+no-TCP channel, the live lifecycle cells, and the executed plugin denials at
+the code level, and accepts the scripted v1 client over the served endpoint as
+the campaign vehicle — and it still flips nothing: the second-uid run stays
+unrun, and `C-09`, the `P0-AC-023` child-token expiry, the hostile-output
+replay, the live DevTools endpoint, and the Windows cells keep every criterion
+short of `Verified`. The review is agent-tier evidence toward the sign-off,
+not the sign-off.
 
 ### 2026-11-08 campaign
 
@@ -538,8 +553,14 @@ revision.
   arbitrary single-scope live grant that `C-09` defers to bitty#2917, the
   MCP/Agent adapter audit, a live `ctl window new` on a served surface, and the
   second-uid and Windows cells.
-- **Independent review absent.** No criterion in any record is `Verified`,
-  and a record is not the review verdict.
+- **Independent review: agent tier recorded, owner sign-off still owed.** The
+  [2026-11-21 review](audits/bittyd-p0-independent-review-2026-11-21.md) is
+  the first independent-review artifact for the covered cells — a fresh
+  reviewer session, distinct from the evidence record's author — and it
+  confirms the no-TCP channel, the lifecycle cells, and the plugin-denial
+  executions at the code level and accepts the campaign vehicle. It is an
+  agent review, not an owner or human sign-off; no criterion in any record is
+  `Verified`, and the auditor sign-off stays owed.
 
 ### Why no `R-011`..`R-014` row flips
 
@@ -581,7 +602,11 @@ audit that is still absent:
 
 Each campaign's own verification backlog, including the exact commands and raw
 artifacts, is in its dated record. A record is evidence for independent review;
-it is not the review verdict and does not authorize a risk transition.
+it is not the review verdict and does not authorize a risk transition. The
+[2026-11-21 independent agent
+review](audits/bittyd-p0-independent-review-2026-11-21.md) confirms this
+section's conclusion at the code level, accepts the campaign vehicle for the
+live lifecycle cells, and moves nothing.
 
 ## Scoped follow-ups
 
