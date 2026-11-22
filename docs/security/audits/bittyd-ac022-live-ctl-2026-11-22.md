@@ -83,6 +83,10 @@ Same lane, same revision, as the companion
 - `bitty` at `origin/main` `48f297d99aba65a96530f4ce028567e082a402d3`,
   a detached clone, `git status --porcelain` empty before and after every
   run; the shared workspace checkout stayed read-only.
+- The build history is the companion record's, including its disclosed
+  and discarded export-based first build (embedded revision `f0ee8c5`,
+  caught before any recorded cell ran in either record); no cell in this
+  record came from that discarded tree.
 - Workspace version `0.0.47`; the terminal binary for these cells, built
   `cargo build -p bitty-terminal --bin bitty --offline --locked`:
   `612811784` bytes, SHA-256

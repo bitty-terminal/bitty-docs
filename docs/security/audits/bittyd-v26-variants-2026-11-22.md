@@ -84,6 +84,13 @@ Out of scope:
   `git status --porcelain` empty before and after every run, so every
   observation below describes that tree. The shared workspace checkout stayed
   read-only throughout; no commit, checkout, or worktree touched it.
+- Build history, disclosed: an earlier export-based source tree (a `git
+archive` snapshot of the same revision) was discarded **before any recorded
+  cell ran**, because its embedded build revision read a walk-up repository
+  and reported `f0ee8c5`, not the pinned `48f297d9…`; the embedded revision
+  string is how the discard was caught. Every observation below ran against
+  the clean clone build described above; no cell, hash, or row in this
+  record came from the discarded tree.
 - Workspace version `0.0.47`. The corpus under test is
   `crates/bitty-daemon/tests/harness/corpus.json` at that revision: 86
   vectors, unmodified.
